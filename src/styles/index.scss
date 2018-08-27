@@ -1,0 +1,31 @@
+@import './reset.scss';
+
+.fr {
+  float: right;
+}
+
+.fl {
+  float: left;
+}
+.tar{
+  text-align: right;
+}
+.tac{
+  text-align: center;
+}
+i,em{
+  font-style: normal;
+}
+li,ol{
+  list-style: none;
+}
+.mt-10{
+  margin-top: 10px;
+}
+.mt-20{
+  margin-top: 20px;
+}
+.page{
+  text-align: center;
+  margin-top: 20px;
+}
