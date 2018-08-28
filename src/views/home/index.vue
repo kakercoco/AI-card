@@ -2,11 +2,11 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-27 18:30:51
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-08-27 20:41:35
+ * @Last Modified time: 2018-08-28 17:35:44
  */
 <template>
-  <div class="home">
-    <p>54</p>
+  <div class="index">
+    <p @click="gotoProduce">index</p>
   </div>
 </template>
 
@@ -18,6 +18,11 @@ export default {
     }
   },
   methods: {
+    gotoProduce () {
+      this.$router.push({
+        path: '/produceList'
+      })
+    }
   },
   mounted () {
   }
@@ -28,7 +33,7 @@ export default {
 .home{
   p{
     line-height: 50px;
-    font-size: 0.20rem;
+    font-size: 0.30rem;
   }
 }
 </style>
