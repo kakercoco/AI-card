@@ -20,12 +20,19 @@ li,ol{
   list-style: none;
 }
 .mt-10{
-  margin-top: 10px;
+  margin-top: 0.1rem;
 }
 .mt-20{
-  margin-top: 20px;
+  margin-top: 0.2rem;
 }
 .page{
   text-align: center;
-  margin-top: 20px;
+  margin-top: 0.2rem;
+}
+.app-main{
+  height: 100%;
+}
+.card-shadow{
+  box-shadow: 0 3px 10px #d6e1fb;
+  border-radius: 0.1rem;
 }

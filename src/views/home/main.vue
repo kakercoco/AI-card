@@ -2,10 +2,10 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:38:59
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-08-28 15:02:51
+ * @Last Modified time: 2018-08-29 15:49:23
  */
 <template>
-  <div class="main">
+  <div class="app-main">
     <router-view></router-view>
     <my-footer></my-footer>
   </div>
