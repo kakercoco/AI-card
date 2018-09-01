@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-27 18:30:51
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-08-30 09:38:31
+ * @Last Modified time: 2018-09-01 15:40:37
  */
 <template>
   <div class="index">
@@ -11,7 +11,7 @@
       <tab-item @on-item-click="onItemClick">行为</tab-item>
       <tab-item @on-item-click="onItemClick">互动</tab-item>
     </tab>
-    <div v-if="tabIndex === 0">
+    <div v-show="tabIndex === 0">
       <p class="tac time">●&nbsp;&nbsp; 2018/08/05  15:50</p>
       <ul class="logs-list">
         <li v-for="(item, index) in 8" :key="index">
@@ -23,19 +23,19 @@
         </li>
       </ul>
     </div>
-    <div v-else-if="tabIndex === 1" class="tab-action">
+    <div v-show="tabIndex === 1" class="tab-action">
       <div class="action-card card-shadow clearfix">
         <p class=" tac">
           <img src="@/assets/img/datapicker.png" class="fr" alt="">
           7日内被查看的行为统计
         </p>
         <ul>
-          <li>
+          <li @click="gotoCardList()">
             <img src="@/assets/img/card.png" alt="">
             <a href="">20次</a>
             <h5>查看名片</h5>
           </li>
-          <li>
+          <li @click="gotoWebsiteList()">
             <img src="@/assets/img/inter.png" alt="">
             <a href="">20次</a>
             <h5>查看官网</h5>
@@ -53,7 +53,7 @@
         </ul>
       </div>
       <ul class="action-list">
-        <li class="card-shadow">
+        <li class="card-shadow" @click="gotoCallPhoneList()">
           <img src="@/assets/icon/phone.png" alt="">
           <span>拨打电话</span>
           <i>10次</i>
@@ -70,34 +70,101 @@
         </li>
       </ul>
     </div>
-    <div v-else style="height:100%;">
+    <div v-show="tabIndex === 2" style="height:100%;">
       <scroller lock-x height="100%" :pullup-config="loadingConfig" @on-pullup-loading="loadMore" :use-pullup="true" ref="scroller" :scroll-bottom-offst="200">
         <ul class="news-list">
-          <li class="card-shadow" v-for="(item, index) in bottomCount" :key="index">
-            <img src="@/assets/img/u112.png" alt="">
-            <span>T-Wan在7日内和你互动了80次</span>
-            <x-icon type="ios-arrow-down" size="20" class="icon"></x-icon>
-          </li>
+          <div class="card-shadow" v-for="(item, index) in messageList" :key="index" >
+            <li v-if="item.status" @click="toggleDetail(index)">
+              <img src="@/assets/img/u112.png" alt="">
+              <span>T-Wan在7日内和你互动了80次</span>
+              <x-icon type="ios-arrow-down" size="20" class="icon"></x-icon>
+            </li>
+            <div v-else class="news-list-detail">
+              <p class="title">
+                <img src="@/assets/img/datapicker.png" alt="" class="fr" @click="showDateChoose">
+                <img src="@/assets/img/u112.png" alt="" class="avatar">
+              </p>
+              <p class="tac">T-Wan在7日内和你互动了80次</p>
+              <p v-for="(item, index) in countObj" :key="index" class="graph">
+                <span>{{item.name}}</span>
+                <i :style="{width: item.num + '%'}"></i>
+                <b>{{item.num}}</b>
+              </p>
+              <p class="tar" @click="toggleDetail(index)"><x-icon type="ios-arrow-up" size="20" class="icon" ></x-icon></p>
+            </div>
+          </div>
         </ul>
-    </scroller>
+      </scroller>
     </div>
+    <x-dialog v-model="datePickerDialog" class="dialog-datepicker" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%'}">
+      <h5>选择时间段</h5>
+      <group>
+        <datetime v-model="startTIme" format="YYYY-MM-DD" placeholder="请选择开始时间" @on-change="changeStartTime">
+          <span slot="title"></span>
+          <div slot="title">
+            <img src="@/assets/img/datepickerGray.png" alt="" class="fl title-icon">
+            <span>开始</span>
+          </div>
+        </datetime>
+      </group>
+      <group>
+        <datetime v-model="endTime" format="YYYY-MM-DD" placeholder="请选择结束时间">
+          <span slot="title"></span>
+          <div slot="title">
+            <img src="@/assets/img/datepickerGray.png" alt="" class="fl title-icon">
+            <span>结束</span>
+          </div>
+        </datetime>
+      </group>
+      <p class="btn">
+        <x-button type="primary" @click.native="sureTime">确定</x-button>
+      </p>
+    </x-dialog>
   </div>
 </template>
 
 <script>
-import { Tab, TabItem, Scroller } from 'vux'
+import { Tab, TabItem, Scroller, XDialog, XButton, Group, Cell, Datetime } from 'vux'
 
 export default {
   name: 'index',
   components: {
     Tab,
     TabItem,
-    Scroller
+    Scroller,
+    XButton,
+    XDialog,
+    Group,
+    Cell,
+    Datetime
   },
   data () {
     return {
       tabIndex: 2,
-      bottomCount: 6,
+      startTIme: '',
+      endTime: '',
+      datePickerDialog: false, // 日期选择dialog
+      messageList: [{
+        status: true
+      }, {
+        status: true
+      }],
+      countObj: [{
+        name: '查看名片',
+        num: 50
+      }, {
+        name: '查看动态',
+        num: 10
+      }, {
+        name: '查看官网',
+        num: 10
+      }, {
+        name: '查看产品',
+        num: 10
+      }, {
+        name: '拨打电话',
+        num: 10
+      }],
       loadingConfig: {
         upContent: '上拉加载更多',
         downContent: '释放后加载',
@@ -110,11 +177,44 @@ export default {
     onItemClick (index) {
       this.tabIndex = index
     },
+    toggleDetail (index) {
+      this.messageList[index].status = !this.messageList[index].status
+    },
     loadMore () {
-      this.bottomCount += 10
-      this.$nextTick(() => {
-        this.$refs.scroller.donePullup()
+      this.bottomCount += 5
+      if (this.bottomCount > 20) {
+        this.loadingConfig.pullupStatus = 'disabled' // 禁用下拉
         this.$refs.scroller.reset()
+        this.loadingConfig.content = '无更多数据'
+      } else {
+        this.$nextTick(() => {
+          this.$refs.scroller.donePullup()
+          this.$refs.scroller.reset()
+        })
+      }
+    },
+    showDateChoose () {
+      this.datePickerDialog = true
+    },
+    sureTime () {
+      this.datePickerDialog = false
+    },
+    changeStartTime (val) {
+      // this.startTIme = val
+    },
+    gotoCardList () {
+      this.$router.push({
+        path: '/seeCard'
+      })
+    },
+    gotoWebsiteList () {
+      this.$router.push({
+        path: '/seeWebsite'
+      })
+    },
+    gotoCallPhoneList () {
+      this.$router.push({
+        path: '/callPhone'
       })
     }
   },
@@ -256,7 +356,116 @@ $color:#717171;
     .icon{
       float: right;
       height: 100%;
+      fill: #999;
     }
+  }
+  .news-list-detail{
+    margin-top: 0.3rem;
+    .avatar{
+      display: block;
+      margin: 0 auto;
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    .title{
+      position: relative;
+      img{
+        &:first-child{
+          width: 0.35rem;
+          position: absolute;
+          top: 0.6rem;
+          right: 0.2rem;
+        }
+      }
+    }
+    p{
+      &:nth-of-type(2){
+        margin: 0.4rem 0;
+        font-size: 0.22rem;
+        color: $color;
+      }
+      &:last-child{
+        height: 1rem;
+        padding: 0 0.15rem;
+      }
+      .icon{
+        fill: #999;
+      }
+    }
+    .graph{
+      height: 0.7rem;
+      line-height: 0.7rem;
+      padding: 0 0.3rem;
+      span{
+        width: 2rem;
+        padding-left: 0.3rem;
+        position: relative;
+        &::after{
+          content: '';
+          width: 0.1rem;
+          height: 0.1rem;
+          border-radius: 50%;
+          position: absolute;
+          top: 0.1rem;
+          left: 0;
+        }
+      }
+      i{
+        display: inline-block;
+        height: 0.2rem;
+        border-radius: 0.1rem;
+        margin-left: 0.5rem;
+      }
+      &:nth-child(3){
+        span::after{
+          background-color: #ff0000;
+        }
+        i{
+          background: linear-gradient(left, #cc00ff, #b1181a);
+        }
+      }
+      &:nth-child(4){
+        span::after{
+          background-color: #653ffe;
+        }
+        i{
+          background: linear-gradient(left, #cc00ff, #5747fe);
+        }
+      }
+      &:nth-child(5){
+        span::after{
+          background-color: #73a6fb;
+        }
+        i{
+          background: linear-gradient(left, #cc00ff, #6eaffb);
+        }
+      }
+      &:nth-child(6){
+        i{
+          background: linear-gradient(left, #cd01fd, #fd5b66);
+        }
+      }
+      &:nth-child(7){
+        i{
+          background: linear-gradient(left, #c781f9, #0fba40);
+        }
+      }
+    }
+  }
+}
+.dialog-datepicker{
+  h5{
+    height: 0.9rem;
+    line-height: 0.9rem;
+    font-size: 0.32rem;
+    color: $color;
+  }
+  .title-icon{
+    width: 0.4rem;
+    margin-right: 0.2rem;
+  }
+  .btn{
+    padding: 1rem;
   }
 }
 </style>

@@ -8,6 +8,8 @@ import store from './store'
 import '@/utils/rem.js'
 import '@/styles/index.scss' // 全局样式
 
+import './permission.js'
+
 import Global from '@/utils/global'
 // 全局方法集
 Vue.prototype.Global = new Global(Vue)
