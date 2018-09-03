@@ -69,6 +69,18 @@ export default new Router({
       name: 'messageManage',
       meta: { title: '销售管家' },
       component: () => import('@/views/messageManage/index')
+    },
+    {
+      path: '/messageDetail',
+      name: 'messageDetail',
+      meta: { title: '日程详情' },
+      component: () => import('@/views/messageManage/detail')
+    },
+    {
+      path: '/messageIM',
+      name: 'messageIM',
+      meta: { title: '聊天室' },
+      component: () => import('@/views/messageManage/IM')
     }
   ]
 })

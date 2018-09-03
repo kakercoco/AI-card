@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-01 18:02:51
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-01 18:43:06
+ * @Last Modified time: 2018-09-03 10:16:18
  */
 <template>
   <div class="message-manage">
@@ -12,7 +12,7 @@
         <span><img src="@/assets/img/message2.png" alt=""></span>
         <div>
           <p>您8月8日需要回访</p>
-          <p><a href="">查看</a><x-icon type="ios-arrow-right" size="25" class="fr icon-right"></x-icon></p>
+          <p @click="gotoDetail"><a href="">查看</a><x-icon type="ios-arrow-right" size="25" class="fr icon-right"></x-icon></p>
         </div>
       </li>
     </ul>
@@ -27,6 +27,11 @@ export default {
     }
   },
   methods: {
+    gotoDetail () {
+      this.$router.push({
+        path: '/messageDetail'
+      })
+    }
   },
   mounted () {
   }

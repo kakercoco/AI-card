@@ -2,28 +2,270 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:26:07
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-08-28 17:31:06
+ * @Last Modified time: 2018-09-03 21:11:13
  */
 <template>
-<div>
-  contact
-</div>
+  <div class="contact">
+    <div style="height: 44px;">
+      <search  v-model="value" auto-fixed  ref="search"></search>
+    </div>
+    <tab :line-width="2" v-model="tabIndex">
+      <tab-item>所有客户</tab-item>
+      <tab-item>客户标签</tab-item>
+    </tab>
+    <div v-if="tabIndex === 0" class="contact-first">
+      <p >客户人数共3人
+        <span class="fr">
+          <x-icon type="ios-arrow-down" size="20" class="fr ml-20"></x-icon>
+          <popup-radio :options="options1" v-model="option1" class="fr"></popup-radio>
+        </span>
+      </p>
+      <ul>
+        <li class="card-shadow" v-for="(item, index) in 7 " :key="index">
+          <img src="@/assets/img/u112.png" alt="">
+          <div>
+            <p>T-Man</p>
+            <p>未跟进客户</p>
+          </div>
+          <span>
+            <i>跟进时间</i>
+            <i>今天</i>
+          </span>
+        </li>
+      </ul>
+    </div>
+    <div v-if="tabIndex === 1" class="contact-tag">
+      <ul>
+        <li class="card-shadow" v-for="(item, index) in tagList" :key="index">
+          <p class="nav" >
+            <span>{{item.name}}({{item.num}})</span>
+            <x-icon type="ios-arrow-down" size="20" v-if="!item.status" class="fr" style="fill: #717171;" @click.native="showDetail(index)"></x-icon>
+            <span class="fr" v-else>添加用户 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></span>
+          </p>
+          <div v-if="item.status" class="client-list " v-for="(elememt, index) in item.clientList" :key="index">
+            <img :src="elememt.imgUrl" alt="">
+            <div>
+              <x-icon type="ios-minus" size="14" class="delete-icon"></x-icon>
+              <p>{{elememt.name}}</p>
+              <p>未跟进客户</p>
+            </div>
+            <span>
+              <i>跟进时间</i>
+              <i>今天</i>
+            </span>
+          </div>
+          <p class="tar arrow-up" @click="showDetail(index)" v-if="item.status"><x-icon type="ios-arrow-up" size="20" ></x-icon></p>
+        </li>
+      </ul>
+      <p class="tac insert-tag">添加新标签 </p>
+    </div>
+  </div>
 </template>
 
 <script>
+import { Tab, TabItem, Search, PopupRadio } from 'vux'
+
 export default {
   name: 'contact',
+  components: {
+    Tab,
+    TabItem,
+    Search,
+    PopupRadio
+  },
   data () {
     return {
+      value: '',
+      tabIndex: 1,
+      option1: '跟进时间',
+      options1: ['跟进时间', '活动时间', '转发', '扫码', '工作交接'],
+      tagList: [
+        {
+          name: '可成交用户',
+          status: false,
+          num: 2,
+          clientList: [{
+            imgUrl: require('@/assets/img/u112.png'),
+            name: 'kaker'
+          }, {
+            imgUrl: require('@/assets/img/u112.png'),
+            name: 'top L'
+          }]
+        },
+        {
+          name: '意向客户',
+          status: false,
+          num: 0,
+          clientList: [{
+            imgUrl: require('@/assets/img/u112.png'),
+            name: 'kaker'
+          }, {
+            imgUrl: require('@/assets/img/u112.png'),
+            name: 'top L'
+          }]
+        }
+      ]
     }
   },
   methods: {
+    showDetail (index) {
+      this.tagList[index].status = !this.tagList[index].status
+    }
   },
-  mounted () {
-  }
+  mounted () {}
 }
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-
+.contact{
+  height: 100%;
+  overflow: auto;
+  & /deep/ .weui-search-bar__label{
+    .weui-icon-search{
+      margin-top: 5px;
+      & + span{
+        margin-top: 5px;
+      }
+    }
+  }
+  .contact-first{
+    &>p{
+      padding: 0.3rem;
+      margin: 0.3rem 0;
+      font-size: 0.26rem;
+      color: #717171;
+      .vux-x-icon{
+        fill: #717171;
+      }
+      & /deep/ .weui-cell{
+        padding: 0;
+        height: 0.4rem;
+        .weui-cell__ft::after{
+          display: none;
+        }
+      }
+    }
+    ul{
+      padding: 0 0.3rem;
+      li{
+        height: 1.5rem;
+        padding: 0.25rem;
+        img{
+          height: 100%;
+          width: 1rem;
+          border-radius: 0.1rem;
+          float: left;
+        }
+        div{
+          float: left;
+          height: 100%;
+          margin-left: 0.2rem;
+          line-height: 0.5rem;
+          max-width: calc(100% - 2.4rem);
+          overflow: hidden;
+          p{
+            color: #717171;
+            &:first-child{
+              font-size: 0.3rem;
+            }
+          }
+        }
+        &>span{
+          float: right;
+          height: 100%;
+          text-align: right;
+          width: 1.2rem;
+          font-size: 0.26rem;
+          color: #717171;
+          line-height: 0.5rem;
+        }
+      }
+    }
+  }
+  .contact-tag{
+    .insert-icon{
+      fill: #5977fe;
+    }
+    .insert-tag{
+      margin-top: 0.5rem;
+    }
+    ul{
+      padding: 0 0.3rem;
+      li{
+        margin-top: 0.3rem;
+        padding: 0.3rem;
+        .nav{
+          position: relative;
+          &::after{
+            content: '';
+            width: 0.16rem;
+            height: 0.16rem;
+            border-radius: 0.16rem;
+            background-color: #7e65fd;
+            position: absolute;
+            top: .2rem;
+            left: -0.1rem;
+          }
+          span{
+            &:first-child{
+              font-weight: bold;
+              font-size: 0.34rem;
+              margin-left: 0.2rem;
+            }
+          }
+        }
+      }
+    }
+    .client-list{
+      height: 1.4rem;
+      padding: 0.2rem 0;
+      border-bottom: 1px solid #eee;
+      position: relative;
+      .delete-icon{
+        position: absolute;
+        top: 0.1rem;
+        left: 0.9rem;
+        fill: #f47810;
+      }
+      &:last-of-type{
+        border: none;
+      }
+      img{
+        width: 1rem;
+        height: 1rem;
+        border-radius: 0.05rem;
+        float: left;
+      }
+      div{
+        float: left;
+        height: 100%;
+        margin-left: 0.2rem;
+        line-height: 0.5rem;
+        max-width: calc(100% - 2.4rem);
+        overflow: hidden;
+        color: #717171;
+        p{
+          &:first-child{
+            font-size: 0.3rem;
+          }
+        }
+      }
+      span{
+        float: right;
+        height: 100%;
+        text-align: right;
+        width: 1.2rem;
+        font-size: 0.26rem;
+        color: #717171;
+        line-height: 0.5rem;
+      }
+    }
+    .arrow-up{
+      margin-bottom: -0.3rem;
+      .vux-x-icon{
+        fill: #717171;
+      }
+    }
+  }
+}
 </style>

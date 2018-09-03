@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:46:11
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-01 18:04:52
+ * @Last Modified time: 2018-09-03 10:23:41
  */
 <template>
   <div class="message">
@@ -12,7 +12,8 @@
       <p>暂无消息提醒</p>
     </div>
     <ul class="list-message">
-      <li class="card-shadow" v-for="(item, index) in 6" :key="index">
+      <li class="card-shadow" v-for="(item, index) in 6" :key="index" @click="gotoIM">
+        <badge text="8" class="my-badge"></badge>
         <img src="@/assets/img/u112.png" alt="">
         <div>
           <p>
@@ -27,8 +28,13 @@
 </template>
 
 <script>
+import { Badge } from 'vux'
+
 export default {
   name: 'message',
+  components: {
+    Badge
+  },
   data () {
     return {
     }
@@ -37,6 +43,11 @@ export default {
     gotoMessageManage () {
       this.$router.push({
         path: '/messageManage'
+      })
+    },
+    gotoIM () {
+      this.$router.push({
+        path: '/messageIM'
       })
     }
   },
@@ -72,6 +83,17 @@ $color: #717171;
       height: 1.6rem;
       padding: 0.3rem 0.2rem;
       margin-top: 0.5rem;
+      position: relative;
+      .my-badge{
+        position: absolute;
+        top: 0.2rem;
+        left: 1rem;
+        font-size: 0.24rem;
+        width: 0.32rem;
+        height: 0.32rem;
+        line-height: 0.32rem;
+        border-radius: 0.32rem;
+      }
       img{
         width: 1rem;
         height: 1rem;

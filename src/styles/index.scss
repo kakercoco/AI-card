@@ -25,6 +25,12 @@ li,ol{
 .mt-20{
   margin-top: 0.2rem;
 }
+.ml-10{
+  margin-left: 0.1rem;
+}
+.ml-20{
+  margin-left: 0.2rem;
+}
 .page{
   text-align: center;
   margin-top: 0.2rem;
@@ -36,4 +42,25 @@ li,ol{
 .card-shadow{
   box-shadow: 0 3px 10px #d6e1fb;
   border-radius: 0.1rem;
+}
+.btn-primary{
+  height: 0.8rem;
+  background-color: #5977fe;
+  border-radius: 0.8rem;
+  width: 2.6rem;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 0.36rem;
+  margin-left: 0.3rem;
+}
+.btn-cancle{
+  width: 2.6rem;
+  height: 0.8rem;
+  background-color: #a0a6ae;
+  border-radius: 0.8rem;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 0.36rem;
 }
