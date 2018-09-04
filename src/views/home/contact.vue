@@ -2,10 +2,11 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:26:07
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-03 21:11:13
+ * @Last Modified time: 2018-09-04 10:59:02
  */
 <template>
   <div class="contact">
+    <router-view></router-view>
     <div style="height: 44px;">
       <search  v-model="value" auto-fixed  ref="search"></search>
     </div>
@@ -16,7 +17,7 @@
     <div v-if="tabIndex === 0" class="contact-first">
       <p >客户人数共3人
         <span class="fr">
-          <x-icon type="ios-arrow-down" size="20" class="fr ml-20"></x-icon>
+          <!-- <x-icon type="ios-arrow-down" size="20" class="fr ml-20"></x-icon> -->
           <popup-radio :options="options1" v-model="option1" class="fr"></popup-radio>
         </span>
       </p>
@@ -57,7 +58,7 @@
           <p class="tar arrow-up" @click="showDetail(index)" v-if="item.status"><x-icon type="ios-arrow-up" size="20" ></x-icon></p>
         </li>
       </ul>
-      <p class="tac insert-tag">添加新标签 </p>
+      <p class="tac insert-tag" @click="gotoInsertTag">添加新标签 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></p>
     </div>
   </div>
 </template>
@@ -110,6 +111,11 @@ export default {
   methods: {
     showDetail (index) {
       this.tagList[index].status = !this.tagList[index].status
+    },
+    gotoInsertTag () {
+      this.$router.push({
+        path: '/insertTag'
+      })
     }
   },
   mounted () {}
@@ -140,8 +146,15 @@ export default {
       & /deep/ .weui-cell{
         padding: 0;
         height: 0.4rem;
+        .vux-cell-value{
+          margin-right: 0.2rem;
+        }
         .weui-cell__ft::after{
-          display: none;
+          // display: none;
+          transform: rotate(135deg);
+          margin-left: 15px;
+          width: 0.16rem;
+          height: 0.16rem;
         }
       }
     }

@@ -22,17 +22,17 @@ export default new Router({
       }, {
         path: 'message',
         name: 'message',
-        meta: { title: 'AI雷达' },
+        meta: { title: '消息' },
         component: () => import('@/views/home/message')
       }, {
         path: 'news',
         name: 'news',
-        meta: { title: 'AI雷达' },
+        meta: { title: '动态圈' },
         component: () => import('@/views/home/news')
       }, {
         path: 'contact',
         name: 'contact',
-        meta: { title: 'AI雷达' },
+        meta: { title: '通讯录' },
         component: () => import('@/views/home/contact')
       }, {
         path: 'self',
@@ -81,6 +81,24 @@ export default new Router({
       name: 'messageIM',
       meta: { title: '聊天室' },
       component: () => import('@/views/messageManage/IM')
+    },
+    {
+      path: '/insertTag',
+      name: 'insertTag',
+      meta: { title: '添加标签' },
+      component: () => import('@/views/contacts/insertTag')
+    },
+    {
+      path: '/insertClient',
+      name: 'insertClient',
+      meta: { title: '添加客户' },
+      component: () => import('@/views/contacts/insertClient')
+    },
+    {
+      path: '/newsPublish',
+      name: 'newsPublish',
+      meta: { title: '发布动态' },
+      component: () => import('@/views/news/publish')
     }
   ]
 })
