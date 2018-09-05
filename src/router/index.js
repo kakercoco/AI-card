@@ -42,11 +42,6 @@ export default new Router({
       }]
     },
     {
-      path: '/produceList',
-      name: 'produceList',
-      component: () => import('@/views/produce/list')
-    },
-    {
       path: '/seeCard',
       name: 'seeCard',
       meta: { title: '查看名片' },
@@ -111,6 +106,18 @@ export default new Router({
       name: 'newsDetail',
       meta: { title: '动态详情' },
       component: () => import('@/views/news/detail')
+    },
+    {
+      path: '/calendar',
+      name: 'calendar',
+      meta: { title: '销售日历' },
+      component: () => import('@/views/self/calendar')
+    },
+    {
+      path: '/insertCalendar',
+      name: 'insertCalendar',
+      meta: { title: '添加日程' },
+      component: () => import('@/views/self/insertCalendar')
     }
   ]
 })

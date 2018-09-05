@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:22:54
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-01 16:41:51
+ * @Last Modified time: 2018-09-05 14:47:51
  */
 <template>
   <div class="my-footer">
@@ -12,7 +12,7 @@
         <img slot="icon-active" src="@/assets/icon/index2.png">
         <span slot="label">足迹</span>
       </tabbar-item>
-      <tabbar-item show-dot link="/main/message" selected>
+      <tabbar-item show-dot link="/main/message">
         <img slot="icon" src="@/assets/icon/message.png">
         <img slot="icon-active" src="@/assets/icon/message2.png">
         <span slot="label">消息</span>
