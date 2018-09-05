@@ -99,6 +99,18 @@ export default new Router({
       name: 'newsPublish',
       meta: { title: '发布动态' },
       component: () => import('@/views/news/publish')
+    },
+    {
+      path: '/newsSelf',
+      name: 'newsSelf',
+      meta: { title: '我的动态' },
+      component: () => import('@/views/news/self')
+    },
+    {
+      path: '/newsDetail',
+      name: 'newsDetail',
+      meta: { title: '动态详情' },
+      component: () => import('@/views/news/detail')
     }
   ]
 })
