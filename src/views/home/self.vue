@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:27:30
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-05 15:39:08
+ * @Last Modified time: 2018-09-06 14:53:13
  */
 <template>
   <div class="self">
@@ -35,7 +35,7 @@
           <img src="@/assets/nav/report.png" alt="" slot="icon" class="title-icon">
           <span slot="title" class="nav-title">我的报表</span>
         </cell>
-        <cell is-link>
+        <cell is-link link="/talkManage">
           <img src="@/assets/nav/manage.png" alt="" slot="icon" class="title-icon">
           <span slot="title" class="nav-title">话术管理</span>
         </cell>

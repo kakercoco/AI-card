@@ -118,6 +118,30 @@ export default new Router({
       name: 'insertCalendar',
       meta: { title: '添加日程' },
       component: () => import('@/views/self/insertCalendar')
+    },
+    {
+      path: '/calendarDetail',
+      name: 'calendarDetail',
+      meta: { title: '日程详情' },
+      component: () => import('@/views/self/calendarDetail')
+    },
+    {
+      path: '/talkManage',
+      name: 'talkManage',
+      meta: { title: '管理话术' },
+      component: () => import('@/views/self/talkManage')
+    },
+    {
+      path: '/talkInsert',
+      name: 'talkInsert',
+      meta: { title: '新增话术' },
+      component: () => import('@/views/self/talkInsert')
+    },
+    {
+      path: '/talkDetail',
+      name: 'talkDetail',
+      meta: { title: '话术详情' },
+      component: () => import('@/views/self/talkDetail')
     }
   ]
 })

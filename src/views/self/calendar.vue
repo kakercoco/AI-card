@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:53:27
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-05 17:37:48
+ * @Last Modified time: 2018-09-06 14:09:08
  */
 <template>
   <div class="calendar">
@@ -13,12 +13,12 @@
         <popup-picker :data="list" v-model="value"  @on-change="chooseChange" class="fr">
         </popup-picker>
       </p>
-      <span>添加日程<x-icon type="ios-plus-outline" size="13"></x-icon></span>
+      <span @click="gotoInsertCalendar">添加日程<x-icon type="ios-plus-outline" size="13"></x-icon></span>
     </div>
     <div class="insert-content">
       <p class="no-message" v-if="false">无日程 请添加</p>
       <ul>
-        <li v-for="item in 4" :key="item" @click="gotoInsertCalendar">
+        <li v-for="item in 4" :key="item" @click="gotoDetail">
           <span class="time">08:03</span>
           <img src="@/assets/img/calendar.png" alt="" class="icon-tag">
           <div>
@@ -65,6 +65,11 @@ export default {
     gotoInsertCalendar () {
       this.$router.push({
         path: '/insertCalendar'
+      })
+    },
+    gotoDetail () {
+      this.$router.push({
+        path: '/calendarDetail'
       })
     }
   },

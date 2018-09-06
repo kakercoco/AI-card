@@ -1,0 +1,145 @@
+/*
+ * @Author: kaker.xutianxing
+ * @Date: 2018-09-06 15:14:03
+ * @Last Modified by: kaker.xutianxing
+ * @Last Modified time: 2018-09-06 16:07:40
+ */
+<template>
+  <div class="insert-talk">
+    <div class="tag">
+      <p>添加关键词</p>
+      <span>意向客户<x-icon type="ios-minus" class="icon-delete"></x-icon></span>
+      <x-icon type="ios-plus-empty" class="icon-insert" @click.native="tagDialog = true"></x-icon>
+    </div>
+    <group title="编写话术">
+      <x-textarea  v-model="value" :show-counter="true" :max="200" autosize placeholder="请输入内容"></x-textarea>
+    </group>
+    <p class="btn">
+      <x-button type="primary">保存</x-button>
+    </p>
+    <x-dialog v-model="tagDialog" :hide-on-blur="true">
+      <div class="dialog-tag">
+        <h5>添加关键词</h5>
+        <group>
+        <x-input placeholder="十个字以内" :max="10" v-model="tag"></x-input>
+        </group>
+        <p><button @click="tagDialog = false">取消</button><button>确定</button></p>
+      </div>
+    </x-dialog>
+  </div>
+</template>
+
+<script>
+import { Group, XTextarea, XButton, XDialog, XInput } from 'vux'
+
+export default {
+  name: 'talkInsert',
+  components: {
+    Group,
+    XTextarea,
+    XDialog,
+    XInput,
+    XButton
+  },
+  data () {
+    return {
+      value: '',
+      tag: '',
+      tagDialog: false
+    }
+  },
+  methods: {
+  },
+  mounted () {
+  }
+}
+</script>
+
+<style lang='scss' rel='stylesheet/scss' scoped>
+.insert-talk{
+  overflow: auto;
+  height: 100%;
+  .tag{
+    color: #717171;
+    padding: 0.4rem;
+    border-bottom: 1px solid #eee;
+    p{
+      font-size: 0.32rem;
+      margin-bottom: 0.2rem;
+    }
+    span{
+      font-size: 0.28rem;
+      float: left;
+      margin-right: 0.5rem;
+      position: relative;
+      height: 0.6rem;
+      border-radius: 0.6rem;
+      border: 1px solid #ddd;
+      padding: 0 0.2rem;
+      line-height: 0.55rem;
+      .icon-delete{
+        fill: red;
+        width: 0.3rem;
+        position: absolute;
+        top: -0.2rem;
+        right: -0.1rem;
+      }
+    }
+    .icon-insert{
+      height: 0.6rem;
+      border-radius: 0.6rem;
+      border: 1px solid #ddd;
+      width: 1.6rem;
+      fill: #717171;
+    }
+  }
+  & /deep/ .weui-cells__title{
+    font-size: 0.32rem;
+  }
+  & /deep/ .weui-cells{
+    &::after{
+      border: none;
+    }
+    &::before{
+      border: none;
+    }
+    textarea{
+      font-size: 0.3rem;
+      color: #717171;
+    }
+  }
+  .btn{
+    margin-top: 1rem;
+    padding: 0 1rem;
+  }
+}
+.dialog-tag{
+  padding: 0.3rem;
+  h5{
+    font-size: 0.32rem;
+    color: #717171;
+    margin-bottom: 0.3rem;
+  }
+  p{
+    margin-top: 0.3rem;
+    button{
+      margin-right: 0.2rem;
+      height: 0.6rem;
+      width: 1.8rem;
+      border-radius: 0.6rem;
+      border: none;
+      outline: none;
+      font-size: 0.32rem;
+      &:first-child{
+        background: #fff;
+        border: 1px solid #ddd;
+        color: #717171;
+      }
+      &:last-child{
+        background: #5977fe;
+        color: #fff;
+      }
+    }
+  }
+}
+</style>
