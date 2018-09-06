@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:27:30
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-06 14:53:13
+ * @Last Modified time: 2018-09-06 17:05:34
  */
 <template>
   <div class="self">
@@ -31,7 +31,7 @@
           <img src="@/assets/nav/calendar.png" alt="" slot="icon" class="title-icon">
           <span slot="title" class="nav-title">销售日历</span>
         </cell>
-        <cell is-link>
+        <cell is-link link="/reportChart">
           <img src="@/assets/nav/report.png" alt="" slot="icon" class="title-icon">
           <span slot="title" class="nav-title">我的报表</span>
         </cell>

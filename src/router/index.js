@@ -142,6 +142,12 @@ export default new Router({
       name: 'talkDetail',
       meta: { title: '话术详情' },
       component: () => import('@/views/self/talkDetail')
+    },
+    {
+      path: '/reportChart',
+      name: 'reportChart',
+      meta: { title: '我的报表' },
+      component: () => import('@/views/self/reportChart')
     }
   ]
 })
