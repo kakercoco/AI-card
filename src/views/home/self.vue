@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:27:30
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-06 17:05:34
+ * @Last Modified time: 2018-09-07 09:42:58
  */
 <template>
   <div class="self">
@@ -46,7 +46,7 @@
           <img src="@/assets/nav/step.png" alt="" slot="icon" class="title-icon">
           <span slot="title" class="nav-title">使用教程</span>
         </cell>
-        <cell is-link>
+        <cell is-link link="/setting">
           <img src="@/assets/nav/setting.png" alt="" slot="icon" class="title-icon">
           <span slot="title" class="nav-title">设置</span>
         </cell>

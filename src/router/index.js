@@ -148,6 +148,12 @@ export default new Router({
       name: 'reportChart',
       meta: { title: '我的报表' },
       component: () => import('@/views/self/reportChart')
+    },
+    {
+      path: '/setting',
+      name: 'setting',
+      meta: { title: '设置' },
+      component: () => import('@/views/self/setting')
     }
   ]
 })
