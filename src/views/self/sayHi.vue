@@ -1,21 +1,18 @@
 /*
  * @Author: kaker.xutianxing
- * @Date: 2018-09-07 09:39:57
+ * @Date: 2018-09-07 14:25:23
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-07 14:38:25
+ * @Last Modified time: 2018-09-07 15:01:37
  */
 <template>
-  <div class="setting">
+  <div class="say-hi">
     <group>
-      <cell title="互动窗口" is-link link="/chatwindow">
-        <img src="@/assets/nav/chat.png" alt="" slot="icon">
-      </cell>
-      <cell title="欢迎语设置" is-link link="/sayHi">
+      <cell title="欢迎语开关" >
         <img src="@/assets/nav/hi.png" alt="" slot="icon">
-      </cell>
-      <cell title="转发名片" >
-        <img src="@/assets/nav/card.png" alt="" slot="icon">
         <inline-x-switch v-model="value" slot="default"></inline-x-switch>
+      </cell>
+      <cell title="欢迎语设置" is-link link="/saySetting">
+        <img src="@/assets/nav/card.png" alt="" slot="icon">
       </cell>
     </group>
   </div>
@@ -23,9 +20,8 @@
 
 <script>
 import { Group, Cell, XSwitch, InlineXSwitch } from 'vux'
-
 export default {
-  name: 'setting',
+  name: 'sayHi',
   components: {
     Group,
     XSwitch,
@@ -34,7 +30,7 @@ export default {
   },
   data () {
     return {
-      value: false
+      value: ''
     }
   },
   methods: {
@@ -45,7 +41,7 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.setting{
+.say-hi{
   & /deep/ .weui-cells{
     margin-top: 0;
     img{

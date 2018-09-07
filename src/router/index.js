@@ -154,6 +154,24 @@ export default new Router({
       name: 'setting',
       meta: { title: '设置' },
       component: () => import('@/views/self/setting')
+    },
+    {
+      path: '/chatwindow',
+      name: 'chatwindow',
+      meta: { title: '互动窗口' },
+      component: () => import('@/views/self/chatwindow')
+    },
+    {
+      path: '/sayHi',
+      name: 'sayHi',
+      meta: { title: '欢迎语设置' },
+      component: () => import('@/views/self/sayHi')
+    },
+    {
+      path: '/saySetting',
+      name: 'saySetting',
+      meta: { title: '欢迎语设置' },
+      component: () => import('@/views/self/saySetting')
     }
   ]
 })
