@@ -172,6 +172,24 @@ export default new Router({
       name: 'saySetting',
       meta: { title: '欢迎语设置' },
       component: () => import('@/views/self/saySetting')
+    },
+    {
+      path: '/client',
+      name: 'client',
+      meta: { title: '客户详情' },
+      component: () => import('@/views/client/index')
+    },
+    {
+      path: '/clientFollow',
+      name: 'clientFollow',
+      meta: { title: '客户跟进' },
+      component: () => import('@/views/client/follow')
+    },
+    {
+      path: '/clientInfor',
+      name: 'clientInfor',
+      meta: { title: '资料详情' },
+      component: () => import('@/views/client/infor')
     }
   ]
 })

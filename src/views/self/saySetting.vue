@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 15:05:29
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-07 15:54:54
+ * @Last Modified time: 2018-09-07 16:12:37
  */
 <template>
   <div class="say-setting">
@@ -148,7 +148,6 @@ export default {
         }
       }
     }
-    
   }
 }
 </style>

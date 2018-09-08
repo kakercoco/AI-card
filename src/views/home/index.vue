@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-27 18:30:51
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-01 15:40:37
+ * @Last Modified time: 2018-09-07 16:27:28
  */
 <template>
   <div class="index">
@@ -14,7 +14,7 @@
     <div v-show="tabIndex === 0">
       <p class="tac time">●&nbsp;&nbsp; 2018/08/05  15:50</p>
       <ul class="logs-list">
-        <li v-for="(item, index) in 8" :key="index">
+        <li v-for="(item, index) in 8" :key="index" @click="gotoClient">
           <img src="@/assets/img/u112.png" alt="">
           <div>
             T-cloud Man <i>拨打</i>了你的<i>手机号码</i>，要保持电话畅通。
@@ -140,7 +140,7 @@ export default {
   },
   data () {
     return {
-      tabIndex: 2,
+      tabIndex: 0,
       startTIme: '',
       endTime: '',
       datePickerDialog: false, // 日期选择dialog
@@ -201,6 +201,11 @@ export default {
     },
     changeStartTime (val) {
       // this.startTIme = val
+    },
+    gotoClient () {
+      this.$router.push({
+        path: '/client'
+      })
     },
     gotoCardList () {
       this.$router.push({
