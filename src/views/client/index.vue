@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 16:25:17
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-08 18:27:29
+ * @Last Modified time: 2018-09-10 14:50:05
  */
 <template>
   <div class="client">
@@ -15,7 +15,7 @@
             <span>未成交</span>
             <span>添加标签</span>
             <span>添加标签</span>
-            <x-icon type="ios-plus-outline"  class="fr icon-insert"></x-icon>
+            <x-icon type="ios-plus-outline"  class="fr icon-insert" @click.native="gotoTag"></x-icon>
           </p>
         </div>
       </div>
@@ -31,7 +31,7 @@
         </p>
       </div>
       <div class="down">
-        <p class="fl">
+        <p class="fl" @click="gotoIM">
           <span>会话</span>
           <img src="@/assets/img/wchat.png" alt="">
         </p>
@@ -220,6 +220,16 @@ export default {
     gotoInfor () {
       this.$router.push({
         path: '/clientInfor'
+      })
+    },
+    gotoIM () {
+      this.$router.push({
+        path: '/messageIM'
+      })
+    },
+    gotoTag () {
+      this.$router.push({
+        path: '/clientTag'
       })
     }
   },

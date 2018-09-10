@@ -190,6 +190,12 @@ export default new Router({
       name: 'clientInfor',
       meta: { title: '资料详情' },
       component: () => import('@/views/client/infor')
+    },
+    {
+      path: '/clientTag',
+      name: 'clientTag',
+      meta: { title: '标签' },
+      component: () => import('@/views/client/tag')
     }
   ]
 })
