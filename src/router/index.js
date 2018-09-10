@@ -196,6 +196,18 @@ export default new Router({
       name: 'clientTag',
       meta: { title: '标签' },
       component: () => import('@/views/client/tag')
+    },
+    {
+      path: '/selfCard',
+      name: 'selfCard',
+      meta: { title: '我的名片' },
+      component: () => import('@/views/card/selfCard')
+    },
+    {
+      path: '/editCard',
+      name: 'editCard',
+      meta: { title: '编辑名片' },
+      component: () => import('@/views/card/editCard')
     }
   ]
 })

@@ -2,12 +2,12 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:27:30
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-07 09:42:58
+ * @Last Modified time: 2018-09-10 15:25:54
  */
 <template>
   <div class="self">
     <div class="header-bg">
-      <div class="self-card">
+      <div class="self-card" @click="gotoCard">
         <img src="@/assets/img/u112.png" alt="">
         <div class="infor">
           <p>Top Man</p>
@@ -69,6 +69,11 @@ export default {
     }
   },
   methods: {
+    gotoCard () {
+      this.$router.push({
+        path: '/selfCard'
+      })
+    }
   },
   mounted () {
   }

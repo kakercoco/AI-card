@@ -2,14 +2,14 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 14:51:27
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-06 16:10:20
+ * @Last Modified time: 2018-09-10 16:02:53
  */
 <template>
   <div class="talk-manage">
     <h3>选择话术</h3>
     <div>
       <div class="talk-group">
-        <a class="active">最近使用</a>
+        <a class="active">第一组</a>
         <a>常用话术</a>
         <a>第一组</a>
         <a>第二组</a>
