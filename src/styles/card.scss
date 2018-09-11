@@ -37,3 +37,370 @@
     }
   }
 }
+.card-template-2{
+  .company{
+    text-align: right;
+    font-size: 0.24rem;
+  }
+  .bio{
+    text-align: center;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      margin-right: 0.4rem;
+      display: block;
+      margin: 0 auto;
+      margin-bottom: 0.1rem;
+    }
+    .name{
+      margin-right: 0.3rem;
+      font-size: 0.46rem;
+      align-items: baseline;
+    }
+    .job{
+      font-size: 0.26rem;
+    }
+  }
+  .phone{
+    margin-top: 0.3rem;
+    padding-left: 0.8rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.4rem;
+    padding-left: 0.8rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+}
+.card-template-3{
+  color: #fff;
+  .company{
+    text-align: right;
+    font-size: 0.24rem;
+  }
+  .bio{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      margin-right: 0.4rem;
+    }
+    .name{
+      margin-right: 0.3rem;
+      font-size: 0.46rem;
+      align-items: baseline;
+    }
+    .job{
+      font-size: 0.26rem;
+    }
+  }
+  .phone{
+    margin-top: 0.6rem;
+    padding-left: 0.8rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.4rem;
+    padding-left: 0.8rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+}
+.card-template-4{
+  color: #c9a063;
+  .company{
+    text-align: right;
+    font-size: 0.24rem;
+  }
+  .bio{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.8rem;
+    padding-left: 1.5rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      margin-right: 0.4rem;
+      display: none;
+    }
+    .name{
+      margin-right: 0.3rem;
+      font-size: 0.46rem;
+      align-items: baseline;
+    }
+    .job{
+      font-size: 0.26rem;
+    }
+  }
+  .phone{
+    margin-top: 0.6rem;
+    padding-left: 1.5rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.4rem;
+    padding-left: 1.5rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+}
+.card-template-5{
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.8rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      margin-right: 0.4rem;
+      display: none;
+    }
+    .name{
+      margin-right: 0.3rem;
+      font-size: 0.46rem;
+      align-items: baseline;
+    }
+    .job{
+      font-size: 0.26rem;
+    }
+  }
+  .phone{
+    margin-top: 0.6rem;
+    padding-left: 0.8rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.4rem;
+    padding-left: 0.8rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+}
+.card-template-6{
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.8rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      margin-right: 0.4rem;
+      display: none;
+    }
+    .name{
+      margin-right: 0.3rem;
+      font-size: 0.46rem;
+      align-items: baseline;
+    }
+    .job{
+      font-size: 0.26rem;
+    }
+  }
+  .phone{
+    margin-top: 0.6rem;
+    padding-left: 0.8rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.4rem;
+    padding-left: 0.8rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+}
+.card-template-7{
+  color: #c9a063;
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.8rem;
+    padding-left: 0.8rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      order: 10;
+      justify-content: space-between;
+      margin-left: 0.8rem;
+    }
+    .name{
+      margin-right: 0.3rem;
+      font-size: 0.46rem;
+      align-items: baseline;
+    }
+    .job{
+      font-size: 0.26rem;
+    }
+  }
+  .phone{
+    margin-top: 0.1rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.4rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+}
+.card-template-8{
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.8rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      order: 10;
+      justify-content: space-between;
+      margin-left: 0.8rem;
+      display: none;
+    }
+    .name{
+      margin-right: 0.3rem;
+      font-size: 0.46rem;
+      align-items: baseline;
+    }
+    .job{
+      font-size: 0.26rem;
+    }
+  }
+  .phone{
+    margin-top: 0.8rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.4rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+}
+.card-template-9{
+  color: #9f7c45;
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    margin-top: 0.1rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      margin-right: 0.4rem;
+      display: block;
+      margin-bottom: 0.1rem;
+    }
+    .name{
+      margin-right: 0.3rem;
+      font-size: 0.46rem;
+      align-items: baseline;
+    }
+    .job{
+      font-size: 0.26rem;
+    }
+  }
+  .phone{
+    margin-top: 0.2rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.4rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+}
+.card-template-10{
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.8rem;
+    padding-left: 0.8rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      order: 10;
+      justify-content: space-between;
+      margin-left: 0.8rem;
+    }
+    .name{
+      margin-right: 0.3rem;
+      font-size: 0.46rem;
+      align-items: baseline;
+    }
+    .job{
+      font-size: 0.26rem;
+    }
+  }
+  .phone{
+    margin-top: 0.1rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.4rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+}

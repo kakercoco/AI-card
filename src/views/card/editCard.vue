@@ -2,13 +2,13 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-10 20:40:41
+ * @Last Modified time: 2018-09-11 17:07:36
  */
 <template>
   <div class="edit-card">
-    <div class="my-card">
-      <img src="@/assets/card/1.png" alt="" class="card-bg">
-      <div class="card-infor card-template-1">
+    <div class="my-card" id="card">
+      <img :src="seletedTemplate" alt="" class="card-bg">
+      <div class="card-infor " :class="selectedClass">
         <p class="company">上海飞天科技有限公司</p>
         <p class="bio">
           <img src="@/assets/img/u112.png" alt="" class="avatar">
@@ -22,16 +22,7 @@
     <h5>名片样式</h5>
     <scroller ref="scrollerEvent" lock-y :scrollbar-x='false' style="margin-top: 0.2rem;">
      <div class="template-list">
-        <img src="@/assets/card/1.png" alt="" class="active">
-        <img src="@/assets/card/2.png" alt="">
-        <img src="@/assets/card/3.png" alt="">
-        <img src="@/assets/card/4.png" alt="">
-        <img src="@/assets/card/5.png" alt="">
-        <img src="@/assets/card/6.png" alt="">
-        <img src="@/assets/card/7.png" alt="">
-        <img src="@/assets/card/8.png" alt="">
-        <img src="@/assets/card/9.png" alt="">
-        <img src="@/assets/card/10.png" alt="">
+        <img :src="item" alt="" :class="{active: index === selectedIndex}" v-for="(item, index) in templateCard" :key="index" @click="changeTemplate(item, index)">
       </div>
     </scroller>
     <h5>名片头像</h5>
@@ -55,17 +46,30 @@
         <x-textarea placeholder="请输入文字" v-model="bio" autosize></x-textarea>
       </group>
     </div>
-    <h5>推荐产品 <span class="fr">产品管理</span></h5>
+    <h5>推荐产品 <span class="fr" @click="gotoProduce">产品管理</span></h5>
     <div class="produce-list">
       <p class="tac">暂无推荐商品</p>
+      <ul>
+        <li v-for="(item, index) in 6" :key="index">
+          <img src="@/assets/img/u112.png" alt="">
+          <span>产品名称</span>
+        </li>
+      </ul>
     </div>
     <h5>推荐案例 <span class="fr">案例管理</span></h5>
-    <div class="produce-list">
+    <div class="case-list">
       <p class="tac">暂无推荐案例</p>
+      <ul>
+        <li v-for="(item, index) in 6" :key="index" class="card-shadow">
+          <img src="@/assets/img/u112.png" alt="">
+          <p><span>案例名称</span></p>
+        </li>
+      </ul>
     </div>
     <h5>录制语音</h5>
     <div class="self-audio">
-      <p>暂无声音录制，请点击录制 <x-icon type="ios-plus-outline"></x-icon></p>
+      <p @click="audioDialog = true">暂无声音录制，请点击录制 <x-icon type="ios-plus-outline"></x-icon></p>
+      <audio src="@/assets/audio/audio.ogg" controls="controls"></audio>
     </div>
     <h5>我的图片</h5>
     <div class="self-img clearfix">
@@ -85,7 +89,7 @@
       <div class="insert-dialog">
         <h4>添加自定义标签</h4>
         <group>
-          <x-input v-model="value"></x-input>
+          <x-input v-model="value" placeholder="十字以内" :max="10"></x-input>
         </group>
         <p class="btn">
           <button class="btn-cancle" @click="insertTagDialog = false">取消</button>
@@ -93,16 +97,34 @@
         </p>
       </div>
     </x-dialog>
+    <x-dialog v-model="audioDialog" :hide-on-blur="true">
+      <div class="audio-dialog">
+        <h4>录制语音</h4>
+        <p>时间不长于01:30s</p>
+        <div @touchstart.stop.prevent="touchstart" @touchend.stop.prevent="touchend">
+          <x-circle
+            :percent="percent"
+            :stroke-width="6"
+            :trail-width="6"
+            :stroke-color="['#36D1DC', '#5B86E5']"
+            trail-color="#ececec">
+            <span v-if="false">长按录音</span>
+            <span style="color:#36D1DC">{{ percent }}%</span>
+          </x-circle>
+        </div>
+      </div>
+    </x-dialog>
   </div>
 </template>
 
 <script>
-import { Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog } from 'vux'
+import { Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle } from 'vux'
+import html2canvas from 'html2canvas'
 
 export default {
   name: 'editCard',
   components: {
-    Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog
+    Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle
   },
   data () {
     return {
@@ -116,10 +138,95 @@ export default {
       },
       bio: '',
       value: '',
-      insertTagDialog: false
+      insertTagDialog: false,
+      audioDialog: false,
+      percent: 80,
+      seletedTemplate: require('@/assets/card/1.png'),
+      selectedIndex: 0,
+      selectedClass: 'card-template-1',
+      templateCard: [
+        require('@/assets/card/1.png'),
+        require('@/assets/card/2.png'),
+        require('@/assets/card/3.png'),
+        require('@/assets/card/4.png'),
+        require('@/assets/card/5.png'),
+        require('@/assets/card/6.png'),
+        require('@/assets/card/7.png'),
+        require('@/assets/card/8.png'),
+        require('@/assets/card/9.png'),
+        require('@/assets/card/10.png')
+      ]
     }
   },
   methods: {
+    touchstart () {
+      console.log('start')
+    },
+    touchend () {
+      console.log('end')
+    },
+    changeTemplate (val, index) {
+      this.seletedTemplate = val
+      this.selectedIndex = index
+      this.selectedClass = `card-template-${index + 1}`
+    },
+    gotoProduce () {
+      this.$router.push({
+        path: '/produce'
+      })
+    },
+    dataURLtoBlob (dataurl) {
+      let arr = dataurl.split(',')
+      let mime = arr[0].match(/:(.*?);/)[1]
+      let bstr = atob(arr[1])
+      let n = bstr.length
+      let u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+      return new Blob([u8arr], {type: mime})
+    },
+    switchImg () {
+      let dataURL
+      html2canvas(document.querySelector('#card')).then(canvas => {
+        dataURL = canvas.toDataURL('image/png')
+        let blob = this.dataURLtoBlob(dataURL)// base64转blob对象，用于上传
+        // debugger;
+        var size = blob.size
+        if (size > 131584) {
+          alert('上传头像小于1MB！')
+        }
+        // 创建FormData对象
+        var fd = new FormData()
+        var filename = 'card.png'
+        fd.append('image', blob, filename)
+        const url = '/headupload'
+        console.log(url)
+      })
+
+      // $.ajax({
+      //   url: url,
+      //   type: 'post',
+      //   data: fd,
+      //   dataType: 'json',
+      //   processData: false,
+      //   contentType: false,
+      //   success: function (e) {
+      //     console.log(e)
+      //     if (e.state == 1) {
+      //       alert('上传成功!')
+      //       window.location.href = 'index.html'
+      //     } else if (e.state == 2) {
+      //       window.location.href = 'login.html'
+      //     } else {
+      //       alert('上传失败!')
+      //     }
+      //   }
+      // })
+    },
+    save () {
+    }
+
   },
   mounted () {
   }
@@ -214,6 +321,65 @@ export default {
       color: #717171;
       clear: both;
     }
+    ul{
+      display: flex;
+      flex-wrap: wrap;
+    }
+    li{
+      width: 2.1rem;
+      margin-right: 0.3rem;
+      margin-top: 0.3rem;
+      &:nth-of-type(3n){
+        margin-right: 0;
+      }
+      img{
+        display: block;
+        width: 100%;
+        height: 2.25rem;
+      }
+      span{
+        display: block;
+        text-align: center;
+        margin-top: 0.3rem;
+      }
+    }
+  }
+  .case-list{
+    &>p{
+      font-size: 0.24rem;
+      color: #717171;
+      clear: both;
+    }
+    ul{
+      display: flex;
+      flex-wrap: wrap;
+    }
+    li{
+      width: 2.2rem;
+      margin-top: 0.3rem;
+      margin-right: 0.15rem;
+      &:nth-of-type(3n){
+        margin-right: 0;
+      }
+      img{
+        width: 100%;
+      }
+      p{
+        height: 0.8rem;
+        text-align: center;
+        line-height: 0.8rem;
+        span{
+          width: 1.5rem;
+          height: 0.45rem;
+          line-height: 0.45rem;
+          display: inline-block;
+          background-color: #778dfe;
+          color: #fff;
+          border-radius: 0.1rem;
+          font-size: 0.28rem;
+        }
+      }
+    }
   }
   .self-audio{
     &>p{
@@ -225,6 +391,10 @@ export default {
         width: 0.3rem;
         height: 0.3rem;
       }
+    }
+    audio{
+      margin-top: 0.3rem;
+      width: 100%;
     }
   }
   .self-img{
@@ -263,6 +433,26 @@ export default {
     }
     .btn{
       margin-top: 0.5rem;
+    }
+  }
+  .audio-dialog{
+    text-align: center;
+    color: #717171;
+    padding-bottom: 0.5rem;
+    h4{
+      font-size: 0.3rem;
+      margin-top: 0.3rem;
+      margin-bottom: 0.3rem;
+      font-weight: normal;
+    }
+    p{
+      font-size: 0.22rem;
+      margin-bottom: 0.8rem;
+    }
+    &>div{
+      width: 2rem;
+      height: 2rem;
+      margin: 0 auto;
     }
   }
 }

@@ -208,6 +208,12 @@ export default new Router({
       name: 'editCard',
       meta: { title: '编辑名片' },
       component: () => import('@/views/card/editCard')
+    },
+    {
+      path: '/produce',
+      name: 'produce',
+      meta: { title: '产品列表' },
+      component: () => import('@/views/card/produce')
     }
   ]
 })
