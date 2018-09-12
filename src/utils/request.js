@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { Message, MessageBox } from 'element-ui'
 import store from '../store'
 // import { getToken } from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
-  timeout: 15000 // 请求超时时间
+  timeout: 15000, // 请求超时时间
+  withCredentials: true
 })
 
 // request拦截器
@@ -28,37 +28,22 @@ service.interceptors.response.use(
   * code为非20000是抛错 可结合自己业务进行修改
   */
     const res = response.data
-    if (res.resultCode !== 1) {
-      Message({
-        message: res.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
+    if (res.resultCode !== 200) {
+      alert(res.message)
 
-      // 50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-        MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('FedLogOut').then(() => {
-            location.reload()// 为了重新实例化vue-router对象 避免bug
-          })
-        })
+      // 201:Token 过期了;
+      if (res.code === 201) {
+        alert('用户信息过期，请重新登录')
+        // 如果可以请关闭窗口
       }
-      return Promise.reject('error')
+      // return Promise.reject('error')
     } else {
       return response.data
     }
   },
   error => {
     console.log('err' + error)// for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    alert(error)
     return Promise.reject(error)
   }
 )

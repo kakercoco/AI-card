@@ -214,6 +214,18 @@ export default new Router({
       name: 'produce',
       meta: { title: '产品列表' },
       component: () => import('@/views/card/produce')
+    },
+    {
+      path: '/boss',
+      name: 'boss',
+      meta: { title: 'BOSS雷达' },
+      component: () => import('@/views/boss/index')
+    },
+    {
+      path: '/bossCard',
+      name: 'bossCard',
+      meta: { title: 'BOSS雷达' },
+      component: () => import('@/views/boss/card')
     }
   ]
 })
