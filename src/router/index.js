@@ -72,7 +72,7 @@ export default new Router({
       component: () => import('@/views/messageManage/detail')
     },
     {
-      path: '/messageIM',
+      path: '/messageIM/:id',
       name: 'messageIM',
       meta: { title: '聊天室' },
       component: () => import('@/views/messageManage/IM')

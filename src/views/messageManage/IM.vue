@@ -52,13 +52,10 @@
       <div class="my-emotion" v-if="isEmotion">
         <swiper show-dots dots-position="center">
           <swiper-item class="swiper-demo-img">
-            <emotion is-gif v-for="(item, index) in list" :key="item" v-if="index < 35" @click.native="pushEmotion(item)">{{item}}</emotion>
+            <i class="face one_face" v-if="index <= 59" v-for="(item, index) in face_list" :key="index" :class="item.value"></i>
           </swiper-item>
           <swiper-item class="swiper-demo-img">
-            <emotion is-gif v-for="(item, index) in list" :key="item" v-if="index>=35 && index<70">{{item}}</emotion>
-          </swiper-item>
-          <swiper-item class="swiper-demo-img">
-            <emotion is-gif v-for="(item, index) in list" :key="item" v-if="index>=70">{{item, index}}</emotion>
+            <i class="face one_face" v-if="index >=60 && index <= 104" v-for="(item, index) in face_list" :key="index" :class="item.value"></i>
           </swiper-item>
         </swiper>
       </div>
@@ -86,7 +83,10 @@
 </template>
 
 <script>
-import { Group, XTextarea, WechatEmotion as Emotion, Swiper, SwiperItem } from 'vux'
+import { Group, XTextarea, WechatEmotion as Emotion, Swiper, SwiperItem } from 'vux';
+import {emojiAnalysis,__emojiObjs} from '@/utils/emoj';
+
+
 export default {
   name: 'messageIM',
   components: {
@@ -101,15 +101,71 @@ export default {
       value: '',
       isEmotion: false,
       slideDownTalk: false,
-      list: ['微笑', '撇嘴', '色', '发呆', '得意', '流泪', '害羞', '闭嘴', '睡', '大哭', '尴尬', '发怒', '调皮', '呲牙', '惊讶', '难过', '酷', '冷汗', '抓狂', '吐', '偷笑', '可爱', '白眼', '傲慢', '饥饿', '困', '惊恐', '流汗', '憨笑', '大兵', '奋斗', '咒骂', '疑问', '嘘', '晕', '折磨', '衰', '骷髅', '敲打', '再见', '擦汗', '抠鼻', '鼓掌', '糗大了', '坏笑', '左哼哼', '右哼哼', '哈欠', '鄙视', '委屈', '快哭了', '阴险', '亲亲', '吓', '可怜', '菜刀', '西瓜', '啤酒', '篮球', '乒乓', '咖啡', '饭', '猪头', '玫瑰', '凋谢', '示爱', '爱心', '心碎', '蛋糕', '闪电', '炸弹', '刀', '足球', '瓢虫', '便便', '月亮', '太阳', '礼物', '拥抱', '强', '弱', '握手', '胜利', '抱拳', '勾引', '拳头', '差劲', '爱你', 'NO', 'OK', '爱情', '飞吻', '跳跳', '发抖', '怄火', '转圈', '磕头', '回头', '跳绳', '挥手', '激动', '街舞', '献吻', '左太极', '右太极']
+      list: [],
+      face_list:[]
+
     }
   },
   methods: {
     pushEmotion (val) {
       this.value += `[${val}]`
-    }
+    },
+    chat_init(){
+        const req = {
+            "cmd": "GetChat",
+            "content": this.$route.params.id//对方的id
+        };
+        this.$store.state.user.websocketConnection.send(JSON.stringify(req));
+    },
+    chat_watch(){
+        this.$store.state.user.websocketConnection.onmessage = (res)=>{
+            const data = JSON.parse(res.data);
+            if(data.cmd === 'GetChat' && data.content){
+                this.$store.commit('user/SET_my_chat_room_id');
+            }
+
+
+            //debugger;
+
+        };
+    },
+
+    chat_record(){
+        const that = this;
+
+        const data = {
+            userId: this.$store.state.user.info.message_id,//当前操作者的id
+            aimId:this.$route.params.id,//对方的id
+            token: app.data.my_chat_token,
+        }
+    },
+    face_list_init(){
+        const list_obj = __emojiObjs;
+        let list = [];
+        let index = 0;
+        for (let i in list_obj){
+            const obj = {
+                id:index,
+                title:i,
+                value: list_obj[i]
+            };
+            this.face_list.push(obj);
+            index++;
+        }
+       // this.face_list = list;
+        //debugger;
+
+    },
+
+
+
+
   },
   mounted () {
+      this.chat_watch();
+      this.chat_init();
+      this.face_list_init();
+
   }
 }
 </script>
@@ -244,6 +300,12 @@ export default {
       .vux-emotion{
         width: 0.98rem;
         text-align: center;
+      }
+      .one_face{
+        display: inline-block;
+        width: 0.58rem;
+        height: 0.58rem;
+        margin-left: 0.1rem;
       }
     }
   }

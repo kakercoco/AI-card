@@ -126,6 +126,8 @@
 <script>
 import { Tab, TabItem, Scroller, XDialog, XButton, Group, Cell, Datetime } from 'vux'
 
+import {get_user_info} from '@/api/user_info'
+
 export default {
   name: 'index',
   components: {
@@ -221,9 +223,13 @@ export default {
       this.$router.push({
         path: '/callPhone'
       })
-    }
+    },
+
   },
   mounted () {
+      console.log('index');
+
+
   }
 }
 </script>

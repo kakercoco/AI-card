@@ -10,7 +10,15 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+        '/index.php':{
+            target: 'http://jiatui.api.com/',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/index.php': '/index.php'
+            }
+        }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

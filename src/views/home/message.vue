@@ -12,7 +12,7 @@
       <p>暂无消息提醒</p>
     </div>
     <ul class="list-message">
-      <li class="card-shadow" v-for="(item, index) in 6" :key="index" @click="gotoIM">
+      <li class="card-shadow" v-for="(item, index) in 3" :key="index" @click="gotoIM">
         <badge text="8" class="my-badge"></badge>
         <img src="@/assets/img/u112.png" alt="">
         <div>
@@ -37,6 +37,7 @@ export default {
   },
   data () {
     return {
+        test:1
     }
   },
   methods: {
@@ -46,13 +47,18 @@ export default {
       })
     },
     gotoIM () {
+
       this.$router.push({
-        path: '/messageIM'
+          path: `/messageIM/3`,
       })
     }
   },
   mounted () {
-  }
+
+  },
+    activated(){
+        console.log('activated');
+    }
 }
 </script>
 

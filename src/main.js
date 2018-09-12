@@ -7,7 +7,7 @@ import store from './store'
 
 import '@/utils/rem.js'
 import '@/styles/index.scss' // 全局样式
-
+import '../static/css/face.css'
 import './permission.js'
 
 import Global from '@/utils/global'

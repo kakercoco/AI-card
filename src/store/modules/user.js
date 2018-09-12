@@ -2,14 +2,42 @@
 import { getToken } from '@/utils/auth'
 
 const user = {
+  namespaced: true,
   state: {
-    token: getToken()
+    token: getToken(),
+    url:'http://jiatui.api.com/index.php',
+    info:{},
+    websocketConnection:{},//用的全局聊天对象
+    my_chat_token:'',//用于请求聊天服务器接口的凭证
+    my_chat_room_id:'',//使用者当前的回话id
+
   },
 
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token
-    }
+    },
+
+    //设置用户信息
+    SET_INFO:(state, data) => {
+        state.info = data;
+    },
+
+    //设置聊天对象
+    SET_websocket:(state, data) => {
+        state.websocketConnection = data;
+    },
+
+    //用于请求聊天服务器接口的凭证
+    SET_my_chat_token:(state, token) => {
+        state.my_chat_token = token;
+    },
+
+    //用于请求聊天服务器接口的凭证
+    SET_my_chat_room_id:(state, id) => {
+        state.my_chat_room_id = id;
+    },
+
   },
 
   actions: {
