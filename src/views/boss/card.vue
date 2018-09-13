@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-12 19:33:04
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-12 20:42:47
+ * @Last Modified time: 2018-09-13 10:31:07
  */
 <template>
   <div class="boss-card">
@@ -90,9 +90,60 @@
         <div v-show="dataTabIndex === 4">
           1-5
         </div>
+        <p class="line"></p>
+        <h3>成交率</h3>
+        <div class="funnel clearfix">
+          <div id="main"></div>
+          <p>成交概率区间</p>
+          <ul>
+            <li>0~50%</li>
+            <li>50%~80%</li>
+            <li>80%~99%</li>
+            <li>100%</li>
+          </ul>
+        </div>
+        <p class="line"></p>
+        <h3>客户兴趣占比</h3>
+        <div class="care clearfix">
+          <div id="care"></div>
+          <ul>
+            <li>对公司感兴趣</li>
+            <li>对产品感兴趣</li>
+            <li>对我感兴趣</li>
+          </ul>
+        </div>
+        <p class="line"></p>
+        <h3>与我互动</h3>
+        <div class="action">
+          <p v-for="(item, index) in countObj" :key="index" class="graph">
+            <span>{{item.name}}</span>
+            <i :style="{width: item.num + '%'}"></i>
+            <b>{{item.num}}</b>
+          </p>
+        </div>
+        <p class="line"></p>
+        <h3>近15日客户活跃度</h3>
+        <div class="dynamic">
+          <div id="dynamic"></div>
+        </div>
       </div>
-      <div v-show="activeName === 2">
-        3
+      <div v-show="activeName === 2" class="boss-action">
+        <p class="tac time">●&nbsp;&nbsp; 2018/08/05  15:50</p>
+        <ul class="action-logs-list" v-if="option === '互动记录'">
+          <li v-for="(item, index) in 4" :key="index">
+            <img src="@/assets/img/u112.png" alt="">
+            <div>
+              T-cloud Man <i>拨打</i>了你的<i>手机号码</i>，要保持电话畅通。
+            </div>
+            <span>15:59</span>
+          </li>
+        </ul>
+        <ul class="follow-logs-list" v-else>
+          <li v-for="(item, index) in 4" :key="index">
+            <p>客户有合作意向,查看了公司产品</p>
+            <p>2018-08-05  08:10</p>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -112,10 +163,26 @@ export default {
   },
   data () {
     return {
-      activeName: 0, // boss雷达主tab
+      activeName: 1, // boss雷达主tab
       dataTabIndex: 0, // boss雷达日期tab
-      option: '互动跟进',
-      options: ['互动跟进', '互动记录', '跟进记录']
+      option: '互动记录',
+      options: ['互动记录', '跟进记录'],
+      countObj: [{ // 与我互动
+        name: '查看名片',
+        num: 50
+      }, {
+        name: '查看动态',
+        num: 10
+      }, {
+        name: '查看官网',
+        num: 10
+      }, {
+        name: '查看产品',
+        num: 10
+      }, {
+        name: '拨打电话',
+        num: 10
+      }]
     }
   },
   methods: {
@@ -193,10 +260,119 @@ export default {
         }]
       }
       this.drawChart(option, 'top-chart')
+    },
+    drawFunnel () {
+      const option = {
+        calculable: true,
+        color: ['#3ec4d2', '#0fd35d', '#feab2b', '#ff5f1a'],
+        series: [
+          {
+            name: '漏斗图',
+            type: 'funnel',
+            left: '10%',
+            top: 60,
+            // x2: 80,
+            bottom: 60,
+            width: '80%',
+            // height: {totalHeight} - y - y2,
+            min: 0,
+            max: 100,
+            minSize: '0%',
+            maxSize: '100%',
+            sort: 'descending',
+            gap: 2,
+            label: {
+              normal: {
+                show: true,
+                position: 'inside'
+              },
+              formatter: '{d}',
+              emphasis: {
+                textStyle: {
+                  fontSize: 12
+                }
+              }
+            },
+            itemStyle: {
+              normal: {
+                borderColor: '#fff',
+                borderWidth: 3
+              }
+            },
+            data: [
+              {value: 80, name: '点击'},
+              {value: 60, name: '访问'},
+              {value: 40, name: '咨询'},
+              {value: 20, name: '订单'}
+            ]
+          }
+        ]
+      }
+      this.drawChart(option, 'main')
+    },
+    drawCare () {
+      const option = {
+        color: ['#ff0000', '#feab2b', '#3ec4d2'],
+        series: [
+          {
+            name: '访问来源',
+            type: 'pie',
+            radius: '75%',
+            data: [
+              {value: 335, name: '25%'},
+              {value: 310, name: '40%'},
+              {value: 234, name: '35%'}
+            ],
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            },
+            label: {
+              normal: {
+                show: true,
+                position: 'inside'
+              }
+            }
+          }
+        ]
+      }
+      this.drawChart(option, 'care')
+    },
+    drawDynamic () {
+      const option = {
+        color: ['#5977fe'],
+        xAxis: {
+          type: 'category',
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        },
+        yAxis: {
+          type: 'value',
+          splitLine: {
+            show: false
+          }
+        },
+        grid: {
+          top: '20',
+          left: '15%'
+        },
+        series: [{
+          data: [820, 932, 901, 934, 1290, 1330, 1320],
+          type: 'line',
+          showSymbol: false,
+          smooth: true
+        }]
+      }
+      this.drawChart(option, 'dynamic')
     }
   },
   mounted () {
     this.drawAITop()
+    this.drawFunnel()
+    this.drawCare()
+    this.drawDynamic()
   }
 }
 </script>
@@ -329,6 +505,13 @@ export default {
         border-right: 1px solid #aaa;
       }
     }
+    h3{
+      height: 1.4rem;
+      line-height: 1.4rem;
+      text-align: center;
+      font-size: 0.36rem;
+      color: #717171;
+    }
   }
   .second-tab-list{
     width: 100%;
@@ -379,6 +562,229 @@ export default {
           font-size: 0.28rem;
         }
       }
+    }
+  }
+  .funnel{
+    #main{
+      width: 100%;
+      height: 6rem;
+    }
+    p{
+      text-align: center;
+      font-size: 0.26rem;
+      color: #717171;
+      margin-bottom: 0.4rem;
+    }
+    ul{
+      padding: 0 0.2rem;
+    }
+    li{
+      float: left;
+      width: 25%;
+      height: 0.5rem;
+      text-align: center;
+      line-height: 0.5rem;
+      color: #adbaff;
+      margin-bottom: 0.4rem;
+      position: relative;
+      &::after{
+        content: '';
+        position: absolute;
+        top: 0.14rem;
+        left: 0;
+        width: 0.22rem;
+        height: 0.22rem;
+        border-radius: 0.22rem;
+      }
+      &:nth-child(1)::after{
+        background-color: #3ec4d2;
+      }
+      &:nth-child(2)::after{
+        background-color: #0fd35d;
+      }
+      &:nth-child(3)::after{
+        background-color: #feab2b;
+      }
+      &:nth-child(4)::after{
+        background-color: #3ec4d2;
+      }
+    }
+  }
+  .care{
+    border-bottom: 1px solid #eee;
+    border-top: 1px solid #eee;
+    #care{
+      width: 100%;
+      height: 3.6rem;
+    }
+    ul{
+      padding: 0 0.2rem;
+    }
+    li{
+      width: 33.33%;
+      float: left;
+      height: 0.5rem;
+      line-height: 0.5rem;
+      text-align: center;
+      color: #717171;
+      position: relative;
+      margin-bottom: 0.4rem;
+      &::after{
+        content: '';
+        position: absolute;
+        top: 0.14rem;
+        left: 0;
+        width: 0.22rem;
+        height: 0.22rem;
+        border-radius: 0.22rem;
+      }
+      &:nth-child(1)::after{
+        background-color: #ff0000;
+      }
+      &:nth-child(2)::after{
+        background-color: #feab2b;
+      }
+      &:nth-child(3)::after{
+        background-color: #3ec4d2;
+      }
+    }
+  }
+  .action{
+    padding: 0.3rem;
+    .graph{
+      height: 0.7rem;
+      line-height: 0.7rem;
+      padding: 0 0.3rem;
+      span{
+        width: 2rem;
+        padding-left: 0.3rem;
+        position: relative;
+        &::after{
+          content: '';
+          width: 0.2rem;
+          height: 0.2rem;
+          border-radius: 50%;
+          position: absolute;
+          top: 0.05rem;
+          left: 0;
+        }
+      }
+      i{
+        display: inline-block;
+        height: 0.2rem;
+        border-radius: 0.1rem;
+        margin-left: 0.5rem;
+      }
+      &:nth-child(1){
+        span::after{
+          background-color: #ff0000;
+        }
+        i{
+          background: linear-gradient(left, #cc00ff, #b1181a);
+        }
+      }
+      &:nth-child(2){
+        span::after{
+          background-color: #653ffe;
+        }
+        i{
+          background: linear-gradient(left, #cc00ff, #5747fe);
+        }
+      }
+      &:nth-child(3){
+        span::after{
+          background-color: #73a6fb;
+        }
+        i{
+          background: linear-gradient(left, #cc00ff, #6eaffb);
+        }
+      }
+      &:nth-child(4){
+        i{
+          background: linear-gradient(left, #cd01fd, #fd5b66);
+        }
+      }
+      &:nth-child(5){
+        i{
+          background: linear-gradient(left, #c781f9, #0fba40);
+        }
+      }
+    }
+  }
+  .dynamic{
+    #dynamic{
+      width: 100%;
+      height: 4rem;
+    }
+  }
+  .action-logs-list{
+    padding: 0 0.2rem;
+    li{
+      height: 1.8rem;
+      padding: 0.25rem 0;
+      border-bottom: 1px solid #eee;
+      img{
+        float: left;
+        height: 100%;
+        width: 1.3rem;
+      }
+      div{
+        width: 65%;
+        float: left;
+        height: 100%;
+        line-height: 0.5rem;
+        margin-left: 0.2rem;
+        padding: 0.1rem 0;
+        overflow: hidden;
+        i{
+          color: #f69600;
+        }
+      }
+      span{
+        float: right;
+        width: 0.8rem;
+        height: 100%;
+        color: #717171;
+        font-size: 0.22rem;
+        line-height: .5rem;
+      }
+    }
+  }
+  .follow-logs-list{
+    padding: 0 0.3rem;
+    li{
+      height: 1.2rem;
+      padding-left: 0.6rem;
+      position: relative;
+      margin-bottom: 0.3rem;
+      &::before{
+        content: '';
+        width: 0.2rem;
+        height: 0.2rem;
+        border-radius: 0.2rem;
+        background-color: #5977fe;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      p{
+        height: 50%;
+        line-height: 0.6rem;
+        background-color: #f3f3f3;
+        padding: 0 0.3rem;
+        color: #717171;
+        &:last-child{
+          font-size: 0.26rem;
+        }
+      }
+    }
+  }
+  .boss-action{
+    .time{
+      font-size: 0.32rem;
+      line-height: 0.5rem;
+      color: #717171;
+      margin: 0.4rem 0;
     }
   }
 }

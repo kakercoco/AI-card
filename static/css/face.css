@@ -1,4 +1,5 @@
 .face {
+  display: inline-block;
   background: url('../image/qqface.png') no-repeat scroll 0 0 transparent;
   width: 0.58rem;
   height: 0.58rem;

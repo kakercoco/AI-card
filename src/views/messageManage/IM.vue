@@ -7,34 +7,19 @@
 <template>
   <div class="im">
     <ul class="chat-list">
-      <li class="clearfix">
+
+      <li class="clearfix" v-for="(item,i) in char_list" :key="i">
         <p class="tac">8月3日  晚上18:21</p>
         <div class="left-message">
           <img src="@/assets/img/u112.png" alt="">
-          <p>嗯，好的</p>
+          <div class="content">
+            <tpl :content="item.content"></tpl>
+          </div>
+
         </div>
       </li>
-      <li class="clearfix">
-        <p class="tac">8月3日  晚上18:21</p>
-        <div class="right-message">
-          <img src="@/assets/img/u112.png" alt="">
-          <p>嗯，好的</p>
-        </div>
-      </li>
-      <li class="clearfix">
-        <p class="tac">8月3日  晚上18:21</p>
-        <div class="right-message">
-          <img src="@/assets/img/u112.png" alt="">
-          <p>你好，我是飞升科技的默默生，欢迎进入我的名片，有什么我可以你的忙？可以在这跟我实时沟通。</p>
-        </div>
-      </li>
-      <li class="clearfix">
-        <p class="tac">8月3日  晚上18:21</p>
-        <div class="left-message">
-          <img src="@/assets/img/u112.png" alt="">
-          <p>明日可约个时间商谈业务进展明日可约个时间商谈业务进展明日可约个时间商谈业务进展明日可约个时间商谈业务进展明日可约个时间商谈业务进展</p>
-        </div>
-      </li>
+
+
     </ul>
     <div class="footer">
       <span @click="slideDownTalk = true">话术库</span>
@@ -52,10 +37,10 @@
       <div class="my-emotion" v-if="isEmotion">
         <swiper show-dots dots-position="center">
           <swiper-item class="swiper-demo-img">
-            <i class="face one_face" v-if="index <= 59" v-for="(item, index) in face_list" :key="index" :class="item.value"></i>
+            <i class="face one_face" v-if="index <= 59" v-for="(item, index) in face_list" :key="index" :class="item.value" @click="select_face(item)"></i>
           </swiper-item>
           <swiper-item class="swiper-demo-img">
-            <i class="face one_face" v-if="index >=60 && index <= 104" v-for="(item, index) in face_list" :key="index" :class="item.value"></i>
+            <i class="face one_face" v-if="index >=60 && index <= 104" v-for="(item, index) in face_list" :key="index" :class="item.value" @click="select_face(item)"></i>
           </swiper-item>
         </swiper>
       </div>
@@ -85,8 +70,9 @@
 <script>
 import { Group, XTextarea, WechatEmotion as Emotion, Swiper, SwiperItem } from 'vux';
 import {emojiAnalysis,__emojiObjs} from '@/utils/emoj';
-
-
+import axios from 'axios';
+import {dateFtt} from '@/utils/base';
+import tpl from "./tpl";
 export default {
   name: 'messageIM',
   components: {
@@ -94,15 +80,17 @@ export default {
     Emotion,
     XTextarea,
     Swiper,
-    SwiperItem
+    SwiperItem,
+      tpl
   },
   data () {
     return {
-      value: '',
+      value:'',
       isEmotion: false,
       slideDownTalk: false,
       list: [],
-      face_list:[]
+      face_list:[],
+        char_list:[]
 
     }
   },
@@ -120,25 +108,99 @@ export default {
     chat_watch(){
         this.$store.state.user.websocketConnection.onmessage = (res)=>{
             const data = JSON.parse(res.data);
+            var chat_data = {};
             if(data.cmd === 'GetChat' && data.content){
                 this.$store.commit('user/SET_my_chat_room_id');
             }
+            else if(data.cmd === 'SpeakFromDialog'){
+                let obj = JSON.parse(data.content);
+                let chat_content = JSON.parse(obj.content);
+                chat_data = {
+                    time: dateFtt("yyyy-MM-dd hh:mm:ss", new Date(obj.createTime)),
+                    type: chat_content.type,
+                    content: chat_content.content,
+                    fead_src: '',
+                    from: 'others',
+                };
+                //如果是text类型，要重置content类型
+                if (chat_data.type === 'text'){
+                    chat_data.content = emojiAnalysis([chat_data.content]);
+                }
+                this.char_list.push(chat_data);
+
+            }
 
 
-            //debugger;
+
+
+
+
+
+
 
         };
     },
 
     chat_record(){
         const that = this;
+        const user = this.$store.state.user.info;
+
+        if(!user.message_id){
+            alert('用户信息获取失败！');
+            return;
+        }
 
         const data = {
-            userId: this.$store.state.user.info.message_id,//当前操作者的id
+            userId: user.message_id,//当前操作者的id
             aimId:this.$route.params.id,//对方的id
-            token: app.data.my_chat_token,
-        }
+            token: this.$store.state.user.my_chat_token,
+        };
+
+
+        axios({
+            method:"POST",
+            url:'http://192.168.40.180:8080/chatapi/getChat',
+            data:JSON.stringify(data)
+        }).then((res)=>{
+
+            if(res.status === 200 && res.data && res.data.message){
+                const list = JSON.parse(res.data.message);
+                let others_image = user.image;//h5所有者的头像
+                list.map((val,i)=>{
+                    const time = dateFtt("yyyy-MM-dd hh:mm:ss", new Date(val.createtime));
+
+                    let data = JSON.parse(val.content);
+                    let obj = {};
+                    obj.fead_src = val.speaker == user.message_id ? others_image : '';
+
+                    obj.from = val.speaker == user.message_id ? 'me' : 'others';
+                    obj.time = time;
+                    if(data.type === 'text'){
+                        obj.type = 'text';
+                        obj.content = emojiAnalysis([data.content]);
+                        this.char_list.push(obj);
+
+                    }
+                    else if (data.type === 'img'){
+                        obj.type = 'img';
+                        obj.content = data.content;
+                        obj.original = data.original;
+                        this.char_list.push(obj);
+                    }
+
+
+                });
+
+                console.log(this.char_list);
+
+
+            }
+
+        })
+
+
     },
+
     face_list_init(){
         const list_obj = __emojiObjs;
         let list = [];
@@ -157,14 +219,26 @@ export default {
 
     },
 
+    select_face(e){
+        this.value = `${this.value}[${e.title}]`;
+    },
+
+    test(){
+        const str = '按时打算s[发呆][调皮]12ss312';
+        obj.content = emojiAnalysis([str]);
+    },
+
+
 
 
 
   },
+
   mounted () {
       this.chat_watch();
       this.chat_init();
       this.face_list_init();
+      this.chat_record();
 
   }
 }
@@ -191,7 +265,7 @@ export default {
           width: 0.9rem;
           height: 0.9rem;
         }
-        p{
+        .content{
           background-color: #fff;
           float: left;
           margin-left: 0.3rem;
@@ -217,7 +291,7 @@ export default {
           width: 0.9rem;
           height: 0.9rem;
         }
-        p{
+        .content{
           background-color: #fff;
           float: right;
           margin-right: 0.3rem;

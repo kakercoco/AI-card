@@ -2,38 +2,43 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:26:07
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-04 10:59:02
+ * @Last Modified time: 2018-09-13 16:50:18
  */
 <template>
   <div class="contact">
     <router-view></router-view>
     <div style="height: 44px;">
-      <search  v-model="value" auto-fixed  ref="search"></search>
+      <search  v-model="customerForm.keyword" auto-fixed  ref="search"></search>
     </div>
     <tab :line-width="2" v-model="tabIndex">
       <tab-item>所有客户</tab-item>
       <tab-item>客户标签</tab-item>
     </tab>
     <div v-if="tabIndex === 0" class="contact-first">
-      <p >客户人数共3人
+      <p >客户人数共{{customerTotal}}人
         <span class="fr">
           <!-- <x-icon type="ios-arrow-down" size="20" class="fr ml-20"></x-icon> -->
-          <popup-radio :options="options1" v-model="option1" class="fr"></popup-radio>
+          <popup-radio :options="options" v-model="option" class="fr"></popup-radio>
         </span>
       </p>
-      <ul>
-        <li class="card-shadow" v-for="(item, index) in 7 " :key="index">
-          <img src="@/assets/img/u112.png" alt="">
-          <div>
-            <p>T-Man</p>
-            <p>未跟进客户</p>
-          </div>
-          <span>
-            <i>跟进时间</i>
-            <i>今天</i>
-          </span>
-        </li>
-      </ul>
+      <scroller lock-x use-pullup  @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :pullup-config="config"  v-model="scrollerStatus" :bounce="true" height="-250" >
+        <div class="contact-list-wrap">
+          <ul>
+            <li class="card-shadow" v-for="(item, index) in customerAll " :key="index">
+              <img :src="item.wx_image" alt="">
+              <div>
+                <p>{{item.wx_name}}</p>
+                <p>{{item.describe}}</p>
+              </div>
+              <span>
+                <i>跟进时间</i>
+                <i>今天</i>
+              </span>
+            </li>
+          </ul>
+          <!-- <load-more tip="loading"></load-more> -->
+        </div>
+      </scroller>
     </div>
     <div v-if="tabIndex === 1" class="contact-tag">
       <ul>
@@ -64,7 +69,8 @@
 </template>
 
 <script>
-import { Tab, TabItem, Search, PopupRadio } from 'vux'
+import { Tab, TabItem, Search, PopupRadio, Scroller, LoadMore } from 'vux'
+import { customerList } from '@/api/contact'
 
 export default {
   name: 'contact',
@@ -72,14 +78,37 @@ export default {
     Tab,
     TabItem,
     Search,
-    PopupRadio
+    PopupRadio,
+    LoadMore,
+    Scroller
   },
   data () {
     return {
       value: '',
-      tabIndex: 1,
-      option1: '跟进时间',
-      options1: ['跟进时间', '活动时间', '转发', '扫码', '工作交接'],
+      tabIndex: 0,
+      onFetching: false,
+      customerForm: {
+        page: 1,
+        pagesize: 10,
+        keyword: '',
+        type: 1
+      },
+      config: {
+        content: '请上拉刷新数据',
+        pullUpHeight: 60,
+        height: 40,
+        autoRefresh: false,
+        downContent: '请上拉刷新数据',
+        upContent: '请上拉刷新数据',
+        loadingContent: '加载中...'
+      },
+      scrollerStatus: {
+        pullupStatus: 'default'
+      },
+      customerAll: [],
+      customerTotal: 0,
+      option: '成交率',
+      options: ['成交率', '最后跟进时间', '转发', '扫码', '工作交接'],
       tagList: [
         {
           name: '可成交用户',
@@ -109,6 +138,36 @@ export default {
     }
   },
   methods: {
+    getSearchType () {
+      if (this.option === '成交率') {
+        this.customerForm.type = 1
+      } else if (this.option === '最后跟进时间') {
+        this.customerForm.type = 2
+      } else if (this.option === '工作交接') {
+        this.customerForm.type = 3
+      } else if (this.option === '扫码') {
+        this.customerForm.type = 4
+      } else if (this.option === '转发') {
+        this.customerForm.type = 5
+      }
+    },
+    getCustomerList () {
+      customerList(this.customerForm)
+        .then(res => {
+          this.customerAll = res.data.rows
+          this.customerTotal = res.data.total
+        })
+    },
+    searchCustomerList () {
+      this.customerForm.page = 1
+      this.customerForm.pagesize = 10
+      this.customerAll = []
+      this.scrollerStatus.pullupStatus = 'default'
+      this.$nextTick(() => {
+        this.$refs.scrollerBottom.reset()
+      })
+      this.getCustomerList()
+    },
     showDetail (index) {
       this.tagList[index].status = !this.tagList[index].status
     },
@@ -116,9 +175,38 @@ export default {
       this.$router.push({
         path: '/insertTag'
       })
+    },
+    onScrollBottom () {
+      if (this.onFetching) {
+        // do nothing
+      } else {
+        this.onFetching = true
+        this.customerForm.page += 1
+        customerList(this.customerForm)
+          .then(res => {
+            if (res.data.rows.length === 0) {
+              this.scrollerStatus.pullupStatus = 'disabled' // 禁用下拉
+              console.log(123)
+              return false
+            }
+            this.customerAll = this.customerAll.concat(res.data.rows)
+            this.$nextTick(() => {
+              this.$refs.scrollerBottom.reset()
+              debugger
+            })
+            this.onFetching = false
+          })
+      }
     }
   },
-  mounted () {}
+  watch: {
+    option (val) {
+      this.searchCustomerList()
+    }
+  },
+  mounted () {
+    this.getCustomerList()
+  }
 }
 </script>
 

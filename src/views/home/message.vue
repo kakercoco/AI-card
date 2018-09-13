@@ -49,7 +49,7 @@ export default {
     gotoIM () {
 
       this.$router.push({
-          path: `/messageIM/3`,
+          path: `/messageIM/34`,
       })
     }
   },
