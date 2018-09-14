@@ -30,14 +30,14 @@
         display: block;
         overflow: hidden;
         .text_frame{
-            line-height: 0.58rem;
+            line-height:29px;
             float: left;
             height:0.58rem;
-            line-height: 0.58rem;
+            line-height:29px;
 
             .text{
-                font-size: 0.28rem;
-                line-height: 0.58rem;
+                font-size:14px;
+                line-height:29px;
             }
         }
 

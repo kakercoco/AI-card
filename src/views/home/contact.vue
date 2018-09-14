@@ -2,27 +2,27 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:26:07
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-13 16:50:18
+ * @Last Modified time: 2018-09-14 09:51:56
  */
 <template>
   <div class="contact">
     <router-view></router-view>
     <div style="height: 44px;">
-      <search  v-model="customerForm.keyword" auto-fixed  ref="search"></search>
+      <search  v-model="customerForm.keyword" auto-fixed  ref="search" @on-change="searchCustomerList"></search>
     </div>
     <tab :line-width="2" v-model="tabIndex">
       <tab-item>所有客户</tab-item>
       <tab-item>客户标签</tab-item>
     </tab>
-    <div v-if="tabIndex === 0" class="contact-first">
+    <div v-show="tabIndex === 0" class="contact-first">
       <p >客户人数共{{customerTotal}}人
         <span class="fr">
           <!-- <x-icon type="ios-arrow-down" size="20" class="fr ml-20"></x-icon> -->
           <popup-radio :options="options" v-model="option" class="fr"></popup-radio>
         </span>
       </p>
-      <scroller lock-x use-pullup  @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :pullup-config="config"  v-model="scrollerStatus" :bounce="true" height="-250" >
-        <div class="contact-list-wrap">
+      <scroller lock-x use-pullup  @on-pullup-loading="loadMore" ref="scrollerBottom" :pullup-config="config"  v-model="scrollerStatus" :bounce="true" height="-250" >
+        <div class="contact-list-wrap" id="contact-list-wrap">
           <ul>
             <li class="card-shadow" v-for="(item, index) in customerAll " :key="index">
               <img :src="item.wx_image" alt="">
@@ -36,11 +36,10 @@
               </span>
             </li>
           </ul>
-          <!-- <load-more tip="loading"></load-more> -->
         </div>
       </scroller>
     </div>
-    <div v-if="tabIndex === 1" class="contact-tag">
+    <div v-show="tabIndex === 1" class="contact-tag">
       <ul>
         <li class="card-shadow" v-for="(item, index) in tagList" :key="index">
           <p class="nav" >
@@ -70,7 +69,7 @@
 
 <script>
 import { Tab, TabItem, Search, PopupRadio, Scroller, LoadMore } from 'vux'
-import { customerList } from '@/api/contact'
+import { customerList, customerTagList } from '@/api/contact'
 
 export default {
   name: 'contact',
@@ -87,9 +86,10 @@ export default {
       value: '',
       tabIndex: 0,
       onFetching: false,
+      isFlag: false, // 上拉加载是否停止
       customerForm: {
         page: 1,
-        pagesize: 10,
+        pagesize: 3,
         keyword: '',
         type: 1
       },
@@ -158,14 +158,22 @@ export default {
           this.customerTotal = res.data.total
         })
     },
+    getCustomerTagList () {
+      customerTagList()
+        .then(res => {
+
+        })
+    },
     searchCustomerList () {
+      this.getSearchType()
+      document.getElementsByClassName('xs-container')[0].style.transform = 'translateX(0px) translateY(0px) translateZ(0px) scale(1, 1)'
+      this.onFetching = false
       this.customerForm.page = 1
-      this.customerForm.pagesize = 10
+      this.customerForm.pagesize = 3
       this.customerAll = []
-      this.scrollerStatus.pullupStatus = 'default'
-      this.$nextTick(() => {
-        this.$refs.scrollerBottom.reset()
-      })
+      if (this.isFlag) {
+        this.$refs.scrollerBottom.enablePullup()
+      }
       this.getCustomerList()
     },
     showDetail (index) {
@@ -176,7 +184,7 @@ export default {
         path: '/insertTag'
       })
     },
-    onScrollBottom () {
+    loadMore () {
       if (this.onFetching) {
         // do nothing
       } else {
@@ -185,14 +193,14 @@ export default {
         customerList(this.customerForm)
           .then(res => {
             if (res.data.rows.length === 0) {
-              this.scrollerStatus.pullupStatus = 'disabled' // 禁用下拉
-              console.log(123)
+              this.isFlag = true
+              this.$refs.scrollerBottom.disablePullup() // 禁用上拉
               return false
             }
             this.customerAll = this.customerAll.concat(res.data.rows)
             this.$nextTick(() => {
+              this.$refs.scrollerBottom.donePullup()
               this.$refs.scrollerBottom.reset()
-              debugger
             })
             this.onFetching = false
           })
@@ -206,6 +214,7 @@ export default {
   },
   mounted () {
     this.getCustomerList()
+    this.getCustomerTagList()
   }
 }
 </script>
