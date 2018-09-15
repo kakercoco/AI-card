@@ -2,17 +2,17 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-04 09:31:33
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-14 16:56:54
+ * @Last Modified time: 2018-09-14 16:26:26
  */
 <template>
   <div class="insert-tag">
     <p>
       <span>标签名字</span>
-      <input type="text" v-model="tagName" placeholder="未填写" maxlength="10">
+      <input type="text" v-model="tagName" placeholder="未填写" maxlength="10" disabled>
     </p>
     <p>
       <span>标签成员</span>
-      <a @click="clientList = true">添加成员 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></a>
+      <a @click="insert">添加成员 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></a>
     </p>
     <ul>
       <li  v-for="(item, index) in checkedCustomer " :key="index">
@@ -40,7 +40,7 @@
 
 <script>
 import { Group, XInput, XButton, CheckIcon } from 'vux'
-import { insertCustomerTag, customerList } from '@/api/contact'
+import { customerList, getCustomerTagEdit, updateCustomerTag } from '@/api/contact'
 
 export default {
   name: 'insertTag',
@@ -53,9 +53,11 @@ export default {
   data () {
     return {
       tagName: '',
+      tag_id: this.$route.query.tag_id, // 编辑的标签id
       clientList: false, // 客户列表是否显示
       checkedCustomer: [], // 选中的客户列表
-      customer: [] // 全部的客户列表
+      customer: [], // 全部的客户列表
+      checkedId: [] // 编辑厨师的客户列表id
     }
   },
   methods: {
@@ -74,6 +76,16 @@ export default {
           this.customer = customerAll
         })
     },
+    insert () {
+      this.clientList = true
+      this.customer.forEach(element => {
+        this.checkedId.forEach(e => {
+          if (e === element.uid) {
+            element.status = true
+          }
+        })
+      })
+    },
     chooseCustomer () {
       this.clientList = false
       this.checkedCustomer = []
@@ -83,6 +95,17 @@ export default {
         }
       })
     },
+    customerTagEdit () {
+      const data = {
+        tag_id: this.tag_id
+      }
+      getCustomerTagEdit(data)
+        .then(res => {
+          this.tagName = res.data.tag_name
+          this.checkedCustomer = res.data.customer
+          this.checkedId = res.data.customer_id
+        })
+    },
     save () {
       var id = ''
       this.checkedCustomer.forEach(element => {
@@ -90,9 +113,10 @@ export default {
       })
       const data = {
         uid: id,
-        name: this.tagName
+        // name: this.tagName,
+        tag_id: this.tag_id
       }
-      insertCustomerTag(data)
+      updateCustomerTag(data)
         .then(res => {
           this.$router.push({
             path: '/main/contact'
@@ -101,8 +125,8 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route.query)
     this.getCustomerList()
+    this.customerTagEdit()
   }
 }
 </script>
@@ -125,6 +149,7 @@ export default {
       width: calc(100% - 2.8rem);
       border: none;
       outline: none;
+      background-color: #fff;
     }
     a{
       color: #5977fe;

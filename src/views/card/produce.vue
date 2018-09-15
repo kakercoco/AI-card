@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-11 17:04:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-11 18:16:48
+ * @Last Modified time: 2018-09-15 09:13:25
  */
 <template>
   <div class="produce">
@@ -32,6 +32,7 @@
 
 <script>
 import { PopupPicker } from 'vux'
+import { produceList } from '@/api/card'
 
 export default {
   name: 'produce',
@@ -42,6 +43,7 @@ export default {
     return {
       value: ['全部产品'],
       produceList: [['全部产品', '已推荐产品', '为推荐产品']],
+      lll: [],
       value2: ['1', ''],
       sortList: [{
         name: '网站建设',
@@ -85,9 +87,30 @@ export default {
   methods: {
     onChange (val) {
       console.log(val)
+    },
+    getProduceList () {
+      const data = {
+        method: 'xcx.card.gcat_list',
+        id: 0
+      }
+      produceList(data)
+        .then(res => {
+          this.test(res.data)
+          console.log(this.lll)
+        })
+    },
+    test (list) {
+      for (const l of list) {
+        if (l.child != null && l.child !== []) {
+          this.test(l.child)
+        }
+        l.child = null
+        this.lll.push(l)
+      }
     }
   },
   mounted () {
+    this.getProduceList()
   }
 }
 </script>

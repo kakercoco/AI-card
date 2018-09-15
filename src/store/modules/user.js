@@ -38,6 +38,11 @@ const user = {
         state.my_chat_room_id = id;
     },
 
+    //设置message_id
+    SET_my_message_id:(state,id) => {
+        state.info.message_id = id;
+    },
+
   },
 
   actions: {

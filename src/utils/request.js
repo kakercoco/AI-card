@@ -36,7 +36,7 @@ service.interceptors.response.use(
         alert('用户信息过期，请重新登录')
         // 如果可以请关闭窗口
       }
-      // return Promise.reject('error')
+      return Promise.reject('error')
     } else {
       return response.data
     }

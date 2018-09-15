@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:26:07
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-14 09:51:56
+ * @Last Modified time: 2018-09-14 16:54:53
  */
 <template>
   <div class="contact">
@@ -24,7 +24,7 @@
       <scroller lock-x use-pullup  @on-pullup-loading="loadMore" ref="scrollerBottom" :pullup-config="config"  v-model="scrollerStatus" :bounce="true" height="-250" >
         <div class="contact-list-wrap" id="contact-list-wrap">
           <ul>
-            <li class="card-shadow" v-for="(item, index) in customerAll " :key="index">
+            <li class="card-shadow" v-for="(item, index) in customerAll " :key="index" @click="gotoClient(item.uid)">
               <img :src="item.wx_image" alt="">
               <div>
                 <p>{{item.wx_name}}</p>
@@ -32,7 +32,7 @@
               </div>
               <span>
                 <i>跟进时间</i>
-                <i>今天</i>
+                <i>{{item.date}}</i>
               </span>
             </li>
           </ul>
@@ -43,20 +43,20 @@
       <ul>
         <li class="card-shadow" v-for="(item, index) in tagList" :key="index">
           <p class="nav" >
-            <span>{{item.name}}({{item.num}})</span>
+            <span>{{item.tag_name}}({{item.count}})</span>
             <x-icon type="ios-arrow-down" size="20" v-if="!item.status" class="fr" style="fill: #717171;" @click.native="showDetail(index)"></x-icon>
-            <span class="fr" v-else>添加用户 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></span>
+            <span class="fr" v-else @click="gotoUpdateTag(item.id)">添加用户 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></span>
           </p>
-          <div v-if="item.status" class="client-list " v-for="(elememt, index) in item.clientList" :key="index">
-            <img :src="elememt.imgUrl" alt="">
+          <div v-if="item.status" class="client-list " v-for="(element, i) in item.customer" :key="i" @click="gotoClient(element.uid)">
+            <img :src="element.wx_image" alt="">
             <div>
-              <x-icon type="ios-minus" size="14" class="delete-icon"></x-icon>
-              <p>{{elememt.name}}</p>
-              <p>未跟进客户</p>
+              <x-icon type="ios-minus" size="14" class="delete-icon" @click.native.stop="deleteCustomerTag(element.tag_id, element.id, index, i)"></x-icon>
+              <p>{{element.wx_name}}</p>
+              <p>{{element.describe}}</p>
             </div>
             <span>
               <i>跟进时间</i>
-              <i>今天</i>
+              <!-- <i>{{element.date}}</i> -->
             </span>
           </div>
           <p class="tar arrow-up" @click="showDetail(index)" v-if="item.status"><x-icon type="ios-arrow-up" size="20" ></x-icon></p>
@@ -69,7 +69,7 @@
 
 <script>
 import { Tab, TabItem, Search, PopupRadio, Scroller, LoadMore } from 'vux'
-import { customerList, customerTagList } from '@/api/contact'
+import { customerList, customerTagList, deleteCustomerTag } from '@/api/contact'
 
 export default {
   name: 'contact',
@@ -109,32 +109,7 @@ export default {
       customerTotal: 0,
       option: '成交率',
       options: ['成交率', '最后跟进时间', '转发', '扫码', '工作交接'],
-      tagList: [
-        {
-          name: '可成交用户',
-          status: false,
-          num: 2,
-          clientList: [{
-            imgUrl: require('@/assets/img/u112.png'),
-            name: 'kaker'
-          }, {
-            imgUrl: require('@/assets/img/u112.png'),
-            name: 'top L'
-          }]
-        },
-        {
-          name: '意向客户',
-          status: false,
-          num: 0,
-          clientList: [{
-            imgUrl: require('@/assets/img/u112.png'),
-            name: 'kaker'
-          }, {
-            imgUrl: require('@/assets/img/u112.png'),
-            name: 'top L'
-          }]
-        }
-      ]
+      tagList: []
     }
   },
   methods: {
@@ -161,7 +136,22 @@ export default {
     getCustomerTagList () {
       customerTagList()
         .then(res => {
-
+          const tagList = res.data[0].rows
+          tagList.forEach(element => {
+            element.status = false
+          })
+          this.tagList = tagList
+        })
+    },
+    deleteCustomerTag (tagId, uid, index, i) {
+      const data = {
+        tag_id: tagId,
+        uid: uid
+      }
+      deleteCustomerTag(data)
+        .then(res => {
+          this.tagList[index].customer.splice(i, 1)
+          this.tagList[index].count--
         })
     },
     searchCustomerList () {
@@ -182,6 +172,22 @@ export default {
     gotoInsertTag () {
       this.$router.push({
         path: '/insertTag'
+      })
+    },
+    gotoUpdateTag (id) {
+      this.$router.push({
+        path: '/updateTag',
+        query: {
+          tag_id: id
+        }
+      })
+    },
+    gotoClient (id) {
+      this.$router.push({
+        path: '/client',
+        query: {
+          id
+        }
       })
     },
     loadMore () {

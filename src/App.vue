@@ -62,6 +62,12 @@ export default {
                     if (data.content) {
                         const my = JSON.parse(data.content);
                         this.$store.commit('user/SET_my_chat_token',my.token);
+
+                        //判断员工信息中是否包含message_id
+                        if(!this.$store.state.user.info.message_id){
+                            this.$store.commit('user/SET_my_message_id',my.id);
+                        }
+
                         console.log('聊天对象',my)
                     }
                 }

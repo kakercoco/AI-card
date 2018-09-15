@@ -84,10 +84,10 @@ export default new Router({
       component: () => import('@/views/contacts/insertTag')
     },
     {
-      path: '/insertClient',
-      name: 'insertClient',
-      meta: { title: '添加客户' },
-      component: () => import('@/views/contacts/insertClient')
+      path: '/updateTag',
+      name: 'updateTag',
+      meta: { title: '编辑标签' },
+      component: () => import('@/views/contacts/updateTag')
     },
     {
       path: '/newsPublish',
@@ -226,6 +226,12 @@ export default new Router({
       name: 'bossCard',
       meta: { title: 'BOSS雷达' },
       component: () => import('@/views/boss/card')
+    },
+    {
+      path: '/qrcode',
+      name: 'qrcode',
+      meta: { title: '我的名片' },
+      component: () => import('@/views/self/qrcode')
     }
   ]
 })

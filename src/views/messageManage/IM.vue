@@ -17,9 +17,23 @@
 
             <tpl :content="item.content" v-if="item.type === 'text'"></tpl>
 
+            <!--图片-->
             <div class="img" v-if="item.type === 'img'">
               <img class="previewer-demo-img" :src="item.content" @click="show(item)">
             </div>
+
+            <!--商品-->
+            <div class='shop' v-if="item.type ==='shop'">
+              <p class='title'>来自：{{item.p_title}}</p>
+              <div class='introduce'>
+                <img :src='item.p_image ? item.p_image : "../../image/moren.jpg"'>
+                <span class="name">{{item.p_name}}</span>
+                <span v-if="item.p_class === 'product_details'" class="p_price_sell">售价:￥{{item.p_price_sell}}</span>
+              </div>
+            </div>
+
+
+
 
           </div>
           <img src="/static/image/l.gif" class="loading" v-if="item.from === 'me' && item.is_loading">
@@ -227,6 +241,9 @@ export default {
                         src:chat_content.original
                     })
                 }
+                else if (chat_data.type === 'shop'){
+                    Object.assign(chat_data, this.create_shop(chat_content));
+                }
                 this.char_list.push(chat_data);
                 this.all_srcollBtoom();
                 console.log('收到消息',this.char_list);
@@ -244,6 +261,20 @@ export default {
                 }
             }
         };
+    },
+
+    create_shop(data){
+        const obj = {
+            type:'shop',
+            p_class: data.p_class,
+            p_id: data.p_id,
+            p_image: data.p_image,
+            p_name: data.p_name,
+            p_price_sell: data.p_price_sell,
+            p_title: '测试',
+            content:''
+        }
+        return obj;
     },
 
     chat_record(){
@@ -294,6 +325,10 @@ export default {
                         this.img_list.push({
                             src:data.original
                         })
+                    }
+                    else if (data.type === 'shop'){
+                        Object.assign(obj, that.create_shop(data));
+                        this.char_list.push(obj);
                     }
                 });
                 this.all_srcollBtoom();
@@ -587,6 +622,53 @@ export default {
             width: 0.2rem;
             height: 0.2rem;
             transform: rotate(45deg)
+          }
+        }
+        .shop{
+          .title{
+            display:block;
+            width:3.3rem;
+            height:0.55rem;
+            border-bottom:1px #ccc solid;
+            font-size:0.32rem;
+            line-height:0.55rem;
+            color:#333;
+          }
+          .introduce{
+            overflow:hidden;
+            width:3.3rem;
+            padding-top:0.15rem;
+            img{
+              float:left;
+              width:0.95rem;
+              height:0.95rem;
+              border-radius:5px;
+              margin-right:0.2rem;
+            }
+            .name{
+              float:left;
+              width:2.1rem;
+              height:0.44rem;
+              line-height:0.44rem;
+              color:#333;
+              overflow:hidden;
+              white-space:nowrap;
+              text-overflow:ellipsis;
+              font-size:15px;
+
+            }
+            .p_price_sell{
+              float:left;
+              width:2.1rem;
+              height:0.44rem;
+              line-height:0.44rem;
+              color:#ff6969;
+              overflow:hidden;
+              white-space:nowrap;
+              text-overflow:ellipsis;
+              font-size:15px;
+
+            }
           }
         }
       }

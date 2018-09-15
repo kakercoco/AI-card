@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-11 17:07:36
+ * @Last Modified time: 2018-09-14 17:34:54
  */
 <template>
   <div class="edit-card">
@@ -27,23 +27,23 @@
     </scroller>
     <h5>名片头像</h5>
     <div class="card-avatar">
-      <img src="@/assets/img/u112.png" alt="">
+      <img :src="cardInfor.image" alt="">
     </div>
     <h5>个人信息</h5>
     <div class="self-message">
       <group>
-        <x-input title="手机:" placeholder="未填写信息" v-model="messageForm.phone"></x-input>
-        <x-input title="座机:" placeholder="未填写信息" v-model="messageForm.tel"></x-input>
-        <x-input title="微信:" placeholder="未填写信息" v-model="messageForm.wechat"></x-input>
-        <x-input title="邮箱:" placeholder="未填写信息" v-model="messageForm.email"></x-input>
-        <x-input title="公司:" placeholder="未填写信息" v-model="messageForm.company"></x-input>
-        <x-input title="地址:" placeholder="未填写信息" v-model="messageForm.address"></x-input>
+        <x-input title="手机:" placeholder="未填写信息" v-model="cardInfor.phone"></x-input>
+        <x-input title="座机:" placeholder="未填写信息" v-model="cardInfor.tel"></x-input>
+        <x-input title="微信:" placeholder="未填写信息" v-model="cardInfor.weixin"></x-input>
+        <x-input title="邮箱:" placeholder="未填写信息" v-model="cardInfor.email"></x-input>
+        <x-input title="公司:" placeholder="未填写信息" v-model="cardInfor.company"></x-input>
+        <x-input title="地址:" placeholder="未填写信息" v-model="cardInfor.address"></x-input>
       </group>
     </div>
     <h5>个人简介</h5>
     <div class="self-bio">
       <group>
-        <x-textarea placeholder="请输入文字" v-model="bio" autosize></x-textarea>
+        <x-textarea placeholder="请输入文字" v-model="cardInfor.content" autosize></x-textarea>
       </group>
     </div>
     <h5>推荐产品 <span class="fr" @click="gotoProduce">产品管理</span></h5>
@@ -83,8 +83,9 @@
       </ul>
     </div>
     <p class="self-btn">
-      <x-button type="primary">保存</x-button>
+      <x-button type="primary" @click.native="save">保存</x-button>
     </p>
+
     <x-dialog v-model="insertTagDialog" :hide-on-blur="true">
       <div class="insert-dialog">
         <h4>添加自定义标签</h4>
@@ -120,6 +121,7 @@
 <script>
 import { Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle } from 'vux'
 import html2canvas from 'html2canvas'
+import { updateCard, cardRead } from '@/api/card'
 
 export default {
   name: 'editCard',
@@ -128,7 +130,7 @@ export default {
   },
   data () {
     return {
-      messageForm: {
+      cardInfor: {
         phone: '',
         tel: '',
         wechat: '',
@@ -159,6 +161,12 @@ export default {
     }
   },
   methods: {
+    getCard () {
+      cardRead()
+        .then(res => {
+          this.cardInfor = res.data
+        })
+    },
     touchstart () {
       console.log('start')
     },
@@ -179,6 +187,7 @@ export default {
       let arr = dataurl.split(',')
       let mime = arr[0].match(/:(.*?);/)[1]
       let bstr = atob(arr[1])
+      debugger
       let n = bstr.length
       let u8arr = new Uint8Array(n)
       while (n--) {
@@ -225,10 +234,15 @@ export default {
       // })
     },
     save () {
+      updateCard(this.cardInfor)
+        .then(res => {
+
+        })
     }
 
   },
   mounted () {
+    this.getCard()
   }
 }
 </script>
@@ -294,6 +308,7 @@ export default {
     img{
       width: 2rem;
       height: 2rem;
+      border-radius: 0.1rem;
     }
   }
   .self-message{
@@ -433,6 +448,9 @@ export default {
     }
     .btn{
       margin-top: 0.5rem;
+      button{
+        width: 2.4rem;
+      }
     }
   }
   .audio-dialog{
@@ -454,6 +472,9 @@ export default {
       height: 2rem;
       margin: 0 auto;
     }
+  }
+  & /deep/ .weui-dialog{
+    max-width: 6rem;
   }
 }
 </style>

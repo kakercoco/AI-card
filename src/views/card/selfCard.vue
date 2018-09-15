@@ -2,21 +2,21 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 15:23:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-10 16:12:40
+ * @Last Modified time: 2018-09-14 15:10:59
  */
 <template>
   <div class="self-card">
-    <div class="card-shadow">
-      <img src="@/assets/img/selfCard.png" alt="" class="logo">
+    <div class="card-shadow clearfix">
+      <img :src="cardInfor.card_image" alt="" class="logo fl">
     </div>
     <div class="self-infor">
       <h5>个人信息</h5>
-      <p><span>手机： </span><i>158-9535-5648</i></p>
-      <p><span>座机： </span><i>158-9535-5648</i></p>
-      <p><span>微信： </span><i>156565212</i></p>
-      <p><span>邮箱： </span><i>sdffsdf@qq.com</i></p>
-      <p><span>公司： </span><i>加推科技</i></p>
-      <p><span>地址： </span><i>上海市虹口区软件科技园创富大厦7F上海市虹口区软件科技园创富大厦7F</i></p>
+      <p><span>手机： </span><i>{{cardInfor.phone}}</i></p>
+      <p><span>座机： </span><i>{{cardInfor.tel}}</i></p>
+      <p><span>微信： </span><i>{{cardInfor.weixin}}</i></p>
+      <p><span>邮箱： </span><i>{{cardInfor.email}}</i></p>
+      <p><span>公司： </span><i>{{cardInfor.company}}</i></p>
+      <p><span>地址： </span><i>{{cardInfor.address}}</i></p>
     </div>
     <p class="btn">
       <x-button type="primary" @click.native="gotoEdit">编辑名片</x-button>
@@ -26,6 +26,7 @@
 
 <script>
 import { XButton } from 'vux'
+import { cardRead } from '@/api/card'
 
 export default {
   name: 'selfCard',
@@ -34,6 +35,7 @@ export default {
   },
   data () {
     return {
+      cardInfor: {}
     }
   },
   methods: {
@@ -41,9 +43,16 @@ export default {
       this.$router.push({
         path: '/editCard'
       })
+    },
+    getCard () {
+      cardRead()
+        .then(res => {
+          this.cardInfor = res.data
+        })
     }
   },
   mounted () {
+    this.getCard()
   }
 }
 </script>
@@ -79,7 +88,9 @@ export default {
         left: 0;
       }
       i{
-        width: calc(100% - 1.1rem);
+        width: 100%;
+        min-height: 0.4rem;
+        display: block;
       }
     }
   }

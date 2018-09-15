@@ -6,11 +6,11 @@
  */
 <template>
   <div class="message">
-    <div class="card-shadow box-message" @click="gotoMessageManage">
-      <img src="@/assets/img/message.png" alt="">
-      <h5>服务消息</h5>
-      <p>暂无消息提醒</p>
-    </div>
+    <!--<div class="card-shadow box-message" @click="gotoMessageManage">-->
+      <!--<img src="@/assets/img/message.png" alt="">-->
+      <!--<h5>服务消息</h5>-->
+      <!--<p>暂无消息提醒</p>-->
+    <!--</div>-->
     <ul class="list-message">
       <li class="card-shadow" v-for="(item, index) in 3" :key="index" @click="gotoIM">
         <badge text="8" class="my-badge"></badge>
@@ -85,7 +85,7 @@ $color: #717171;
     }
   }
   .list-message{
-    li{
+    .card-shadow{
       height: 1.6rem;
       padding: 0.3rem 0.2rem;
       margin-top: 0.5rem;
