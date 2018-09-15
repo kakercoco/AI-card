@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-05 17:36:16
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-06 14:06:42
+ * @Last Modified time: 2018-09-15 17:55:27
  */
 <template>
   <div class="insert-calendar">
@@ -13,22 +13,22 @@
         </p>
         <template slot-scope="props" slot="each-item">
           <p>
-            <img src="@/assets/img/calendar.png" class="vux-radio-icon"> {{ props.label }}
+            <img :src="getUrl(props.index)" class="vux-radio-icon"> {{ props.label }}
           </p>
         </template>
       </popup-radio>
     </group>
     <group>
-      <x-textarea title="日程标题:" v-model="value" :show-counter="true" :max="20" :rows="1"></x-textarea>
+      <x-textarea title="日程标题:" v-model="title" :show-counter="true" :max="20" :rows="1"></x-textarea>
     </group>
     <group>
-      <datetime title="时间设定："  v-model="minuteListValue" format="HH:mm" :minute-list="['00', '15', '30', '45']"  ></datetime>
+      <datetime title="时间设定："  v-model="time" format="HH:mm" :minute-list="['00', '15', '30', '45']"  ></datetime>
     </group>
     <div class="insert-client clearfix">
       <p>添加客户：</p>
-      <span>
-        <img src="@/assets/img/u112.png" alt="">
-        <x-icon type="ios-minus" class="delete-icon"></x-icon>
+      <span v-for="(item, index) in customer" :key="index" v-if="item.status">
+        <img :src="item.wx_image" alt="">
+        <x-icon type="ios-minus" class="delete-icon" @click="deleteCustomer(index)"></x-icon>
       </span>
       <span class="btn" @click="isInsert = true">
         <x-icon type="ios-plus-empty"></x-icon>
@@ -38,23 +38,23 @@
       <x-textarea title="备注：" v-model="notes" placeholder="请输入内容" autosize></x-textarea>
     </group>
     <p class="insert-btn">
-      <x-button type="primary">确定</x-button>
+      <x-button type="primary" @click.native="save">确定</x-button>
     </p>
     <div class="client-wrap" v-if="isInsert">
-      <p style="height: 1rem;"><search v-model="value"  ref="search"></search></p>
+      <p style="height: 1rem;"><search v-model="searchKey"  ref="search" @on-change="getCustomerList"></search></p>
       <group >
         <popup-radio  :options="recordOptions" v-model="selectdRecord"></popup-radio>
       </group>
       <ul>
-        <li v-for="item in 5" :key="item">
-          <check-icon :value.sync="checked" class="fl"></check-icon>
-          <img src="@/assets/img/u112.png" alt="">
-          <span class="name">Top Man</span>
-          <span class="time">2018-12-12</span>
+        <li v-for="(item, index) in customer" :key="index">
+          <check-icon :value.sync="item.status" class="fl"></check-icon>
+          <img :src="item.wx_image" alt="">
+          <span class="name">{{item.wx_name}}</span>
+          <span class="time">{{item.date}}</span>
         </li>
       </ul>
       <p class="clinet-btn">
-        <x-button type="primary" @click.native="isInsert = false">确定</x-button>
+        <x-button type="primary" @click.native="chooseCustomer">确定</x-button>
       </p>
     </div>
   </div>
@@ -62,6 +62,8 @@
 
 <script>
 import { Group, PopupRadio, XInput, XTextarea, Datetime, XButton, Search, CheckIcon } from 'vux'
+import { calendarSave, calendarType } from '@/api/calendar'
+import { customerList } from '@/api/contact'
 
 export default {
   name: 'insertCalendar',
@@ -77,24 +79,120 @@ export default {
   },
   data () {
     return {
-      value: '',
+      date: this.$route.query.date,
+      title: '',
       notes: '',
-      minuteListValue: '',
+      time: '',
+      calendarType: 0,
+      customer: [], // 所有客户列表
+      customerForm: {
+        page: 1,
+        pagesize: 1000,
+        keyword: '',
+        type: 1
+      },
+      searchKey: '', // 搜索用户的关键词
       checked: false,
       isInsert: false, // 是否是增加客户
-      src: require('@/assets/img/calendar.png'),
+      src: require('@/assets/img/calendar1.png'),
       option: '日常',
-      options: ['日常', '预约', '会议', '拜访', '生日'],
+      options: [],
       selectdRecord: '最后跟进时间',
-      recordOptions: ['最后跟进时间', '最后活动时间', 'AI成交率']
+      recordOptions: ['成交率', '最后跟进时间', '工作交接', '扫码', '转发']
     }
   },
   methods: {
     getUrl (i) {
-      return `https://img-blog.csdn.net/20180314112802461?imageView2/5/w/120/h/12${i}`
+      return `http://jiatui.api.com/static/calendar/calendar${i+1}.png`
+    },
+    getCalendarTypeList() {
+      calendarType()
+        .then(res => {
+          this.options = res.data
+        })
+    },
+    getCalendarType () {
+      if (this.option === '日常') {
+        this.calendarType = 0
+        this.src = require('@/assets/img/calendar1.png')
+      } else if (this.option === '预约') {
+        this.calendarType = 1
+        this.src = require('@/assets/img/calendar2.png')
+      } else if (this.option === '会议') {
+        this.src = require('@/assets/img/calendar3.png')
+        this.calendarType = 2
+      } else if (this.option === '拜访') {
+        this.src = require('@/assets/img/calendar4.png')
+        this.calendarType = 3
+      } else if (this.option === '生日') {
+        this.src = require('@/assets/img/calendar5.png')
+        this.calendarType = 4
+      }
+    },
+    getSearchType () {
+      if (this.selectdRecord === '成交率') {
+        this.customerForm.type = 1
+      } else if (this.selectdRecord === '最后跟进时间') {
+        this.customerForm.type = 2
+      } else if (this.selectdRecord === '工作交接') {
+        this.customerForm.type = 3
+      } else if (this.selectdRecord === '扫码') {
+        this.customerForm.type = 4
+      } else if (this.selectdRecord === '转发') {
+        this.customerForm.type = 5
+      }
+    },
+    getCustomerList () {
+      customerList(this.customerForm)
+        .then(res => {
+          let customerAll = res.data.rows
+          for (let i = 0; i < customerAll.length; i++) {
+            const element = customerAll[i]
+            element.status = false
+          }
+          this.customer = customerAll
+        })
+    },
+    chooseCustomer () {
+      this.isInsert = false
+    },
+    deleteCustomer (index) {
+      this.customer[index].status = false
+    },
+    save () {
+      var uid = ''
+      this.customer.forEach(element => {
+        if (element.status) {
+          uid += `${element.uid},`
+        }
+      })
+      const data = {
+        title: this.title,
+        time: `${this.date} ${this.time}`,
+        add_user: uid,
+        reference: this.notes,
+        type: this.calendarType
+      }
+      calendarSave(data)
+        .then(res => {
+          this.$router.push({
+            path: '/calendar'
+          })
+        })
+    }
+  },
+  watch: {
+    selectdRecord() {
+      this.getSearchType()
+      this.getCustomerList()
+    },
+    option() {
+      this.getCalendarType()
     }
   },
   mounted () {
+    this.getCustomerList()
+    this.getCalendarTypeList()
   }
 }
 </script>
@@ -264,7 +362,6 @@ export default {
     }
   }
   .clinet-btn{
-    position: absolute;
     bottom:0;
     left: 0;
     width: 100%;

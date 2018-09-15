@@ -295,7 +295,7 @@ export default {
 
         axios({
             method:"POST",
-            url:'http://192.168.40.180:8080/chatapi/getChat',
+            url:`${this.$store.state.user.chat_domain}/chatapi/getChat`,
             data:JSON.stringify(data)
         }).then((res)=>{
 
@@ -335,8 +335,6 @@ export default {
                 console.log(this.char_list);
             }
         })
-
-
     },
 
     face_list_init(){

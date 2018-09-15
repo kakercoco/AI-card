@@ -11,6 +11,8 @@ import '../static/css/face.css'
 import './permission.js'
 
 import Global from '@/utils/global'
+import { ToastPlugin } from 'vux'
+Vue.use(ToastPlugin)
 // 全局方法集
 Vue.prototype.Global = new Global(Vue)
 

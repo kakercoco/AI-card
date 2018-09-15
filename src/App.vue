@@ -24,7 +24,7 @@ export default {
             })
         },
         webSocket_init(){
-            const Socket_data = new WebSocket('ws://192.168.40.180:3838');
+            const Socket_data = new WebSocket(this.$store.state.user.chat_ws);
 
             this.$store.commit('user/SET_websocket',Socket_data);
 

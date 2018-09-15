@@ -29,7 +29,7 @@ service.interceptors.response.use(
   */
     const res = response.data
     if (res.code !== 200) {
-      alert(res.message)
+      alert(res.msg)
 
       // 201:Token 过期了;
       if (res.code === 201) {

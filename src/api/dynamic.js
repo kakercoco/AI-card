@@ -5,7 +5,7 @@ export function init_list (data) {
     return request({
         url: '/api/Dynamic/index',
         method: 'get',
-        data: data
+        params: data
     })
 }
 

@@ -7,7 +7,16 @@
  */
 <template>
 <div class="news">
-  <scroller lock-x :use-pulldown="true" :pullup-config="pullup_config" :use-pullup="true"  @on-pullup-loading="loadMore" ref="scrollerBottom" v-model="scrollerStatus">
+  <scroller
+      lock-x
+      :use-pulldown="true"
+      :use-pullup="true"
+      :pullup-config="pullup_config" 
+      @on-pullup-loading="loadMore"
+      ref="scrollerBottom"
+      v-model="scrollerStatus"
+      @on-pulldown-loading="Refresh"
+      :pulldown-config="pullup_config">
     <div class="scroller_frame">
       <div class="header">
         <p>jack LU</p>
@@ -40,8 +49,8 @@
             <span>2018-09-04</span>
           </div>
           <div class="comment-content">
-
-            <p class="comment-zan">
+            <div style="height: 0.15rem" v-if="item.praise && item.praise.rows.length > 0 && item.comment && item.comment.rows.length > 0"></div>
+            <p class="comment-zan" v-if="item.praise && item.praise.rows.length > 0">
                 <img src="@/assets/img/heart-blue.png" alt="" class="heart">
                 <span v-for="(p_item,i) in item.praise.rows" :key="i">
                   <img :src="p_item.user_image" alt="">
@@ -50,16 +59,13 @@
             </p>
 
             <ul>
-              <li class="clearfix">
-                <img src="@/assets/img/u112.png" alt="" class="fl">
-                <span class="name">Top Man:</span>
-                <p>生活中使我们不快乐的往往是一些芝麻小事，就像我们可以轻易躲开一头大象，却躲不开一只苍蝇。</p>
+
+              <li class="clearfix" v-for="(comment,comment_i) in item.comment.rows" :key="comment_i">
+                <img :src="comment.user_image ? comment.user_image : '@/assets/img/comment.png'" class="fl">
+                <span class="name">{{comment.user_name}}</span>
+                <p>{{comment.content}}</p>
               </li>
-              <li class="clearfix">
-                <img src="@/assets/img/u112.png" alt="" class="fl">
-                <span class="name">Top Man:</span>
-                <p>生活中使我们不快乐的往往是一些芝麻小事</p>
-              </li>
+
             </ul>
           </div>
         </div>
@@ -118,19 +124,20 @@ export default {
         }
       },
       pullup_config: {
-          content: '下拉刷新',
+          content: '加载中...',
           pullUpHeight: 60,
           height: 40,
           autoRefresh: false,
-          downContent: '请下拉刷新数据',
-          upContent: '请下拉刷新数据',
+          downContent: '加载中...',
+          upContent: '加载中...',
           loadingContent: '加载中...'
       },
       page:1,
       pagesize:10,
       max_page:0,
       data_list:[],
-        test:[1,2,3,4],
+      test:[1,2,3,4],
+      isAjax:true,
       scrollerStatus: {
           pullupStatus: 'default'
       },
@@ -143,17 +150,23 @@ export default {
     show (index) {
       this.$refs.previewer.show(index)
     },
-    loadMore(){
 
+    loadMore(){
+        if (this.isAjax && this.page < this.max_page) {
+            this.page ++;
+            this.get_list();
+        }
+        else if(this.page >= this.max_page){
+            this.$refs.scrollerBottom.disablePullup() // 禁用上拉
+        }
     },
     get_list(){
+        this.isAjax = false;
         init_list({
-            url:'/api/Dynamic/index',
-            data:{
-                page:this.page,
-                pagesize: this.pagesize,
-            }
+            page:this.page,
+            pagesize: this.pagesize,
         }).then((e)=>{
+            this.isAjax = true;
             if(e.data && e.data.rows && e.data.rows instanceof Array){
                 let list = e.data.rows;
                 let max_page = Math.ceil(e.data.total / 10);
@@ -193,27 +206,35 @@ export default {
                     val.comment_two = false;
                 });
 
-                this.data_list = list;
+                this.data_list = this.data_list.concat(list);
                 this.total = e.data.total;
                 this.max_page = Math.ceil(e.data.total / 10);
-
                 this.$nextTick(() => {
-
-                    this.$refs.scrollerBottom.donePullup();
+                    this.$refs.scrollerBottom.donePullup();//上啦完成
+                    this.$refs.scrollerBottom.donePulldown();//下拉完成
+                    this.$refs.scrollerBottom.enablePullup();//恢复上啦
                     this.$refs.scrollerBottom.reset()
                 });
 
 
                 console.log(this.data_list);
-
-
-                //debugger
             }
-
-
-
+        }).catch((err)=>{
+            this.isAjax = true;
         })
     },
+
+    Refresh(){
+        if (this.isAjax){
+            //重置
+            this.data_list = [];
+            this.page = 1;
+            this.total = 0;
+            this.max_page = 0;
+            this.$refs.scrollerBottom.disablePullup(); // 禁用上拉
+            this.get_list();
+        }
+    }
   },
   mounted () {
       this.get_list();
@@ -342,8 +363,8 @@ export default {
       .comment-content{
         background-color: #f5f5f5;
         border-radius: 0.1rem;
-        padding: 0.15rem;
         margin-top: 0.2rem;
+
       }
       .comment-zan{
         border-bottom: 1px solid #ddd;

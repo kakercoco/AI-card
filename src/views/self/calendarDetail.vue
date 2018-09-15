@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 14:08:03
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-06 14:25:42
+ * @Last Modified time: 2018-09-15 18:32:40
  */
 <template>
   <div class="calendar-detail">
@@ -38,10 +38,12 @@
 </template>
 
 <script>
+import { calendarRead } from '@/api/calendar'
 export default {
   name: 'calendarDetail',
   data () {
     return {
+      id: this.$route.query.id
     }
   },
   methods: {
@@ -49,9 +51,19 @@ export default {
       this.$router.push({
         path: '/insertCalendar'
       })
+    },
+    getCalendarRead () {
+      const data = {
+        id: this.id
+      }
+      calendarRead(data)
+        .then(res => {
+
+        })
     }
   },
   mounted () {
+    this.getCalendarRead()
   }
 }
 </script>

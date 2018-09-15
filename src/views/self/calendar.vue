@@ -2,11 +2,11 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:53:27
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-06 14:09:08
+ * @Last Modified time: 2018-09-15 18:31:11
  */
 <template>
   <div class="calendar">
-    <inline-calendar @on-change="change" :render-function="buildSlotFn"></inline-calendar>
+    <inline-calendar @on-change="change" :render-function="buildSlotFn" v-model="time"></inline-calendar>
     <div class="tac insert-btn">
       <p class="fr">
         <img src="@/assets/img/sort.png" alt="" class="fr sort-icon">
@@ -18,12 +18,16 @@
     <div class="insert-content">
       <p class="no-message" v-if="false">无日程 请添加</p>
       <ul>
-        <li v-for="item in 4" :key="item" @click="gotoDetail">
-          <span class="time">08:03</span>
-          <img src="@/assets/img/calendar.png" alt="" class="icon-tag">
+        <li v-for="(item, index) in calendar" :key="index" @click="gotoDetail(item.id)">
+          <span class="time">{{item.his_time}}</span>
+          <img src="@/assets/img/calendar1.png" alt="" class="icon-tag" v-if="item.type === 0">
+          <img src="@/assets/img/calendar2.png" alt="" class="icon-tag" v-if="item.type === 1">
+          <img src="@/assets/img/calendar3.png" alt="" class="icon-tag" v-if="item.type === 2">
+          <img src="@/assets/img/calendar4.png" alt="" class="icon-tag" v-if="item.type === 3">
+          <img src="@/assets/img/calendar5.png" alt="" class="icon-tag" v-if="item.type === 4">
           <div>
-            <h5>预约签单</h5>
-            <p>备注：提醒客户起床</p>
+            <h5>{{item.title}}</h5>
+            <p>备注：{{item.reference}}</p>
           </div>
           <x-icon type="ios-arrow-right" class="icon-right"></x-icon>
         </li>
@@ -34,6 +38,8 @@
 
 <script>
 import { InlineCalendar, PopupPicker } from 'vux'
+import { calendarList } from '@/api/calendar'
+
 export default {
   name: 'calendar',
   components: {
@@ -43,12 +49,15 @@ export default {
     return {
       buildSlotFn: () => '',
       value: ['筛选'],
-      list: [['日常', '预约', '会议', '拜访', '生日']]
+      list: [['日常', '预约', '会议', '拜访', '生日']],
+      calendar: [],
+      time: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}`: new Date().getMonth() + 1}-${new Date().getDate()}`
     }
   },
   methods: {
     change (val) {
-      console.log(val)
+      this.time = val
+      this.getCalendarList()
     },
     chooseChange () {
 
@@ -64,16 +73,35 @@ export default {
     },
     gotoInsertCalendar () {
       this.$router.push({
-        path: '/insertCalendar'
+        path: '/insertCalendar',
+        query: {
+          date: this.time
+        }
       })
     },
-    gotoDetail () {
+    gotoDetail (id) {
       this.$router.push({
-        path: '/calendarDetail'
+        path: '/calendarDetail',
+        query:{
+          id
+        }
       })
+    },
+    getCalendarList () {
+      const data = {
+        time: this.time
+      }
+      calendarList(data)
+        .then(res => {
+          this.calendar = res.data
+        })
     }
   },
-  mounted () {}
+  computed: {
+  },
+  mounted () {
+    this.getCalendarList()
+  }
 }
 </script>
 
@@ -117,6 +145,20 @@ export default {
         height: 0.3rem;
         float: right;
         margin-top: 0.05rem;
+      }
+    }
+    .vux-cell-box{
+      &::before{
+        border: none;
+      }
+    }
+    & /deep/ .weui-cell{
+      padding: 0;
+      .weui-cell__ft{
+        padding-right: 0;
+        &::after{
+          display: none;
+        }
       }
     }
   }

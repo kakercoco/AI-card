@@ -10,6 +10,8 @@ const user = {
     websocketConnection:{},//用的全局聊天对象
     my_chat_token:'',//用于请求聊天服务器接口的凭证
     my_chat_room_id:'',//使用者当前的回话id
+    chat_domain:'http://192.168.40.176:8080',
+    chat_ws: 'ws://192.168.40.176:3838'
 
   },
 
