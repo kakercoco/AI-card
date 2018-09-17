@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 15:05:29
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-07 16:12:37
+ * @Last Modified time: 2018-09-17 19:58:45
  */
 <template>
   <div class="say-setting">
@@ -12,7 +12,7 @@
         <x-textarea v-model="value" show-counter :max="100" autosize></x-textarea>
       </group>
       <p class="btn">
-        <x-button type="primary">提交</x-button>
+        <x-button type="primary" @click.native="set">提交</x-button>
       </p>
       <p class="demo-title">示例图</p>
     </div>
@@ -38,6 +38,7 @@
 
 <script>
 import { Group, XTextarea, XButton } from 'vux'
+import { employsetRead, employsetUpdate } from '@/api/calendar'
 
 export default {
   name: 'saySetting',
@@ -52,8 +53,24 @@ export default {
     }
   },
   methods: {
+    get () {
+      employsetRead()
+        .then(res => {
+          this.value = res.data.welcome_msg
+        })
+    },
+    set () {
+      const data = {
+        ac: 'welcome_msg',
+        welcome_msg: this.value
+      }
+      employsetUpdate(data)
+        .then(res => {
+        })
+    }
   },
   mounted () {
+    this.get()
   }
 }
 </script>

@@ -34,3 +34,48 @@ export function calendarRead (data) {
     params: data
   })
 }
+
+export function calendarUpdate (data) {
+  // 编辑日程
+  return request({
+    url: '/api/calendar/update',
+    method: 'post',
+    data: data
+  })
+}
+
+export function calendarDelete (data) {
+  // 删除日程
+  return request({
+    url: '/api/calendar/delete',
+    method: 'get',
+    params: data
+  })
+}
+
+export function employsetUpdate (data) {
+  // 更新欢迎语设置
+  return request({
+    url: '/api/employset/update',
+    method: 'post',
+    data: data
+  })
+}
+
+export function employsetRead (data) {
+  // 读取欢迎语设置
+  return request({
+    url: '/api/employset/read',
+    method: 'get',
+    params: data
+  })
+}
+
+export function employsetDelete (data) {
+  // 欢迎语设置标签删除
+  return request({
+    url: '/api/EmploySet/delete',
+    method: 'post',
+    data: data
+  })
+}

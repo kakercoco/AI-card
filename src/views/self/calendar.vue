@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:53:27
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-15 18:31:11
+ * @Last Modified time: 2018-09-17 15:33:44
  */
 <template>
   <div class="calendar">
@@ -51,7 +51,8 @@ export default {
       value: ['筛选'],
       list: [['日常', '预约', '会议', '拜访', '生日']],
       calendar: [],
-      time: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}`: new Date().getMonth() + 1}-${new Date().getDate()}`
+      time: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate()}`,
+      type: 0
     }
   },
   methods: {
@@ -59,8 +60,8 @@ export default {
       this.time = val
       this.getCalendarList()
     },
-    chooseChange () {
-
+    chooseChange (val) {
+      console.log(val)
     },
     useCustomFn (val) {
       this.buildSlotFn = val
@@ -82,19 +83,39 @@ export default {
     gotoDetail (id) {
       this.$router.push({
         path: '/calendarDetail',
-        query:{
+        query: {
           id
         }
       })
     },
+    getSearchType () {
+      if (this.value[0] === '日常') {
+        this.type = 0
+      } else if (this.value[0] === '预约') {
+        this.type = 1
+      } else if (this.value[0] === '会议') {
+        this.type = 2
+      } else if (this.value[0] === '拜访') {
+        this.type = 3
+      } else if (this.value[0] === '生日') {
+        this.type = 4
+      }
+    },
     getCalendarList () {
       const data = {
-        time: this.time
+        time: this.time,
+        type: this.type
       }
       calendarList(data)
         .then(res => {
           this.calendar = res.data
         })
+    }
+  },
+  watch: {
+    value () {
+      this.getSearchType()
+      this.getCalendarList()
     }
   },
   computed: {

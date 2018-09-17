@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-05 17:36:16
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-17 15:43:12
+ * @Last Modified time: 2018-09-17 15:54:49
  */
 <template>
   <div class="insert-calendar">
@@ -41,7 +41,7 @@
       <x-button type="primary" @click.native="save">确定</x-button>
     </p>
     <div class="client-wrap" v-if="isInsert">
-      <p style="height: 1rem;"><search v-model="customerForm.keyword"  ref="search" @on-change="getCustomerList"></search></p>
+      <p style="height: 1rem;"><search v-model="searchKey"  ref="search" @on-change="getCustomerList"></search></p>
       <group >
         <popup-radio  :options="recordOptions" v-model="selectdRecord"></popup-radio>
       </group>
@@ -62,11 +62,11 @@
 
 <script>
 import { Group, PopupRadio, XInput, XTextarea, Datetime, XButton, Search, CheckIcon } from 'vux'
-import { calendarSave, calendarType } from '@/api/calendar'
+import { calendarSave, calendarType, calendarRead } from '@/api/calendar'
 import { customerList } from '@/api/contact'
 
 export default {
-  name: 'insertCalendar',
+  name: 'updateCalendar',
   components: {
     Group,
     PopupRadio,
@@ -79,9 +79,11 @@ export default {
   },
   data () {
     return {
-      date: this.$route.query.date,
+      infor: {}, // 日历详情
+      id: this.$route.query.id,
       title: '',
       notes: '',
+      date: '',
       time: '',
       calendarType: 0,
       customer: [], // 所有客户列表
@@ -130,6 +132,19 @@ export default {
         this.calendarType = 4
       }
     },
+    setCalendarType (type) {
+      if (type === 0) {
+        this.option = '日常'
+      } else if (type === 1) {
+        this.option = '预约'
+      } else if (type === 2) {
+        this.option = '会议'
+      } else if (type === 3) {
+        this.option = '拜访'
+      } else if (type === 4) {
+        this.option = '生日'
+      }
+    },
     getSearchType () {
       if (this.selectdRecord === '成交率') {
         this.customerForm.type = 1
@@ -161,6 +176,21 @@ export default {
             }
           }
           this.customer = customerAll
+        })
+    },
+    getCalendarRead () {
+      const data = {
+        id: this.id
+      }
+      calendarRead(data)
+        .then(res => {
+          this.infor = res.data
+          const infor = res.data
+          this.title = infor.title
+          this.notes = infor.reference
+          this.date = infor.ymd_time
+          this.time = infor.his_time
+          this.setCalendarType(infor.type)
         })
     },
     chooseCustomer () {
@@ -230,11 +260,22 @@ export default {
     },
     option () {
       this.getCalendarType()
+    },
+    infor (val) {
+      this.customer.forEach(e => {
+        val.add_user.forEach(item => {
+          if (item == e.uid) {
+            this.customerCheckList.push(e)
+            this.getCustomerList()
+          }
+        })
+      })
     }
   },
   mounted () {
     this.getCustomerList()
     this.getCalendarTypeList()
+    this.getCalendarRead()
   }
 }
 </script>

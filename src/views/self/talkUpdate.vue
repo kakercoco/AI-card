@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 15:14:03
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-17 21:25:19
+ * @Last Modified time: 2018-09-17 21:28:57
  */
 <template>
   <div class="insert-talk">
@@ -31,7 +31,7 @@
 
 <script>
 import { Group, XTextarea, XButton, XDialog, XInput } from 'vux'
-import { talkSave } from '@/api/talk'
+import { talkSave, talkEdit } from '@/api/talk'
 
 export default {
   name: 'talkInsert',
@@ -52,6 +52,17 @@ export default {
     }
   },
   methods: {
+    getDetail (id) {
+      const data = {
+        id: this.id
+      }
+      talkEdit(data)
+        .then(res => {
+          this.infor = res.data
+          this.keyWord = this.infor.keyword.split(',')
+          console.log(this.keyWord)
+        })
+    },
     save () {
       const data = {
         group_id: this.group_id,

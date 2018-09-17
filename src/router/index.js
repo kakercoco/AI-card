@@ -120,6 +120,12 @@ export default new Router({
       component: () => import('@/views/self/insertCalendar')
     },
     {
+      path: '/updateCalendar',
+      name: 'updateCalendar',
+      meta: { title: '编辑日程' },
+      component: () => import('@/views/self/updateCalendar')
+    },
+    {
       path: '/calendarDetail',
       name: 'calendarDetail',
       meta: { title: '日程详情' },
@@ -136,6 +142,12 @@ export default new Router({
       name: 'talkInsert',
       meta: { title: '新增话术' },
       component: () => import('@/views/self/talkInsert')
+    },
+    {
+      path: '/talkUpdate',
+      name: 'talkUpdate',
+      meta: { title: '编辑话术' },
+      component: () => import('@/views/self/talkUpdate')
     },
     {
       path: '/talkDetail',

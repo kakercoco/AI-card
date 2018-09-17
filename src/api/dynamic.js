@@ -9,3 +9,20 @@ export function init_list (data) {
     })
 }
 
+//点赞
+export function click_good (data) {
+    return request({
+        url: '/api/dynamic/praise',
+        method: 'get',
+        params: data
+    })
+}
+
+export function to_comment (data) {
+    return request({
+        url: '/api/comment/save',
+        method: 'post',
+
+        data: data
+    })
+}

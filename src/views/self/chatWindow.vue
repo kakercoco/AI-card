@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 11:31:27
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-07 14:21:51
+ * @Last Modified time: 2018-09-17 21:03:56
  */
 <template>
   <div class="chat-window">
@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { employsetRead, employsetUpdate, employsetDelete } from '@/api/calendar'
+
 export default {
   name: 'chatwindow',
   data () {
@@ -34,13 +36,37 @@ export default {
     insertTag (index, item) {
       this.UnTagList.splice(index, 1)
       this.tagList.push(item)
+      const data = {
+        ac: 'tags',
+        tags: item
+      }
+      employsetUpdate(data)
+        .then(res => {
+        })
     },
     removeTag (index, item) {
       this.tagList.splice(index, 1)
       this.UnTagList.push(item)
+      const data = {
+        ac: 'tags',
+        tags: item
+      }
+      employsetDelete(data)
+        .then(res => {
+        })
+    },
+    get () {
+      employsetRead()
+        .then(res => {
+          this.tagList = res.data.tags
+          this.UnTagList = res.data.tags_1
+        })
+    },
+    set () {
     }
   },
   mounted () {
+    this.get()
   }
 }
 </script>

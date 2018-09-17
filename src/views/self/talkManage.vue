@@ -2,26 +2,21 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 14:51:27
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-10 16:02:53
+ * @Last Modified time: 2018-09-17 20:57:44
  */
 <template>
   <div class="talk-manage">
     <h3>选择话术</h3>
     <div>
       <div class="talk-group">
-        <a class="active">第一组</a>
-        <a>常用话术</a>
-        <a>第一组</a>
-        <a>第二组</a>
-        <a>第三组</a>
-        <a>自定义</a>
+        <a :class="{active: item.id === groupId}" v-for="(item, index) in talkGroupList" :key="index" @click="getTalkList(item.id)">{{item.label}}</a>
       </div>
       <div class="talk-list">
         <p class="tac" @click="gotoInsert">新增话术</p>
         <ul>
-          <li v-for="item in 5" :key="item" @click="gotoDetail">
-            <p class="title">预约工作</p>
-            <p class="content">好好学习，天天向上</p>
+          <li v-for="item in talk" :key="item" @click="gotoDetail(item.id)">
+            <p class="title">{{item.keyword}}</p>
+            <p class="content">{{item.content}}</p>
             <x-icon type="ios-arrow-right" class="icon-right"></x-icon>
           </li>
         </ul>
@@ -31,25 +26,60 @@
 </template>
 
 <script>
+import { talkGroup, talkList } from '@/api/talk'
 export default {
   name: 'talkManage',
   data () {
     return {
+      talkGroupList: [],
+      talk: [],
+      groupId: 0
     }
   },
   methods: {
     gotoInsert () {
       this.$router.push({
-        path: '/talkInsert'
+        path: '/talkInsert',
+        query: {
+          groupId: this.groupId
+        }
       })
     },
-    gotoDetail () {
+    gotoDetail (id) {
       this.$router.push({
-        path: '/talkDetail'
+        path: '/talkDetail',
+        query: {
+          id
+        }
       })
+    },
+    getTalkGroup () {
+      const data = {
+        type: 'verbal'
+      }
+      talkGroup(data)
+        .then(res => {
+          this.talkGroupList = res.data
+          this.groupId = this.talkGroupList[0].id
+          this.getTalkList(this.groupId)
+        })
+    },
+    getTalkList (id) {
+      this.groupId = id
+      const data = {
+        pid: id,
+        page: 1,
+        pagesize: 1000,
+        keyword: ''
+      }
+      talkList(data)
+        .then(res => {
+          this.talk = res.data.rows
+        })
     }
   },
   mounted () {
+    this.getTalkGroup()
   }
 }
 </script>
@@ -83,6 +113,7 @@ export default {
       text-align: center;
       font-size: 0.28rem;
       color: #2d2d2d;
+      overflow: hidden;
       &.active{
         text-decoration: underline;
         color: #5977fe;
@@ -104,7 +135,7 @@ export default {
       height: 1.2rem;
       border-bottom: 1px solid #ddd;
       color: #717171;
-      padding: 0.2rem 0.3rem;
+      padding: 0.2rem 0.5rem 0.2rem 0.3rem;
       position: relative;
       .title{
         font-size: 0.2rem;

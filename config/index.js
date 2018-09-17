@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/index.php': {
-        target: 'http://jiatui.api.com/',
+        target: 'http://jiatui.api.com',
         changeOrigin: true,
         pathRewrite: {
           '^/index.php': '/index.php'

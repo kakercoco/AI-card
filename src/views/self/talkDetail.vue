@@ -2,40 +2,70 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 16:09:14
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-06 16:18:16
+ * @Last Modified time: 2018-09-17 21:27:12
  */
 <template>
   <div class="talk-detail">
     <div class="clearfix">
       <p>关键词</p>
-      <span class="tag">预约工作</span>
+      <span class="tag" v-for="(item, index) in keyWord" :key="index">{{item}}</span>
     </div>
     <div>
       <p>编辑话术</p>
-      <p>努力学习，善待自己，诚心待人</p>
+      <p>{{infor.content}}</p>
     </div>
     <p class="btn tac">
-      <button class="btn-cancle">删除</button>
-      <button class="btn-primary" @click="gotoEdit">编辑</button>
+      <button class="btn-cancle" @click="deleteTalk">删除</button>
+      <button class="btn-primary" @click="gotoEdit()">编辑</button>
     </p>
   </div>
 </template>
 
 <script>
+import { talkDelete, talkEdit } from '@/api/talk'
 export default {
   name: 'talkDetail',
   data () {
     return {
+      infor: {},
+      keyWord: [],
+      id: this.$route.query.id
     }
   },
   methods: {
+    getDetail (id) {
+      const data = {
+        id: this.id
+      }
+      talkEdit(data)
+        .then(res => {
+          this.infor = res.data
+          this.keyWord = this.infor.keyword.split(',')
+          console.log(this.keyWord)
+        })
+    },
     gotoEdit () {
       this.$router.push({
-        path: '/talkInsert'
+        path: '/talkUpdate',
+        query: {
+          id: this.id
+        }
       })
+    },
+    deleteTalk (id) {
+      const data = {
+        id: this.$route.query.id
+      }
+      talkDelete(data)
+        .then(res => {
+          this.$router.push({
+            path: '/talkManage'
+          })
+        })
     }
   },
   mounted () {
+    this.getDetail()
   }
 }
 </script>

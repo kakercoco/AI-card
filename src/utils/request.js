@@ -2,9 +2,18 @@ import axios from 'axios'
 import store from '../store'
 // import { getToken } from '@/utils/auth'
 
+
+let baseURL = '';
+if(process.env.NODE_ENV === 'development'){
+    baseURL = '/index.php';
+}
+else{
+    baseURL = process.env.BASE_API;
+}
+
 // 创建axios实例
 const service = axios.create({
-  baseURL: '/index.php', // process.env.BASE_API, // api的base_url
+  baseURL, // process.env.BASE_API, // api的base_url
   timeout: 15000, // 请求超时时间
   withCredentials: true
 })

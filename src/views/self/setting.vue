@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 09:39:57
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-07 14:38:25
+ * @Last Modified time: 2018-09-17 16:51:25
  */
 <template>
   <div class="setting">
@@ -15,7 +15,7 @@
       </cell>
       <cell title="转发名片" >
         <img src="@/assets/nav/card.png" alt="" slot="icon">
-        <inline-x-switch v-model="value" slot="default"></inline-x-switch>
+        <inline-x-switch v-model="value" slot="default" :value-map="[0,1]" @click.native="set"></inline-x-switch>
       </cell>
     </group>
   </div>
@@ -23,6 +23,7 @@
 
 <script>
 import { Group, Cell, XSwitch, InlineXSwitch } from 'vux'
+import { employsetRead, employsetUpdate } from '@/api/calendar'
 
 export default {
   name: 'setting',
@@ -34,12 +35,30 @@ export default {
   },
   data () {
     return {
-      value: false
+      value: 0
     }
   },
   methods: {
+    get () {
+      employsetRead()
+        .then(res => {
+          this.value = res.data.is_forward
+        })
+    },
+    set () {
+      setTimeout(() => {
+        const data = {
+          ac: 'is_forward',
+          is_forward: this.value
+        }
+        employsetUpdate(data)
+          .then(res => {
+          })
+      }, 0)
+    }
   },
   mounted () {
+    this.get()
   }
 }
 </script>

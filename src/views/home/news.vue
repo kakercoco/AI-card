@@ -8,10 +8,11 @@
 <template>
 <div class="news">
   <scroller
+      height="100%"
       lock-x
       :use-pulldown="true"
       :use-pullup="true"
-      :pullup-config="pullup_config" 
+      :pullup-config="pullup_config"
       @on-pullup-loading="loadMore"
       ref="scrollerBottom"
       v-model="scrollerStatus"
@@ -34,15 +35,19 @@
 
           <p>{{item.title}}</p>
           <span v-for="(img_item, img_index) in item.cover" :key="img_index" :class="{'img-one': pic_list.length === 1}" class="img-wrap">
-          <img :src="img_item.src" class="previewer-demo-img"  @click="show(index)">
-        </span>
+            <img :src="img_item.src" class="previewer-demo-img"  @click="show(img_item)">
+          </span>
         </div>
         <div class="comment ">
           <div class="icon-time">
             <popover placement="left">
               <div slot="content" class="popover-content">
-                <span><img src="@/assets/img/heart.png" alt="">点赞</span>
-                <span @click="commentDialog = true"><img src="@/assets/img/comment2.png" alt="">评论</span>
+                <span @click="good(item,i)">
+                  <img src="@/assets/img/heart.png" v-if="item.praise && item.praise.is_praise == 0">
+                  <img src="@/assets/img/heart_s.png" v-if="item.praise && item.praise.is_praise == 1">
+                  点赞
+                </span>
+                <span @click="open_commentDialog(item)"><img src="@/assets/img/comment2.png" alt="">评论</span>
               </div>
               <img src="@/assets/img/comment.png" alt="" class="fr comment-icon">
             </popover>
@@ -78,11 +83,14 @@
   </div>
 
   <div v-transfer-dom class="dialog">
-    <x-dialog :show.sync="commentDialog"  hide-on-blur>
+    <x-dialog
+          :show.sync="commentDialog"
+          @on-hide="dialog_hide"
+          hide-on-blur>
       <p class="dialog-comment clearfix">
-        <input type="text">
-        <button>发送</button>
-        <img src="@/assets/icon/face.png" alt="">
+        <input type="text" v-model="comment_content" autofocus></input>
+        <button @click="comment_send">发送</button>
+        <img src="@/assets/icon/face.png">
       </p>
     </x-dialog>
   </div>
@@ -92,7 +100,7 @@
 <script>
 import { Previewer, TransferDom, Popover, XDialog } from 'vux'
 import { Scroller } from 'vux'
-import { init_list } from '@/api/dynamic'
+import { init_list,click_good } from '@/api/dynamic'
 export default {
   name: 'news',
   directives: {
@@ -102,7 +110,7 @@ export default {
     Previewer,
     Popover,
     XDialog,
-    Scroller
+    Scroller,
   },
   data () {
     return {
@@ -141,14 +149,26 @@ export default {
       scrollerStatus: {
           pullupStatus: 'default'
       },
+      comment_obj:null,//品论的中专对象
+      comment_content:''
     }
   },
   methods: {
     logIndexChange (arg) {
       console.log(arg)
     },
-    show (index) {
-      this.$refs.previewer.show(index)
+
+    show (img_item) {
+        const list= this.pic_list;
+        let index = null;
+        for(let i = 0;i<list.length;i++){
+            if(img_item.id === list[i].id){
+                index = i;
+            }
+        }
+        if(index != null){
+            this.$refs.previewer.show(index);
+        }
     },
 
     loadMore(){
@@ -160,6 +180,7 @@ export default {
             this.$refs.scrollerBottom.disablePullup() // 禁用上拉
         }
     },
+
     get_list(){
         this.isAjax = false;
         init_list({
@@ -184,9 +205,10 @@ export default {
                     }
 
                     else if(val.cover instanceof Array && val.cover.length > 0){
-                        const id = Number(Math.random().toString().substr(3, 10) + Date.now()).toString(36);
+
                         let arr = [];
                         val.cover.map((data,i)=>{
+                            const id = Number(Math.random().toString().substr(3, 10) + Date.now()).toString(36);
                             const obj = {
                                 id,
                                 src:data
@@ -228,13 +250,60 @@ export default {
         if (this.isAjax){
             //重置
             this.data_list = [];
+            this.pic_list = [];
             this.page = 1;
             this.total = 0;
             this.max_page = 0;
             this.$refs.scrollerBottom.disablePullup(); // 禁用上拉
             this.get_list();
         }
+    },
+
+    good(item,i){
+        const is_zan = item.praise.is_praise;
+        const id = item.id;
+        if (is_zan == 1){
+            alert('已点赞，不能再次点赞！');
+            return;
+        }
+        click_good({id}).then((ev)=>{
+            if(ev.code == 200){
+                this.data_list[i].praise.is_praise = 1;
+                const obj = {
+                    user_image:this.$store.state.user.info.image,
+                    user_name:this.$store.state.user.info.username
+                };
+                this.data_list[i].praise.rows.push(obj);
+            }
+        })
+    },
+
+    dialog_hide(){
+        this.comment_obj = null;
+        this.comment_content = '';
+    },
+
+    open_commentDialog(item){
+        this.commentDialog = true;
+        this.comment_obj = item;
+    },
+
+    //评论发送
+    comment_send(){
+        if(this.comment_obj === null){
+            alert('评论发生错误，请重新操作！');
+            this.commentDialog = false;
+            return;
+        }
+
+
+
     }
+
+
+
+
+
   },
   mounted () {
       this.get_list();
@@ -369,13 +438,15 @@ export default {
       .comment-zan{
         border-bottom: 1px solid #ddd;
         padding-bottom: 0.1rem;
+
         .heart{
           width: 0.4rem;
-          margin-right: 0.2rem;
+          margin-left: 0.1rem;
         }
         &>span{
           display: inline-block;
           height: 0.5rem;
+          margin-left: 0.1rem;
           img{
             width: 0.5rem;
             height: 0.5rem;
