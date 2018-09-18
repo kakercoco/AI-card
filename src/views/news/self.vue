@@ -2,35 +2,92 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-05 09:18:27
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-05 13:55:16
+ * @Last Modified time: 2018-09-18 16:20:21
  */
 <template>
   <div class="self-news">
-    <ul>
-      <li v-for="e in 5" :key="e" @click="gotoDetail">
-        <span class="time">08.08</span>
-        <div class="img-wrap">
-          <img src="@/assets/img/u112.png" alt="" v-for="item in imgList" :key="item" :class="{'img-one':imgList.length ===1,'img-list':imgList.length>1}">
-        </div>
-        <p class="content">你改变不了环境，但你可以改变自己；你改变不了事实，但你可以改变态度；你改变不了过去，但你可以改变现在；.....</p>
-        <p class="comment">
-          <span><img src="@/assets/img/comment02.png" alt="">1</span>
-          <span><img src="@/assets/img/heart-black.png" alt="">1</span>
-        </p>
-      </li>
-    </ul>
+    <scroller use-pulldown use-pullup lock-x @on-pulldown-loading="pulldown" @on-pullup-loading="loadMore" :pulldown-config="config" :pullup-config="config" :bounce="true" ref="scrollerBottom">
+      <div>
+        <ul>
+          <li v-for="(e, index) in dynamicList" :key="index" @click="gotoDetail">
+            <span class="time">{{Global.parseTime(e.create_time,'{h}:{i}')}}</span>
+            <div class="img-wrap">
+              <img :src="e.user_image" alt="" v-for="item in e.cover" :key="item" :class="{'img-one':e.cover.length ===1,'img-list':e.cover.length>1}">
+            </div>
+            <p class="content">{{e.title}}</p>
+            <p class="comment">
+              <span><img src="@/assets/img/comment02.png" alt="">{{e.comment.total}}</span>
+              <span><img src="@/assets/img/heart-black.png" alt="">{{e.praise.total}}</span>
+            </p>
+          </li>
+        </ul>
+      </div>
+    </scroller>
   </div>
 </template>
 
 <script>
+import { Scroller } from 'vux'
+
+import { init_list } from '@/api/dynamic'
 export default {
   name: 'newsSelf',
+  components: {
+    Scroller
+  },
   data () {
     return {
-      imgList: ['1']
+      config: {
+        content: '请上拉刷新数据...',
+        pullUpHeight: 60,
+        height: 40,
+        autoRefresh: false,
+        downContent: '请下拉刷新数据...',
+        upContent: '请上拉刷新数据...',
+        loadingContent: '加载中...'
+      },
+      pageForm: {
+        page: 1,
+        pagesize: 10,
+        type: 2
+      },
+      dynamicList: [],
+      isFlag: false // 是否已经关闭下拉
     }
   },
   methods: {
+    pulldown () {
+      this.pageForm.page = 1
+      init_list(this.pageForm)
+        .then(res => {
+          this.dynamicList = res.data.rows
+          this.$refs.scrollerBottom.donePulldown()
+          if (this.isFlag) {
+            this.$refs.scrollerBottom.enablePullup()
+          }
+        })
+    },
+    loadMore () {
+      console.log('loadMore...')
+      this.pageForm.page +=1
+      init_list(this.pageForm)
+        .then(res => {
+          if (res.data.rows.length === 0) {
+            this.$refs.scrollerBottom.disablePullup() // 禁用上拉
+            this.isFlag = true
+            return false
+          } else {
+            this.dynamicList = this.dynamicList.concat(res.data.rows)
+            this.$refs.scrollerBottom.donePullup()
+          }
+        })
+    },
+    getDynamicList () {
+      init_list(this.pageForm)
+        .then(res => {
+          this.dynamicList = res.data.rows
+        })
+    },
     gotoDetail () {
       this.$router.push({
         path: '/newsDetail'
@@ -38,6 +95,7 @@ export default {
     }
   },
   mounted () {
+    this.getDynamicList()
   }
 }
 </script>

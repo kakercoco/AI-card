@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 15:14:03
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-17 21:28:57
+ * @Last Modified time: 2018-09-18 14:05:35
  */
 <template>
   <div class="insert-talk">
@@ -31,7 +31,7 @@
 
 <script>
 import { Group, XTextarea, XButton, XDialog, XInput } from 'vux'
-import { talkSave, talkEdit } from '@/api/talk'
+import { talkUpdate, talkEdit } from '@/api/talk'
 
 export default {
   name: 'talkInsert',
@@ -47,8 +47,10 @@ export default {
       content: '',
       tagList: [],
       tag: '',
+      infor: {},
       tagDialog: false,
-      group_id: this.$route.query.groupId
+      id: this.$route.query.id,
+      groupId: this.$route.query.groupId
     }
   },
   methods: {
@@ -58,18 +60,18 @@ export default {
       }
       talkEdit(data)
         .then(res => {
-          this.infor = res.data
-          this.keyWord = this.infor.keyword.split(',')
-          console.log(this.keyWord)
+          this.tagList = res.data.keyword.split(',')
+          this.content = res.data.content
         })
     },
     save () {
       const data = {
-        group_id: this.group_id,
+        group_id: this.groupId,
+        id: this.id,
         content: this.content,
         keyword: this.tagList.join(',')
       }
-      talkSave(data)
+      talkUpdate(data)
         .then(res => {
           this.$router.push({
             path: '/talkManage'
@@ -92,6 +94,7 @@ export default {
     }
   },
   mounted () {
+    this.getDetail()
   }
 }
 </script>

@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-14 14:26:39
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-14 14:31:14
+ * @Last Modified time: 2018-09-18 16:32:31
  */
 <template>
   <div class="qrcode">
@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { getPosterImg } from '@/api/card'
 export default {
   name: 'qrcode',
   data () {
@@ -18,8 +19,15 @@ export default {
     }
   },
   methods: {
+    getPosterImg () {
+      getPosterImg()
+        .then(res => {
+
+        })
+    }
   },
   mounted () {
+    this.getPosterImg()
   }
 }
 </script>

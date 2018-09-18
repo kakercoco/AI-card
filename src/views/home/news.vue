@@ -20,22 +20,28 @@
       :pulldown-config="pullup_config">
     <div class="scroller_frame">
       <div class="header">
-        <p>jack LU</p>
-        <img src="@/assets/img/u112.png" alt="">
-        <i><x-icon type="ios-camera"></x-icon></i>
+        <p>{{$store.state.user.info.username}}</p>
+        <img :src="$store.state.user.info.image ? $store.state.user.info.image : '/static/image/moren.jpg'">
+        <i @click="to_publish"><x-icon type="ios-camera"></x-icon></i>
       </div>
 
       <!--每条-->
       <div class="news-list" v-for="(item,i) in data_list" :key="i">
         <img :src="item.user_image" alt="" class="emotion">
+
         <div class="title">
-          <p><span class="name">{{item.user_name}}</span><span class="tag">{{item.type == 0 ? '公司' : '个人'}}</span><span class="time">1小时前</span></p>
+          <p>
+            <span class="name">{{item.user_name}}</span>
+            <span class="tag">{{item.type == 0 ? '公司' : '个人'}}</span>
+            <span class="time"></span>
+          </p>
         </div>
         <div class="content clearfix">
 
           <p>{{item.title}}</p>
           <span v-for="(img_item, img_index) in item.cover" :key="img_index" :class="{'img-one': pic_list.length === 1}" class="img-wrap">
-            <img :src="img_item.src" class="previewer-demo-img"  @click="show(img_item)">
+            <img :src="img_item.src" class="previewer-demo-img" @click="show(img_item)" v-if="item.type == 1">
+            <img :src="img_item.src" class="previewer-demo-img" @click="to_details(item)" v-if="item.type == 0">
           </span>
         </div>
         <div class="comment ">
@@ -47,11 +53,11 @@
                   <img src="@/assets/img/heart_s.png" v-if="item.praise && item.praise.is_praise == 1">
                   点赞
                 </span>
-                <span @click="open_commentDialog(item)"><img src="@/assets/img/comment2.png" alt="">评论</span>
+                <span @click="open_commentDialog(item,i)"><img src="@/assets/img/comment2.png" alt="">评论</span>
               </div>
               <img src="@/assets/img/comment.png" alt="" class="fr comment-icon">
             </popover>
-            <span>2018-09-04</span>
+            <span>{{item.create_time}}</span>
           </div>
           <div class="comment-content">
             <div style="height: 0.15rem" v-if="item.praise && item.praise.rows.length > 0 && item.comment && item.comment.rows.length > 0"></div>
@@ -100,7 +106,7 @@
 <script>
 import { Previewer, TransferDom, Popover, XDialog } from 'vux'
 import { Scroller } from 'vux'
-import { init_list,click_good } from '@/api/dynamic'
+import { init_list,click_good,to_comment } from '@/api/dynamic'
 export default {
   name: 'news',
   directives: {
@@ -150,7 +156,8 @@ export default {
           pullupStatus: 'default'
       },
       comment_obj:null,//品论的中专对象
-      comment_content:''
+      comment_content:'',
+      comment_index:null
     }
   },
   methods: {
@@ -281,23 +288,70 @@ export default {
     dialog_hide(){
         this.comment_obj = null;
         this.comment_content = '';
+        this.comment_index = null;
     },
 
-    open_commentDialog(item){
+    open_commentDialog(item,i){
         this.commentDialog = true;
         this.comment_obj = item;
+        this.comment_index = i;
     },
 
     //评论发送
     comment_send(){
-        if(this.comment_obj === null){
+        if(this.comment_obj === null || this.comment_index === null){
             alert('评论发生错误，请重新操作！');
             this.commentDialog = false;
             return;
         }
+        if(this.comment_content === ''){
+            alert('评论内容不能为空！');
+            return;
+        }
 
+        const dynamic_id = this.comment_obj.id;
+        const content = this.comment_content;
+        to_comment({
+            dynamic_id,
+            content
+        }).then((e)=>{
+            if(e.code === 200){
+                const obj = {
+                    user_image:this.$store.state.user.info.image,
+                    user_name:this.$store.state.user.info.username,
+                    content
+                };
+                this.data_list[this.comment_index].comment.rows.push(obj);
+                this.commentDialog = false;
+                this.dialog_hide();
+            }
+            else{
+                alert('评论发生错误，请重新操作！');
+                this.commentDialog = false;
+                this.dialog_hide();
+            }
+        }).catch(()=>{
+            alert('评论发生错误，请重新操作！');
+            this.commentDialog = false;
+            this.dialog_hide();
+        })
 
+    },
 
+    to_publish(){
+        this.$router.push({
+            path:'/newsPublish',
+        });
+    },
+
+    to_details(item){
+        this.$router.push({
+            path:'/companyDetails',
+            query: {
+                id: item.id,
+            }
+
+        });
     }
 
 
@@ -371,6 +425,7 @@ export default {
     .title{
       .name{
         font-size: 0.32rem;
+        font-weight: bold;
       }
       .tag{
         border: 1px solid #5977fe;

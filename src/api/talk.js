@@ -44,3 +44,12 @@ export function talkEdit (data) {
     params: data
   })
 }
+
+export function talkUpdate (data) {
+  // 编辑话术详情
+  return request({
+    url: '/api/Verbal/update',
+    method: 'post',
+    data: data
+  })
+}

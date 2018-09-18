@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-14 17:34:54
+ * @Last Modified time: 2018-09-18 21:02:57
  */
 <template>
   <div class="edit-card">
@@ -28,6 +28,9 @@
     <h5>名片头像</h5>
     <div class="card-avatar">
       <img :src="cardInfor.image" alt="">
+      <form action="" id="myFrom">
+        <input type="file" accept="image/*;capture=camera" multiple="multiple" @change="changeFile($event)" name="avatar"/>
+      </form>
     </div>
     <h5>个人信息</h5>
     <div class="self-message">
@@ -78,8 +81,8 @@
     <h5>添加标签</h5>
     <div class="self-tag clearfix">
       <ul>
-        <li>我的</li>
-        <li><x-icon type="ios-plus-empty" class="icon-insert" @click.native="insertTagDialog = true"></x-icon></li>
+        <li v-for="(item, index) in cardInfor.tag" :key="index">{{item}}<x-icon type="ios-minus" class="icon-delete" @click.native="removeTag(index)"></x-icon></li>
+        <li><x-icon type="ios-plus-empty" class="icon-insert" @click.native="openTagDialog"></x-icon></li>
       </ul>
     </div>
     <p class="self-btn">
@@ -90,11 +93,11 @@
       <div class="insert-dialog">
         <h4>添加自定义标签</h4>
         <group>
-          <x-input v-model="value" placeholder="十字以内" :max="10"></x-input>
+          <x-input v-model="tagKeyword" placeholder="十字以内" :max="10"></x-input>
         </group>
         <p class="btn">
-          <button class="btn-cancle" @click="insertTagDialog = false">取消</button>
-          <button class="btn-primary">确定</button>
+          <button class="btn-cancle" @click="closeTagDialog">取消</button>
+          <button class="btn-primary" @click="insertTag">确定</button>
         </p>
       </div>
     </x-dialog>
@@ -122,6 +125,7 @@
 import { Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle } from 'vux'
 import html2canvas from 'html2canvas'
 import { updateCard, cardRead } from '@/api/card'
+import { upload_img } from '@/api/upload_file'
 
 export default {
   name: 'editCard',
@@ -139,7 +143,7 @@ export default {
         address: ''
       },
       bio: '',
-      value: '',
+      tagKeyword: '',
       insertTagDialog: false,
       audioDialog: false,
       percent: 80,
@@ -161,22 +165,70 @@ export default {
     }
   },
   methods: {
+    closeTagDialog () {
+      this.insertTagDialog = false
+    },
+    openTagDialog () {
+      this.insertTagDialog = true
+      this.tagKeyword = ''
+    },
+    insertTag () {
+      this.cardInfor.tag.push(this.tagKeyword)
+      this.closeTagDialog()
+    },
+    removeTag (index) {
+      this.cardInfor.tag.splice(index, 1)
+    },
     getCard () {
       cardRead()
         .then(res => {
           this.cardInfor = res.data
         })
     },
+    changeFile (e) {
+      var obj = e.target.files[0]// 获取图片对象
+      if (!obj) {
+        return
+      }
+      if (obj.type !== 'image/jpeg' && obj.type !== 'image/png') {
+        alert('只支持jpg、png!')
+        return
+      }
+      if (obj.size > 2000000) {
+        alert('照片大小不能超过2MB')
+        return
+      }
+      this.uploadFile_p(obj)
+    },
+    uploadFile_p (obj) {
+      const ele = document.querySelector('#myFrom')
+      const fd = new FormData(ele)
+      upload_img(fd).then(res => {
+        if (res.data && res.data.url) {
+          this.cardInfor.image = res.data.url
+        }
+      })
+    },
     touchstart () {
       console.log('start')
+      this.$wechat.startRecord()
     },
     touchend () {
       console.log('end')
+      this.$wechat.stopRecord({
+        success: function (res) {
+          var localId = res.localId
+          console.log(localId, 'url')
+        }
+      })
     },
     changeTemplate (val, index) {
       this.seletedTemplate = val
       this.selectedIndex = index
       this.selectedClass = `card-template-${index + 1}`
+      setTimeout(() => {
+        this.switchImg()
+      }, 1000)
     },
     gotoProduce () {
       this.$router.push({
@@ -187,7 +239,6 @@ export default {
       let arr = dataurl.split(',')
       let mime = arr[0].match(/:(.*?);/)[1]
       let bstr = atob(arr[1])
-      debugger
       let n = bstr.length
       let u8arr = new Uint8Array(n)
       while (n--) {
@@ -200,40 +251,23 @@ export default {
       html2canvas(document.querySelector('#card')).then(canvas => {
         dataURL = canvas.toDataURL('image/png')
         let blob = this.dataURLtoBlob(dataURL)// base64转blob对象，用于上传
-        // debugger;
-        var size = blob.size
-        if (size > 131584) {
-          alert('上传头像小于1MB！')
-        }
+        // var size = blob.size
+        // if (size > 131584) {
+        //   alert('上传头像小于1MB！')
+        // }
         // 创建FormData对象
-        var fd = new FormData()
-        var filename = 'card.png'
-        fd.append('image', blob, filename)
-        const url = '/headupload'
-        console.log(url)
+        let fd = new FormData()
+        let filename = 'card.png'
+        fd.append('avatar', blob, filename)
+        upload_img(fd).then(res => {
+          if (res.data && res.data.url) {
+            // this.cardInfor.image = res.data.url
+          }
+        })
       })
-
-      // $.ajax({
-      //   url: url,
-      //   type: 'post',
-      //   data: fd,
-      //   dataType: 'json',
-      //   processData: false,
-      //   contentType: false,
-      //   success: function (e) {
-      //     console.log(e)
-      //     if (e.state == 1) {
-      //       alert('上传成功!')
-      //       window.location.href = 'index.html'
-      //     } else if (e.state == 2) {
-      //       window.location.href = 'login.html'
-      //     } else {
-      //       alert('上传失败!')
-      //     }
-      //   }
-      // })
     },
     save () {
+      this.cardInfor.tag = this.cardInfor.tag.join(',')
       updateCard(this.cardInfor)
         .then(res => {
 
@@ -243,6 +277,9 @@ export default {
   },
   mounted () {
     this.getCard()
+    this.$wechat.ready(() => {
+      console.log('ready')
+    })
   }
 }
 </script>
@@ -305,10 +342,23 @@ export default {
   }
   .card-avatar{
     margin-top: 0.2rem;
+    position: relative;
     img{
       width: 2rem;
       height: 2rem;
       border-radius: 0.1rem;
+    }
+    #myFrom{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2rem;
+      height: 2rem;
+      input{
+        opacity: 0;
+        height: 100%;
+        width: 100%;
+      }
     }
   }
   .self-message{
@@ -426,12 +476,21 @@ export default {
       height: 0.5rem;
       border-radius: 0.5rem;
       line-height: 0.5rem;
-      width: 1.4rem;
       text-align: center;
       background-color: #f4f4f4;
       float: left;
       margin-right: 0.4rem;
       color: #717171;
+      padding: 0 0.3rem;
+      position: relative;
+      .icon-delete{
+        position: absolute;
+        top: 0;
+        right: 0;
+        fill: red;
+        width: 0.24rem;
+        height: 0.24rem;
+      }
     }
   }
   .self-btn{

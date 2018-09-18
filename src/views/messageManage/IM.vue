@@ -12,7 +12,8 @@
       <li class="clearfix" v-for="(item,i) in char_list" :key="i">
         <p class="tac">{{item.time}}</p>
         <div :class="item.from === 'me' ? 'right-message' : 'left-message'">
-          <img :src="item.fead_src ? item.fead_src : '/static/image/moren.jpg'" alt="">
+          <img :src="item.fead_src ? item.fead_src : '/static/image/moren.jpg'" v-if="item.from === 'me'">
+          <img :src="wx_image ? wx_image : '/static/image/moren.jpg'" v-if="item.from === 'others'">
           <div class="content">
 
             <tpl :content="item.content" v-if="item.type === 'text'"></tpl>
@@ -32,9 +33,6 @@
               </div>
             </div>
 
-
-
-
           </div>
           <img src="/static/image/l.gif" class="loading" v-if="item.from === 'me' && item.is_loading">
 
@@ -44,7 +42,7 @@
 
     </ul>
     <div class="footer">
-      <span @click="slideDownTalk = true">话术库</span>
+      <span @click="open_seech">话术库</span>
       <p class="my-textarea">
         <group>
           <x-textarea v-model="value" autosize :rows="1"></x-textarea>
@@ -89,21 +87,25 @@
       </div>
     </div>
 
+    <div class="layer" v-if="slideDownTalk" @click="slideDownTalk = false"></div>
     <div class="talk-list" v-if="slideDownTalk">
       <h4>选择话术</h4>
       <div class="talk-group">
-        <a class="active">最近使用</a>
-        <a>常用话术</a>
-        <a>常用话术</a>
-        <a>常用话术</a>
-        <a>第一组</a>
-        <a>第二组</a>
+        <a class="active" :class="Speech.select_class_id == '' ? 'select_class' : ''" @click="speech_list_init">最近使用</a>
+        <a
+          v-for="(item,i) in Speech.class_list"
+          :key="i"
+          :class="Speech.select_class_id == item.id ? 'select_class' : ''"
+          @click="sele_class(item,i)">{{item.label}}</a>
       </div>
       <div class="talk-infor">
+        <div class="loading" v-if="is_loading">
+          <img src="@/assets/img/l.gif">
+        </div>
         <ul>
-          <li @click="slideDownTalk = false">
-            <p class="title">预约工作</p>
-            <p class="content">好好学习，天天向上</p>
+          <li @click="select_Speech(item)" v-for="(item,i) in Speech.child_list" :key="i">
+            <p class="title">{{item.content}}</p>
+            <p class="content">{{item.keyword}}</p>
           </li>
         </ul>
       </div>
@@ -125,6 +127,7 @@ import tpl from "./tpl";
 import { Previewer,TransferDom  } from 'vux';
 import UPNG from 'upng-js';
 import {upload_img} from '@/api/upload_file';
+import {talkGroup,talkList} from '@/api/talk';
 export default {
   name: 'messageIM',
   components: {
@@ -159,6 +162,14 @@ export default {
       img_max_width:50,
       test:'',
       char_list_top:false,//是否抬起
+      Speech:{
+          class_list:[],
+          child_list:[],
+          select_class_id:'',
+          is_loading:false
+      },
+      wx_image:''
+
 
     }
   },
@@ -177,16 +188,17 @@ export default {
             this.img_select();
         });
     },
+
     Emotio_open(){
         this.isEmotion = true;
         this.isPicture = false;
         this.char_list_top = true;
     },
+
     close_bottom(){
         this.isEmotion = false;
         this.isPicture = false;
         this.char_list_top = false;
-
     },
 
     show(item){
@@ -208,7 +220,7 @@ export default {
     chat_init(){
         const req = {
             "cmd": "GetChat",
-            "content": this.$route.params.id//对方的id
+            "content": this.$route.query.id//对方的id
         };
         this.$store.state.user.websocketConnection.send(JSON.stringify(req));
     },
@@ -260,6 +272,10 @@ export default {
                     }
                 }
             }
+
+            else if(data.cmd === 'Error'){
+                alert(data.content);
+            }
         };
     },
 
@@ -288,10 +304,9 @@ export default {
 
         const data = {
             userId: user.message_id,//当前操作者的id
-            aimId:this.$route.params.id,//对方的id
+            aimId:this.$route.query.id,//对方的id
             token: this.$store.state.user.my_chat_token,
         };
-
 
         axios({
             method:"POST",
@@ -358,7 +373,6 @@ export default {
     select_face(e){
         this.value = `${this.value}[${e.title}]`;
     },
-
 
     formSubmit(){
 
@@ -554,6 +568,88 @@ export default {
             binary += String.fromCharCode( bytes[ i ] );
         }
         return window.btoa( binary );
+    },
+
+    get_class_list(){
+        talkGroup({
+            type:'verbal'
+        }).then((e)=>{
+            if(e.code === 200 && e.data && e.data instanceof Array){
+                this.Speech.class_list = e.data;
+                //this.get_Speech_list(e.data[0].id);
+            }
+        })
+    },
+
+    sele_class(item){
+        const id = item.id;
+        if(id){
+            this.Speech.select_class_id = id;
+            this.get_Speech_list(id);
+        }
+
+
+    },
+
+    get_Speech_list(id){
+        this.Speech.child_list = [];
+        this.is_loading = true;
+        talkList({
+            pid:id,
+            page:1,
+            pagesize:100000
+        }).then((e)=>{
+            if(e.code === 200 && e.data && e.data.rows instanceof Array){
+                this.Speech.child_list = e.data.rows;
+            }
+            this.is_loading = false;
+        }).catch(()=>{
+            this.is_loading = false;
+        })
+    },
+
+    speech_list_init(){
+        const list = localStorage.getItem("speech_list");
+        this.Speech.select_class_id = '';
+        if(list){
+            this.Speech.child_list = JSON.parse(list);
+        }
+        else{
+            this.Speech.child_list = [];
+        }
+
+    },
+
+    select_Speech(item){
+        //先取出
+        const list_str = localStorage.getItem("speech_list");
+        let list = [];
+        if(list_str){
+            list = JSON.parse(list_str);
+        }
+
+        let isHave = false;
+
+        for(let i = 0;i<list.length;i++){
+            if(list[i].content === item.content){
+                isHave = true;
+                break
+            }
+        }
+
+        //已存在则不插入,不重新设置
+        if(!isHave){
+            list.push(item);
+            localStorage.setItem("speech_list", JSON.stringify(list));
+        }
+
+        this.slideDownTalk = false;
+        this.value = item.content;
+    },
+
+    open_seech(){
+        this.slideDownTalk = true;
+        this.speech_list_init();
     }
 
   },
@@ -564,6 +660,11 @@ export default {
       this.chat_init();
       this.face_list_init();
       this.chat_record();
+      this.get_class_list();
+      this.speech_list_init();//话术列表初始化
+      this.wx_image =  this.$route.query.wx_image;
+
+
       //this.img_select();
 
   }
@@ -813,6 +914,15 @@ export default {
       }
     }
   }
+  .layer{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index:98;
+    background: rgba(0,0,0,0.5);
+  }
   .talk-list{
     position: fixed;
     bottom: 0;
@@ -820,6 +930,8 @@ export default {
     width: 100%;
     height: 70%;
     background-color: #fff;
+    z-index:99;
+
     h4{
       height: 1rem;
       line-height: 1rem;
@@ -840,12 +952,14 @@ export default {
         height: 0.7rem;
         line-height: 0.7rem;
         text-align: center;
-        font-size: 0.28rem;
+        font-size: 0.26rem;
         color: #2d2d2d;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
-      .active{
-        text-decoration: underline;
-        color: #5977fe;
+      .select_class{
+        color: #010bff;
       }
     }
     .talk-infor{
@@ -854,20 +968,40 @@ export default {
       width: calc(100% - 1.6rem);
       height: 100%;
       overflow: auto;
+      position:relative;
+      .loading{
+        position: absolute;
+        width: 100%;
+        height: 30px;
+        top:50px;
+        text-align: center;
+        z-index: -1;
+        img{
+          width: 25px;
+          height: 25px;
+        }
+      }
       li{
         height: 1.2rem;
         border-bottom: 1px solid #ddd;
         color: #717171;
         padding: 0.2rem 0.3rem;
+        background: #fff;
         .title{
-          font-size: 0.2rem;
-          height: 0.35rem;
-          overflow: hidden;
-        }
-        .content{
           font-size: 0.26rem;
           height: 0.35rem;
           overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          margin-bottom: 0.1rem;
+          color: #333;
+        }
+        .content{
+          font-size: 0.24rem;
+          height: 0.35rem;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
     }

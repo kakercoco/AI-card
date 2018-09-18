@@ -127,6 +127,7 @@
 import { Tab, TabItem, Scroller, XDialog, XButton, Group, Cell, Datetime } from 'vux'
 
 import {get_user_info} from '@/api/user_info'
+import {init_list} from '@/api/footprint'
 
 export default {
   name: 'index',
@@ -179,9 +180,11 @@ export default {
     onItemClick (index) {
       this.tabIndex = index
     },
+
     toggleDetail (index) {
       this.messageList[index].status = !this.messageList[index].status
     },
+
     loadMore () {
       this.bottomCount += 5
       if (this.bottomCount > 20) {
@@ -195,39 +198,55 @@ export default {
         })
       }
     },
+
     showDateChoose () {
       this.datePickerDialog = true
     },
+
     sureTime () {
       this.datePickerDialog = false
     },
+
     changeStartTime (val) {
       // this.startTIme = val
     },
+
     gotoClient () {
       this.$router.push({
         path: '/client'
       })
     },
+
     gotoCardList () {
       this.$router.push({
         path: '/seeCard'
       })
     },
+
     gotoWebsiteList () {
       this.$router.push({
         path: '/seeWebsite'
       })
     },
+
     gotoCallPhoneList () {
       this.$router.push({
         path: '/callPhone'
       })
     },
 
+    get_time_list(){
+        init_list({
+            type:'time'
+        }).then((e)=>{
+            debugger;
+        })
+    }
+
   },
   mounted () {
-      console.log('index');
+
+      this.get_time_list();
 
 
   }

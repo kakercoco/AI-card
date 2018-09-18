@@ -2,40 +2,53 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 17:01:37
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-06 18:28:21
+ * @Last Modified time: 2018-09-18 18:08:14
  */
 <template>
   <div class="report-chart">
     <tab v-model="tabIndex">
-      <tab-item ><span>汇总</span></tab-item>
-      <tab-item ><span>昨日</span></tab-item>
-      <tab-item ><span>近七天</span></tab-item>
-      <tab-item ><span>当月</span></tab-item>
-      <tab-item ><span style="border: none;">近30天</span></tab-item>
+      <tab-item @on-item-click="tabItemClick"><span>汇总</span></tab-item>
+      <tab-item @on-item-click="tabItemClick"><span>昨日</span></tab-item>
+      <tab-item @on-item-click="tabItemClick"><span>近七天</span></tab-item>
+      <tab-item @on-item-click="tabItemClick"><span>当月</span></tab-item>
+      <tab-item @on-item-click="tabItemClick"><span style="border: none;">近30天</span></tab-item>
     </tab>
-    <div v-if="tabIndex === 0" class="tab-list">
+    <div class="tab-list">
       <ul>
-        <li v-for="item in 6" :key="item">
+        <li>
           <span>客户总数</span>
-          <span>150</span>
+          <span>{{dataInfor.user_num}}</span>
+        </li>
+        <li>
+          <span>跟进总数</span>
+          <span>{{dataInfor.follow_num}}</span>
+        </li>
+        <li>
+          <span>浏览总数</span>
+          <span>{{dataInfor.look_num}}</span>
+        </li>
+        <li>
+          <span>被转发总数</span>
+          <span>{{dataInfor.transmit_num}}</span>
+        </li>
+        <li>
+          <span>被保存总数</span>
+          <span>{{dataInfor.save_num}}</span>
+        </li>
+        <li>
+          <span>被点赞总数</span>
+          <span>{{dataInfor.good_num}}</span>
         </li>
       </ul>
     </div>
-    <div v-if="tabIndex === 1">
-      2
-    </div>
-    <div v-if="tabIndex === 2">
-      3
-    </div>
-    <div v-if="tabIndex === 3">
-      4
-    </div>
-    <div v-if="tabIndex === 4">
-      5
-    </div>
     <h3>成交率</h3>
     <div class="funnel clearfix">
-      <div id="main"></div>
+      <div id="main">
+        <p>{{downChartInfor.num_1}}</p>
+        <p>{{downChartInfor.num_2}}</p>
+        <p>{{downChartInfor.num_3}}</p>
+        <p>{{downChartInfor.num_4}}</p>
+      </div>
       <p>成交概率区间</p>
       <ul>
         <li>0~50%</li>
@@ -71,6 +84,7 @@
 <script>
 import echarts from 'echarts'
 import { Tab, TabItem } from 'vux'
+import { getMyNums, getMyChart } from '@/api/chart'
 export default {
   name: 'reportChart',
   components: {
@@ -80,6 +94,24 @@ export default {
   data () {
     return {
       tabIndex: 0,
+      dataInfor: {},
+      dynamicXData: [],
+      dynamicYData: [],
+      downChartInfor: {
+        like_company: 0,
+        like_me: 0,
+        like_product: 0,
+        look_card: 0,
+        look_dynamic: 0,
+        look_phone: 0,
+        look_product: 0,
+        look_web: 0,
+        num_1: 0,
+        num_2: 0,
+        num_3: 0,
+        num_4: 0,
+        user_avtive: {}
+      },
       countObj: [{
         name: '查看名片',
         num: 50
@@ -99,59 +131,34 @@ export default {
     }
   },
   methods: {
+    getMyTopChart () {
+      const data = {
+        time_type: this.tabIndex
+      }
+      getMyNums(data)
+        .then(res => {
+         this.dataInfor = res.data
+        })
+    },
+    tabItemClick () {
+      this.getMyTopChart()
+    },
+    getMydownChart () {
+      getMyChart()
+        .then(res => {
+          this.downChartInfor = res.data
+          for (const key in this.downChartInfor.user_avtive) {
+            this.dynamicXData.push(key)
+            this.dynamicYData.push(this.downChartInfor.user_avtive[key])
+          }
+          this.drawCare()
+          this.drawDynamic()
+        })
+    },
     drawChart (option, dom) {
       var myChart = echarts.init(document.getElementById(dom))
       // 绘制图表
       myChart.setOption(option)
-    },
-    drawFunnel () {
-      const option = {
-        calculable: true,
-        color: ['#3ec4d2', '#0fd35d', '#feab2b', '#ff5f1a'],
-        series: [
-          {
-            name: '漏斗图',
-            type: 'funnel',
-            left: '10%',
-            top: 60,
-            // x2: 80,
-            bottom: 60,
-            width: '80%',
-            // height: {totalHeight} - y - y2,
-            min: 0,
-            max: 100,
-            minSize: '0%',
-            maxSize: '100%',
-            sort: 'descending',
-            gap: 2,
-            label: {
-              normal: {
-                show: true,
-                position: 'inside'
-              },
-              formatter: '{d}',
-              emphasis: {
-                textStyle: {
-                  fontSize: 12
-                }
-              }
-            },
-            itemStyle: {
-              normal: {
-                borderColor: '#fff',
-                borderWidth: 3
-              }
-            },
-            data: [
-              {value: 80, name: '点击'},
-              {value: 60, name: '访问'},
-              {value: 40, name: '咨询'},
-              {value: 20, name: '订单'}
-            ]
-          }
-        ]
-      }
-      this.drawChart(option, 'main')
     },
     drawCare () {
       const option = {
@@ -162,9 +169,9 @@ export default {
             type: 'pie',
             radius: '75%',
             data: [
-              {value: 335, name: '25%'},
-              {value: 310, name: '40%'},
-              {value: 234, name: '35%'}
+              {value: this.downChartInfor.like_company, name: '25%'},
+              {value: this.downChartInfor.like_product, name: '40%'},
+              {value: this.downChartInfor.like_me, name: '35%'}
             ],
             itemStyle: {
               emphasis: {
@@ -189,7 +196,7 @@ export default {
         color: ['#5977fe'],
         xAxis: {
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: this.dynamicXData
         },
         yAxis: {
           type: 'value',
@@ -202,7 +209,7 @@ export default {
           left: '15%'
         },
         series: [{
-          data: [820, 932, 901, 934, 1290, 1330, 1320],
+          data: this.dynamicYData,
           type: 'line',
           showSymbol: false,
           smooth: true
@@ -212,9 +219,8 @@ export default {
     }
   },
   mounted () {
-    this.drawFunnel()
-    this.drawCare()
-    this.drawDynamic()
+    this.getMyTopChart()
+    this.getMydownChart()
   }
 }
 </script>
@@ -271,10 +277,19 @@ export default {
   }
   .funnel{
     #main{
-      width: 100%;
+      width: 60%;
       height: 6rem;
+      background: url('~@/assets/img/chart.png') no-repeat center;
+      background-size: contain;
+      margin: 0 auto;
+      padding-top: 1.2rem;
+      p{
+        text-align: center;
+        margin-bottom: 0.7rem;
+        color: #fff;
+      }
     }
-    p{
+    &>p{
       text-align: center;
       font-size: 0.26rem;
       color: #717171;

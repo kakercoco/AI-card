@@ -10,7 +10,7 @@ import {get_user_info} from '@/api/user_info'
 export default {
   name: 'App',
     created(){
-        setToken('hbsvTpWMy%2FUSEHTcf1Q0MQnpAIrLUszJHXVPqa7bctOIheqZCAPR7lwnA7Nmx%2BXWjoBod5AOlOOT5ygjJN78xMNIUj6F2ayw');
+        setToken('8vJ0SXqoBpICkfQNjWV6WwnpAIrLUszJIfRnrWW5leItuZZr%2BN3WqFwnA7Nmx%2BXW%2F6Tw%2BsF0s6dDfH%2F%2BzbdsEQ%3D%3D');
     },
     methods:{
         get_user_info(){

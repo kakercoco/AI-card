@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:26:07
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-14 16:54:53
+ * @Last Modified time: 2018-09-18 19:56:04
  */
 <template>
   <div class="contact">
@@ -136,6 +136,9 @@ export default {
     getCustomerTagList () {
       customerTagList()
         .then(res => {
+          if (res.data.length <= 0) {
+            return false
+          }
           const tagList = res.data[0].rows
           tagList.forEach(element => {
             element.status = false

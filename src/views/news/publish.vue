@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-04 16:38:43
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-04 20:12:17
+ * @Last Modified time: 2018-09-18 20:28:23
  */
 <template>
   <div class="publish">
@@ -11,18 +11,20 @@
     </group>
     <group title="添加图片">
       <p class="upload-imglist clearfix">
-        <span v-for="item in fileList" :key="item" class="fl" style="position:relative;">
+        <span v-for="(item,i) in fileList" :key="i" class="fl" style="position:relative;">
           <x-icon type="ios-close-outline" class="vux-close"></x-icon>
-          <img :src="item" alt="">
+          <img :src="item">
         </span>
         <span class="upload-btn">
-          <input type="file"  multiple="multiple" @change="changeFile($event)" />
+        <form action="" id="myFrom">
+          <input type="file" accept="image/*;capture=camera" multiple="multiple" @change="changeFile($event)" name="avatar" v-if="isRendering"/>
+        </form>
           <x-icon type="ios-plus-empty" size="50"></x-icon>
         </span>
       </p>
     </group>
     <div class="btn">
-      <x-button type="primary">确认</x-button>
+      <x-button type="primary" @click.native="Release">确认</x-button>
     </div>
   </div>
 </template>
@@ -30,6 +32,8 @@
 <script>
 
 import { XTextarea, Group, XButton } from 'vux'
+import { upload_img } from '@/api/upload_file'
+import { to_release } from '@/api/dynamic'
 
 export default {
   name: 'newsPublish',
@@ -39,26 +43,64 @@ export default {
   data () {
     return {
       value: '',
-      fileList: []
+      fileList: [],
+      isRendering: true
     }
   },
   methods: {
-    changeFile ($event) {
-      var objUrl = this.getObjectURL($event.target.files[0]) // 获取文件信息
-      if (objUrl) {
-        this.fileList.push(objUrl)
+    changeFile (e) {
+      var obj = e.target.files[0]// 获取图片对象
+      if (!obj) {
+        return
       }
+      if (obj.type !== 'image/jpeg' && obj.type !== 'image/png') {
+        alert('只支持jpg、png!')
+        return
+      }
+      if (obj.size > 2000000) {
+        alert('照片大小不能超过2MB')
+        return
+      }
+      this.uploadFile_p(obj)
     },
-    getObjectURL (file) {
-      var url = null
-      if (window.createObjectURL !== undefined) { // basic
-        url = window.createObjectURL(file)
-      } else if (window.URL !== undefined) { // mozilla(firefox)
-        url = window.URL.createObjectURL(file)
-      } else if (window.webkitURL !== undefined) { // webkit or chrome
-        url = window.webkitURL.createObjectURL(file)
+
+    uploadFile_p (obj) {
+      this.$vux.loading.show({
+        text: '请等待'
+      })
+      const ele = document.querySelector('#myFrom')
+      const fd = new FormData(ele)
+      upload_img(fd).then(res => {
+        if (res.data && res.data.url) {
+          this.fileList.push(res.data.url)
+          this.isRendering = false
+          this.$vux.loading.hide()// 隐藏
+          this.$nextTick(() => {
+            this.isRendering = true
+          })
+        }
+      })
+    },
+
+    Release () {
+      if (this.value === '') {
+        alert('内容不能为空！')
+        return
       }
-      return url
+
+      const content = this.fileList.join(',')
+
+      to_release({
+        type: 1,
+        title: this.value,
+        content
+      }).then((e) => {
+        if (e.code === 200) {
+          this.$router.push({
+            path: '/main/news'
+          })
+        }
+      })
     }
   },
   mounted () {

@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 16:09:14
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-17 21:27:12
+ * @Last Modified time: 2018-09-18 13:45:34
  */
 <template>
   <div class="talk-detail">
@@ -47,9 +47,7 @@ export default {
     gotoEdit () {
       this.$router.push({
         path: '/talkUpdate',
-        query: {
-          id: this.id
-        }
+        query: this.$route.query
       })
     },
     deleteTalk (id) {

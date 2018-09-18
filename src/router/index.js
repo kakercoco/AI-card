@@ -72,7 +72,7 @@ export default new Router({
       component: () => import('@/views/messageManage/detail')
     },
     {
-      path: '/messageIM/:id',
+      path: '/messageIM',
       name: 'messageIM',
       meta: { title: '聊天室' },
       component: () => import('@/views/messageManage/IM')
@@ -107,6 +107,12 @@ export default new Router({
       meta: { title: '动态详情' },
       component: () => import('@/views/news/detail')
     },
+      {
+          path: '/companyDetails',
+          name: 'companyDetails',
+          meta: { title: '公司详情' },
+          component: () => import('@/views/news/companyDetails')
+      },
     {
       path: '/calendar',
       name: 'calendar',

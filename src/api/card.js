@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function wxConfig () {
+  // 企业微信配置
+  return request({
+    url: '/api/weworkapi/getConfigData',
+    method: 'get'
+  })
+}
+
 export function cardRead () {
   // 我的名片详情
   return request({
@@ -23,5 +31,13 @@ export function produceList (data) {
     url: '/api/Scratch/webClient',
     method: 'post',
     data: data
+  })
+}
+
+export function getPosterImg () {
+  // 名片海报
+  return request({
+    url: '/api/employSet/getPosterImg',
+    method: 'get'
   })
 }
