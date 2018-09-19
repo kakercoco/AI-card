@@ -9,7 +9,7 @@
     <canvas id="myCanvas"></canvas>
     <ul class="chat-list" id="chatList" @click="close_bottom" :class="char_list_top ? 'chat-list_top' : ''">
 
-      <li class="clearfix" v-for="(item,i) in char_list" :key="i">
+      <li class="clearfix" v-for="(item,i) in $store.state.chat.char_list" :key="i">
         <p class="tac">{{item.time}}</p>
         <div :class="item.from === 'me' ? 'right-message' : 'left-message'">
           <img :src="item.fead_src ? item.fead_src : '/static/image/moren.jpg'" v-if="item.from === 'me'">
@@ -99,7 +99,7 @@
           @click="sele_class(item,i)">{{item.label}}</a>
       </div>
       <div class="talk-infor">
-        <div class="loading" v-if="is_loading">
+        <div class="loading" v-if="Speech.is_loading">
           <img src="@/assets/img/l.gif">
         </div>
         <ul>
@@ -113,7 +113,7 @@
 
 
     <div v-transfer-dom>
-      <previewer :list="img_list" ref="previewer" :options="options"></previewer>
+      <previewer :list="$store.state.chat.img_list" ref="previewer" :options="options"></previewer>
     </div>
   </div>
 </template>
@@ -122,7 +122,7 @@
 import { Group, XTextarea, WechatEmotion as Emotion, Swiper, SwiperItem } from 'vux';
 import {emojiAnalysis,__emojiObjs} from '@/utils/emoj';
 import axios from 'axios';
-import {dateFtt} from '@/utils/base';
+import {dateFtt,all_srcollBtoom} from '@/utils/base';
 import tpl from "./tpl";
 import { Previewer,TransferDom  } from 'vux';
 import UPNG from 'upng-js';
@@ -146,7 +146,6 @@ export default {
       slideDownTalk: false,
       list: [],
       face_list:[],
-      char_list:[],
       options: {
           getThumbBoundsFn (index) {
               let thumbnail = document.querySelectorAll('.previewer-demo-img')[index];
@@ -155,8 +154,6 @@ export default {
               return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
           }
       },
-      img_list:[],
-      my_chat_room_id:'',
       isPicture:false,
       c:{},//canvas对象
       img_max_width:50,
@@ -204,8 +201,8 @@ export default {
     show(item){
         let index = 0;
         const src = item.original;
-        for(let i = 0 ; i<this.img_list.length; i++){
-          if(src === this.img_list[i].src){
+        for(let i = 0 ; i<this.$store.state.chat.img_list.length; i++){
+          if(src === this.$store.state.chat.img_list[i].src){
               index = i;
               break;
           }
@@ -225,59 +222,6 @@ export default {
         this.$store.state.user.websocketConnection.send(JSON.stringify(req));
     },
 
-    chat_watch(){
-        this.$store.state.user.websocketConnection.onmessage = (res)=>{
-            const data = JSON.parse(res.data);
-            var chat_data = {};
-            if(data.cmd === 'GetChat' && data.content){
-                this.my_chat_room_id = data.content;
-                //this.$store.commit('user/SET_my_chat_room_id',data.content);
-            }
-            else if(data.cmd === 'SpeakFromDialog'){
-                let obj = JSON.parse(data.content);
-                let chat_content = JSON.parse(obj.content);
-                chat_data = {
-                    time: dateFtt("yyyy-MM-dd hh:mm:ss", new Date(obj.createTime)),
-                    type: chat_content.type,
-                    content: chat_content.content,
-                    fead_src: '',
-                    from: 'others',
-                };
-                //如果是text类型，要重置content类型
-                if (chat_data.type === 'text'){
-                    chat_data.content = emojiAnalysis([chat_data.content]);
-                }
-                else if (chat_data.type === 'img'){
-                    chat_data.original = chat_content.original;
-                    this.img_list.push({
-                        src:chat_content.original
-                    })
-                }
-                else if (chat_data.type === 'shop'){
-                    Object.assign(chat_data, this.create_shop(chat_content));
-                }
-                this.char_list.push(chat_data);
-                this.all_srcollBtoom();
-                console.log('收到消息',this.char_list);
-
-            }
-
-            //受到自己发送的消息
-            else if(data.cmd === 'SendOver'){
-                const id = data.content;
-                for (let i = 0; i < this.char_list.length;i++){
-                    if (this.char_list[i].id === id){
-                        this.char_list[i].is_loading = false;
-                        break;
-                    }
-                }
-            }
-
-            else if(data.cmd === 'Error'){
-                alert(data.content);
-            }
-        };
-    },
 
     create_shop(data){
         const obj = {
@@ -329,25 +273,24 @@ export default {
                     if(data.type === 'text'){
                         obj.type = 'text';
                         obj.content = emojiAnalysis([data.content]);
-                        this.char_list.push(obj);
+                        this.$store.commit('chat/PUSH_char_list',obj);
 
                     }
                     else if (data.type === 'img'){
                         obj.type = 'img';
                         obj.content = data.content;
                         obj.original = data.original;
-                        this.char_list.push(obj);
-                        this.img_list.push({
+                        this.$store.commit('chat/PUSH_char_list',obj);
+                        this.$store.commit('chat/PUSH_img_list',{
                             src:data.original
-                        })
+                        });
                     }
                     else if (data.type === 'shop'){
                         Object.assign(obj, that.create_shop(data));
-                        this.char_list.push(obj);
+                        this.$store.commit('chat/PUSH_char_list',obj);
                     }
                 });
-                this.all_srcollBtoom();
-                console.log(this.char_list);
+                all_srcollBtoom(this);
             }
         })
     },
@@ -380,7 +323,7 @@ export default {
             alert('请输入内容！');
             return;
         }
-        if(this.my_chat_room_id == ''){
+        if(this.$store.state.chat.my_chat_room_id == ''){
             alert('聊天发生错误，请重新进入！');
             return;
         }
@@ -391,7 +334,7 @@ export default {
         obj.content = this.value;
 
         const speaktoDto = {
-            "dialogId": this.my_chat_room_id,
+            "dialogId": this.$store.state.chat.my_chat_room_id,
             "id": id,
             "content":obj
         };
@@ -410,11 +353,11 @@ export default {
         obj.from = 'me';
         obj.content = emojiAnalysis([obj.content]);
 
-        this.char_list.push(obj);
+        this.$store.commit('chat/PUSH_char_list',obj);
 
         this.value = '';
         this.frame_Reset();
-        this.all_srcollBtoom();
+        all_srcollBtoom(this);
 
     },
 
@@ -422,31 +365,6 @@ export default {
         this.isEmotion = false;
         this.isPicture = false;
         this.char_list_top = false;
-    },
-
-    //聊天内容滚动到底部
-    all_srcollBtoom: function() {
-        const that = this;
-        this.$nextTick(function() {
-            this.srcollBtoom();
-            const imgs = document.querySelectorAll('.previewer-demo-img');
-
-            for (let i = 0; i < imgs.length; i++) {
-                if(!imgs[i].getAttribute('isLoad')){
-                    imgs[i].onload = function () {
-                        that.srcollBtoom();
-                        this.setAttribute('isLoad',true);
-                    }
-                }
-
-            }
-        });
-    },
-
-    //滚动到底的计算
-    srcollBtoom: function() {
-        const ele = document.getElementById('im');
-        ele.scrollTop = ele.scrollHeight;
     },
 
     img_select(){
@@ -493,12 +411,10 @@ export default {
                   is_loading: true
                   //original: src
               };
-              that.char_list.push(obj);
+              that.$store.commit('chat/PUSH_char_list',obj);
               that.frame_Reset();
-              that.all_srcollBtoom();
+              all_srcollBtoom(that);
               that.uploadFile_p(obj);
-
-              console.log(end_url);
 
           };
 
@@ -521,20 +437,23 @@ export default {
                 end_obj.original = img_url;
 
                 //找到本地插进去的那个，把真实路径插入进去
-                for (let i = this.char_list.length - 1; i >= 0; i--) {
-                    if (this.char_list[i].id === obj.id) {
-                        this.char_list[i].original = img_url;
+                for (let i = this.$store.state.chat.char_list.length - 1; i >= 0; i--) {
+                    if (this.$store.state.chat.char_list[i].id === obj.id) {
+                        this.$store.state.chat.char_list[i].original = img_url;
                         break;
                     }
                 }
 
-                this.img_list.push({
+                this.$store.commit('chat/PUSH_img_list',{
                     src:img_url
                 });
+                // this.$store.state.chat.img_list.push({
+                //     src:img_url
+                // });
 
                 //图片上传成功，发送聊天
                 var speaktoDto = {
-                    "dialogId": this.my_chat_room_id,
+                    "dialogId": this.$store.state.chat.my_chat_room_id,
                     "id": obj.id,
                     "content": end_obj
                 };
@@ -593,7 +512,7 @@ export default {
 
     get_Speech_list(id){
         this.Speech.child_list = [];
-        this.is_loading = true;
+        this.Speech.is_loading = true;
         talkList({
             pid:id,
             page:1,
@@ -602,9 +521,9 @@ export default {
             if(e.code === 200 && e.data && e.data.rows instanceof Array){
                 this.Speech.child_list = e.data.rows;
             }
-            this.is_loading = false;
+            this.Speech.is_loading = false;
         }).catch(()=>{
-            this.is_loading = false;
+            this.Speech.is_loading = false;
         })
     },
 
@@ -656,14 +575,12 @@ export default {
 
   mounted () {
       this.canvas_init();
-      this.chat_watch();
       this.chat_init();
       this.face_list_init();
       this.chat_record();
       this.get_class_list();
       this.speech_list_init();//话术列表初始化
       this.wx_image =  this.$route.query.wx_image;
-
 
       //this.img_select();
 

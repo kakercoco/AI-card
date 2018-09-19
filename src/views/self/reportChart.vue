@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 17:01:37
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-18 18:08:14
+ * @Last Modified time: 2018-09-19 20:57:44
  */
 <template>
   <div class="report-chart">
@@ -68,9 +68,9 @@
     </div>
     <h3>与我互动</h3>
     <div class="action">
-      <p v-for="(item, index) in countObj" :key="index" class="graph">
+      <p v-for="(item, index) in downChartInfor.for_me" :key="index" class="graph" v-if="item.num>0">
         <span>{{item.name}}</span>
-        <i :style="{width: item.num + '%'}"></i>
+        <i :style="{width: item.num/forTotal*100 + '%'}"></i>
         <b>{{item.num}}</b>
       </p>
     </div>
@@ -97,6 +97,7 @@ export default {
       dataInfor: {},
       dynamicXData: [],
       dynamicYData: [],
+      forTotal: 0,
       downChartInfor: {
         like_company: 0,
         like_me: 0,
@@ -111,23 +112,7 @@ export default {
         num_3: 0,
         num_4: 0,
         user_avtive: {}
-      },
-      countObj: [{
-        name: '查看名片',
-        num: 50
-      }, {
-        name: '查看动态',
-        num: 10
-      }, {
-        name: '查看官网',
-        num: 10
-      }, {
-        name: '查看产品',
-        num: 10
-      }, {
-        name: '拨打电话',
-        num: 10
-      }]
+      }
     }
   },
   methods: {
@@ -137,7 +122,7 @@ export default {
       }
       getMyNums(data)
         .then(res => {
-         this.dataInfor = res.data
+          this.dataInfor = res.data
         })
     },
     tabItemClick () {
@@ -150,6 +135,10 @@ export default {
           for (const key in this.downChartInfor.user_avtive) {
             this.dynamicXData.push(key)
             this.dynamicYData.push(this.downChartInfor.user_avtive[key])
+          }
+          for (let i = 0; i < this.downChartInfor.for_me.length; i++) {
+            const element = this.downChartInfor.for_me[i]
+            this.forTotal += element.num
           }
           this.drawCare()
           this.drawDynamic()
@@ -399,32 +388,39 @@ export default {
         span::after{
           background-color: #ff0000;
         }
-        i{
-          background: linear-gradient(left, #cc00ff, #b1181a);
-        }
       }
       &:nth-child(2){
         span::after{
           background-color: #653ffe;
-        }
-        i{
-          background: linear-gradient(left, #cc00ff, #5747fe);
         }
       }
       &:nth-child(3){
         span::after{
           background-color: #73a6fb;
         }
+      }
+      &:nth-child(5n+1){
+
+        i{
+          background: linear-gradient(left, #cc00ff, #b1181a);
+        }
+      }
+      &:nth-child(5n+2){
+        i{
+          background: linear-gradient(left, #cc00ff, #5747fe);
+        }
+      }
+      &:nth-child(5n+3){
         i{
           background: linear-gradient(left, #cc00ff, #6eaffb);
         }
       }
-      &:nth-child(4){
+      &:nth-child(5n+4){
         i{
           background: linear-gradient(left, #cd01fd, #fd5b66);
         }
       }
-      &:nth-child(5){
+      &:nth-child(5n+5){
         i{
           background: linear-gradient(left, #c781f9, #0fba40);
         }

@@ -57,7 +57,7 @@
               </div>
               <img src="@/assets/img/comment.png" alt="" class="fr comment-icon">
             </popover>
-            <span>{{item.create_time}}</span>
+            <span>{{item.time}}</span>
           </div>
           <div class="comment-content">
             <div style="height: 0.15rem" v-if="item.praise && item.praise.rows.length > 0 && item.comment && item.comment.rows.length > 0"></div>
@@ -107,6 +107,7 @@
 import { Previewer, TransferDom, Popover, XDialog } from 'vux'
 import { Scroller } from 'vux'
 import { init_list,click_good,to_comment } from '@/api/dynamic'
+import {dateFtt} from '@/utils/base';
 export default {
   name: 'news',
   directives: {
@@ -199,7 +200,6 @@ export default {
                 let list = e.data.rows;
                 let max_page = Math.ceil(e.data.total / 10);
                 list.map((val,i)=>{
-                    let time = val.update_time;
                     //公司动态就一张图片
                     if (typeof val.cover === 'string' && val.cover != ''){
                         const id = Number(Math.random().toString().substr(3, 10) + Date.now()).toString(36);
@@ -229,7 +229,7 @@ export default {
                     }
 
                     //处理时间
-                    val.update_time = time.split(' ')[0];
+                    val.time = dateFtt("yyyy-MM-dd hh:mm:ss", new Date(val.create_time*1000));
 
                     //点赞开关
                     val.comment_two = false;
@@ -249,6 +249,7 @@ export default {
                 console.log(this.data_list);
             }
         }).catch((err)=>{
+            console.log(err);
             this.isAjax = true;
         })
     },

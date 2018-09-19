@@ -2,25 +2,26 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-08 17:56:28
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-08 18:20:05
+ * @Last Modified time: 2018-09-19 21:15:53
  */
 <template>
   <div class="follow">
     <group>
-      <popup-radio title="选择跟进常用语" :options="options1" @on-hide="hide" v-model="option1">
+      <popup-radio title="选择跟进常用语" :options="options" @on-hide="hide" v-model="option">
       </popup-radio>
     </group>
     <group title="跟进描述">
       <x-textarea placeholder="输入文字" v-model="value" autosize></x-textarea>
     </group>
     <p class="btn">
-      <x-button type="primary">确定</x-button>
+      <x-button type="primary" @click.native="save">确定</x-button>
     </p>
   </div>
 </template>
 
 <script>
 import { Group, PopupRadio, XTextarea, XButton } from 'vux'
+import { followCreate, followSave } from '@/api/customer'
 
 export default {
   name: 'clientFollow',
@@ -32,19 +33,39 @@ export default {
   },
   data () {
     return {
-      option1: '',
+      option: '',
       value: '',
-      options1: ['标记一下，可以有合作意向', 'B', 'C']
+      id: this.$route.query.id,
+      options: ['标记一下，可以有合作意向']
     }
   },
   methods: {
     hide () {
-      if (this.option1 !== '') {
-        this.value = this.option1
+      if (this.option !== '') {
+        this.value = this.option
       }
+    },
+    getFollowCreate () {
+      followCreate()
+        .then(res => {
+          this.options = res.data
+        })
+    },
+    save () {
+      const data = {
+        customer_id: this.id,
+        content: this.value
+      }
+      followSave(data)
+        .then(res => {
+          this.$router.push({
+            path: '/client'
+          })
+        })
     }
   },
   mounted () {
+    this.getFollowCreate()
   }
 }
 </script>

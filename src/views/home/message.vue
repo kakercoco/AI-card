@@ -12,7 +12,7 @@
       <!--<p>暂无消息提醒</p>-->
     <!--</div>-->
     <ul class="list-message">
-      <li class="card-shadow" v-for="(item, index) in messageList" :key="index" @click="gotoIM(item)">
+      <li class="card-shadow" v-for="(item, index) in $store.state.message.messageList" :key="index" @click="gotoIM(item)">
         <badge :text="item.num" class="my-badge" v-if="item.num != 0"></badge>
         <img :src="item.wx_image ? item.wx_image : '/static/image/moren.jpg'" alt="">
         <div>
@@ -32,7 +32,7 @@
 <script>
 import { Badge } from 'vux'
 import axios from 'axios';
-import {get_users,get_list,look} from '@/api/message';
+import {get_list,look} from '@/api/message';
 import {dateFtt} from '@/utils/base';
 export default {
   name: 'message',
@@ -76,65 +76,65 @@ export default {
 
     },
 
-    async init(){
-        const data = {
-            "userId":this.$store.state.user.info.message_id,
-            "token": this.$store.state.user.my_chat_token
-        };
-
-        let messageIds = [];
-        const my_message_id = this.$store.state.user.message_id;
-
-        let chat_data = await axios({
-            method:"POST",
-            url:`${this.$store.state.user.chat_domain}/chatapi/getChatList`,
-            data:JSON.stringify(data)
-        });
-
-        if(chat_data.status === 200 && chat_data.data && chat_data.data.message){
-            var message_list = JSON.parse(chat_data.data.message);//pkid 就是回话id
-
-            message_list.map((val,i)=>{
-                const message_ids = val.code.split('|');
-                val.other_message_id = message_ids[0] === my_message_id ? message_ids[1] : message_ids[0];
-                messageIds.push(val.other_message_id);
-                val.unread = 1;
-                val.time = dateFtt("yyyy-MM-dd", new Date(val.createtime));
-            });
-        }
-        else{
-            return
-        }
-
-        if(messageIds.length == 0){
-            return
-        }
-
-        const messageIds_str = messageIds.join(',')
-        let users = await get_users({
-            message_id:messageIds.join(',')
-        });
-
-        if(users.code === 200 && users.data && users.data instanceof Array){
-            for(let i = 0;i<message_list.length;i++){
-                const m_one = message_list[i];
-                for(let j = 0;j<users.data.length;j++){
-                    if(m_one.other_message_id == users.data[j].message_id){
-                        m_one.wx_name = users.data[j].wx_name;
-                        m_one.wx_openid = users.data[j].wx_openid;
-                        m_one.wx_image = users.data[j].wx_image;
-                    }
-                }
-            }
-        }
-
-
-
-        console.log(message_list);
-        this.messageList = message_list;
-
-
-    },
+    // async init(){
+    //     const data = {
+    //         "userId":this.$store.state.user.info.message_id,
+    //         "token": this.$store.state.user.my_chat_token
+    //     };
+    //
+    //     let messageIds = [];
+    //     const my_message_id = this.$store.state.user.message_id;
+    //
+    //     let chat_data = await axios({
+    //         method:"POST",
+    //         url:`${this.$store.state.user.chat_domain}/chatapi/getChatList`,
+    //         data:JSON.stringify(data)
+    //     });
+    //
+    //     if(chat_data.status === 200 && chat_data.data && chat_data.data.message){
+    //         var message_list = JSON.parse(chat_data.data.message);//pkid 就是回话id
+    //
+    //         message_list.map((val,i)=>{
+    //             const message_ids = val.code.split('|');
+    //             val.other_message_id = message_ids[0] === my_message_id ? message_ids[1] : message_ids[0];
+    //             messageIds.push(val.other_message_id);
+    //             val.unread = 1;
+    //             val.time = dateFtt("yyyy-MM-dd", new Date(val.createtime));
+    //         });
+    //     }
+    //     else{
+    //         return
+    //     }
+    //
+    //     if(messageIds.length == 0){
+    //         return
+    //     }
+    //
+    //     const messageIds_str = messageIds.join(',')
+    //     let users = await get_users({
+    //         message_id:messageIds.join(',')
+    //     });
+    //
+    //     if(users.code === 200 && users.data && users.data instanceof Array){
+    //         for(let i = 0;i<message_list.length;i++){
+    //             const m_one = message_list[i];
+    //             for(let j = 0;j<users.data.length;j++){
+    //                 if(m_one.other_message_id == users.data[j].message_id){
+    //                     m_one.wx_name = users.data[j].wx_name;
+    //                     m_one.wx_openid = users.data[j].wx_openid;
+    //                     m_one.wx_image = users.data[j].wx_image;
+    //                 }
+    //             }
+    //         }
+    //     }
+    //
+    //
+    //
+    //     console.log(message_list);
+    //     this.messageList = message_list;
+    //
+    //
+    // },
 
     get_message_list(){
         get_list().then((res)=>{
@@ -150,8 +150,10 @@ export default {
                     }
 
                 });
-                this.messageList = list;
-                console.log('消息',list);
+
+                this.$store.commit('message/SET_messageList',list);
+                //this.messageList = list;
+                //console.log('消息',list);
             }
         });
     },
@@ -177,69 +179,67 @@ export default {
         return end_obj;
     },
 
-    chat_watch(){
-        this.$store.state.user.websocketConnection.onmessage = (res)=>{
-            const data = JSON.parse(res.data);
-            if(data.cmd === 'SpeakFromDialog' && data.content){
-                const chat_obj = JSON.parse(data.content);
-                //存在内容
-                if(chat_obj.content){
-                    chat_obj.content_obj = JSON.parse(chat_obj.content);
-                    var end_obj = this.create_message(chat_obj);
-
-
-                    //判断这个用户是否在列表中，如果再列表中，直接插入消息
-                    let isHave = false;
-                    for(let i = 0;i<this.messageList.length;i++){
-                        if(this.messageList[i].message_id ==  chat_obj.speakerId){
-                            isHave = true;
-                            //直接插入
-                            Object.assign(this.messageList[i],end_obj);
-                            this.messageList[i].num++;
-                            console.log(this.messageList);
-                            break;
-                        }
-                    }
-
-                    //不存在，做请求
-                    if(!isHave){
-                        //做请求要信息
-                        get_users({
-                            message_id:chat_obj.speakerId
-                        }).then((ev)=>{
-                            if(ev.code === 200 && ev.data && ev.data instanceof Array){
-                                const user = ev.data[0];
-                                const message = {
-                                    is_read:0,
-                                    num:1,
-                                    message_id:chat_obj.speakerId ? chat_obj.speakerId : user.message_id,
-                                    uid:user.id,
-                                    wx_image:user.wx_image,
-                                    wx_name:user.wx_name
-                                };
-                                Object.assign(message,end_obj);
-                                this.messageList.push(message);
-                            }
-                        })
-
-                    }
-
-                }
-
-            }
-
-        }
-    }
+    // chat_watch(){
+    //     this.$store.state.user.websocketConnection.onmessage = (res)=>{
+    //         const data = JSON.parse(res.data);
+    //         if(data.cmd === 'SpeakFromDialog' && data.content){
+    //             const chat_obj = JSON.parse(data.content);
+    //             console.log(chat_obj);
+    //             //存在内容
+    //             if(chat_obj.content){
+    //                 chat_obj.content_obj = JSON.parse(chat_obj.content);
+    //                 var end_obj = this.create_message(chat_obj);
+    //
+    //
+    //                 //判断这个用户是否在列表中，如果再列表中，直接插入消息
+    //                 let isHave = false;
+    //                 for(let i = 0;i<this.messageList.length;i++){
+    //                     if(this.messageList[i].message_id ==  chat_obj.speakerId){
+    //                         isHave = true;
+    //                         //直接插入
+    //                         Object.assign(this.messageList[i],end_obj);
+    //                         this.messageList[i].num++;
+    //                         console.log(this.messageList);
+    //                         break;
+    //                     }
+    //                 }
+    //
+    //                 //不存在，做请求
+    //                 if(!isHave){
+    //                     //做请求要信息
+    //                     get_users({
+    //                         message_id:chat_obj.speakerId
+    //                     }).then((ev)=>{
+    //                         if(ev.code === 200 && ev.data && ev.data instanceof Array){
+    //                             const user = ev.data[0];
+    //                             const message = {
+    //                                 is_read:0,
+    //                                 num:1,
+    //                                 message_id:chat_obj.speakerId ? chat_obj.speakerId : user.message_id,
+    //                                 uid:user.id,
+    //                                 wx_image:user.wx_image,
+    //                                 wx_name:user.wx_name
+    //                             };
+    //                             Object.assign(message,end_obj);
+    //                             this.messageList.push(message);
+    //                         }
+    //                     })
+    //
+    //                 }
+    //
+    //             }
+    //
+    //         }
+    //
+    //     }
+    // }
 
   },
   mounted () {
       this.get_message_list();
-      this.chat_watch();
-      //this.chat_watch();
+
   },
-    activated(){
-        console.log('activated');
-    }
+
 }
 </script>
 

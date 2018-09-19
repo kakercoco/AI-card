@@ -2,27 +2,27 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-18 21:02:57
+ * @Last Modified time: 2018-09-19 14:12:26
  */
 <template>
   <div class="edit-card">
     <div class="my-card" id="card">
       <img :src="seletedTemplate" alt="" class="card-bg">
       <div class="card-infor " :class="selectedClass">
-        <p class="company">上海飞天科技有限公司</p>
+        <p class="company">{{cardInfor.company}}</p>
         <p class="bio">
-          <img src="@/assets/img/u112.png" alt="" class="avatar">
-          <span class="name">Top Man</span>
+          <img :src="cardInfor.image" alt="" class="avatar">
+          <span class="name">{{cardInfor.username}}</span>
           <span class="job">销售总监</span>
         </p>
-        <p class="phone"><i class="iconfont icon-dianhua1"></i> 156-0000-0000</p>
-        <p class="address"><i class="iconfont icon-dingwei"></i> 上海市虹口区赤峰路永乐大厦7F</p>
+        <p class="phone"><i class="iconfont icon-dianhua1"></i>{{cardInfor.phone}}</p>
+        <p class="address"><i class="iconfont icon-dingwei"></i>{{cardInfor.address}}</p>
       </div>
     </div>
     <h5>名片样式</h5>
     <scroller ref="scrollerEvent" lock-y :scrollbar-x='false' style="margin-top: 0.2rem;">
      <div class="template-list">
-        <img :src="item" alt="" :class="{active: index === selectedIndex}" v-for="(item, index) in templateCard" :key="index" @click="changeTemplate(item, index)">
+        <img :src="item" alt="" :class="{active: index === templateId}" v-for="(item, index) in templateCard" :key="index" @click="changeTemplate(item, index)">
       </div>
     </scroller>
     <h5>名片头像</h5>
@@ -77,11 +77,17 @@
     <h5>我的图片</h5>
     <div class="self-img clearfix">
       <img src="@/assets/img/u112.png" alt="">
+      <span>
+        <form action="" id="album">
+          <input type="file" accept="image/*;capture=camera" multiple="multiple" @change="albumFile($event)" name="avatar"/>
+        </form>
+        <x-icon type="ios-plus-empty" class="icon-insert"></x-icon>
+      </span>
     </div>
     <h5>添加标签</h5>
     <div class="self-tag clearfix">
       <ul>
-        <li v-for="(item, index) in cardInfor.tag" :key="index">{{item}}<x-icon type="ios-minus" class="icon-delete" @click.native="removeTag(index)"></x-icon></li>
+        <li v-for="(item, index) in cardInfor.tag" :key="index">{{item.tag_name}}<x-icon type="ios-minus" class="icon-delete" @click.native="removeTag(index,item.id)"></x-icon></li>
         <li><x-icon type="ios-plus-empty" class="icon-insert" @click.native="openTagDialog"></x-icon></li>
       </ul>
     </div>
@@ -124,7 +130,7 @@
 <script>
 import { Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle } from 'vux'
 import html2canvas from 'html2canvas'
-import { updateCard, cardRead } from '@/api/card'
+import { updateCard, cardRead, cardTagDelete, cardTagInsert } from '@/api/card'
 import { upload_img } from '@/api/upload_file'
 
 export default {
@@ -142,13 +148,12 @@ export default {
         company: '',
         address: ''
       },
-      bio: '',
-      tagKeyword: '',
+      templateId: 0, // 选中的模板id
+      tagKeyword: '', // 新增的标签内容
       insertTagDialog: false,
       audioDialog: false,
       percent: 80,
       seletedTemplate: require('@/assets/card/1.png'),
-      selectedIndex: 0,
       selectedClass: 'card-template-1',
       templateCard: [
         require('@/assets/card/1.png'),
@@ -173,16 +178,31 @@ export default {
       this.tagKeyword = ''
     },
     insertTag () {
-      this.cardInfor.tag.push(this.tagKeyword)
-      this.closeTagDialog()
+      const data = {
+        tag: this.tagKeyword
+      }
+      cardTagInsert(data)
+        .then(res => {
+          this.cardInfor.tag.push({tag_name: this.tagKeyword, id: res.data.card_tag_id})
+          this.closeTagDialog()
+        })
     },
-    removeTag (index) {
-      this.cardInfor.tag.splice(index, 1)
+    removeTag (index, id) {
+      const data = {
+        tag_id: id
+      }
+      cardTagDelete(data)
+        .then(res => {
+          this.cardInfor.tag.splice(index, 1)
+        })
     },
     getCard () {
       cardRead()
         .then(res => {
           this.cardInfor = res.data
+          this.seletedTemplate = require(`@/assets/card/${this.cardInfor.style_id + 1}.png`)
+          this.selectedClass = `card-template-${this.cardInfor.style_id + 1}`
+          this.templateId = this.cardInfor.style_id
         })
     },
     changeFile (e) {
@@ -224,7 +244,8 @@ export default {
     },
     changeTemplate (val, index) {
       this.seletedTemplate = val
-      this.selectedIndex = index
+      this.templateId = index
+      this.cardInfor.style_id = index
       this.selectedClass = `card-template-${index + 1}`
       setTimeout(() => {
         this.switchImg()
@@ -248,7 +269,11 @@ export default {
     },
     switchImg () {
       let dataURL
-      html2canvas(document.querySelector('#card')).then(canvas => {
+      const config = {
+        logging: false,
+        useCORS: true
+      }
+      html2canvas(document.querySelector('#card'), config).then(canvas => {
         dataURL = canvas.toDataURL('image/png')
         let blob = this.dataURLtoBlob(dataURL)// base64转blob对象，用于上传
         // var size = blob.size
@@ -261,13 +286,13 @@ export default {
         fd.append('avatar', blob, filename)
         upload_img(fd).then(res => {
           if (res.data && res.data.url) {
-            // this.cardInfor.image = res.data.url
+            this.cardInfor.card_image = res.data.url
           }
         })
       })
     },
     save () {
-      this.cardInfor.tag = this.cardInfor.tag.join(',')
+      delete this.cardInfor.tag
       updateCard(this.cardInfor)
         .then(res => {
 
@@ -468,6 +493,32 @@ export default {
       height: 2rem;
       margin-right: 0.2rem;
       float: left;
+      border-radius: 0.1rem;
+    }
+    &>span{
+      position: relative;
+      width: 2rem;
+      height: 2rem;
+      float: left;
+      .icon-insert{
+        width: 2rem;
+        height: 2rem;
+        fill: #ccc;
+        border-radius: 0.1rem;
+        border: 1px solid #ccc;
+      }
+    }
+    form{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      input{
+        width: 100%;
+        height: 100%;
+      }
     }
   }
   .self-tag{

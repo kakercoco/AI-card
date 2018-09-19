@@ -41,3 +41,21 @@ export function getPosterImg () {
     method: 'get'
   })
 }
+
+export function cardTagDelete (data) {
+  // 删除名片上的标签
+  return request({
+    url: '/api/card/employ_tag_del',
+    method: 'get',
+    params: data
+  })
+}
+
+export function cardTagInsert (data) {
+  // 增加名片上的标签
+  return request({
+    url: '/api/card/set_employ_tag',
+    method: 'post',
+    data: data
+  })
+}

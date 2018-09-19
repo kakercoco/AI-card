@@ -1,14 +1,19 @@
 
 const app = {
+  namespaced: true,
   state: {
-    device: 'desktop'
+    device: 'desktop',
+    Unread:0
   },
   mutations: {
-    // CLOSE_SIDEBAR: (state, withoutAnimation) => {
-    //   Cookies.set('sidebarStatus', 1)
-    //   state.sidebar.opened = false
-    //   state.sidebar.withoutAnimation = withoutAnimation
-    // },
+    //未读消息
+    ADD_Unread:(state) => {
+        state.Unread ++
+    },
+
+    Empty:(state) => {
+        state.Unread = 0;
+    }
   },
   actions: {
     ToggleSideBar: ({ commit }) => {

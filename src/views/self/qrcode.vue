@@ -2,11 +2,11 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-14 14:26:39
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-18 16:32:31
+ * @Last Modified time: 2018-09-19 16:03:31
  */
 <template>
   <div class="qrcode">
-    <img src="@/assets/img/selfCard.png" alt="" class="card">
+    <img :src="img" alt="" class="card">
   </div>
 </template>
 
@@ -16,13 +16,14 @@ export default {
   name: 'qrcode',
   data () {
     return {
+      img: ''
     }
   },
   methods: {
     getPosterImg () {
       getPosterImg()
         .then(res => {
-
+          this.img = res.data.card_poster
         })
     }
   },

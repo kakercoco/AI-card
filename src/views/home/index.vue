@@ -5,23 +5,30 @@
  * @Last Modified time: 2018-09-07 16:27:28
  */
 <template>
-  <div class="index">
+  <div class="index footprint">
     <tab :line-width="2" v-model="tabIndex">
       <tab-item @on-item-click="onItemClick">时间</tab-item>
       <tab-item @on-item-click="onItemClick">行为</tab-item>
       <tab-item @on-item-click="onItemClick">互动</tab-item>
     </tab>
-    <div v-show="tabIndex === 0">
-      <p class="tac time">●&nbsp;&nbsp; 2018/08/05  15:50</p>
-      <ul class="logs-list">
-        <li v-for="(item, index) in 8" :key="index" @click="gotoClient">
-          <img src="@/assets/img/u112.png" alt="">
-          <div>
-            T-cloud Man <i>拨打</i>了你的<i>手机号码</i>，要保持电话畅通。
-          </div>
-          <span>15:59</span>
-        </li>
-      </ul>
+    <div v-show="tabIndex === 0" class="time_frame">
+      <!--<p class="tac time">●&nbsp;&nbsp; 2018/08/05  15:50</p>-->
+      <scroller
+              v-if="timeScroller.test"
+              height="100%"
+              lock-x
+              :use-pullup="true"
+              :pullup-config="pullup_config"
+              @on-pullup-loading="timeLoadMore"
+              ref="scrollerBottom">
+        <ul class="logs-list">
+          <li v-for="(item, index) in time_list" :key="index" @click="gotoClient(item)">
+            <img :src="item.wx_image ? item.wx_image : '/static/image/moren.jpg'">
+            <div v-html="item.ele"></div>
+            <span>{{item.time}}</span>
+          </li>
+        </ul>
+      </scroller>
     </div>
     <div v-show="tabIndex === 1" class="tab-action">
       <div class="action-card card-shadow clearfix">
@@ -120,14 +127,15 @@
         <x-button type="primary" @click.native="sureTime">确定</x-button>
       </p>
     </x-dialog>
+    <div class="Unread_dialog" v-if="$store.state.app.Unread != 0" @click="Refresh">未读消息:{{$store.state.app.Unread}}</div>
   </div>
 </template>
 
 <script>
 import { Tab, TabItem, Scroller, XDialog, XButton, Group, Cell, Datetime } from 'vux'
-
+import {dateFtt,config} from '@/utils/base';
 import {get_user_info} from '@/api/user_info'
-import {init_list} from '@/api/footprint'
+import {init_list,init_Interaction} from '@/api/footprint'
 
 export default {
   name: 'index',
@@ -143,6 +151,7 @@ export default {
   },
   data () {
     return {
+      time_list:[],
       tabIndex: 0,
       startTIme: '',
       endTime: '',
@@ -152,28 +161,41 @@ export default {
       }, {
         status: true
       }],
-      countObj: [{
-        name: '查看名片',
-        num: 50
-      }, {
-        name: '查看动态',
-        num: 10
-      }, {
-        name: '查看官网',
-        num: 10
-      }, {
-        name: '查看产品',
-        num: 10
-      }, {
-        name: '拨打电话',
-        num: 10
-      }],
+      countObj: [],
       loadingConfig: {
         upContent: '上拉加载更多',
         downContent: '释放后加载',
         loadingContent: '加载中...',
         content: '请上拉刷新数据'
-      }
+      },
+      timeScroller:{
+          page:1,
+          pagesize:10,
+          max_page:0,
+          isAjax:true,
+          total:0,
+          test:true
+      },
+      interactionScroller:{
+          page:1,
+          pagesize:10,
+          max_page:0,
+          isAjax:true,
+          total:0,
+          test:true
+      },
+      pullup_config: {
+          content: '加载中...',
+          pullUpHeight: 60,
+          height: 40,
+          autoRefresh: false,
+          downContent: '加载中...',
+          upContent: '加载中...',
+          loadingContent: '加载中...'
+      },
+      scrollerStatus: {
+          pullupStatus: 'default'
+      },
     }
   },
   methods: {
@@ -185,18 +207,15 @@ export default {
       this.messageList[index].status = !this.messageList[index].status
     },
 
-    loadMore () {
-      this.bottomCount += 5
-      if (this.bottomCount > 20) {
-        this.loadingConfig.pullupStatus = 'disabled' // 禁用下拉
-        this.$refs.scroller.reset()
-        this.loadingConfig.content = '无更多数据'
-      } else {
-        this.$nextTick(() => {
-          this.$refs.scroller.donePullup()
-          this.$refs.scroller.reset()
-        })
-      }
+    timeLoadMore () {
+        console.log(123);
+        if (this.timeScroller.isAjax && this.timeScroller.page < this.timeScroller.max_page) {
+            this.timeScroller.page ++;
+            this.get_time_list();
+        }
+        else if(this.page >= this.max_page){
+            this.$refs.scrollerBottom.disablePullup() // 禁用上拉
+        }
     },
 
     showDateChoose () {
@@ -211,9 +230,12 @@ export default {
       // this.startTIme = val
     },
 
-    gotoClient () {
+    gotoClient (item) {
       this.$router.push({
-        path: '/client'
+        path: '/client',
+        query:{
+            uid:item.uid
+        }
       })
     },
 
@@ -236,19 +258,107 @@ export default {
     },
 
     get_time_list(){
+        this.timeScroller.isAjax = false;
         init_list({
-            type:'time'
+            type:'time',
+            page:this.timeScroller.page,
+            pagesize: this.timeScroller.pagesize,
         }).then((e)=>{
-            debugger;
+            this.timeScroller.isAjax = true;
+            this.$vux.loading.hide();
+            if(e.code === 200 && e.data && e.data.rows instanceof Array){
+                let list = e.data.rows;
+                list.map((val,i)=>{
+                    val.ele = config[val.type] ? val.wx_name + config[val.type] : '';
+                    val.time = dateFtt("MM-dd hh:mm", new Date(val.create_time));
+                });
+                this.time_list = this.time_list.concat(list);
+                this.timeScroller.total = e.data.total;
+                this.timeScroller.max_page = Math.ceil(e.data.total / 10);
+                this.$nextTick(() => {
+                    this.$refs.scrollerBottom.donePullup();//上啦完成
+                    this.$refs.scrollerBottom.enablePullup();//恢复上啦
+                    this.$refs.scrollerBottom.reset()
+                });
+            }
+        }).catch((err)=>{
+            console.log(err);
+            this.$vux.loading.hide();
+            this.timeScroller.isAjax = true;
         })
-    }
+    },
+
+    loadMore(){
+
+    },
+
+    Refresh(){
+        if (this.timeScroller.isAjax){
+            //重置
+            this.$vux.loading.show({
+                text: '加载中...'
+            });
+            this.$nextTick(()=>{
+                this.timeScroller.test = false;
+                this.$nextTick(()=>{
+                    this.$store.commit('app/Empty');
+                    this.timeScroller.test = true;
+                    this.time_list = [];
+                    this.timeScroller.page = 1;
+                    this.timeScroller.total = 0;
+                    this.timeScroller.max_page = 0;
+                    this.get_time_list();
+                })
+            })
+
+        }
+    },
+
+    Interaction_init(){
+          this.interactionScroller.isAjax = false;
+          init_list({
+              type:'interact',
+              page:this.interactionScroller.page,
+              pagesize: this.interactionScroller.pagesize,
+          }).then((e)=>{
+              debugger;
+              this.timeScroller.isAjax = true;
+              this.$vux.loading.hide();
+              if(e.code === 200 && e.data && e.data.rows instanceof Array){
+                  let list = e.data.rows;
+                  list.map((val,i)=>{
+                      val.ele = config[val.type] ? val.wx_name + config[val.type] : '';
+                      val.time = dateFtt("MM-dd hh:mm", new Date(val.create_time));
+                  });
+                  this.time_list = this.time_list.concat(list);
+                  this.timeScroller.total = e.data.total;
+                  this.timeScroller.max_page = Math.ceil(e.data.total / 10);
+                  this.$nextTick(() => {
+                      this.$refs.scrollerBottom.donePullup();//上啦完成
+                      this.$refs.scrollerBottom.enablePullup();//恢复上啦
+                      this.$refs.scrollerBottom.reset()
+                  });
+              }
+          }).catch((err)=>{
+              console.log(err);
+              this.$vux.loading.hide();
+              this.timeScroller.isAjax = true;
+          })
+    },
+
+
+
+
+
+
+
+
+
 
   },
   mounted () {
-
       this.get_time_list();
-
-
+      this.Interaction_init();
   }
 }
 </script>
@@ -259,6 +369,27 @@ $color:#717171;
   overflow: auto;
   height: 100%;
   padding-top: 44px;
+  .Unread_dialog{
+    position: fixed;
+    top:2rem;
+    right: 0;
+    width: 2.2rem;
+    height: 0.6rem;
+    z-index: 999;
+    background: #fff;
+    border-bottom-left-radius: 20px;
+    border-top-left-radius: 20px;
+    box-shadow: 0 3px 10px #d6e1fb;
+    border: 1px #d6e1fb solid;
+    line-height: 0.6rem;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .time_frame{
+    height:100%;
+  }
   .vux-tab-wrap{
     position: fixed;
     top: 0;

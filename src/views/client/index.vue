@@ -2,31 +2,29 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 16:25:17
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-10 14:50:05
+ * @Last Modified time: 2018-09-19 21:36:27
  */
 <template>
   <div class="client">
     <div class="card-shadow card">
       <div class="top">
-        <img src="@/assets/img/u112.png" alt="" class="avatar">
+        <img :src="clientInfor.wx_image" alt="" class="avatar">
         <div>
-          <p><span class="name">Top Man</span><img src="@/assets/icon/edit.png" class="fr edit" alt="" @click="gotoInfor"></p>
+          <p><span class="name">{{clientInfor.wx_name}}</span><img src="@/assets/icon/edit.png" class="fr edit" alt="" @click="gotoInfor"></p>
           <p class="tag-list">
-            <span>未成交</span>
-            <span>添加标签</span>
-            <span>添加标签</span>
+            <span v-for="(item, index) in clientInfor.tag" :key="index">{{item}}</span>
             <x-icon type="ios-plus-outline"  class="fr icon-insert" @click.native="gotoTag"></x-icon>
           </p>
         </div>
       </div>
       <div class="center clearfix">
         <p class="fl">
-          <popup-picker :data="options1"  v-model="option1" value-text-align="center">
+          <popup-picker :data="options1"  v-model="option1" value-text-align="center" @on-change="customerSetTurnover">
           </popup-picker>
           <span>设置成交概率</span>
         </p>
         <p class="fr">
-            <datetime v-model="valueReadonly" ></datetime>
+            <datetime v-model="clientInfor.turnover_date" @on-confirm="customerSetTurnoverDate"></datetime>
           <span>预设成交时间</span>
         </p>
       </div>
@@ -42,13 +40,13 @@
       </div>
     </div>
     <div class="client-action" v-show="active ===0">
-      <p v-if="false">没有更多数据</p>
+      <p v-if="visitList.length <= 0">没有更多数据</p>
       <ul>
-        <li v-for="(item, index) in 5" :key="index">
-          <p class="time">2018-09-09</p>
+        <li v-for="(item, index) in visitList" :key="index">
+          <p class="time">{{Global.parseTime(item.create_time, '{y}-{m}-{d}')}}</p>
           <div class="card-shadow">
-            <img src="@/assets/img/u112.png" alt="">
-            <p>T-LL在7日内和你互动了80次</p>
+            <img :src="item.wx_image" alt="">
+            <p>{{item.wx_name}}在7日内和你互动了{{item.num}}次</p>
           </div>
         </li>
       </ul>
@@ -113,6 +111,7 @@
 <script>
 import { PopupRadio, PopupPicker, Group, Datetime, Timeline, TimelineItem, Tab, TabItem } from 'vux'
 import echarts from 'echarts'
+import { customerRead, customerSetTurnover, customerSetTurnoverDate, visitIndex } from '@/api/customer'
 
 export default {
   name: 'client',
@@ -128,9 +127,12 @@ export default {
   },
   data () {
     return {
+      clientInfor: {}, // 客户信息
       option1: ['80%'],
-      valueReadonly: '2018-09-09',
       active: 2,
+      visitList: [], // 互动列表
+      id: 0,
+      uid: 2,
       countObj: [{
         name: '查看名片',
         num: 50
@@ -212,14 +214,62 @@ export default {
       }
       this.drawChart(option, 'dynamic')
     },
+    getCustomer () {
+      const data = {
+        id: this.uid
+      }
+      customerRead(data)
+        .then(res => {
+          this.clientInfor = res.data.info
+          this.id = this.clientInfor.id
+          this.option1 = [`${this.clientInfor.turnover}%`]
+        })
+    },
+    customerSetTurnover (val) {
+      const num = parseInt(val[0].substring(0, val[0].length - 1))
+      const data = {
+        id: this.id,
+        turnover: num
+      }
+      customerSetTurnover(data)
+        .then(res => {
+
+        })
+    },
+    customerSetTurnoverDate (val) {
+      const data = {
+        id: this.id,
+        date: val
+      }
+      customerSetTurnoverDate(data)
+        .then(res => {
+
+        })
+    },
+    getVisitIndex () {
+      const data = {
+        type: 'details',
+        uid: this.uid
+      }
+      visitIndex(data)
+        .then(res => {
+          this.visitList = res.data.rows
+        })
+    },
     gotoFollow () {
       this.$router.push({
-        path: '/clientFollow'
+        path: '/clientFollow',
+        query: {
+          id: this.id
+        }
       })
     },
     gotoInfor () {
       this.$router.push({
-        path: '/clientInfor'
+        path: '/clientInfor',
+        query: {
+          id: this.clientInfor.id
+        }
       })
     },
     gotoIM () {
@@ -229,7 +279,10 @@ export default {
     },
     gotoTag () {
       this.$router.push({
-        path: '/clientTag'
+        path: '/clientTag',
+        query: {
+          uid: this.clientInfor.uid
+        }
       })
     }
   },
@@ -247,6 +300,8 @@ export default {
   mounted () {
     this.drawCare()
     this.drawDynamic()
+    this.getCustomer()
+    this.getVisitIndex()
   }
 }
 </script>
@@ -266,6 +321,7 @@ export default {
         float: left;
         width: 1.6rem;
         height: 100%;
+        border-radius: 0.1rem;
       }
       &>div{
         width: 4.5rem;
@@ -303,6 +359,7 @@ export default {
             right: -0.06rem;
             fill: #5977fe;
             width: 0.5rem;
+            background-color: #fff;
           }
         }
       }
@@ -311,6 +368,7 @@ export default {
       padding: 0.2rem 0;
       border-bottom: 1px solid #ddd;
       & /deep/ .weui-cell{
+        min-height: 0.32rem;
         padding: 0;
         .weui-cell__ft{
           padding: 0;
@@ -329,6 +387,7 @@ export default {
         }
         & /deep/ .vux-datetime-value{
           color: #717171;
+          min-height: 0.32rem;
         }
       }
     }
