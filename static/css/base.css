@@ -2,3 +2,7 @@
 .companyDetails .contentFrame img{
     width:100%;
 }
+
+.footprint .logs-list li div i{
+    color: #f69600;
+}

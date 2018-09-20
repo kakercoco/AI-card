@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-08 17:56:28
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-19 21:15:53
+ * @Last Modified time: 2018-09-20 16:44:30
  */
 <template>
   <div class="follow">
@@ -58,9 +58,7 @@ export default {
       }
       followSave(data)
         .then(res => {
-          this.$router.push({
-            path: '/client'
-          })
+          this.$router.back(-1)
         })
     }
   },

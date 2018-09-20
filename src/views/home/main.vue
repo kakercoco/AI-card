@@ -6,10 +6,9 @@
  */
 <template>
   <div class="app-main">
-      <!--消息页面加入缓存-->
-      <keep-alive include="message">
-        <router-view></router-view>
-      </keep-alive>
+      <!--消息页面加入缓存 include="message"-->
+      <!--<keep-alive></keep-alive>-->
+      <router-view></router-view>
     <my-footer></my-footer>
   </div>
 </template>

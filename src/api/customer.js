@@ -79,3 +79,12 @@ export function visitIndex (data) {
     params: data
   })
 }
+
+export function followIndex (data) {
+  // 指定客户跟进记录
+  return request({
+    url: '/api/Follow/index',
+    method: 'post',
+    params: data
+  })
+}

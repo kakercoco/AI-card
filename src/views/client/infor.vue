@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-08 18:18:43
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-19 17:17:44
+ * @Last Modified time: 2018-09-20 16:43:14
  */
 <template>
   <div class="client-infor">
@@ -107,7 +107,7 @@ export default {
       }
       customerUpdate(this.inforForm)
         .then(res => {
-
+          this.$router.back(-1)
         })
     }
   },

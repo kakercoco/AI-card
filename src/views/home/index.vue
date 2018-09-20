@@ -11,125 +11,143 @@
       <tab-item @on-item-click="onItemClick">行为</tab-item>
       <tab-item @on-item-click="onItemClick">互动</tab-item>
     </tab>
-    <div v-show="tabIndex === 0" class="time_frame">
-      <!--<p class="tac time">●&nbsp;&nbsp; 2018/08/05  15:50</p>-->
-      <scroller
-              v-if="timeScroller.test"
-              height="100%"
-              lock-x
-              :use-pullup="true"
-              :pullup-config="pullup_config"
-              @on-pullup-loading="timeLoadMore"
-              ref="scrollerBottom">
-        <ul class="logs-list">
-          <li v-for="(item, index) in time_list" :key="index" @click="gotoClient(item)">
-            <img :src="item.wx_image ? item.wx_image : '/static/image/moren.jpg'">
-            <div v-html="item.ele"></div>
-            <span>{{item.time}}</span>
+      <div v-show="tabIndex === 0" class="time_frame">
+        <!--<p class="tac time">●&nbsp;&nbsp; 2018/08/05  15:50</p>-->
+        <scroller
+                v-if="timeScroller.test"
+                height="100%"
+                lock-x
+                :use-pullup="true"
+                :pullup-config="pullup_config"
+                @on-pullup-loading="timeLoadMore"
+                ref="scrollerBottom">
+          <ul class="logs-list">
+            <li v-for="(item, index) in time_list" :key="index" @click="gotoClient(item)">
+              <img :src="item.wx_image ? item.wx_image : '/static/image/moren.jpg'">
+              <div v-html="item.ele"></div>
+              <span>{{item.time}}</span>
+            </li>
+          </ul>
+        </scroller>
+      </div>
+      <div v-show="tabIndex === 1" class="tab-action">
+        <div class="action-card card-shadow clearfix">
+          <p class=" tac">
+            <img src="@/assets/img/datapicker.png" class="fr" alt="">
+            7日内被查看的行为统计
+          </p>
+          <ul>
+            <li @click="gotoCardList()">
+              <img src="@/assets/img/card.png" alt="">
+              <a href="">20次</a>
+              <h5>查看名片</h5>
+            </li>
+            <li @click="gotoWebsiteList()">
+              <img src="@/assets/img/inter.png" alt="">
+              <a href="">20次</a>
+              <h5>查看官网</h5>
+            </li>
+            <li>
+              <img src="@/assets/img/news.png" alt="">
+              <a href="">20次</a>
+              <h5>查看动态</h5>
+            </li>
+            <li>
+              <img src="@/assets/img/assign.png" alt="">
+              <a href="">20次</a>
+              <h5>查看产品</h5>
+            </li>
+          </ul>
+        </div>
+        <ul class="action-list">
+          <li class="card-shadow" @click="gotoCallPhoneList()">
+            <img src="@/assets/icon/phone.png" alt="">
+            <span>拨打电话</span>
+            <i>10次</i>
           </li>
-        </ul>
-      </scroller>
-    </div>
-    <div v-show="tabIndex === 1" class="tab-action">
-      <div class="action-card card-shadow clearfix">
-        <p class=" tac">
-          <img src="@/assets/img/datapicker.png" class="fr" alt="">
-          7日内被查看的行为统计
-        </p>
-        <ul>
-          <li @click="gotoCardList()">
-            <img src="@/assets/img/card.png" alt="">
-            <a href="">20次</a>
-            <h5>查看名片</h5>
+          <li class="card-shadow">
+            <img src="@/assets/icon/service.png" alt="">
+            <span>咨询服务</span>
+            <i>10次</i>
           </li>
-          <li @click="gotoWebsiteList()">
-            <img src="@/assets/img/inter.png" alt="">
-            <a href="">20次</a>
-            <h5>查看官网</h5>
-          </li>
-          <li>
-            <img src="@/assets/img/news.png" alt="">
-            <a href="">20次</a>
-            <h5>查看动态</h5>
-          </li>
-          <li>
-            <img src="@/assets/img/assign.png" alt="">
-            <a href="">20次</a>
-            <h5>查看产品</h5>
+          <li class="card-shadow">
+            <img src="@/assets/icon/audio.png" alt="">
+            <span>播放语音</span>
+            <i>10次</i>
           </li>
         </ul>
       </div>
-      <ul class="action-list">
-        <li class="card-shadow" @click="gotoCallPhoneList()">
-          <img src="@/assets/icon/phone.png" alt="">
-          <span>拨打电话</span>
-          <i>10次</i>
-        </li>
-        <li class="card-shadow">
-          <img src="@/assets/icon/service.png" alt="">
-          <span>咨询服务</span>
-          <i>10次</i>
-        </li>
-        <li class="card-shadow">
-          <img src="@/assets/icon/audio.png" alt="">
-          <span>播放语音</span>
-          <i>10次</i>
-        </li>
-      </ul>
-    </div>
-    <div v-show="tabIndex === 2" style="height:100%;">
-      <scroller lock-x height="100%" :pullup-config="loadingConfig" @on-pullup-loading="loadMore" :use-pullup="true" ref="scroller" :scroll-bottom-offst="200">
-        <ul class="news-list">
-          <div class="card-shadow" v-for="(item, index) in messageList" :key="index" >
-            <li v-if="item.status" @click="toggleDetail(index)">
-              <img src="@/assets/img/u112.png" alt="">
-              <span>T-Wan在7日内和你互动了80次</span>
-              <x-icon type="ios-arrow-down" size="20" class="icon"></x-icon>
-            </li>
-            <div v-else class="news-list-detail">
-              <p class="title">
-                <img src="@/assets/img/datapicker.png" alt="" class="fr" @click="showDateChoose">
-                <img src="@/assets/img/u112.png" alt="" class="avatar">
-              </p>
-              <p class="tac">T-Wan在7日内和你互动了80次</p>
-              <p v-for="(item, index) in countObj" :key="index" class="graph">
-                <span>{{item.name}}</span>
-                <i :style="{width: item.num + '%'}"></i>
-                <b>{{item.num}}</b>
-              </p>
-              <p class="tar" @click="toggleDetail(index)"><x-icon type="ios-arrow-up" size="20" class="icon" ></x-icon></p>
+      <div v-show="tabIndex === 2" style="height:100%;" class="interaction_frame">
+        <scroller
+            lock-x
+            height="100%"
+            :pullup-config="pullup_config"
+            @on-pullup-loading="Interaction_loadMore"
+            :use-pullup="true"
+            ref="scroller">
+          <div>
+            <div class="Interaction_header">
+              <span>{{interactionScroller.time_slot}}内和我的互动统计</span>
+              <img src="@/assets/img/datapicker.png" alt="" class="fr" @click="showDateChoose">
             </div>
+            <ul class="news-list">
+              <div class="card-shadow" v-for="(item, index) in interaction_list" :key="index" >
+                <li v-if="item.status" @click="toggleDetail(index)">
+                  <img :src="item.wx_image ? item.wx_image : '/static/image/moren.jpg'">
+                  <span class="list_title">{{item.wx_name}}在{{interactionScroller.time_slot}}内和你互动了{{item.num}}次</span>
+                  <x-icon type="ios-arrow-down" size="20" class="icon"></x-icon>
+                </li>
+                <div v-else class="news-list-detail">
+                  <p class="title">
+                    <img src="@/assets/img/datapicker.png" alt="" class="fr" style="display: none">
+                    <img :src="item.wx_image ? item.wx_image : '/static/image/moren.jpg'" class="avatar">
+                  </p>
+                  <p class="tac">{{item.wx_name}}在{{interactionScroller.time_slot}}内和你互动了{{item.num}}次</p>
+                  <p v-for="(val, i) in item.typeGroup" :key="i" class="graph">
+                    <span>{{val.title}}</span>
+                    <strong>
+                      <i :style="{width: val.percent + 'rem'}"></i>
+                      <b>{{val.num}}</b>
+                    </strong>
+
+
+                  </p>
+                  <p class="tar" @click="toggleDetail(index)"><x-icon type="ios-arrow-up" size="20" class="icon" ></x-icon></p>
+                </div>
+              </div>
+            </ul>
           </div>
-        </ul>
-      </scroller>
-    </div>
-    <x-dialog v-model="datePickerDialog" class="dialog-datepicker" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%'}">
-      <h5>选择时间段</h5>
-      <group>
-        <datetime v-model="startTIme" format="YYYY-MM-DD" placeholder="请选择开始时间" @on-change="changeStartTime">
-          <span slot="title"></span>
-          <div slot="title">
-            <img src="@/assets/img/datepickerGray.png" alt="" class="fl title-icon">
-            <span>开始</span>
-          </div>
-        </datetime>
-      </group>
-      <group>
-        <datetime v-model="endTime" format="YYYY-MM-DD" placeholder="请选择结束时间">
-          <span slot="title"></span>
-          <div slot="title">
-            <img src="@/assets/img/datepickerGray.png" alt="" class="fl title-icon">
-            <span>结束</span>
-          </div>
-        </datetime>
-      </group>
-      <p class="btn">
-        <x-button type="primary" @click.native="sureTime">确定</x-button>
-      </p>
-    </x-dialog>
-    <div class="Unread_dialog" v-if="$store.state.app.Unread != 0" @click="Refresh">未读消息:{{$store.state.app.Unread}}</div>
+
+        </scroller>
+      </div>
+      <x-dialog v-model="datePickerDialog" class="dialog-datepicker" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%'}">
+        <h5>选择时间段</h5>
+        <group>
+          <datetime v-model="startTIme" format="YYYY-MM-DD" placeholder="请选择开始时间" @on-change="changeStartTime">
+            <span slot="title"></span>
+            <div slot="title">
+              <img src="@/assets/img/datepickerGray.png" alt="" class="fl title-icon">
+              <span>开始</span>
+            </div>
+          </datetime>
+        </group>
+        <group>
+          <datetime v-model="endTime" format="YYYY-MM-DD" placeholder="请选择结束时间">
+            <span slot="title"></span>
+            <div slot="title">
+              <img src="@/assets/img/datepickerGray.png" alt="" class="fl title-icon">
+              <span>结束</span>
+            </div>
+          </datetime>
+        </group>
+        <p class="btn">
+          <x-button type="primary" @click.native="sureTime">确定</x-button>
+        </p>
+      </x-dialog>
+      <div class="Unread_dialog" v-if="$store.state.app.Unread != 0 && tabIndex === 0" @click="Refresh">未读消息:{{$store.state.app.Unread}}</div>
   </div>
 </template>
+
 
 <script>
 import { Tab, TabItem, Scroller, XDialog, XButton, Group, Cell, Datetime } from 'vux'
@@ -152,7 +170,8 @@ export default {
   data () {
     return {
       time_list:[],
-      tabIndex: 0,
+      interaction_list:[],
+      tabIndex: 2,
       startTIme: '',
       endTime: '',
       datePickerDialog: false, // 日期选择dialog
@@ -182,7 +201,9 @@ export default {
           max_page:0,
           isAjax:true,
           total:0,
-          test:true
+          test:true,
+          time_slot:'7日',
+          status_position:0
       },
       pullup_config: {
           content: '加载中...',
@@ -204,16 +225,37 @@ export default {
     },
 
     toggleDetail (index) {
-      this.messageList[index].status = !this.messageList[index].status
+        let status = this.interaction_list[index].status;
+        this.interaction_list[index].status = !status;
+        //点击展开
+        if(status){
+          // const ele = document.querySelector('.interaction_frame .xs-container');
+          // var transformY = 0;
+          // try {
+          //     transformY = parseInt(window.getComputedStyle(ele,null).transform.replace('matrix(1, 0, 0, 1, 0,','').replace(')',''));
+          // }
+          // catch (err){}
+          // this.interactionScroller.status_position = transformY;
+        }
+        //关上
+        else{
+            this.$nextTick(() => {
+                this.$refs.scroller.reset({top:0});
+            });
+        }
+
+
+
+
+
     },
 
     timeLoadMore () {
-        console.log(123);
         if (this.timeScroller.isAjax && this.timeScroller.page < this.timeScroller.max_page) {
             this.timeScroller.page ++;
             this.get_time_list();
         }
-        else if(this.page >= this.max_page){
+        else if(this.timeScroller.page >= this.timeScroller.max_page){
             this.$refs.scrollerBottom.disablePullup() // 禁用上拉
         }
     },
@@ -257,6 +299,7 @@ export default {
       })
     },
 
+    //获取时间列表
     get_time_list(){
         this.timeScroller.isAjax = false;
         init_list({
@@ -277,8 +320,14 @@ export default {
                 this.timeScroller.max_page = Math.ceil(e.data.total / 10);
                 this.$nextTick(() => {
                     this.$refs.scrollerBottom.donePullup();//上啦完成
-                    this.$refs.scrollerBottom.enablePullup();//恢复上啦
-                    this.$refs.scrollerBottom.reset()
+                    this.$refs.scrollerBottom.reset();
+
+                    if(this.timeScroller.max_page == 1){
+                        this.$refs.scrollerBottom.disablePullup();//禁止上啦
+                    }
+                    else{
+                        this.$refs.scrollerBottom.enablePullup();//恢复上啦
+                    }
                 });
             }
         }).catch((err)=>{
@@ -288,8 +337,14 @@ export default {
         })
     },
 
-    loadMore(){
-
+    Interaction_loadMore(){
+        if (this.interactionScroller.isAjax && this.interactionScroller.page < this.interactionScroller.max_page) {
+            this.interactionScroller.page ++;
+            this.Interaction_init();
+        }
+        else if(this.interactionScroller.page >= this.interactionScroller.max_page){
+            this.$refs.scroller.disablePullup() // 禁用上拉
+        }
     },
 
     Refresh(){
@@ -314,6 +369,7 @@ export default {
         }
     },
 
+    //获取互动列表
     Interaction_init(){
           this.interactionScroller.isAjax = false;
           init_list({
@@ -321,30 +377,56 @@ export default {
               page:this.interactionScroller.page,
               pagesize: this.interactionScroller.pagesize,
           }).then((e)=>{
-              debugger;
-              this.timeScroller.isAjax = true;
+              //debugger;
+              this.interactionScroller.isAjax = true;
               this.$vux.loading.hide();
               if(e.code === 200 && e.data && e.data.rows instanceof Array){
                   let list = e.data.rows;
+
+                  const reg = /<i>\W+<\/i>/g;
+
                   list.map((val,i)=>{
-                      val.ele = config[val.type] ? val.wx_name + config[val.type] : '';
-                      val.time = dateFtt("MM-dd hh:mm", new Date(val.create_time));
+                      if(val.typeGroup && val.typeGroup instanceof Array){
+                          val.typeGroup.map((item,index)=>{
+                              if(config[item.type]){
+                                  item.title = config[item.type].match(reg) ? config[item.type].match(reg).join('').replace(/<i>/g,'').replace(/<\/i>/g,'') : '';
+                              }
+                              else{
+                                  item.title = '';
+                              }
+                              //item.percent = (item.num / val.num).toFixed(2) * 100 + '%';
+                              item.percent = parseInt((item.num / val.num) * 170 * 2)/100;
+                          })
+                      }
+                      val.status = true;
                   });
-                  this.time_list = this.time_list.concat(list);
-                  this.timeScroller.total = e.data.total;
-                  this.timeScroller.max_page = Math.ceil(e.data.total / 10);
+                  console.log('互动',list);
+                  this.interaction_list = this.interaction_list.concat(list);
+                  this.interactionScroller.total = e.data.total;
+                  this.interactionScroller.max_page = Math.ceil(e.data.total / 10);
                   this.$nextTick(() => {
-                      this.$refs.scrollerBottom.donePullup();//上啦完成
-                      this.$refs.scrollerBottom.enablePullup();//恢复上啦
-                      this.$refs.scrollerBottom.reset()
+                      this.$refs.scroller.donePullup();//上啦完成
+                      this.$refs.scroller.reset()
+
+                      if(this.interactionScroller.max_page == 1){
+                          this.$refs.scroller.disablePullup();//禁止上啦
+                      }
+                      else{
+                          this.$refs.scroller.enablePullup();//恢复上啦
+                      }
                   });
               }
           }).catch((err)=>{
               console.log(err);
               this.$vux.loading.hide();
-              this.timeScroller.isAjax = true;
+              this.interactionScroller.isAjax = true;
           })
     },
+
+    //获取行为列表
+    behavior_init(){
+
+    }
 
 
 
@@ -359,6 +441,7 @@ export default {
   mounted () {
       this.get_time_list();
       this.Interaction_init();
+      this.behavior();
   }
 }
 </script>
@@ -499,11 +582,12 @@ $color:#717171;
 }
 .news-list{
   padding: 0.6rem 0.3rem 0;
+  padding-top: 0;
   li{
     height: 1.4rem;
     padding: 0.2rem 0.15rem;
     line-height: 1rem;
-    margin-top: 0.3rem;
+    margin-top: 0rem;
     img{
       float: left;
       height: 100%;
@@ -513,6 +597,13 @@ $color:#717171;
       float: left;
       height: 100%;
       font-size: 0.3rem;
+    }
+    .list_title{
+      float: left;
+      width: 4.8rem;
+      height: 1rem;
+      padding: 0.1rem 0;
+      line-height: 0.4rem;
     }
     .icon{
       float: right;
@@ -556,63 +647,96 @@ $color:#717171;
     .graph{
       height: 0.7rem;
       line-height: 0.7rem;
-      padding: 0 0.3rem;
+      padding: 0 0.17rem;
       span{
-        width: 2rem;
-        padding-left: 0.3rem;
+        float: left;
+        width: 1.9rem;
         position: relative;
-        &::after{
-          content: '';
-          width: 0.1rem;
-          height: 0.1rem;
-          border-radius: 50%;
-          position: absolute;
-          top: 0.1rem;
-          left: 0;
-        }
+        text-align: right;
+        /*&::after{*/
+          /*content: '';*/
+          /*width: 0.1rem;*/
+          /*height: 0.1rem;*/
+          /*border-radius: 50%;*/
+          /*position: absolute;*/
+          /*top: 0.1rem;*/
+          /*left: 0;*/
+        /*}*/
+      }
+      strong{
+        float:left;
+        width:4.2rem;
+        height: 0.7rem;
+        margin-left: 0.3rem;
       }
       i{
         display: inline-block;
         height: 0.2rem;
         border-radius: 0.1rem;
-        margin-left: 0.5rem;
+        margin-right: 5px;
+        min-width: 1px !important;
+
       }
       &:nth-child(3){
         span::after{
           background-color: #ff0000;
-        }
-        i{
-          background: linear-gradient(left, #cc00ff, #b1181a);
         }
       }
       &:nth-child(4){
         span::after{
           background-color: #653ffe;
         }
-        i{
-          background: linear-gradient(left, #cc00ff, #5747fe);
-        }
       }
       &:nth-child(5){
         span::after{
           background-color: #73a6fb;
         }
+      }
+      &:nth-child(5n){
         i{
-          background: linear-gradient(left, #cc00ff, #6eaffb);
+          background: linear-gradient(left, #c781f9, #0fba40);
         }
       }
-      &:nth-child(6){
+      &:nth-child(5n+1){
+        i{
+          background: linear-gradient(left, #cc00ff, #5747fe);
+        }
+      }
+      &:nth-child(5n+2){
         i{
           background: linear-gradient(left, #cd01fd, #fd5b66);
         }
       }
-      &:nth-child(7){
+      &:nth-child(5n+3){
+        i{
+          background: linear-gradient(left, #cc00ff, #b1181a);
+        }
+      }
+      &:nth-child(5n+4){
+        i{
+          background: linear-gradient(left, #cc00ff, #5747fe);
+        }
+      }
+      &:nth-child(5n+5){
+        span::after{
+        i{
+          background: linear-gradient(left, #cc00ff, #6eaffb);
+        }
+      }
+      &:nth-child(5n+6){
+        i{
+          background: linear-gradient(left, #cd01fd, #fd5b66);
+        }
+      }
+      &:nth-child(5n+7){
         i{
           background: linear-gradient(left, #c781f9, #0fba40);
         }
       }
     }
   }
+}
+
 }
 .dialog-datepicker{
   h5{
@@ -629,4 +753,21 @@ $color:#717171;
     padding: 1rem;
   }
 }
+  .Interaction_header{
+    height: 0.8rem;
+    span{
+      float: left;
+      margin-left: 0.3rem;
+      line-height: 0.8rem;
+      color:#999 ;
+
+    }
+    img{
+      width: 0.4rem;
+      height: 0.4rem;
+      float: right;
+      margin-top: 0.2rem;
+      margin-right: 0.3rem;
+    }
+  }
 </style>

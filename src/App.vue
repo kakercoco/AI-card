@@ -32,7 +32,7 @@ export default {
     }
   },
   created () {
-    setToken('8vJ0SXqoBpLez2sAD6a38QnpAIrLUszJIfRnrWW5leIfSxSS%2FJCW11wnA7Nmx%2BXW%2F6Tw%2BsF0s6dDfH%2F%2BzbdsEQ%3D%3D')
+    setToken('8vJ0SXqoBpICkfQNjWV6WwnpAIrLUszJIfRnrWW5leItuZZr%2BN3WqFwnA7Nmx%2BXW%2F6Tw%2BsF0s6dDfH%2F%2BzbdsEQ%3D%3D')
   },
   methods: {
     get_user_info () {

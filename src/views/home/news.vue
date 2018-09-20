@@ -241,8 +241,14 @@ export default {
                 this.$nextTick(() => {
                     this.$refs.scrollerBottom.donePullup();//上啦完成
                     this.$refs.scrollerBottom.donePulldown();//下拉完成
-                    this.$refs.scrollerBottom.enablePullup();//恢复上啦
                     this.$refs.scrollerBottom.reset()
+
+                    if(this.max_page == 1){
+                        this.$refs.scrollerBottom.disablePullup();//禁止上啦
+                    }
+                    else{
+                        this.$refs.scrollerBottom.enablePullup();//恢复上啦
+                    }
                 });
 
 

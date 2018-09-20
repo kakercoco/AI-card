@@ -69,7 +69,7 @@ export default {
     },
     loadMore () {
       console.log('loadMore...')
-      this.pageForm.page +=1
+      this.pageForm.page += 1
       init_list(this.pageForm)
         .then(res => {
           if (res.data.rows.length === 0) {
