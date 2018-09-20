@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-19 14:12:26
+ * @Last Modified time: 2018-09-20 17:52:56
  */
 <template>
   <div class="edit-card">
@@ -29,7 +29,7 @@
     <div class="card-avatar">
       <img :src="cardInfor.image" alt="">
       <form action="" id="myFrom">
-        <input type="file" accept="image/*;capture=camera" multiple="multiple" @change="changeFile($event)" name="avatar"/>
+        <input type="file" accept="image/*;capture=camera" multiple="multiple" @change="changeFile($event, 'avatar')" name="avatar"/>
       </form>
     </div>
     <h5>个人信息</h5>
@@ -76,10 +76,10 @@
     </div>
     <h5>我的图片</h5>
     <div class="self-img clearfix">
-      <img src="@/assets/img/u112.png" alt="">
+      <img :src="item" alt="" v-for="(item, index) in albumList" :key="index" v-if="item != ''">
       <span>
         <form action="" id="album">
-          <input type="file" accept="image/*;capture=camera" multiple="multiple" @change="albumFile($event)" name="avatar"/>
+          <input type="file" accept="image/*;capture=camera" multiple="multiple" @change="changeFile($event, 'album')" name="avatar"/>
         </form>
         <x-icon type="ios-plus-empty" class="icon-insert"></x-icon>
       </span>
@@ -148,6 +148,7 @@ export default {
         company: '',
         address: ''
       },
+      albumList: [],
       templateId: 0, // 选中的模板id
       tagKeyword: '', // 新增的标签内容
       insertTagDialog: false,
@@ -203,9 +204,10 @@ export default {
           this.seletedTemplate = require(`@/assets/card/${this.cardInfor.style_id + 1}.png`)
           this.selectedClass = `card-template-${this.cardInfor.style_id + 1}`
           this.templateId = this.cardInfor.style_id
+          this.albumList = this.cardInfor.album.split(',')
         })
     },
-    changeFile (e) {
+    changeFile (e, type) {
       var obj = e.target.files[0]// 获取图片对象
       if (!obj) {
         return
@@ -218,7 +220,11 @@ export default {
         alert('照片大小不能超过2MB')
         return
       }
-      this.uploadFile_p(obj)
+      if (type === 'avatar') {
+        this.uploadFile_p(obj)
+      } else if (type === 'album') {
+        this.uploadFileAlbum(obj)
+      }
     },
     uploadFile_p (obj) {
       const ele = document.querySelector('#myFrom')
@@ -226,6 +232,15 @@ export default {
       upload_img(fd).then(res => {
         if (res.data && res.data.url) {
           this.cardInfor.image = res.data.url
+        }
+      })
+    },
+    uploadFileAlbum (obj) {
+      const ele = document.querySelector('#album')
+      const fd = new FormData(ele)
+      upload_img(fd).then(res => {
+        if (res.data && res.data.url) {
+          this.albumList.push(res.data.url)
         }
       })
     },
@@ -293,6 +308,7 @@ export default {
     },
     save () {
       delete this.cardInfor.tag
+      this.cardInfor.album = this.albumList.join(',')
       updateCard(this.cardInfor)
         .then(res => {
 
@@ -492,6 +508,7 @@ export default {
       width: 2rem;
       height: 2rem;
       margin-right: 0.2rem;
+      margin-bottom: 0.2rem;
       float: left;
       border-radius: 0.1rem;
     }

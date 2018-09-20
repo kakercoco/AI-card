@@ -2,13 +2,11 @@ import axios from 'axios'
 import store from '../store'
 // import { getToken } from '@/utils/auth'
 
-
-let baseURL = '';
-if(process.env.NODE_ENV === 'development'){
-    baseURL = '/index.php';
-}
-else{
-    baseURL = process.env.BASE_API;
+let baseURL = ''
+if (process.env.NODE_ENV === 'development') {
+  baseURL = '/index.php'
+} else {
+  baseURL = process.env.BASE_API
 }
 
 // 创建axios实例

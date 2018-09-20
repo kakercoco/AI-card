@@ -2,17 +2,24 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-11 17:04:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-15 09:13:25
+ * @Last Modified time: 2018-09-20 20:49:11
  */
 <template>
   <div class="produce">
     <div class="picker">
-      <p>
-        <popup-picker :data="produceList" v-model="value"  @on-change="onChange" value-text-align="center"></popup-picker>
-      </p>
-      <p>
-        <popup-picker :data="sortList" v-model="value2"   @on-change="onChange" value-text-align="center" :columns="2" show-name></popup-picker>
-      </p>
+      <div class="tab tab-1">
+        <span>全部产品</span>
+        <div class="tab-wrap">
+          <ul>
+            <li>全部产品 <x-icon type="ios-checkmark-empty" class="icon-checked"></x-icon></li>
+            <li>已推荐产品 <x-icon type="ios-checkmark-empty" class="icon-checked"></x-icon></li>
+            <li>未推荐产品 <x-icon type="ios-checkmark-empty" class="icon-checked"></x-icon></li>
+          </ul>
+        </div>
+      </div>
+      <div class="tab">
+        <span>产品分类</span>
+      </div>
     </div>
     <ul class="produce-list">
       <li v-for="(item, index) in 3" :key="index">
@@ -32,7 +39,8 @@
 
 <script>
 import { PopupPicker } from 'vux'
-import { produceList } from '@/api/card'
+// import { produceList } from '@/api/card'
+import axios from 'axios'
 
 export default {
   name: 'produce',
@@ -41,72 +49,30 @@ export default {
   },
   data () {
     return {
-      value: ['全部产品'],
-      produceList: [['全部产品', '已推荐产品', '为推荐产品']],
-      lll: [],
-      value2: ['1', ''],
-      sortList: [{
-        name: '网站建设',
-        value: '1',
-        parent: 0
-      }, {
-        name: '网络营销',
-        value: '2',
-        parent: 0
-      }, {
-        name: '网络基础',
-        value: '3',
-        parent: 0
-      }, {
-        name: '服务器搭建',
-        value: '4',
-        parent: 0
-      }, {
-        name: 'T-site建设1',
-        value: '1-1',
-        parent: '1'
-      }, {
-        name: 'T-site建设2',
-        value: '1-2',
-        parent: '1'
-      }, {
-        name: 'T-site建设3',
-        value: '1-3',
-        parent: '1'
-      }, {
-        name: 'T-site建设4',
-        value: '1-4',
-        parent: '1'
-      }, {
-        name: 'T-site建设5',
-        value: '2-1',
-        parent: '2'
-      }]
+      baseUrl: '/index.php'
     }
   },
   methods: {
-    onChange (val) {
-      console.log(val)
-    },
     getProduceList () {
       const data = {
         method: 'xcx.card.gcat_list',
         id: 0
       }
-      produceList(data)
-        .then(res => {
-          this.test(res.data)
-          console.log(this.lll)
+      axios.post(`${this.baseUrl}/api/Scratch/webClient`,
+        data, {
+          proxyTable: {
+            '/index.php': {
+              target: 'http://jiatui.api.com',
+              changeOrigin: true,
+              pathRewrite: {
+                '^/index.php': '/index.php'
+              }
+            }
+          }
         })
-    },
-    test (list) {
-      for (const l of list) {
-        if (l.child != null && l.child !== []) {
-          this.test(l.child)
-        }
-        l.child = null
-        this.lll.push(l)
-      }
+        .then(res => {
+          console.log(res.data.data)
+        })
     }
   },
   mounted () {
@@ -122,23 +88,39 @@ export default {
   .picker{
     height: 0.9rem;
     border-bottom: 1px solid #eee;
-    &>p{
-      float: left;
+    .tab{
       width: 50%;
+      float: left;
       height: 100%;
+      line-height: 0.9rem;
+      font-size: 0.34rem;
+      &>span{
+        width: 100%;
+        text-align: center;
+        float: left;
+      }
     }
-    & /deep/ .vux-cell-box{
-      .weui-cell{
-        padding: 0;
-      }
-      .weui-cell__ft{
-        &::after{
-          display: none;
+    .tab-wrap{
+      position: fixed;
+      top: 0.9rem;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 0.9rem);
+      background-color: rgba(0,0,0,0.5);
+      z-index: 2;
+    }
+    .tab-1{
+      ul{
+        background-color: #fff;
+        li{
+          height: 0.9rem;
+          .icon-checked{
+            fill: #0fd35d;
+            width: 0.3rem;
+            height: 0.3rem;
+            float: right;
+          }
         }
-      }
-      .vux-popup-picker-select{
-        height: 0.9rem;
-        line-height: 0.9rem;
       }
     }
   }
