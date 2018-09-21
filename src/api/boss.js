@@ -69,6 +69,7 @@ export function salesRanking (listQuery) {
     params: {
       dept: listQuery.dept,
       active: listQuery.active,
+      type: listQuery.type,
       user_type: listQuery.user_type,
       interaction: listQuery.interaction,
       probability_type: listQuery.probability_type,

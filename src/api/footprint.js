@@ -9,12 +9,3 @@ export function init_list (data) {
     })
 }
 
-
-//初始化互动列表
-export function init_Interaction (data) {
-    return request({
-        url: '/api/Visit/index',
-        method: 'get',
-        params: data
-    })
-}

@@ -19,6 +19,7 @@ module.exports = {
         }
       }
     },
+    token: '8vJ0SXqoBpLez2sAD6a38QnpAIrLUszJIfRnrWW5leIfSxSS%2FJCW11wnA7Nmx%2BXW%2F6Tw%2BsF0s6dDfH%2F%2BzbdsEQ%3D%3D',
 
     // Various Dev Server settings
     host: '0.0.0.0', // can be overwritten by process.env.HOST

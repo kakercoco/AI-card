@@ -252,12 +252,16 @@ export default {
             token: this.$store.state.user.my_chat_token,
         };
 
+        this.$vux.loading.show({
+            text: '加载中...'
+        });
+
         axios({
             method:"POST",
             url:`${this.$store.state.user.chat_domain}/chatapi/getChat`,
             data:JSON.stringify(data)
         }).then((res)=>{
-
+            this.$vux.loading.hide();
             if(res.status === 200 && res.data && res.data.message){
                 const list = JSON.parse(res.data.message);
                 let others_image = user.image;//h5所有者的头像
@@ -292,6 +296,9 @@ export default {
                 });
                 all_srcollBtoom(this);
             }
+        }).catch((err)=>{
+            this.$vux.loading.hide();
+            console.log('聊天记录',err)
         })
     },
 

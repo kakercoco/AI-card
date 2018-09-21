@@ -59,3 +59,12 @@ export function cardTagInsert (data) {
     data: data
   })
 }
+
+export function employgoodsIndex (data) {
+  // 产品列表
+  return request({
+    url: '/api/employgoods/index',
+    method: 'get',
+    params: data
+  })
+}

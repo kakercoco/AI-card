@@ -361,10 +361,6 @@ export default {
         });
     }
 
-
-
-
-
   },
   mounted () {
       this.get_list();

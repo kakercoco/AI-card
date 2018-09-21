@@ -17,6 +17,9 @@ import {get_user_info} from '@/api/user_info'
 import {dateFtt, config, all_srcollBtoom} from '@/utils/base'
 import {get_users} from '@/api/message'
 import {emojiAnalysis, __emojiObjs} from '@/utils/emoj'
+if (process.env.NODE_ENV === 'development') {
+    var my_config = require('../config/index');
+}
 export default {
   name: 'App',
   data () {
@@ -32,7 +35,7 @@ export default {
     }
   },
   created () {
-    setToken('8vJ0SXqoBpICkfQNjWV6WwnpAIrLUszJIfRnrWW5leItuZZr%2BN3WqFwnA7Nmx%2BXW%2F6Tw%2BsF0s6dDfH%2F%2BzbdsEQ%3D%3D')
+    setToken(my_config.dev.token);
   },
   methods: {
     get_user_info () {
@@ -117,6 +120,9 @@ export default {
           }
         } else if (data.cmd === 'Error') {
           // alert(data.content);
+        }
+        else if(data.cmd === 'Offline'){
+            debugger;
         }
       }
     },

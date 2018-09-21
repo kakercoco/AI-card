@@ -137,7 +137,11 @@ export default {
     // },
 
     get_message_list(){
+        this.$vux.loading.show({
+            text: '加载中...'
+        });
         get_list().then((res)=>{
+            this.$vux.loading.hide();
             if(res.code === 200 && res.data && res.data instanceof Array){
                 let list = res.data;
                 list.map((val,i)=>{
@@ -150,11 +154,10 @@ export default {
                     }
 
                 });
-
                 this.$store.commit('message/SET_messageList',list);
-                //this.messageList = list;
-                //console.log('消息',list);
             }
+        }).catch((err)=>{
+            this.$vux.loading.hide();
         });
     },
 

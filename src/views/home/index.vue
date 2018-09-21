@@ -14,7 +14,6 @@
       <div v-show="tabIndex === 0" class="time_frame">
         <!--<p class="tac time">●&nbsp;&nbsp; 2018/08/05  15:50</p>-->
         <scroller
-                v-if="timeScroller.test"
                 height="100%"
                 lock-x
                 :use-pullup="true"
@@ -33,47 +32,40 @@
       <div v-show="tabIndex === 1" class="tab-action">
         <div class="action-card card-shadow clearfix">
           <p class=" tac">
-            <img src="@/assets/img/datapicker.png" class="fr" alt="">
-            7日内被查看的行为统计
+            <img src="@/assets/img/datapicker.png" class="fr" @click="showDateChoose">
+            {{behavior_config.time_slot}}被查看的行为统计
           </p>
           <ul>
             <li @click="gotoCardList()">
               <img src="@/assets/img/card.png" alt="">
-              <a href="">20次</a>
+              <a href="">{{behavior_config.card}}次</a>
               <h5>查看名片</h5>
             </li>
             <li @click="gotoWebsiteList()">
               <img src="@/assets/img/inter.png" alt="">
-              <a href="">20次</a>
+              <a href="">{{behavior_config.web}}次</a>
               <h5>查看官网</h5>
             </li>
             <li>
               <img src="@/assets/img/news.png" alt="">
-              <a href="">20次</a>
-              <h5>查看动态</h5>
+              <a href="">{{behavior_config.case}}次</a>
+              <h5>查看案例</h5>
             </li>
             <li>
               <img src="@/assets/img/assign.png" alt="">
-              <a href="">20次</a>
+              <a href="">{{behavior_config.product}}次</a>
               <h5>查看产品</h5>
             </li>
           </ul>
         </div>
         <ul class="action-list">
-          <li class="card-shadow" @click="gotoCallPhoneList()">
-            <img src="@/assets/icon/phone.png" alt="">
-            <span>拨打电话</span>
-            <i>10次</i>
-          </li>
-          <li class="card-shadow">
-            <img src="@/assets/icon/service.png" alt="">
-            <span>咨询服务</span>
-            <i>10次</i>
-          </li>
-          <li class="card-shadow">
-            <img src="@/assets/icon/audio.png" alt="">
-            <span>播放语音</span>
-            <i>10次</i>
+          <li
+              class="card-shadow"
+              @click="gotoCallPhoneList(item)"
+              v-for="(item, index) in behavior_list" :key="index">
+            <img :src="'/static/image/' + item.type +'.png'">
+            <span>{{item.title}}</span>
+            <i>{{item.nums}}次</i>
           </li>
         </ul>
       </div>
@@ -171,15 +163,11 @@ export default {
     return {
       time_list:[],
       interaction_list:[],
-      tabIndex: 2,
+      behavior_list:[],
+      tabIndex: 0,
       startTIme: '',
       endTime: '',
       datePickerDialog: false, // 日期选择dialog
-      messageList: [{
-        status: true
-      }, {
-        status: true
-      }],
       countObj: [],
       loadingConfig: {
         upContent: '上拉加载更多',
@@ -201,9 +189,18 @@ export default {
           max_page:0,
           isAjax:true,
           total:0,
-          test:true,
+          Reset:true,
           time_slot:'7日',
           status_position:0
+      },
+      behavior_config:{
+          isAjax:true,
+          time_slot:'7日',
+          card:0,
+          web:0,
+          case:0,
+          product:0,
+
       },
       pullup_config: {
           content: '加载中...',
@@ -265,7 +262,35 @@ export default {
     },
 
     sureTime () {
-      this.datePickerDialog = false
+      this.datePickerDialog = false;
+
+      //如果是互动页面
+      if(this.tabIndex === 2){
+          this.interactionScroller.time_slot = `${this.startTIme}到${this.endTime}`;
+          if (this.interactionScroller.isAjax){
+              this.$refs.scroller.disablePullup();
+              this.interaction_list = [];
+              this.interactionScroller.page = 1;
+              this.interactionScroller.total = 0;
+              this.interactionScroller.max_page = 0;
+              this.Interaction_init(this.startTIme,this.endTime,true);
+          }
+      }
+      else{
+          this.behavior_config.time_slot = `${this.startTIme}到${this.endTime}`;
+          this.$vux.loading.show({
+              text: '加载中...'
+          });
+          if (this.behavior_config.isAjax){
+              //重置
+              this.behavior_init(this.startTIme,this.endTime);
+
+          }
+
+      }
+      this.startTIme = '';
+      this.endTime = '';
+
     },
 
     changeStartTime (val) {
@@ -293,14 +318,17 @@ export default {
       })
     },
 
-    gotoCallPhoneList () {
+    gotoCallPhoneList (item) {
       this.$router.push({
-        path: '/callPhone'
+        path: '/callPhone',
+        query:{
+          type:item.type
+        }
       })
     },
 
     //获取时间列表
-    get_time_list(){
+    get_time_list(isTop){
         this.timeScroller.isAjax = false;
         init_list({
             type:'time',
@@ -320,14 +348,21 @@ export default {
                 this.timeScroller.max_page = Math.ceil(e.data.total / 10);
                 this.$nextTick(() => {
                     this.$refs.scrollerBottom.donePullup();//上啦完成
-                    this.$refs.scrollerBottom.reset();
 
-                    if(this.timeScroller.max_page == 1){
+                    if(isTop){
+                        this.$refs.scrollerBottom.reset({top:0});
+                    }
+                    else{
+                        this.$refs.scrollerBottom.reset();
+                    }
+
+                    if(this.timeScroller.max_page <= 1){
                         this.$refs.scrollerBottom.disablePullup();//禁止上啦
                     }
                     else{
                         this.$refs.scrollerBottom.enablePullup();//恢复上啦
                     }
+
                 });
             }
         }).catch((err)=>{
@@ -353,7 +388,15 @@ export default {
             this.$vux.loading.show({
                 text: '加载中...'
             });
-            this.$nextTick(()=>{
+            this.$store.commit('app/Empty');
+            this.timeScroller.test = true;
+            this.time_list = [];
+            this.$refs.scrollerBottom.disablePullup();
+            this.timeScroller.page = 1;
+            this.timeScroller.total = 0;
+            this.timeScroller.max_page = 0;
+            this.get_time_list(true);
+            /*this.$nextTick(()=>{
                 this.timeScroller.test = false;
                 this.$nextTick(()=>{
                     this.$store.commit('app/Empty');
@@ -364,18 +407,20 @@ export default {
                     this.timeScroller.max_page = 0;
                     this.get_time_list();
                 })
-            })
+            })*/
 
         }
     },
 
     //获取互动列表
-    Interaction_init(){
+    Interaction_init(start_time,end_time,isTop){
           this.interactionScroller.isAjax = false;
           init_list({
               type:'interact',
               page:this.interactionScroller.page,
               pagesize: this.interactionScroller.pagesize,
+              start_time,
+              end_time
           }).then((e)=>{
               //debugger;
               this.interactionScroller.isAjax = true;
@@ -406,9 +451,15 @@ export default {
                   this.interactionScroller.max_page = Math.ceil(e.data.total / 10);
                   this.$nextTick(() => {
                       this.$refs.scroller.donePullup();//上啦完成
-                      this.$refs.scroller.reset()
 
-                      if(this.interactionScroller.max_page == 1){
+                      if(isTop){
+                          this.$refs.scroller.reset({top:0});
+                      }
+                      else{
+                          this.$refs.scroller.reset();
+                      }
+
+                      if(this.interactionScroller.max_page <= 1){
                           this.$refs.scroller.disablePullup();//禁止上啦
                       }
                       else{
@@ -424,24 +475,63 @@ export default {
     },
 
     //获取行为列表
-    behavior_init(){
+    behavior_init(start_time,end_time){
+        this.behavior_config.isAjax = false;
+        this.$vux.loading.show({
+            text: '加载中...'
+        });
+        init_list({
+            type:'behavior',
+            start_time,
+            end_time
+        }).then((e)=>{
+            this.behavior_config.isAjax = true;
+            this.$vux.loading.hide();
+
+            if(e.code === 200 && e.data && e.data instanceof Array){
+                let list = e.data;
+                let end_list = [];
+                const reg = /<i>\W+<\/i>/g;
+                list.map((val,i)=>{
+                    if(val.type === 0){
+                        this.behavior_config.card = val.nums;
+                    }
+                    else if(val.type === 1){
+                        this.behavior_config.web = val.nums;
+                    }
+                    else if(val.type === 2){
+                        this.behavior_config.case = val.nums;
+                    }
+                    else if(val.type === 3){
+                        this.behavior_config.product = val.nums;
+                    }
+                    else{
+                        if(config[val.type]){
+                            val.title = config[val.type].match(reg) ? config[val.type].match(reg).join('').replace(/<i>/g,'').replace(/<\/i>/g,'') : '';
+                        }
+                        else{
+                            val.title = '';
+                        }
+                        end_list.push(val);
+                    }
+                });
+
+                this.behavior_list = end_list;
+
+            }
+        }).catch((err)=>{
+            console.log(err);
+            this.$vux.loading.hide();
+            this.behavior_config.isAjax = true;
+        })
 
     }
-
-
-
-
-
-
-
-
-
 
   },
   mounted () {
       this.get_time_list();
       this.Interaction_init();
-      this.behavior();
+      this.behavior_init();
   }
 }
 </script>

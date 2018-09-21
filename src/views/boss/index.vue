@@ -18,18 +18,18 @@
       <popup-picker class="fl" :data="departmentList" v-model="department" :columns="3" show-name :show.sync="showDepartment"></popup-picker>
     </p>
     <tab v-model="activeTab">
-      <tab-item>总览</tab-item>
-      <tab-item>销售排行</tab-item>
-      <tab-item>AI分析</tab-item>
+      <tab-item><span @click="choseActive(1)">总览</span></tab-item>
+      <tab-item><span @click="choseActive(2)">销售排行</span></tab-item>
+      <tab-item><span @click="choseActive(3)">AI分析</span></tab-item>
     </tab>
     <p class="line"></p>
     <div v-show="activeTab === 0" class="nav-tab">
       <tab v-model="tabIndex">
-        <tab-item><span @click="choseTimeType('0')">汇总</span></tab-item>
-        <tab-item><span @click="choseTimeType('1')">昨日</span></tab-item>
-        <tab-item><span @click="choseTimeType('2')">近七天</span></tab-item>
-        <tab-item><span @click="choseTimeType('3')">本月</span></tab-item>
-        <tab-item><span @click="choseTimeType('4')">近30天</span></tab-item>
+        <tab-item><span @click="choseTimeType(0)">汇总</span></tab-item>
+        <tab-item><span @click="choseTimeType(1)">昨日</span></tab-item>
+        <tab-item><span @click="choseTimeType(2)">近七天</span></tab-item>
+        <tab-item><span @click="choseTimeType(3)">本月</span></tab-item>
+        <tab-item><span @click="choseTimeType(4)">近30天</span></tab-item>
       </tab>
       <div v-show="tabIndex === 0" class="second-tab-list">
         <ul>
@@ -41,27 +41,39 @@
       </div>
       <div v-show="tabIndex === 1" class="second-tab-list second-nav-list-2">
         <ul>
-          <li v-for="item in 6" :key="item">
-            <span>客户总数</span>
-            <span class="blue">-136.4%</span>
-            <span class="blue">327</span>
+          <li v-for="(item,index) in totalCustomer" :key="index">
+            <span>{{item.title}}</span>
+            <span class="blue">{{item.pertenage}}</span>
+            <span class="blue">{{item.num}}</span>
           </li>
         </ul>
       </div>
-      <div v-show="tabIndex === 2">
-        1-3
+      <div v-show="tabIndex === 2" class="second-tab-list second-nav-list-2">
+        <ul>
+          <li v-for="(item,index) in totalCustomer" :key="index">
+            <span>{{item.title}}</span>
+            <span class="blue">{{item.pertenage}}</span>
+            <span class="blue">{{item.num}}</span>
+          </li>
+        </ul>
       </div>
       <div v-show="tabIndex === 3" class="second-tab-list second-nav-list-2">
         <ul>
-          <li v-for="item in 6" :key="item">
-            <span>客户总数</span>
-            <span class="red">+136.4%</span>
-            <span class="red">327</span>
+          <li v-for="(item,index) in totalCustomer" :key="index">
+            <span>{{item.title}}</span>
+            <span class="blue">{{item.pertenage}}</span>
+            <span class="blue">{{item.num}}</span>
           </li>
         </ul>
       </div>
-      <div v-show="tabIndex === 4">
-        1-5
+      <div v-show="tabIndex === 4" class="second-tab-list second-nav-list-2">
+        <ul>
+          <li v-for="(item,index) in totalCustomer" :key="index">
+            <span>{{item.title}}</span>
+            <span class="blue">{{item.pertenage}}</span>
+            <span class="blue">{{item.num}}</span>
+          </li>
+        </ul>
       </div>
       <p class="line"></p>
       <h3>成交率</h3>
@@ -84,21 +96,27 @@
       <div class="client clearfix">
         <div id="client"></div>
         <tab v-model="clientTabIndex" :line-width="0">
-          <tab-item ><span>新增客户数</span></tab-item>
-          <tab-item ><span>跟进客户数</span></tab-item>
-          <tab-item ><span style="border: none;">咨询客户数</span></tab-item>
+          <tab-item ><span @click="choseCustomerType(1)">新增客户数</span></tab-item>
+          <tab-item ><span @click="choseCustomerType(2)">跟进客户数</span></tab-item>
+          <tab-item ><span style="border: none;" @click="choseCustomerType(3)">咨询客户数</span></tab-item>
         </tab>
         <div v-show="clientTabIndex === 0" class="client-date-tab clearfix">
           <ul>
-            <li @click="changeClientDate(index)" :class="{active: clientDateIndex === index}" v-for="(item, index) in clientDate" :key="index">{{item}}</li>
+            <li @click="changeClientDate1(index)" :class="{active: clientDateIndex1 === index}" v-for="(item, index) in clientDate1" :key="index">{{item}}</li>
           </ul>
-          <div id="clientDate"></div>
+          <div id="clientDate1"></div>
         </div>
-        <div v-show="clientTabIndex === 1">
-          1-1-2
+        <div v-show="clientTabIndex === 1" class="client-date-tab clearfix">
+          <ul>
+            <li @click="changeClientDate2(index)" :class="{active: clientDateIndex2 === index}" v-for="(item, index) in clientDate2" :key="index">{{item}}</li>
+          </ul>
+          <div id="clientDate2"></div>
         </div>
-        <div v-show="clientTabIndex === 2">
-          1-1-3
+        <div v-show="clientTabIndex === 2" class="client-date-tab clearfix">
+          <ul>
+            <li @click="changeClientDate3(index)" :class="{active: clientDateIndex3 === index}" v-for="(item, index) in clientDate3" :key="index">{{item}}</li>
+          </ul>
+          <div id="clientDate3"></div>
         </div>
       </div>
       <p class="line"></p>
@@ -128,46 +146,46 @@
     </div>
     <div v-show="activeTab === 1" class="sell">
       <tab v-model="sellTabIndex">
-        <tab-item ><span>按客户人数</span></tab-item>
-        <tab-item ><span>按互动频率</span></tab-item>
-        <tab-item ><span style="border: none;">按成交概率</span></tab-item>
+        <tab-item ><span @click="choseType(1)">按客户人数</span></tab-item>
+        <tab-item ><span @click="choseType(2)">按互动频率</span></tab-item>
+        <tab-item ><span style="border: none;" @click="choseType(3)">按成交概率</span></tab-item>
       </tab>
       <div v-show="sellTabIndex === 0">
         <tab v-model="sellClientTabIndex" :line-width="0">
-          <tab-item ><span @click="selectedUserType('1')">客户总数</span></tab-item>
-          <tab-item ><span style="border: none;" @click="selectedUserType('2')">新增客户</span></tab-item>
+          <tab-item ><span @click="selectedUserType(1)">客户总数</span></tab-item>
+          <tab-item ><span style="border: none;" @click="selectedUserType(2)">新增客户</span></tab-item>
         </tab>
       </div>
       <div v-show="sellTabIndex === 1">
         <tab v-model="sellActionTabIndex" :line-width="0">
-          <tab-item><span @click="selectedInteraction('1')">跟进总数</span></tab-item>
-          <tab-item ><span style="border: none;" @click="selectedInteraction('2')">咨询总数</span></tab-item>
+          <tab-item><span @click="selectedInteraction(1)">跟进总数</span></tab-item>
+          <tab-item ><span style="border: none;" @click="selectedInteraction(2)">咨询总数</span></tab-item>
         </tab>
         <tab v-model="sellDateTabIndex" :line-width="0">
-          <tab-item><span @click="selectedInteractionTime('1')">昨日</span></tab-item>
-          <tab-item><span @click="selectedInteractionTime('2')">近七天</span></tab-item>
-          <tab-item><span @click="selectedInteractionTime('3')">当月</span></tab-item>
-          <tab-item><span @click="selectedInteractionTime('4')">近30天</span></tab-item>
+          <tab-item><span @click="selectedInteractionTime(1)">昨日</span></tab-item>
+          <tab-item><span @click="selectedInteractionTime(2)">近七天</span></tab-item>
+          <tab-item><span @click="selectedInteractionTime(3)">当月</span></tab-item>
+          <tab-item><span @click="selectedInteractionTime(4)">近30天</span></tab-item>
         </tab>
       </div>
       <div v-show="sellTabIndex === 2">
         <tab v-model="sellProbTabIndex" :line-width="0">
-          <tab-item><span @click="selectedProbability('1')">1%~50%</span></tab-item>
-          <tab-item><span @click="selectedProbability('2')">51%~80%</span></tab-item>
-          <tab-item><span @click="selectedProbability('3')">81%~99%</span></tab-item>
-          <tab-item><span @click="selectedProbability('4')">100%</span></tab-item>
+          <tab-item><span @click="selectedProbability(1)">1%~50%</span></tab-item>
+          <tab-item><span @click="selectedProbability(2)">51%~80%</span></tab-item>
+          <tab-item><span @click="selectedProbability(3)">81%~99%</span></tab-item>
+          <tab-item><span @click="selectedProbability(4)">100%</span></tab-item>
         </tab>
       </div>
       <div class="sell-list">
         <p class="self">
-          <span class="fl">{{firstRankRow.num}}</span>
+          <span class="fl">{{firstRankRow.lv}}</span>
           <img :src="firstRankRow.image" alt="">
           <span>{{firstRankRow.username}}</span>
           <span class="fr">{{firstRankRow.num}}</span>
         </p>
         <ul>
           <li v-for="(item, index) in salesRankList" :key="index">
-            <span class="fl">{{item.num}}</span>
+            <span class="fl">{{item.lv}}</span>
             <img :src="item.image" alt="" class="avatar">
             <span>{{item.username}}</span>
             <span class="fr">{{item.num}}</span>
@@ -177,19 +195,16 @@
     </div>
     <div v-show="activeTab === 2" class="AI">
       <ul>
-        <li v-for="(item, index) in 4" :key="index" :class="{'first-item': index ===0 }" @click="gotoCard">
+        <li v-for="(item, index) in AIList" :key="index" :class="{'first-item': index ===0 }" @click="gotoCard">
           <img src="@/assets/icon/top.png" alt="" class="icon-champion" v-if="index ===0">
-          <span v-if="index>2" class="fl">{{index+1}}</span>
-          <img src="@/assets/icon/top1.png" alt="" class="fl icon-top" v-else-if="index === 0">
-          <img src="@/assets/icon/top2.png" alt="" class="fl icon-top" v-else-if="index === 1">
-          <img src="@/assets/icon/top3.png" alt="" class="fl icon-top" v-else-if="index === 2">
-          <img src="@/assets/img/u112.png" alt="" class="fl avatar">
+          <span class="fl">{{index+1}}</span>
+          <img :src="item.image" alt="" class="fl avatar">
           <p class="fl">
-            <span class="name">王猛</span>
-            <span class="job">销售专员</span>
+            <span class="name">{{item.username}}</span>
+            <span class="job">{{item.job}}</span>
           </p>
           <x-icon type="ios-arrow-right" class="fr"></x-icon>
-          <p :id="getChartId(index)" class="charts fr"></p>
+          <p :id="getChartId(index)" v-if="index !==0" class="charts fr"></p>
           <div id="top-chart" v-if="index === 0"></div>
         </li>
 
@@ -201,7 +216,7 @@
 <script>
 import { Tab, TabItem, PopupPicker } from 'vux'
 import echarts from 'echarts'
-import { bossOverview, salesRanking } from '@/api/boss'
+import { bossOverview, bossOverviewTotal, customerStatistics, salesRanking, AIAnalyse } from '@/api/boss'
 
 export default {
   name: 'boss',
@@ -221,21 +236,31 @@ export default {
       listQuery2: {
         dept: 1,
         active: 2,
+        type: 1,
         user_type: 1,
         interaction: 1,
         probability_type: 1,
         interaction_time: 1
       },
+      listQuery3: {
+        dept: 1,
+        time_type: 0
+      },
+      listQuery4: {
+        dept: 1,
+        type: 1,
+        user_type: 1
+      },
+      listQuery5: {
+        dept: 1,
+        active: 3
+      },
+      overviewTotal: [],
       salesRankList: [],
+      salesRankAllList: [],
       firstRankRow: [],
-      totalCustomer: [
-        { title: '客户总数', num: 0 },
-        { title: '跟进总数', num: 0 },
-        { title: '浏览总数', num: 0 },
-        { title: '被转发总数', num: 0 },
-        { title: '被保存总数', num: 0 },
-        { title: '被点赞总数', num: 0 }
-      ],
+      totalCustomer: [],
+      AIList: [],
       downChartInfor: {
         like_company: 0,
         like_me: 0,
@@ -251,6 +276,7 @@ export default {
         num_4: 0,
         user_avtive: {}
       },
+      chartTopData: [50, 50, 50, 50, 50, 50],
       dynamicXData: [],
       dynamicYData: [],
       clientCountXData: [],
@@ -263,8 +289,12 @@ export default {
       sellDateTabIndex: 0, // 销售排行下的日期tab
       sellActionTabIndex: 0, // 销售排行下的互动频率tab
       sellProbTabIndex: 0, // 销售排行下的成交概率tab
-      clientDate: ['当日', '近7日', '当月', '近30天'],
-      clientDateIndex: 0,
+      clientDate1: ['当日', '近7日', '当月', '近30天'],
+      clientDate2: ['当日', '近7日', '当月', '近30天'],
+      clientDate3: ['当日', '近7日', '当月', '近30天'],
+      clientDateIndex1: 0,
+      clientDateIndex2: 0,
+      clientDateIndex3: 0,
       countObj: [{ // 与我互动
         name: '查看名片',
         num: 0
@@ -348,88 +378,223 @@ export default {
     }
   },
   methods: {
-    selectedUserType (type) {
+    choseActive (type) {
+      if (type === 1) { // 总览
+        this.getBossOverview() // Boss雷达-总览
+        this.bossOverviewTotal() // Boss雷达-总览-总数
+        this.customerStatistics() // Boss雷达-总览-客户统计
+      } else if (type === 2) { // 销售排
+        this.getSalesRanking()
+      } else if (type === 3) { // AI分析
+        this.AIAnalyse()
+      }
+    },
+    choseCustomerType (type) {
+      this.listQuery4.type = type
+      this.customerStatistics() // 销售总览-客户统计
+    },
+    choseType (type) {
+      this.listQuery2.type = type
+      this.getSalesRanking()
+    },
+    selectedUserType (type) { // user_type 默认1：客户总数 ,2:新增客户
       this.listQuery2.user_type = type
       this.getSalesRanking()
     },
-    selectedInteraction (type) {
+    selectedInteraction (type) { // interaction 默认1：跟进总数 ,2:咨询总数
       this.listQuery2.interaction = type
       this.getSalesRanking()
     },
-    selectedProbability (type) {
+    selectedProbability (type) { // probability_type 百分比类型 默认1：0-50 ,2:51-80,3:81-99,4:100
       this.listQuery2.probability_type = type
       this.getSalesRanking()
     },
-    selectedInteractionTime (type) {
+    selectedInteractionTime (type) { // interaction_time 默认1：昨日，2：近七天，3：当月，4：近30天
       this.listQuery2.interaction_time = type
       this.getSalesRanking()
     },
     choseTimeType (type) {
-      this.listQuery2.time_type = type
-      this.getSalesRanking()
+      this.listQuery3.time_type = type
+      this.bossOverviewTotal() // 总览总数
     },
     setTotalCustomer (data) {
-      // this.totalCustomer[0].num = data.user_num
-      // this.totalCustomer[1].num = data.follow_num
-      // this.totalCustomer[2].num = data.look_num
-      // this.totalCustomer[3].num = data.transmit_num
-      // this.totalCustomer[4].num = data.save_num
-      // this.totalCustomer[5].num = data.good_num
-      this.countObj[0].num = data.look_card
-      this.countObj[1].num = data.look_dynamic
-      this.countObj[2].num = data.look_web
-      this.countObj[3].num = data.look_product
-      this.countObj[4].num = data.look_phone
+      this.countObj[0].num = data.look_card.num
+      this.countObj[1].num = data.look_dynamic.num
+      this.countObj[2].num = data.look_web.num
+      this.countObj[3].num = data.look_product.num
+      this.countObj[4].num = data.look_phone.num
     },
-    setData (data, list, num) {
-      let XData = this.dynamicXData
-      let YData = this.dynamicYData
-      if (num === 2) {
-        XData = this.clientCountXData
-        YData = this.clientCountYData
+    setOverviewTotal (data) {
+      let map = []
+      for (const key in data) {
+        let obj = { title: '客户总数', num: 0, pertenage: 0 }
+        if (key === 'user_num') {
+          obj.title = '客户总数'
+        } else if (key === 'follow_num') {
+          obj.title = '跟进总数'
+        } else if (key === 'look_num') {
+          obj.title = '浏览总数'
+        } else if (key === 'transmit_num') {
+          obj.title = '被转发总数'
+        } else if (key === 'save_num') {
+          obj.title = '被保存总数'
+        } else if (key === 'good_num') {
+          obj.title = '被点赞总数'
+        }
+        obj.num = data[key].num
+        if (data[key].pertenage !== undefined) {
+          obj.pertenage = data[key].pertenage
+        }
+        map.push(obj)
       }
+      this.totalCustomer = map
+    },
+    setData (data, num) {
+      let XData = []
+      let YData = []
       // XData.push('')
       // YData.push(0)
-      for (var i = list.length - 1; i >= 0; i--) {
-        const key = list[i]
+      for (const key in data) {
         XData.push(key)
         YData.push(data[key])
       }
-      this.drawDynamic()
+      if (num === 1) {
+        this.dynamicXData = XData
+        this.dynamicYData = YData
+        this.drawDynamic()
+      } else if (num === 2) {
+        this.clientCountXData = XData
+        this.clientCountYData = YData
+        let type = this.listQuery4.type
+        let id = 'clientDate1'
+        if (type === 2) {
+          id = 'clientDate2'
+        } else if (type === 3) {
+          id = 'clientDate3'
+        }
+        this.drawClientCount(id)
+      }
     },
     getSalesRanking () { // 销售排行
       salesRanking(this.listQuery2).then(res => {
+        let param = this.listQuery2
         if (res.code === 200) {
-          const dataList = res.data.user_all_num
-          console.log(res.data.user_all_num)
-          this.salesRankList = dataList.splice(1)
-          this.firstRankRow = res.data.user_all_num[0]
-          console.log(this.salesRankList)
+          let dataList = res.data.user_all_num
+          if (param.type === 1) { // 按客户人数
+            if (param.user_type === 2) {
+              dataList = res.data.user_add_num // 2:新增客户
+            } else if (param.user_type === 1) {
+              dataList = res.data.user_all_num // 1：客户总数
+            }
+          } else if (param.type === 2) { // 按互动频率
+            if (param.interaction === 1) {
+              dataList = res.data.interaction_num // 1：跟进总数
+            } else if (param.interaction === 2) {
+              dataList = res.data.interaction_user // 2：咨询总数
+            }
+          } else if (param.type === 3) { // 按成交概率
+            dataList = res.data.probability
+          }
+          if (dataList !== undefined) {
+            if (dataList.list !== undefined) {
+              this.salesRankList = dataList.list
+            } else {
+              this.salesRankList = []
+            }
+            if (dataList.me !== undefined) {
+              this.firstRankRow = dataList.me
+            } else {
+              this.firstRankRow = []
+            }
+          }
         }
       })
     },
-    getBossOverview () {
+    bossOverviewTotal () { // 销售总览-总数
+      bossOverviewTotal(this.listQuery3).then(res => {
+        if (res.code === 200) {
+          this.overviewTotal = res.data
+          this.setOverviewTotal(this.overviewTotal)
+        }
+      })
+    },
+    customerStatistics () { // 销售总览-客户统计
+      customerStatistics(this.listQuery4).then(res => {
+        let param = this.listQuery4
+        let listData = []
+        if (res.code === 200) {
+          if (param.type === 1) {
+            listData = res.data.new_user
+          } else if (param.type === 2) {
+            listData = res.data.follow_user
+          } else if (param.type === 3) {
+            listData = res.data.consult_user
+          }
+        }
+        if (listData !== undefined) {
+          this.setData(listData, 2)
+        } else {
+          listData = []
+        }
+      })
+    },
+    getBossOverview () { // 销售总览
       bossOverview(this.listQuery).then(res => {
         if (res.code === 200) {
           this.downChartInfor = res.data
           this.setTotalCustomer(res.data)
-          this.setData(res.data.user_avtive, Object.keys(res.data.user_avtive), 1)
+          let userActive = res.data.user_avtive
+          if (userActive !== undefined) {
+            this.setData(userActive, 1)
+          }
         }
       })
     },
-    changeClientDate (index) {
-      this.clientDateIndex = index
-      this.listQuery.user_type = index + 1
-      this.getBossOverview()
-      this.drawClientCount()
+    AIAnalyse () { // AI分析
+      AIAnalyse(this.listQuery5).then(res => {
+        if (res.code === 200) {
+          if (res.data.ai_user !== undefined) {
+            this.AIList = res.data.ai_user.employ_lv
+            this.setArawAITop(this.AIList)
+          }
+        }
+      })
+    },
+    setArawAITop (data) {
+      if (data !== undefined && data.length > 1) {
+        let firstRow = data[0]
+        this.chartTopData[0] = firstRow.num_1
+        this.chartTopData[1] = firstRow.num_6
+        this.chartTopData[2] = firstRow.num_5
+        this.chartTopData[3] = firstRow.num_4
+        this.chartTopData[4] = firstRow.num_3
+        this.chartTopData[5] = firstRow.num_2
+      }
+    },
+    changeClientDate1 (index) {
+      this.clientDateIndex1 = index
+      this.listQuery4.user_type = index + 1
+      this.customerStatistics()
+    },
+    changeClientDate2 (index) {
+      this.clientDateIndex2 = index
+      this.listQuery4.user_type = index + 1
+      this.customerStatistics()
+    },
+    changeClientDate3 (index) {
+      this.clientDateIndex3 = index
+      this.listQuery4.user_type = index + 1
+      this.customerStatistics()
     },
     drawChart (option, dom) {
-      var myChart = echarts.init(document.getElementById(dom))
-      // 绘制图表
-      myChart.clear()
-      myChart.setOption(option)
+      if (document.getElementById(dom) !== null) {
+        var myChart = echarts.init(document.getElementById(dom))
+        // 绘制图表
+        myChart.clear()
+        myChart.setOption(option)
+      }
     },
-    drawClientCount () {
+    drawClientCount (id) {
       const option = {
         color: ['#5977fe'],
         xAxis: {
@@ -453,7 +618,7 @@ export default {
           smooth: true
         }]
       }
-      this.drawChart(option, 'clientDate')
+      this.drawChart(option, id)
     },
     drawCare () {
       const option = {
@@ -529,12 +694,12 @@ export default {
           },
           radius: 50,
           indicator: [
-            {name: '个人能力', max: 6500},
-            {name: '获客能力', max: 16000},
-            {name: '客户互动', max: 30000},
-            {name: '官网推广', max: 38000},
-            {name: '产品推广', max: 52000},
-            {name: '销售主动性', max: 25000}
+            {name: '个人能力', max: 100},
+            {name: '获客能力', max: 100},
+            {name: '客户互动', max: 100},
+            {name: '官网推广', max: 100},
+            {name: '产品推广', max: 100},
+            {name: '销售主动性', max: 100}
           ],
 
           axisLine: {
@@ -564,7 +729,7 @@ export default {
 
             {
               symbolSize: 0,
-              value: [5000, 14000, 28000, 31000, 42000, 21000],
+              value: this.chartTopData,
               name: '数量',
               label: {
                 normal: {
@@ -591,9 +756,9 @@ export default {
     }
   },
   mounted () {
-    this.getBossOverview()
-    this.getSalesRanking()
-    this.drawClientCount()
+    this.getBossOverview() // Boss雷达-总览
+    this.bossOverviewTotal() // Boss雷达-总览-总数
+    this.customerStatistics() // Boss雷达-总览-客户统计
     this.drawCare()
     setTimeout(() => {
       this.drawAITop()
@@ -614,12 +779,12 @@ export default {
           },
           radius: 20,
           indicator: [
-            {name: '个人能力', max: 6500},
-            {name: '获客能力', max: 16000},
-            {name: '客户互动', max: 30000},
-            {name: '官网推广', max: 38000},
-            {name: '产品推广', max: 52000},
-            {name: '销售主动性', max: 25000}
+            {name: '个人能力', max: 100},
+            {name: '获客能力', max: 100},
+            {name: '客户互动', max: 100},
+            {name: '官网推广', max: 100},
+            {name: '产品推广', max: 100},
+            {name: '销售主动性', max: 100}
           ],
 
           axisLine: {
@@ -649,7 +814,7 @@ export default {
 
             {
               symbolSize: 0,
-              value: [5000, 14000, 28000, 31000, 42000, 21000],
+              value: this.chartTopData,
               name: '数量',
               label: {
                 normal: {
@@ -880,7 +1045,7 @@ export default {
         color: #5977fe;
       }
     }
-    #clientDate{
+    #clientDate1,#clientDate2,#clientDate3{
       width: 100%;
       height: 4rem;
     }

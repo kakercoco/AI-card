@@ -2,23 +2,39 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-11 17:04:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-20 20:49:11
+ * @Last Modified time: 2018-09-21 18:45:06
  */
 <template>
   <div class="produce">
     <div class="picker">
       <div class="tab tab-1">
-        <span>全部产品</span>
-        <div class="tab-wrap">
+        <span @click="showFirstDialog">{{activeTabFirstName}}</span>
+        <div class="tab-wrap" v-show="activeTabFirstStatus">
           <ul>
-            <li>全部产品 <x-icon type="ios-checkmark-empty" class="icon-checked"></x-icon></li>
-            <li>已推荐产品 <x-icon type="ios-checkmark-empty" class="icon-checked"></x-icon></li>
-            <li>未推荐产品 <x-icon type="ios-checkmark-empty" class="icon-checked"></x-icon></li>
+            <li @click="switchProduce(0, '全部产品')">全部产品 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="activeTabFirst ===0"></x-icon></li>
+            <li @click="switchProduce(1, '已推荐产品')">已推荐产品 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="activeTabFirst ===1"></x-icon></li>
+            <li @click="switchProduce(2, '未推荐产品')">未推荐产品 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="activeTabFirst ===2"></x-icon></li>
           </ul>
         </div>
       </div>
-      <div class="tab">
-        <span>产品分类</span>
+      <div class="tab tab-2">
+        <span @click="showSecondDialog">产品分类</span>
+        <div class="tab-wrap" v-show="activeTabSecondStatus">
+          <ul>
+            <li v-for="(item, index) in tabSecondList" :key="index">
+              {{item.name}}
+              <x-icon type="ios-arrow-right" class="icon-down" v-if="item.child.length > 0 && !item.status" @click="item.status = !item.status"></x-icon>
+              <x-icon type="ios-arrow-down" class="icon-down" v-if="item.child.length > 0&& item.status" @click="item.status = !item.status"></x-icon>
+              <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="item.child.length <= 0"></x-icon>
+              <ul v-show="item.status">
+                <li v-for="(e, i) in item.child" :key="i">
+                  {{e.name}}
+                  <x-icon type="ios-checkmark-empty" class="icon-checked"></x-icon>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <ul class="produce-list">
@@ -39,7 +55,7 @@
 
 <script>
 import { PopupPicker } from 'vux'
-// import { produceList } from '@/api/card'
+import { employgoodsIndex } from '@/api/card'
 import axios from 'axios'
 
 export default {
@@ -49,33 +65,71 @@ export default {
   },
   data () {
     return {
-      baseUrl: '/index.php'
+      baseUrl: '/index.php',
+      activeTabFirst: 0,
+      activeTabFirstStatus: false,
+      activeTabFirstName: '全部产品',
+      activeTabSecondStatus: false,
+      tabSecondList: [], // 分类列表
+      produceList: [], // 产品列表
+      proxyTable: {
+        '/index.php': {
+          target: 'http://jiatui.api.com',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/index.php': '/index.php'
+          }
+        }
+      }
     }
   },
   methods: {
-    getProduceList () {
+    getProduceTypeList () {
       const data = {
         method: 'xcx.card.gcat_list',
         id: 0
       }
       axios.post(`${this.baseUrl}/api/Scratch/webClient`,
-        data, {
-          proxyTable: {
-            '/index.php': {
-              target: 'http://jiatui.api.com',
-              changeOrigin: true,
-              pathRewrite: {
-                '^/index.php': '/index.php'
+        data, this.proxyTable)
+        .then(res => {
+          if (res.data.isSuccess) {
+            const list = res.data.data
+            list.forEach(element => {
+              if (element.child.length > 0) {
+                element.status = false
               }
-            }
+            })
+            this.tabSecondList = list
           }
         })
+    },
+    getProduceList () {
+      const data = {
+        opt: 1,
+        page: 1,
+        rows: 10
+      }
+      employgoodsIndex(data)
         .then(res => {
-          console.log(res.data.data)
+
         })
+    },
+    switchProduce (val, name) {
+      this.activeTabFirst = val
+      this.activeTabFirstStatus = false
+      this.activeTabFirstName = name
+    },
+    showFirstDialog () {
+      this.activeTabFirstStatus = true
+      this.activeTabSecondStatus = false
+    },
+    showSecondDialog () {
+      this.activeTabSecondStatus = true
+      this.activeTabFirstStatus = false
     }
   },
   mounted () {
+    this.getProduceTypeList()
     this.getProduceList()
   }
 }
@@ -108,17 +162,52 @@ export default {
       height: calc(100% - 0.9rem);
       background-color: rgba(0,0,0,0.5);
       z-index: 2;
+      overflow: auto;
     }
     .tab-1{
       ul{
         background-color: #fff;
         li{
+          padding: 0 0.2rem;
+          border-bottom: 1px solid #eee;
           height: 0.9rem;
+          font-size: 0.3rem;
+          color: #717171;
           .icon-checked{
             fill: #0fd35d;
-            width: 0.3rem;
-            height: 0.3rem;
+            width: 0.6rem;
+            height: 0.6rem;
             float: right;
+            margin-top: 0.15rem;
+          }
+        }
+      }
+    }
+    .tab-2{
+      .tab-wrap>ul{
+        padding-right: 0.2rem;
+      }
+      ul{
+        background-color: #fff;
+        li{
+          border-bottom: 1px solid #eee;
+          font-size: 0.3rem;
+          color: #717171;
+          min-height: 0.9rem;
+          padding-left: 0.2rem;
+          .icon-down{
+            fill: #999;
+            width: 0.6rem;
+            height: 0.6rem;
+            float: right;
+            margin-top: 0.15rem;
+          }
+          .icon-checked{
+            fill: #0fd35d;
+            width: 0.6rem;
+            height: 0.6rem;
+            float: right;
+            margin-top: 0.15rem;
           }
         }
       }
