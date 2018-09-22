@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-20 17:52:56
+ * @Last Modified time: 2018-09-22 15:28:50
  */
 <template>
   <div class="edit-card">
@@ -51,21 +51,21 @@
     </div>
     <h5>推荐产品 <span class="fr" @click="gotoProduce">产品管理</span></h5>
     <div class="produce-list">
-      <p class="tac">暂无推荐商品</p>
+      <!-- <p class="tac" v-if="cardInfor.goods_case.goods.length <= 0">暂无推荐商品</p> -->
       <ul>
-        <li v-for="(item, index) in 6" :key="index">
-          <img src="@/assets/img/u112.png" alt="">
-          <span>产品名称</span>
+        <li v-for="(item, index) in cardInfor.goods_case.goods" :key="index">
+          <img :src="item.product_img" alt="">
+          <span>{{item.product_name}}</span>
         </li>
       </ul>
     </div>
     <h5>推荐案例 <span class="fr">案例管理</span></h5>
     <div class="case-list">
-      <p class="tac">暂无推荐案例</p>
+      <p class="tac" v-if="cardInfor.goods_case.case.lenght <= 0">暂无推荐案例</p>
       <ul>
-        <li v-for="(item, index) in 6" :key="index" class="card-shadow">
-          <img src="@/assets/img/u112.png" alt="">
-          <p><span>案例名称</span></p>
+        <li v-for="(item, index) in cardInfor.goods_case.case" :key="index" class="card-shadow">
+          <img :src="item.case_img" alt="">
+          <p><span>{{item.case_name}}</span></p>
         </li>
       </ul>
     </div>
@@ -146,7 +146,11 @@ export default {
         wechat: '',
         email: '',
         company: '',
-        address: ''
+        address: '',
+        goods_case: {
+          case: [],
+          goods: []
+        }
       },
       albumList: [],
       templateId: 0, // 选中的模板id
@@ -204,7 +208,9 @@ export default {
           this.seletedTemplate = require(`@/assets/card/${this.cardInfor.style_id + 1}.png`)
           this.selectedClass = `card-template-${this.cardInfor.style_id + 1}`
           this.templateId = this.cardInfor.style_id
-          this.albumList = this.cardInfor.album.split(',')
+          if (this.cardInfor.album != null) {
+            this.albumList = this.cardInfor.album.split(',')
+          }
         })
     },
     changeFile (e, type) {
@@ -428,13 +434,14 @@ export default {
       clear: both;
     }
     ul{
-      display: flex;
-      flex-wrap: wrap;
+      overflow: hidden;
+      width: 100%;
     }
     li{
       width: 2.1rem;
       margin-right: 0.3rem;
       margin-top: 0.3rem;
+      float: left;
       &:nth-of-type(3n){
         margin-right: 0;
       }
@@ -442,6 +449,7 @@ export default {
         display: block;
         width: 100%;
         height: 2.25rem;
+        border-radius: 0.1rem;
       }
       span{
         display: block;
@@ -457,18 +465,21 @@ export default {
       clear: both;
     }
     ul{
-      display: flex;
-      flex-wrap: wrap;
+      overflow: hidden;
+      width: 100%;
     }
     li{
       width: 2.2rem;
       margin-top: 0.3rem;
       margin-right: 0.15rem;
+      float: left;
       &:nth-of-type(3n){
         margin-right: 0;
       }
       img{
         width: 100%;
+        height: 2.25rem;
+        border-radius: 0.1rem;
       }
       p{
         height: 0.8rem;

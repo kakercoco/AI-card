@@ -107,12 +107,12 @@ export default new Router({
       meta: { title: '动态详情' },
       component: () => import('@/views/news/detail')
     },
-      {
-          path: '/companyDetails',
-          name: 'companyDetails',
-          meta: { title: '公司详情' },
-          component: () => import('@/views/news/companyDetails')
-      },
+    {
+      path: '/companyDetails',
+      name: 'companyDetails',
+      meta: { title: '公司详情' },
+      component: () => import('@/views/news/companyDetails')
+    },
     {
       path: '/calendar',
       name: 'calendar',
@@ -232,6 +232,12 @@ export default new Router({
       name: 'produce',
       meta: { title: '产品列表' },
       component: () => import('@/views/card/produce')
+    },
+    {
+      path: '/case',
+      name: 'case',
+      meta: { title: '案例列表' },
+      component: () => import('@/views/card/case')
     },
     {
       path: '/boss',

@@ -24,74 +24,99 @@
     <p class="line"></p>
     <div>
       <tab v-model="activeName" :line-width="0">
-        <tab-item>雷达能力图</tab-item>
-        <tab-item>数据分析</tab-item>
+        <tab-item><span @click="selectedType(1)">雷达能力图</span></tab-item>
+        <tab-item><span @click="selectedType(2)">数据分析</span></tab-item>
         <tab-item>
-          <p class="action-name">
-            <popup-radio :options="options" v-model="option" value-text-align="center"></popup-radio>
+          <p class="action-name" @click="selectedType(3)">
+            <popup-radio :options="options" v-model="option" value-text-align="center">333</popup-radio>
           </p>
         </tab-item>
       </tab>
       <div v-show="activeName === 0" class="boss-power">
         <div id="top-chart"></div>
-        <p class="tac">目前总排名列：第 <i style="color:red;">10</i> 位</p>
+        <p class="tac">目前总排名列：第 <i style="color:red;">{{this.chartData.lv}}</i> 位</p>
         <ul>
           <li>
-            <span>88</span>
+            <span>{{this.chartData.user_allnum}}</span>
             <i>客户总数</i>
           </li>
           <li>
-            <span>88</span>
+            <span>{{this.chartData.follow_num}}</span>
             <i>跟进总数</i>
           </li>
           <li>
-            <span>88</span>
+            <span>{{this.chartData.chat_num}}</span>
             <i>咨询总数</i>
           </li>
         </ul>
       </div>
       <div v-show="activeName === 1" class="boss-data">
         <tab v-model="dataTabIndex" :line-width="0">
-          <tab-item ><span>汇总</span></tab-item>
-          <tab-item ><span>昨日</span></tab-item>
-          <tab-item ><span>近7天</span></tab-item>
-          <tab-item ><span>当月</span></tab-item>
-          <tab-item ><span style="border: none;">近30天</span></tab-item>
+          <tab-item ><span @click="choseTimeType(0)">汇总</span></tab-item>
+          <tab-item ><span @click="choseTimeType(1)">昨日</span></tab-item>
+          <tab-item ><span @click="choseTimeType(2)">近7天</span></tab-item>
+          <tab-item ><span @click="choseTimeType(3)">当月</span></tab-item>
+          <tab-item ><span style="border: none;" @click="choseTimeType(4)">近30天</span></tab-item>
         </tab>
         <div v-show="dataTabIndex === 0" class="second-tab-list">
           <ul>
-            <li v-for="item in 6" :key="item">
-              <span>客户总数</span>
-              <span>150</span>
+            <li v-for="(item,index) in totalCustomer" :key="index">
+              <span>{{item.title}}</span>
+              <span>{{item.num}}</span>
             </li>
           </ul>
         </div>
         <div v-show="dataTabIndex === 1" class="second-tab-list second-nav-list-2">
           <ul>
-            <li v-for="item in 6" :key="item">
-              <span>客户总数</span>
-              <span class="blue">-136.4%</span>
-              <span class="blue">327</span>
+            <li v-for="(item,index) in totalCustomer" :key="index">
+              <span>{{item.title}}</span>
+              <span class="blue">{{item.pertenage}}%</span>
+              <span class="blue">{{item.num}}</span>
             </li>
           </ul>
         </div>
-        <div v-show="dataTabIndex === 2">
-          1-3
+        <div v-show="dataTabIndex === 2" class="second-tab-list second-nav-list-2">
+          <ul>
+            <li v-for="(item,index) in totalCustomer" :key="index">
+              <span>{{item.title}}</span>
+              <span class="blue">{{item.pertenage}}%</span>
+              <span class="blue">{{item.num}}</span>
+            </li>
+          </ul>
         </div>
         <div v-show="dataTabIndex === 3" class="second-tab-list second-nav-list-2">
           <ul>
-            <li v-for="item in 6" :key="item">
-              <span>客户总数</span>
-              <span class="red">+136.4%</span>
-              <span class="red">327</span>
+            <li v-for="(item,index) in totalCustomer" :key="index">
+              <span>{{item.title}}</span>
+              <span class="blue">{{item.pertenage}}%</span>
+              <span class="blue">{{item.num}}</span>
             </li>
           </ul>
         </div>
-        <div v-show="dataTabIndex === 4">
-          1-5
+        <div v-show="dataTabIndex === 4" class="second-tab-list second-nav-list-2">
+          <ul>
+            <li v-for="(item,index) in totalCustomer" :key="index">
+              <span>{{item.title}}</span>
+              <span class="blue">{{item.pertenage}}%</span>
+              <span class="blue">{{item.num}}</span>
+            </li>
+          </ul>
         </div>
         <p class="line"></p>
         <h3>成交率</h3>
+        <div class="funnel clearfix">
+          <div id="main">
+            <p>333</p>
+          </div>
+          <p>成交概率区间</p>
+          <ul>
+            <li>0~50%</li>
+            <li>50%~80%</li>
+            <li>80%~99%</li>
+            <li>100%</li>
+          </ul>
+        </div>
+        <!--<h3>成交率</h3>
         <div class="funnel clearfix">
           <div id="main"></div>
           <p>成交概率区间</p>
@@ -101,7 +126,7 @@
             <li>80%~99%</li>
             <li>100%</li>
           </ul>
-        </div>
+        </div>-->
         <p class="line"></p>
         <h3>客户兴趣占比</h3>
         <div class="care clearfix">
@@ -152,6 +177,7 @@
 <script>
 import { Tab, TabItem, PopupPicker, PopupRadio } from 'vux'
 import echarts from 'echarts'
+import { AIAnalyseDetail } from '@/api/boss'
 
 export default {
   name: 'bossCard',
@@ -163,6 +189,17 @@ export default {
   },
   data () {
     return {
+      listQuery: {
+        type: 1,
+        date_type: 1,
+        time_type: 0
+      },
+      chartData: [],
+      pertenageData: [],
+      totalCustomer: [],
+      chartTopData: [],
+      dynamicXData: [],
+      dynamicYData: [],
       activeName: 1, // boss雷达主tab
       dataTabIndex: 0, // boss雷达日期tab
       option: '互动记录',
@@ -186,6 +223,88 @@ export default {
     }
   },
   methods: {
+    setOverviewTotal (data) {
+      let map = []
+      for (const key in data) {
+        let obj = { title: '客户总数', num: 0, pertenage: 0 }
+        if (key === 'add_user') {
+          obj.title = '新增客户数'
+        } else if (key === 'user_follow') {
+          obj.title = '跟进客户数'
+        } else if (key === 'user_move') {
+          obj.title = '被转发总数'
+        } else if (key === 'user_save') {
+          obj.title = '被保存总数'
+        } else if (key === 'user_good') {
+          obj.title = '被点赞总数'
+        } else if (key === 'look_num') {
+          obj.title = '浏览总数'
+        }
+        if (key === 'add_user' || key === 'user_follow' || key === 'user_move' || key === 'user_save' || key === 'user_good' || key === 'look_num') {
+          obj.num = data[key].num
+          if (data[key].pertenage !== undefined) {
+            obj.pertenage = data[key].pertenage
+          }
+          map.push(obj)
+        }
+      }
+      this.totalCustomer = map
+    },
+    setArawAITop (data) {
+      if (data !== undefined) {
+        this.chartTopData[0] = data.num_1
+        this.chartTopData[1] = data.num_6
+        this.chartTopData[2] = data.num_5
+        this.chartTopData[3] = data.num_4
+        this.chartTopData[4] = data.num_3
+        this.chartTopData[5] = data.num_2
+      }
+    },
+    choseTimeType (type) {
+      this.listQuery.time_type = type
+      this.AIAnalyseDetail() // AI分析详情
+    },
+    selectedType (type) {
+      this.listQuery.type = type
+      this.AIAnalyseDetail()
+    },
+    AIAnalyseDetail () { // AI分析详情
+      AIAnalyseDetail(this.listQuery).then(res => {
+        const param = this.listQuery
+        if (res.code === 200) {
+          if (param.type === 1) { // 雷达能力图
+            if (res.data.ai_user.employ_lv !== undefined && res.data.ai_user.employ_lv[0] !== undefined) {
+              this.chartData = res.data.ai_user.employ_lv[0]
+              this.setArawAITop(this.chartData)
+              this.activeName = 0
+              this.drawAITop()
+            }
+          } else if (param.type === 2) {
+            this.activeName = 1
+            const data = res.data.user_data
+            this.setOverviewTotal(res.data.employ_data)
+            if (data !== undefined) {
+              this.setData(data)
+            }
+          } else if (param.type === 3) {
+            console.log()
+          }
+        }
+      })
+    },
+    setData (data) {
+      let XData = []
+      let YData = []
+      // XData.push('')
+      // YData.push(0)
+      for (const key in data) {
+        XData.push(key)
+        YData.push(data[key])
+      }
+      this.dynamicXData = XData
+      this.dynamicYData = YData
+      this.drawDynamic()
+    },
     drawChart (option, dom) {
       var myChart = echarts.init(document.getElementById(dom))
       // 绘制图表
@@ -244,7 +363,7 @@ export default {
 
             {
               symbolSize: 0,
-              value: [5000, 14000, 28000, 31000, 42000, 21000],
+              value: this.chartTopData,
               name: '数量',
               label: {
                 normal: {
@@ -346,7 +465,7 @@ export default {
         color: ['#5977fe'],
         xAxis: {
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: this.dynamicXData
         },
         yAxis: {
           type: 'value',
@@ -359,7 +478,7 @@ export default {
           left: '15%'
         },
         series: [{
-          data: [820, 932, 901, 934, 1290, 1330, 1320],
+          data: this.dynamicYData,
           type: 'line',
           showSymbol: false,
           smooth: true
@@ -369,10 +488,8 @@ export default {
     }
   },
   mounted () {
-    this.drawAITop()
-    this.drawFunnel()
+    this.AIAnalyseDetail()
     this.drawCare()
-    this.drawDynamic()
   }
 }
 </script>
@@ -566,10 +683,19 @@ export default {
   }
   .funnel{
     #main{
-      width: 100%;
+      width: 60%;
       height: 6rem;
+      background: url('~@/assets/img/chart.png') no-repeat center;
+      background-size: contain;
+      margin: 0 auto;
+      padding-top: 1.2rem;
+      p{
+        text-align: center;
+        margin-bottom: 0.7rem;
+        color: #fff;
+      }
     }
-    p{
+    &>p{
       text-align: center;
       font-size: 0.26rem;
       color: #717171;

@@ -68,3 +68,48 @@ export function employgoodsIndex (data) {
     params: data
   })
 }
+
+export function employgoodsSave (data) {
+  // 推荐产品
+  return request({
+    url: '/api/employgoods/save',
+    method: 'post',
+    data: data
+  })
+}
+
+export function employgoodsDetele (data) {
+  // 取消推荐产品
+  return request({
+    url: '/api/employgoods/delete',
+    method: 'get',
+    params: data
+  })
+}
+
+export function employcaseIndex (data) {
+  // 案例列表
+  return request({
+    url: '/api/employcase/index',
+    method: 'get',
+    params: data
+  })
+}
+
+export function employcaseSave (data) {
+  // 推荐案例
+  return request({
+    url: '/api/employcase/save',
+    method: 'post',
+    data: data
+  })
+}
+
+export function employcaseDetele (data) {
+  // 取消推荐案例
+  return request({
+    url: '/api/employcase/delete',
+    method: 'get',
+    params: data
+  })
+}

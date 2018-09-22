@@ -57,7 +57,8 @@ export function AIAnalyseDetail (listQuery) {
     method: 'GET',
     params: {
       type: listQuery.type,
-      date_type: listQuery.date_type
+      date_type: listQuery.date_type,
+      time_type: listQuery.time_type
     }
   })
 }
