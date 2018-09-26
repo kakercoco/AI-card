@@ -12,14 +12,14 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/index.php': {
-        target: 'http://jiatui.api.com',
+        target: 'https://zhentuityun.71360.com',
         changeOrigin: true,
         pathRewrite: {
-          '^/index.php': '/index.php'
+          '^/index.php': ''
         }
       }
     },
-    token: '8vJ0SXqoBpLez2sAD6a38QnpAIrLUszJIfRnrWW5leIfSxSS%2FJCW11wnA7Nmx%2BXW%2F6Tw%2BsF0s6dDfH%2F%2BzbdsEQ%3D%3D',
+    token: 'NyHCbn0LfoHa0Y3Zs5%2B%2FRmm7r0f2D7ad3fyehi1Zljq7Mgkblan2Yo%2FSavTys6BCVa3agY3EzQcucUdHyRZGTg%3D%3D',
 
     // Various Dev Server settings
     host: '0.0.0.0', // can be overwritten by process.env.HOST

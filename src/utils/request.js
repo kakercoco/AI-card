@@ -6,7 +6,8 @@ let baseURL = ''
 if (process.env.NODE_ENV === 'development') {
   baseURL = '/index.php'
 } else {
-  baseURL = process.env.BASE_API
+  baseURL = 'https://zhentuityun.71360.com'
+  //process.env.BASE_API
 }
 
 // 创建axios实例

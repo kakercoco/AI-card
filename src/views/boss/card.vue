@@ -8,27 +8,28 @@
   <div class="boss-card">
     <div class="header-bg">
       <div class="self-card">
-        <img src="@/assets/img/u112.png" alt="">
+        <img :src="topTitleInfor.image" alt="">
         <div class="infor">
-          <p>Top Man</p>
-          <p>销售总监 158xxxxxxxx</p>
-          <p>上海珍岛集团虹口区xx号</p>
+          <p>{{topTitleInfor.username}}</p>
+          <p>{{topTitleInfor.job}} {{topTitleInfor.mobile}}</p>
+          <p>{{topTitleInfor.address}}</p>
         </div>
         <div class="card">
           <img src="@/assets/img/card2.png" alt="" class="card-icon">
           <span>扫码名片</span>
-          <img src="@/assets/img/code.png" alt="" class="code-icon">
+          <img :src="topTitleInfor.image" alt="" class="code-icon">
+          <!--<img src="@/assets/img/code.png" alt=""  >-->
         </div>
       </div>
     </div>
     <p class="line"></p>
     <div>
       <tab v-model="activeName" :line-width="0">
-        <tab-item><span @click="selectedType(1)">雷达能力图</span></tab-item>
-        <tab-item><span @click="selectedType(2)">数据分析</span></tab-item>
+        <tab-item><span @click="selectedType(0)">雷达能力图</span></tab-item>
+        <tab-item><span @click="selectedType(1)">数据分析</span></tab-item>
         <tab-item>
-          <p class="action-name" @click="selectedType(3)">
-            <popup-radio :options="options" v-model="option" value-text-align="center">333</popup-radio>
+          <p class="action-name" @click="selectedType(2)">
+            <popup-radio :options="options" v-model="option" value-text-align="center"></popup-radio>
           </p>
         </tab-item>
       </tab>
@@ -106,7 +107,7 @@
         <h3>成交率</h3>
         <div class="funnel clearfix">
           <div id="main">
-            <p>333</p>
+            <p v-for="(item, index) in turnoverData" :key="index">{{item.num}}</p>
           </div>
           <p>成交概率区间</p>
           <ul>
@@ -116,17 +117,6 @@
             <li>100%</li>
           </ul>
         </div>
-        <!--<h3>成交率</h3>
-        <div class="funnel clearfix">
-          <div id="main"></div>
-          <p>成交概率区间</p>
-          <ul>
-            <li>0~50%</li>
-            <li>50%~80%</li>
-            <li>80%~99%</li>
-            <li>100%</li>
-          </ul>
-        </div>-->
         <p class="line"></p>
         <h3>客户兴趣占比</h3>
         <div class="care clearfix">
@@ -142,7 +132,7 @@
         <div class="action">
           <p v-for="(item, index) in countObj" :key="index" class="graph">
             <span>{{item.name}}</span>
-            <i :style="{width: item.num + '%'}"></i>
+            <i :style="{width: item.num/forTotal*10 + '%'}"></i>
             <b>{{item.num}}</b>
           </p>
         </div>
@@ -153,20 +143,20 @@
         </div>
       </div>
       <div v-show="activeName === 2" class="boss-action">
-        <p class="tac time">●&nbsp;&nbsp; 2018/08/05  15:50</p>
+        <p class="tac time">●&nbsp;&nbsp; {{currentDate}}</p>
         <ul class="action-logs-list" v-if="option === '互动记录'">
-          <li v-for="(item, index) in 4" :key="index">
-            <img src="@/assets/img/u112.png" alt="">
+          <li v-for="(item, index) in followData" :key="index">
+            <img :src="item.wx_image" alt="">
             <div>
-              T-cloud Man <i>拨打</i>了你的<i>手机号码</i>，要保持电话畅通。
+              {{item.username}} <i>拨打</i>了你的<i>手机号码</i>，{{item.content}}。
             </div>
-            <span>15:59</span>
+            <span>{{ item.create_time.substr(item.create_time.indexOf(':')- 2, item.create_time.length) }}</span>
           </li>
         </ul>
         <ul class="follow-logs-list" v-else>
-          <li v-for="(item, index) in 4" :key="index">
-            <p>客户有合作意向,查看了公司产品</p>
-            <p>2018-08-05  08:10</p>
+          <li v-for="(item, index) in followData" :key="index">
+            <p>{{item.content}}</p>
+            <p>{{item.create_time}}</p>
           </li>
         </ul>
       </div>
@@ -195,34 +185,48 @@ export default {
         time_type: 0
       },
       chartData: [],
+      drawCareData: [
+        {value: 0, name: '25%'},
+        {value: 0, name: '40%'},
+        {value: 0, name: '35%'}
+      ],
+      employData: [],
+      followData: [],
+      currentDate: '',
+      turnoverData: [
+        {num: 0},
+        {num: 0},
+        {num: 0},
+        {num: 0}
+      ],
+      forTotal: 0,
+      topTitleInfor: [],
       pertenageData: [],
       totalCustomer: [],
       chartTopData: [],
       dynamicXData: [],
       dynamicYData: [],
-      activeName: 1, // boss雷达主tab
+      activeName: 0, // boss雷达主tab
       dataTabIndex: 0, // boss雷达日期tab
       option: '互动记录',
       options: ['互动记录', '跟进记录'],
-      countObj: [{ // 与我互动
-        name: '查看名片',
-        num: 50
-      }, {
-        name: '查看动态',
-        num: 10
-      }, {
-        name: '查看官网',
-        num: 10
-      }, {
-        name: '查看产品',
-        num: 10
-      }, {
-        name: '拨打电话',
-        num: 10
-      }]
+      countObj: []
+    }
+  },
+  watch: {
+    option (val, oldval) {
+      this.getDataType()
+      this.getAIAnalyseDetail()
     }
   },
   methods: {
+    getDataType () {
+      if (this.option === '互动记录') {
+        this.listQuery.date_type = 1
+      } else {
+        this.listQuery.date_type = 2
+      }
+    },
     setOverviewTotal (data) {
       let map = []
       for (const key in data) {
@@ -241,7 +245,10 @@ export default {
           obj.title = '浏览总数'
         }
         if (key === 'add_user' || key === 'user_follow' || key === 'user_move' || key === 'user_save' || key === 'user_good' || key === 'look_num') {
-          obj.num = data[key].num
+          obj.num = 0
+          if (data[key].num !== undefined) {
+            obj.num = data[key].num
+          }
           if (data[key].pertenage !== undefined) {
             obj.pertenage = data[key].pertenage
           }
@@ -262,35 +269,51 @@ export default {
     },
     choseTimeType (type) {
       this.listQuery.time_type = type
-      this.AIAnalyseDetail() // AI分析详情
+      this.getAIAnalyseDetail() // AI分析详情
     },
     selectedType (type) {
-      this.listQuery.type = type
-      this.AIAnalyseDetail()
+      this.listQuery.type = type + 1
+      this.getAIAnalyseDetail()
     },
-    AIAnalyseDetail () { // AI分析详情
+    getAIAnalyseDetail () { // AI分析详情
       AIAnalyseDetail(this.listQuery).then(res => {
         const param = this.listQuery
         if (res.code === 200) {
           if (param.type === 1) { // 雷达能力图
-            if (res.data.ai_user.employ_lv !== undefined && res.data.ai_user.employ_lv[0] !== undefined) {
+            if (res.data.ai_user.employ_lv !== undefined && res.data.ai_user.employ_lv.length > 0) {
+              this.topTitleInfor = res.data.data
               this.chartData = res.data.ai_user.employ_lv[0]
               this.setArawAITop(this.chartData)
-              this.activeName = 0
               this.drawAITop()
             }
           } else if (param.type === 2) {
-            this.activeName = 1
+            this.topTitleInfor = res.data.data
             const data = res.data.user_data
-            this.setOverviewTotal(res.data.employ_data)
+            this.employData = res.data.employ_data
+            this.setForMeData(res.data.employ_res.for_me)
+            this.setEmployData(this.employData)
+            this.setOverviewTotal(this.employData)
             if (data !== undefined) {
               this.setData(data)
             }
           } else if (param.type === 3) {
-            console.log()
+            this.topTitleInfor = res.data.data
+            this.followData = res.data.follow.rows
+            this.setCurrentDate(this.followData)
           }
         }
       })
+    },
+    setCurrentDate (data) {
+      const date = data[0].create_time.replace(/-/g, '/')
+      console.log(date)
+      if (data.length > 0) {
+        if (data.length === 10) {
+          this.currentDate = date + '00:00'
+        } else {
+          this.currentDate = date.substr(0, date.length)
+        }
+      }
     },
     setData (data) {
       let XData = []
@@ -304,6 +327,52 @@ export default {
       this.dynamicXData = XData
       this.dynamicYData = YData
       this.drawDynamic()
+    },
+    setEmployData (data) {
+      this.turnoverData[0].num = data.num_0.num
+      this.turnoverData[1].num = data.num_1.num
+      this.turnoverData[2].num = data.num_2.num
+      this.turnoverData[3].num = data.num_3.num
+
+      this.drawCareData[0].value = data.look_web.num
+      this.drawCareData[1].value = data.look_goods.num
+      this.drawCareData[2].value = data.look_me.num
+      this.drawCare()
+    },
+    setForMeData (data) {
+      let temp = []
+      for (let i = 0; i < data.length; i++) {
+        const element = data[i].nums
+        const type = data[i].type
+        if (element !== 0) {
+          const obj = {
+            name: '访问名片',
+            num: element
+          }
+          if (type === 0) {
+            obj.name = '访问名片'
+          } else if (type === 1) {
+            obj.name = '打电话'
+          } else if (type === 2) {
+            obj.name = '转发名片'
+          } else if (type === 3) {
+            obj.name = '保存名片'
+          } else if (type === 4) {
+            obj.name = '查看官网'
+          } else if (type === 5) {
+            obj.name = '查看产品'
+          } else if (type === 6) {
+            obj.name = '查看案列'
+          } else if (type === 7) {
+            obj.name = '访问动态'
+          } else if (type === 8) {
+            obj.name = '添加微信'
+          }
+          temp.push(obj)
+        }
+        this.forTotal += element
+      }
+      this.countObj = temp
     },
     drawChart (option, dom) {
       var myChart = echarts.init(document.getElementById(dom))
@@ -380,55 +449,6 @@ export default {
       }
       this.drawChart(option, 'top-chart')
     },
-    drawFunnel () {
-      const option = {
-        calculable: true,
-        color: ['#3ec4d2', '#0fd35d', '#feab2b', '#ff5f1a'],
-        series: [
-          {
-            name: '漏斗图',
-            type: 'funnel',
-            left: '10%',
-            top: 60,
-            // x2: 80,
-            bottom: 60,
-            width: '80%',
-            // height: {totalHeight} - y - y2,
-            min: 0,
-            max: 100,
-            minSize: '0%',
-            maxSize: '100%',
-            sort: 'descending',
-            gap: 2,
-            label: {
-              normal: {
-                show: true,
-                position: 'inside'
-              },
-              formatter: '{d}',
-              emphasis: {
-                textStyle: {
-                  fontSize: 12
-                }
-              }
-            },
-            itemStyle: {
-              normal: {
-                borderColor: '#fff',
-                borderWidth: 3
-              }
-            },
-            data: [
-              {value: 80, name: '点击'},
-              {value: 60, name: '访问'},
-              {value: 40, name: '咨询'},
-              {value: 20, name: '订单'}
-            ]
-          }
-        ]
-      }
-      this.drawChart(option, 'main')
-    },
     drawCare () {
       const option = {
         color: ['#ff0000', '#feab2b', '#3ec4d2'],
@@ -437,11 +457,7 @@ export default {
             name: '访问来源',
             type: 'pie',
             radius: '75%',
-            data: [
-              {value: 335, name: '25%'},
-              {value: 310, name: '40%'},
-              {value: 234, name: '35%'}
-            ],
+            data: this.drawCareData,
             itemStyle: {
               emphasis: {
                 shadowBlur: 10,
@@ -488,8 +504,7 @@ export default {
     }
   },
   mounted () {
-    this.AIAnalyseDetail()
-    this.drawCare()
+    this.getAIAnalyseDetail()
   }
 }
 </script>

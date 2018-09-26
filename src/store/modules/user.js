@@ -5,13 +5,14 @@ const user = {
   namespaced: true,
   state: {
     token: getToken(),
-    url:'http://jiatui.api.com/index.php',
     info:{},
     websocketConnection:{},//用的全局聊天对象
     my_chat_token:'',//用于请求聊天服务器接口的凭证
     my_chat_room_id:'',//使用者当前的回话id
-    chat_domain:'http://192.168.40.176:8080',
-    chat_ws: 'ws://192.168.40.176:3838'
+    // chat_domain:'http://192.168.40.176:8080',
+    // chat_ws: 'ws://192.168.40.176:3838',
+    chat_domain: 'https://chattyun.71360.com',
+    chat_ws: 'wss://chattyun.71360.com/wss'
 
   },
 

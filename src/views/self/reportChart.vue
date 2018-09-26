@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 17:01:37
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-19 20:57:44
+ * @Last Modified time: 2018-09-26 11:58:42
  */
 <template>
   <div class="report-chart">
@@ -17,27 +17,27 @@
       <ul>
         <li>
           <span>客户总数</span>
-          <span>{{dataInfor.user_num}}</span>
+          <span>{{dataInfor.user_num.num}}</span>
         </li>
         <li>
           <span>跟进总数</span>
-          <span>{{dataInfor.follow_num}}</span>
+          <span>{{dataInfor.follow_num.num}}</span>
         </li>
         <li>
           <span>浏览总数</span>
-          <span>{{dataInfor.look_num}}</span>
+          <span>{{dataInfor.look_num.num}}</span>
         </li>
         <li>
           <span>被转发总数</span>
-          <span>{{dataInfor.transmit_num}}</span>
+          <span>{{dataInfor.transmit_num.num}}</span>
         </li>
         <li>
           <span>被保存总数</span>
-          <span>{{dataInfor.save_num}}</span>
+          <span>{{dataInfor.save_num.num}}</span>
         </li>
         <li>
           <span>被点赞总数</span>
-          <span>{{dataInfor.good_num}}</span>
+          <span>{{dataInfor.good_num.num}}</span>
         </li>
       </ul>
     </div>
@@ -68,10 +68,10 @@
     </div>
     <h3>与我互动</h3>
     <div class="action">
-      <p v-for="(item, index) in downChartInfor.for_me" :key="index" class="graph" v-if="item.num>0">
+      <p v-for="(item, index) in downChartInfor.for_me" :key="index" class="graph" v-if="item.num.num>0">
         <span>{{item.name}}</span>
-        <i :style="{width: item.num/forTotal*100 + '%'}"></i>
-        <b>{{item.num}}</b>
+        <i :style="{width: item.num.num/forTotal*100 + '%'}"></i>
+        <b>{{item.num.num}}</b>
       </p>
     </div>
     <h3>近15日客户活跃度</h3>
@@ -94,10 +94,30 @@ export default {
   data () {
     return {
       tabIndex: 0,
-      dataInfor: {},
+      dataInfor: {
+        follow_num: {
+          num: ''
+        },
+        good_num: {
+          num: ''
+        },
+        look_num: {
+          num: ''
+        },
+        save_num: {
+          num: ''
+        },
+        transmit_num: {
+          num: ''
+        },
+        user_num: {
+          num: ''
+        }
+      },
       dynamicXData: [],
       dynamicYData: [],
       forTotal: 0,
+      likeTotal: 0, // 兴趣总数
       downChartInfor: {
         like_company: 0,
         like_me: 0,
@@ -137,9 +157,10 @@ export default {
             this.dynamicYData.push(this.downChartInfor.user_avtive[key])
           }
           for (let i = 0; i < this.downChartInfor.for_me.length; i++) {
-            const element = this.downChartInfor.for_me[i]
+            const element = this.downChartInfor.for_me[i].num
             this.forTotal += element.num
           }
+          this.likeTotal = this.downChartInfor.like_company.num + this.downChartInfor.like_me.num + this.downChartInfor.like_product.num
           this.drawCare()
           this.drawDynamic()
         })
@@ -158,9 +179,9 @@ export default {
             type: 'pie',
             radius: '75%',
             data: [
-              {value: this.downChartInfor.like_company, name: '25%'},
-              {value: this.downChartInfor.like_product, name: '40%'},
-              {value: this.downChartInfor.like_me, name: '35%'}
+              {value: this.downChartInfor.like_company.num, name: `${(this.downChartInfor.like_company.num / this.likeTotal * 100).toFixed(1)}%`},
+              {value: this.downChartInfor.like_product.num, name: `${(this.downChartInfor.like_product.num / this.likeTotal * 100).toFixed(1)}%`},
+              {value: this.downChartInfor.like_me.num, name: `${(this.downChartInfor.like_me.num / this.likeTotal * 100).toFixed(1)}%`}
             ],
             itemStyle: {
               emphasis: {
@@ -383,6 +404,7 @@ export default {
         height: 0.2rem;
         border-radius: 0.1rem;
         margin-left: 0.5rem;
+        max-width: 55%;
       }
       &:nth-child(1){
         span::after{

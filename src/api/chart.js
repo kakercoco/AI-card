@@ -16,3 +16,17 @@ export function getMyChart () {
     method: 'get'
   })
 }
+
+//不在线
+export function not_online (data) {
+    // 我的报表图表
+    return request({
+        url: '/api/Weworkapi/setCompanyMessage',
+        method: 'post',
+        data:data
+    })
+}
+
+
+
+

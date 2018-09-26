@@ -16,6 +16,7 @@ import {setToken} from '@/utils/auth'
 import {get_user_info} from '@/api/user_info'
 import {dateFtt, config, all_srcollBtoom} from '@/utils/base'
 import {get_users} from '@/api/message'
+import {not_online} from '@/api/chart'
 import {emojiAnalysis, __emojiObjs} from '@/utils/emoj'
 if (process.env.NODE_ENV === 'development') {
     var my_config = require('../config/index');
@@ -29,7 +30,8 @@ export default {
         timer: null,
         wx_image: '',
         content: '',
-        time: ''
+        time: '',
+        heartbeat:null
       }
 
     }
@@ -93,7 +95,8 @@ export default {
                         }
           }
         } else if (data.cmd === 'GetChat' && data.content) {
-          this.$store.commit('chat/SET_my_chat_room_id', data.content)
+          this.$store.commit('chat/SET_my_chat_room_id', data.content);
+          this.send_heartbeat();
                 } else if (data.cmd === 'SpeakFromDialog' && this.$route.path === '/main/message') {
           this.message_logic(res)
                 } else if (data.cmd === 'SpeakFromDialog' && this.$route.path === '/messageIM') {
@@ -121,8 +124,30 @@ export default {
         } else if (data.cmd === 'Error') {
           // alert(data.content);
         }
-        else if(data.cmd === 'Offline'){
-            debugger;
+        else if(data.cmd === 'Offline' && data.content){
+            const message_id = data.content.split(',')[0];
+            const content_id = data.content.split(',')[1];
+            const list = this.$store.state.chat.char_list;
+            let content = '收到一条消息，请点开查看详情！';
+            for(let i = list.length -1;i>=0;i--){
+                if(list[i].id && list[i].id === content_id){
+                    if(list[i].type === 'text'){
+                        content = list[i].copy_content;
+                    }
+                    else if(list[i].type === 'img'){
+                        content = '一张图片，请点开查看详情！';
+                    }
+                    else if(list[i].type === 'shop'){
+                        content = '一个产品信息，请点开查看详情！';
+                    }
+                    break;
+                }
+            }
+            not_online({
+                touser:message_id,
+                content
+            }).then((e)=>{})
+
         }
       }
     },
@@ -224,7 +249,19 @@ export default {
 
 
 
-        }
+        },
+
+      send_heartbeat(){
+          if (this.heartbeat == null){
+              this.heartbeat = setInterval(()=>{
+                  const req = {
+                      "cmd": "HeartBeat"
+                  };
+                  this.$store.state.user.websocketConnection.send(JSON.stringify(req));
+              }, 550000);
+              //550000
+          }
+      }
   },
   mounted () {
     this.get_user_info()

@@ -134,7 +134,7 @@
       <div class="action">
         <p v-for="(item, index) in countObj" :key="index" class="graph">
           <span>{{item.name}}</span>
-          <i :style="{width: item.num + '%'}"></i>
+          <i :style="{width: item.num/forTotal*10 + '%'}"></i>
           <b>{{item.num}}</b>
         </p>
       </div>
@@ -256,6 +256,7 @@ export default {
         active: 3
       },
       overviewTotal: [],
+      forTotal: 0,
       salesRankList: [],
       salesRankAllList: [],
       firstRankRow: [],
@@ -418,6 +419,7 @@ export default {
       this.bossOverviewTotal() // 总览总数
     },
     setTotalCustomer (data) {
+      this.forTotal = data.look_card.num + data.look_dynamic.num + data.look_web.num + data.look_product.num + data.look_phone.num
       this.countObj[0].num = data.look_card.num
       this.countObj[1].num = data.look_dynamic.num
       this.countObj[2].num = data.look_web.num

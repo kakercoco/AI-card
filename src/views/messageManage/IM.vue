@@ -358,6 +358,7 @@ export default {
         obj.is_loading = true;
         obj.fead_src = this.$store.state.user.info.image ? this.$store.state.user.info.image : '';
         obj.from = 'me';
+        obj.copy_content = obj.content;
         obj.content = emojiAnalysis([obj.content]);
 
         this.$store.commit('chat/PUSH_char_list',obj);
