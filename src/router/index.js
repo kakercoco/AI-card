@@ -8,7 +8,7 @@ export default new Router({
     {
       path: '/',
       redirect: '/main/index',
-      meta: { title: 'AI雷达' }
+      meta: { title: 'AI天眼' }
     },
     {
       path: '/main',
@@ -17,7 +17,7 @@ export default new Router({
       children: [{
         path: 'index',
         name: 'index',
-        meta: { title: 'AI雷达' },
+        meta: { title: 'AI天眼' },
         component: () => import('@/views/home/index')
       }, {
         path: 'message',
@@ -37,7 +37,7 @@ export default new Router({
       }, {
         path: 'self',
         name: 'self',
-        meta: { title: 'AI雷达' },
+        meta: { title: 'AI天眼' },
         component: () => import('@/views/home/self')
       }]
     },
@@ -242,13 +242,13 @@ export default new Router({
     {
       path: '/boss',
       name: 'boss',
-      meta: { title: 'BOSS雷达' },
+      meta: { title: 'BOSS天眼' },
       component: () => import('@/views/boss/index')
     },
     {
       path: '/bossCard',
       name: 'bossCard',
-      meta: { title: 'BOSS雷达' },
+      meta: { title: 'BOSS天眼' },
       component: () => import('@/views/boss/card')
     },
     {

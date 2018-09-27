@@ -18,15 +18,18 @@ import { wxConfig } from '@/api/card'
 
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
-Vue.use(WechatPlugin)
-wxConfig()
-  .then(res => {
-    const config = res.data
-    config.beta = true
-    config.debug = true
-    config.jsApiList = ['startRecord', 'stopRecord']
-    Vue.wechat.config(config)
-  })
+// Vue.use(WechatPlugin)
+// wxConfig()
+//   .then(res => {
+//     const config = res.data
+//     config.beta = true
+//     config.debug = true
+//     config.jsApiList = ['startRecord', 'stopRecord']
+//     Vue.wechat.config(config)
+//   })
+//   .catch(error => {
+//     console.log(error)
+//   })
 // 全局方法集
 
 Vue.prototype.Global = new Global(Vue)

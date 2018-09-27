@@ -404,3 +404,298 @@
     }
   }
 }
+.card-template-10{
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.8rem;
+    padding-left: 0.8rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      order: 10;
+      justify-content: space-between;
+      margin-left: 0.8rem;
+    }
+    .name{
+      margin-right: 0.3rem;
+      font-size: 0.46rem;
+      align-items: baseline;
+    }
+    .job{
+      font-size: 0.26rem;
+    }
+  }
+  .phone{
+    margin-top: 0.1rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.4rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+}
+.card-template-11{
+  position: relative;
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.2rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.46rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    i{
+      font-size: 12px;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    i{
+      margin-right: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+  }
+}
+.card-template-12{
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.3rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.3rem;
+    color: #fff;
+    height: 0.5rem;
+    padding: 0 0.3rem;
+    line-height: 0.5rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.5rem;
+      height: 0.5rem;
+      position: absolute;
+      left: -0.4rem;
+      top: 0;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    text-align: right;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      position: absolute;
+      left: 0.5rem;
+      top: 1.5rem;
+    }
+    .name{
+      font-size: 0.46rem;
+      display: block;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+    }
+  }
+  .phone{
+    text-align: right;
+    margin-top: 0.2rem;
+    i{
+      margin-left: 0.2rem;
+      float: right;
+    }
+  }
+  .email{
+    text-align: right;
+    margin-top: 0.15rem;
+    i{
+      font-size: 12px;
+      margin-left: 0.2rem;
+      float: right;
+    }
+  }
+  .address{
+    text-align: right;
+    margin-top: 0.15rem;
+    i{
+      margin-left: 0.2rem;
+      float: right;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    text-align: right;
+  }
+}
+.card-template-13{
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.3rem;
+    right: 0;
+    background-color: #005bac;
+    font-size: 0.3rem;
+    color: #fff;
+    height: 0.5rem;
+    padding: 0 0.3rem;
+    line-height: 0.5rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.5rem;
+      height: 0.5rem;
+      position: absolute;
+      left: -0.4rem;
+      top: 0;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    left: 0.5rem;
+    top: 1.6rem;
+    height: 1.5rem;
+    width: 3.2rem;
+    text-align: center;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: left;
+      display: none;
+    }
+    .name{
+      font-size: 0.46rem;
+      display: block;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+    }
+  }
+  .phone{
+    text-align: right;
+    margin-top: 1.2rem;
+    i{
+      margin-left: 0.2rem;
+      float: right;
+    }
+  }
+  .email{
+    text-align: right;
+    margin-top: 0.15rem;
+    i{
+      font-size: 12px;
+      margin-left: 0.2rem;
+      float: right;
+    }
+  }
+  .address{
+    text-align: right;
+    margin-top: 0.15rem;
+    i{
+      margin-left: 0.2rem;
+      float: right;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    text-align: right;
+  }
+}

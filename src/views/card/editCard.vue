@@ -2,21 +2,28 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-22 15:28:50
+ * @Last Modified time: 2018-09-26 21:07:29
  */
 <template>
   <div class="edit-card">
     <div class="my-card" id="card">
       <img :src="seletedTemplate" alt="" class="card-bg">
       <div class="card-infor " :class="selectedClass">
-        <p class="company">{{cardInfor.company}}</p>
+        <p class="mark" v-if="templateId === 11 || templateId === 12">T云商务</p>
+        <p class="trueland" v-if="templateId === 10 || templateId === 11 || templateId === 12">
+          <img src="@/assets/img/trueland.png" alt="" >
+          <span>珍岛股份·上海总部</span>
+        </p>
+        <p class="company" v-else>{{cardInfor.company}}</p>
         <p class="bio">
           <img :src="cardInfor.image" alt="" class="avatar">
           <span class="name">{{cardInfor.username}}</span>
-          <span class="job">销售总监</span>
+          <span class="job">{{cardInfor.job}}</span>
         </p>
         <p class="phone"><i class="iconfont icon-dianhua1"></i>{{cardInfor.phone}}</p>
+        <p class="email" v-if="templateId === 10 || templateId === 11 || templateId === 12"><i class="iconfont icon-Email1"></i>{{cardInfor.email}}</p>
         <p class="address"><i class="iconfont icon-dingwei"></i>{{cardInfor.address}}</p>
+        <p class="tip" v-if="templateId === 10 || templateId === 11 || templateId === 12">中国领先的SaaS级智能营销云平台</p>
       </div>
     </div>
     <h5>名片样式</h5>
@@ -170,7 +177,10 @@ export default {
         require('@/assets/card/7.png'),
         require('@/assets/card/8.png'),
         require('@/assets/card/9.png'),
-        require('@/assets/card/10.png')
+        require('@/assets/card/10.png'),
+        require('@/assets/card/11.png'),
+        require('@/assets/card/12.png'),
+        require('@/assets/card/13.png')
       ]
     }
   },
@@ -252,16 +262,16 @@ export default {
     },
     touchstart () {
       console.log('start')
-      this.$wechat.startRecord()
+      // this.$wechat.startRecord()
     },
     touchend () {
       console.log('end')
-      this.$wechat.stopRecord({
-        success: function (res) {
-          var localId = res.localId
-          console.log(localId, 'url')
-        }
-      })
+      // this.$wechat.stopRecord({
+      //   success: function (res) {
+      //     var localId = res.localId
+      //     console.log(localId, 'url')
+      //   }
+      // })
     },
     changeTemplate (val, index) {
       this.seletedTemplate = val
@@ -317,16 +327,16 @@ export default {
       this.cardInfor.album = this.albumList.join(',')
       updateCard(this.cardInfor)
         .then(res => {
-
+          this.$router.back(-1)
         })
     }
 
   },
   mounted () {
     this.getCard()
-    this.$wechat.ready(() => {
-      console.log('ready')
-    })
+    // this.$wechat.ready(() => {
+    //   console.log('ready')
+    // })
   }
 }
 </script>
@@ -341,6 +351,7 @@ export default {
     overflow: hidden;
     position: relative;
     height: 4.5rem;
+    box-shadow: 0px 0px 0.5rem #e0dada;
     .card-bg{
       width: 100%;
       height: 4.5rem;
@@ -372,7 +383,7 @@ export default {
   }
   .template-list{
     height: 1rem;
-    width: 17.6rem;
+    width: 23.4rem;
     img{
       width: 1.4rem;
       height: 1rem;

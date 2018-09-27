@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 14:51:27
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-18 13:44:27
+ * @Last Modified time: 2018-09-26 16:39:33
  */
 <template>
   <div class="talk-manage">
@@ -14,7 +14,7 @@
       <div class="talk-list">
         <p class="tac" @click="gotoInsert">新增话术</p>
         <ul>
-          <li v-for="item in talk" :key="item" @click="gotoDetail(item.id, item.group_id)">
+          <li v-for="(item, index) in talk" :key="index" @click="gotoDetail(item.id, item.group_id)">
             <p class="title">{{item.keyword}}</p>
             <p class="content">{{item.content}}</p>
             <x-icon type="ios-arrow-right" class="icon-right"></x-icon>
@@ -45,7 +45,7 @@ export default {
         }
       })
     },
-    gotoDetail (id,groupId) {
+    gotoDetail (id, groupId) {
       this.$router.push({
         path: '/talkDetail',
         query: {

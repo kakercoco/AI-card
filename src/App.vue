@@ -37,7 +37,11 @@ export default {
     }
   },
   created () {
-    setToken(my_config.dev.token);
+      if (process.env.NODE_ENV === 'development') {
+          setToken(my_config.dev.token);
+      }
+
+
   },
   methods: {
     get_user_info () {
@@ -88,14 +92,16 @@ export default {
           if (data.content) {
             const my = JSON.parse(data.content)
             this.$store.commit('user/SET_my_chat_token', my.token)
-
+              console.log('使用员工账号的message_id：', my.id)
             // 判断员工信息中是否包含message_id
             if (!this.$store.state.user.info.message_id) {
               this.$store.commit('user/SET_my_message_id', my.id)
+
                         }
           }
         } else if (data.cmd === 'GetChat' && data.content) {
           this.$store.commit('chat/SET_my_chat_room_id', data.content);
+            console.log('聊天连接成功！,房间号：', data.content);
           this.send_heartbeat();
                 } else if (data.cmd === 'SpeakFromDialog' && this.$route.path === '/main/message') {
           this.message_logic(res)

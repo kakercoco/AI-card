@@ -1,5 +1,6 @@
 import axios from 'axios'
 import store from '../store'
+import {getToken} from './auth'
 // import { getToken } from '@/utils/auth'
 
 let baseURL = ''
@@ -50,8 +51,9 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error)// for debug
-    alert(error)
+    console.log('err' + error)
+      const token = getToken()
+    alert('token:'+token)
     return Promise.reject(error)
   }
 )

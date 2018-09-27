@@ -2,17 +2,17 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:27:30
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-14 14:30:03
+ * @Last Modified time: 2018-09-26 16:35:26
  */
 <template>
   <div class="self">
     <div class="header-bg">
       <div class="self-card" >
-        <img src="@/assets/img/u112.png" alt="" @click="gotoCard">
+        <img :src="cardInfor.image" alt="" @click="gotoCard">
         <div class="infor" @click="gotoCard">
-          <p>Top Man</p>
-          <p>销售总监 158xxxxxxxx</p>
-          <p>上海珍岛集团虹口区xx号</p>
+          <p>{{cardInfor.username}}</p>
+          <p>销售总监 {{cardInfor.phone}}</p>
+          <p>{{cardInfor.address}}</p>
         </div>
         <div class="card" @click="gotoQrcode">
           <img src="@/assets/img/card2.png" alt="" class="card-icon">
@@ -57,6 +57,7 @@
 
 <script>
 import { Group, Cell } from 'vux'
+import { cardRead } from '@/api/card'
 
 export default {
   name: 'self',
@@ -66,9 +67,16 @@ export default {
   },
   data () {
     return {
+      cardInfor: {}
     }
   },
   methods: {
+    getCard () {
+      cardRead()
+        .then(res => {
+          this.cardInfor = res.data
+        })
+    },
     gotoCard () {
       this.$router.push({
         path: '/selfCard'
@@ -81,6 +89,7 @@ export default {
     }
   },
   mounted () {
+    this.getCard()
   }
 }
 </script>

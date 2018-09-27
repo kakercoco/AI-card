@@ -19,7 +19,7 @@ module.exports = {
         }
       }
     },
-    token: 'NyHCbn0LfoHa0Y3Zs5%2B%2FRmm7r0f2D7ad3fyehi1Zljq7Mgkblan2Yo%2FSavTys6BCVa3agY3EzQcucUdHyRZGTg%3D%3D',
+    token: '7%21%C2n%7D%0B%7E%81%DA%D1%8D%D9%B3%9F%BFFi%BB%AFG%F6%0F%B6%9D%DD%FC%9E%86-Y%96%3AF%D2%2C%FDk-%27P%8F%D2j%F4%F2%B3%A0BU%AD%DA%81%8D%C4%CD%07.qGG%C9%16FN',
 
     // Various Dev Server settings
     host: '0.0.0.0', // can be overwritten by process.env.HOST
@@ -59,7 +59,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps
