@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-26 21:07:29
+ * @Last Modified time: 2018-09-28 15:45:24
  */
 <template>
   <div class="edit-card">
@@ -29,7 +29,7 @@
     <h5>名片样式</h5>
     <scroller ref="scrollerEvent" lock-y :scrollbar-x='false' style="margin-top: 0.2rem;">
      <div class="template-list">
-        <img :src="item" alt="" :class="{active: index === templateId}" v-for="(item, index) in templateCard" :key="index" @click="changeTemplate(item, index)">
+        <img :src="item" alt="" :class="{active: index === templateId}" v-for="(item, index) in templateCard" :key="index" @click="changeTemplate(item, index)" v-show="index < 3 || index > 8">
       </div>
     </scroller>
     <h5>名片头像</h5>
@@ -42,18 +42,18 @@
     <h5>个人信息</h5>
     <div class="self-message">
       <group>
-        <x-input title="手机:" placeholder="未填写信息" v-model="cardInfor.phone"></x-input>
-        <x-input title="座机:" placeholder="未填写信息" v-model="cardInfor.tel"></x-input>
-        <x-input title="微信:" placeholder="未填写信息" v-model="cardInfor.weixin"></x-input>
-        <x-input title="邮箱:" placeholder="未填写信息" v-model="cardInfor.email"></x-input>
-        <x-input title="公司:" placeholder="未填写信息" v-model="cardInfor.company"></x-input>
-        <x-input title="地址:" placeholder="未填写信息" v-model="cardInfor.address"></x-input>
+        <x-input title="手机:" is-type="china-mobile" placeholder="未填写信息" v-model="cardInfor.phone" type="tel" @on-blur="myFocus"></x-input>
+        <x-input title="座机:" placeholder="未填写信息" v-model="cardInfor.tel" type="tel" @on-blur="myFocus"></x-input>
+        <x-input title="微信:" placeholder="未填写信息" v-model="cardInfor.weixin" @on-blur="myFocus"></x-input>
+        <x-input title="邮箱:" is-type="email" placeholder="未填写信息" v-model="cardInfor.email" type="email" @on-blur="myFocus"></x-input>
+        <x-input title="公司:"  v-model="cardInfor.company" disabled readonly></x-input>
+        <x-input title="地址:" placeholder="未填写信息" v-model="cardInfor.address" @on-blur="myFocus"></x-input>
       </group>
     </div>
     <h5>个人简介</h5>
     <div class="self-bio">
       <group>
-        <x-textarea placeholder="请输入文字" v-model="cardInfor.content" autosize></x-textarea>
+        <x-textarea placeholder="请输入文字" v-model="cardInfor.content" autosize @on-blur="myFocus"></x-textarea>
       </group>
     </div>
     <h5>推荐产品 <span class="fr" @click="gotoProduce">产品管理</span></h5>
@@ -66,7 +66,7 @@
         </li>
       </ul>
     </div>
-    <h5>推荐案例 <span class="fr">案例管理</span></h5>
+    <h5>推荐案例 <span class="fr" @click="gotoCase">案例管理</span></h5>
     <div class="case-list">
       <p class="tac" v-if="cardInfor.goods_case.case.lenght <= 0">暂无推荐案例</p>
       <ul>
@@ -76,11 +76,11 @@
         </li>
       </ul>
     </div>
-    <h5>录制语音</h5>
+    <!-- <h5>录制语音</h5>
     <div class="self-audio">
       <p @click="audioDialog = true">暂无声音录制，请点击录制 <x-icon type="ios-plus-outline"></x-icon></p>
       <audio src="@/assets/audio/audio.ogg" controls="controls"></audio>
-    </div>
+    </div> -->
     <h5>我的图片</h5>
     <div class="self-img clearfix">
       <img :src="item" alt="" v-for="(item, index) in albumList" :key="index" v-if="item != ''">
@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import { Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle } from 'vux'
+import { Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle, AlertModule } from 'vux'
 import html2canvas from 'html2canvas'
 import { updateCard, cardRead, cardTagDelete, cardTagInsert } from '@/api/card'
 import { upload_img } from '@/api/upload_file'
@@ -143,7 +143,7 @@ import { upload_img } from '@/api/upload_file'
 export default {
   name: 'editCard',
   components: {
-    Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle
+    Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle, AlertModule
   },
   data () {
     return {
@@ -270,6 +270,9 @@ export default {
       //   success: function (res) {
       //     var localId = res.localId
       //     console.log(localId, 'url')
+      //   },
+      //   fail: function (res) {
+      //     console.log(JSON.stringify(res))
       //   }
       // })
     },
@@ -278,13 +281,15 @@ export default {
       this.templateId = index
       this.cardInfor.style_id = index
       this.selectedClass = `card-template-${index + 1}`
-      setTimeout(() => {
-        this.switchImg()
-      }, 1000)
     },
     gotoProduce () {
       this.$router.push({
         path: '/produce'
+      })
+    },
+    gotoCase () {
+      this.$router.push({
+        path: '/case'
       })
     },
     dataURLtoBlob (dataurl) {
@@ -318,17 +323,61 @@ export default {
         upload_img(fd).then(res => {
           if (res.data && res.data.url) {
             this.cardInfor.card_image = res.data.url
+            delete this.cardInfor.tag
+            this.cardInfor.album = this.albumList.join(',')
+            updateCard(this.cardInfor)
+              .then(res => {
+                this.$router.back(-1)
+              })
           }
         })
       })
     },
-    save () {
+    myFocus () {
+      var phoneReg = /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/
+      var mailReg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+      var phone = this.cardInfor.phone
+      var email = this.cardInfor.email
+      if (!phoneReg.test(phone)) {
+        AlertModule.show({
+          title: '提示',
+          content: '请输入有效的手机号码！'
+        })
+        return false
+      }
+      if (!mailReg.test(email)) {
+        AlertModule.show({
+          title: '提示',
+          content: '请输入有效的邮箱！'
+        })
+        return false
+      }
       delete this.cardInfor.tag
       this.cardInfor.album = this.albumList.join(',')
       updateCard(this.cardInfor)
         .then(res => {
-          this.$router.back(-1)
         })
+    },
+    save () {
+      var phoneReg = /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/
+      var mailReg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+      var phone = this.cardInfor.phone
+      var email = this.cardInfor.email
+      if (!phoneReg.test(phone)) {
+        AlertModule.show({
+          title: '提示',
+          content: '请输入有效的手机号码！'
+        })
+        return false
+      }
+      if (!mailReg.test(email)) {
+        AlertModule.show({
+          title: '提示',
+          content: '请输入有效的邮箱！'
+        })
+        return false
+      }
+      this.switchImg()
     }
 
   },
@@ -345,6 +394,7 @@ export default {
 .edit-card{
   overflow: auto;
   height: 100%;
+  -webkit-overflow-scrolling: touch;
   padding: 0.5rem 0.3rem;
   .my-card{
     border-radius: 0.1rem;
@@ -360,7 +410,7 @@ export default {
       left: 0;
     }
     .card-infor{
-      padding: 0.3rem;
+      padding: 0.5rem 0.7rem 0.3rem 0.7rem;
       position: absolute;
       top: 0;
       left: 0;
@@ -383,7 +433,7 @@ export default {
   }
   .template-list{
     height: 1rem;
-    width: 23.4rem;
+    width: 12.6rem;
     img{
       width: 1.4rem;
       height: 1rem;
@@ -466,6 +516,7 @@ export default {
         display: block;
         text-align: center;
         margin-top: 0.3rem;
+        height: 0.4rem;
       }
     }
   }

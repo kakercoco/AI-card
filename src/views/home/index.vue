@@ -22,7 +22,7 @@
                 ref="scrollerBottom">
           <ul class="logs-list">
             <li v-for="(item, index) in time_list" :key="index" @click="gotoClient(item)">
-              <img :src="item.wx_image ? item.wx_image : '/static/image/moren.jpg'">
+              <img :src="item.wx_image ? item.wx_image : '@/assets/img/moren.jpg'">
               <div v-html="item.ele"></div>
               <span>{{item.time}}</span>
             </li>
@@ -63,7 +63,7 @@
               class="card-shadow"
               @click="gotoCallPhoneList(item)"
               v-for="(item, index) in behavior_list" :key="index">
-            <img :src="'/static/image/' + item.type +'.png'">
+            <img :src="'/ai/static/image/' + item.type +'.png'">
             <span>{{item.title}}</span>
             <i>{{item.nums}}次</i>
           </li>
@@ -85,14 +85,14 @@
             <ul class="news-list">
               <div class="card-shadow" v-for="(item, index) in interaction_list" :key="index" >
                 <li v-if="item.status" @click="toggleDetail(index)">
-                  <img :src="item.wx_image ? item.wx_image : '/static/image/moren.jpg'">
+                  <img :src="item.wx_image ? item.wx_image : '@/assets/img/moren.jpg'">
                   <span class="list_title">{{item.wx_name}}在{{interactionScroller.time_slot}}内和你互动了{{item.num}}次</span>
                   <x-icon type="ios-arrow-down" size="20" class="icon"></x-icon>
                 </li>
                 <div v-else class="news-list-detail">
                   <p class="title">
                     <img src="@/assets/img/datapicker.png" alt="" class="fr" style="display: none">
-                    <img :src="item.wx_image ? item.wx_image : '/static/image/moren.jpg'" class="avatar">
+                    <img :src="item.wx_image ? item.wx_image : '@/assets/img/moren.jpg'" class="avatar">
                   </p>
                   <p class="tac">{{item.wx_name}}在{{interactionScroller.time_slot}}内和你互动了{{item.num}}次</p>
                   <p v-for="(val, i) in item.typeGroup" :key="i" class="graph">
@@ -365,10 +365,14 @@ export default {
 
                 });
             }
+            else{
+                this.$refs.scrollerBottom.disablePullup();
+            }
         }).catch((err)=>{
             console.log(err);
             this.$vux.loading.hide();
             this.timeScroller.isAjax = true;
+            this.$refs.scrollerBottom.disablePullup();
         })
     },
 
@@ -466,6 +470,9 @@ export default {
                           this.$refs.scroller.enablePullup();//恢复上啦
                       }
                   });
+              }
+              else{
+                  this.$refs.scroller.disablePullup();
               }
           }).catch((err)=>{
               console.log(err);

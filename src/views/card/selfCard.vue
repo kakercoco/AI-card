@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 15:23:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-26 16:16:43
+ * @Last Modified time: 2018-09-28 11:58:30
  */
 <template>
   <div class="self-card">
@@ -62,6 +62,7 @@ export default {
   overflow: auto;
   height: 100%;
   padding: 0.5rem 0.3rem 0;
+  -webkit-overflow-scrolling: touch;
   .logo{
     width: 100%;
   }

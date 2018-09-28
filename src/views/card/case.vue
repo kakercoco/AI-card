@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-11 17:04:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-22 14:46:35
+ * @Last Modified time: 2018-09-28 14:50:49
  */
 <template>
   <div class="produce">
@@ -182,6 +182,7 @@ export default {
       employcaseSave(data)
         .then(res => {
           this.$vux.toast.text('推荐成功', 'top')
+          this.getProduceList()
         })
     },
     employcaseDetele (item) {
@@ -191,6 +192,7 @@ export default {
       employcaseDetele(data)
         .then(res => {
           this.$vux.toast.text('取消推荐成功', 'top')
+          this.getProduceList()
         })
     },
     isRecommend (id) {
@@ -326,10 +328,14 @@ export default {
           color: #5977fe;
           font-size: 0.3rem;
           height: 0.5rem;
+          line-height: 0.5rem;
+          overflow: hidden;
         }
         h5{
           color: #717171;
           font-size: 0.28rem;
+          height: 1.6rem;
+          overflow: hidden;
         }
         p{
           position: absolute;

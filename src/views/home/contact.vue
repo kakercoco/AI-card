@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:26:07
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-18 19:56:04
+ * @Last Modified time: 2018-09-27 16:43:13
  */
 <template>
   <div class="contact">
@@ -89,7 +89,7 @@ export default {
       isFlag: false, // 上拉加载是否停止
       customerForm: {
         page: 1,
-        pagesize: 3,
+        pagesize: 10,
         keyword: '',
         type: 1
       },
@@ -162,7 +162,7 @@ export default {
       document.getElementsByClassName('xs-container')[0].style.transform = 'translateX(0px) translateY(0px) translateZ(0px) scale(1, 1)'
       this.onFetching = false
       this.customerForm.page = 1
-      this.customerForm.pagesize = 3
+      this.customerForm.pagesize = 10
       this.customerAll = []
       if (this.isFlag) {
         this.$refs.scrollerBottom.enablePullup()
@@ -293,7 +293,7 @@ export default {
           float: right;
           height: 100%;
           text-align: right;
-          width: 1.2rem;
+          width: 1.4rem;
           font-size: 0.26rem;
           color: #717171;
           line-height: 0.5rem;

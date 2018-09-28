@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-11 17:04:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-25 16:46:32
+ * @Last Modified time: 2018-09-28 14:58:08
  */
 <template>
   <div class="produce">
@@ -47,7 +47,7 @@
             </div>
             <div class="right">
               <h4>{{item.name}}</h4>
-              <h5>产品介绍</h5>
+              <h5>{{item.summary}}</h5>
               <p>
                 发布日期:{{Global.parseTime(item.createtime, '{y}-{m}-{d}')}}
                 <span v-show="isRecommend(item.goods_id)" @click="employgoodsDetele(item)">取消</span>
@@ -339,10 +339,14 @@ export default {
           color: #5977fe;
           font-size: 0.3rem;
           height: 0.5rem;
+          line-height: 0.5rem;
+          overflow: hidden;
         }
         h5{
           color: #717171;
           font-size: 0.28rem;
+          height: 1.6rem;
+          overflow: hidden;
         }
         p{
           position: absolute;

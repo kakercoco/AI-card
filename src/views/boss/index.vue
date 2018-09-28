@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-12 09:25:21
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-12 20:44:48
+ * @Last Modified time: 2018-09-27 17:51:41
  */
 <template>
   <div class="boss">
@@ -13,10 +13,29 @@
       </span>
       <i @click="showDepartment = true">选择部门</i>
     </p>
-    <p class="department">
-      <span>当前查看：</span>
-      <popup-picker class="fl" :data="departmentList" v-model="department" :columns="3" show-name :show.sync="showDepartment"></popup-picker>
-    </p>
+    <!-- <x-dialog v-model="showDepartment" :hide-on-blur="true" class="departmentSwarp" :dialog-style="{'max-width': '100%', width: '100%', top: '60%'}"> -->
+      <div class="departmentSwarp" v-if="showDepartment">
+        <scroller lock-y :scrollbar-x=false>
+          <div class="box1">
+            <div class="box1-item" v-for="i in 2" :key="i">
+              <ul>
+                <li>
+                  <h3>选择部门</h3>
+                </li>
+                <li>
+                  <span :class="{span_active:deptLevelType==1}" @click="choseDept(1)">{{deptLevel1}}</span>
+                  <span :class="{span_active:deptLevelType==2}" @click="choseDept(2)">{{deptLevel2}}</span>
+                  <span :class="{span_active:deptLevelType==3}" @click="choseDept(3)">{{deptLevel3}}</span>
+                </li>
+              </ul>
+              <group style="text-align: left;">
+                <radio :options="departmentList" v-model="department"></radio>
+              </group>
+            </div>
+          </div>
+        </scroller>
+      </div>
+    <!-- </x-dialog> -->
     <tab v-model="activeTab">
       <tab-item><span @click="choseActive(1)">总览</span></tab-item>
       <tab-item><span @click="choseActive(2)">销售排行</span></tab-item>
@@ -214,7 +233,7 @@
 </template>
 
 <script>
-import { Tab, TabItem, PopupPicker } from 'vux'
+import { Tab, TabItem, PopupPicker, XDialog, XButton, XInput, Scroller as scroller, Radio, Group } from 'vux'
 import echarts from 'echarts'
 import { bossOverview, bossOverviewTotal, customerStatistics, salesRanking, AIAnalyse } from '@/api/boss'
 
@@ -223,10 +242,23 @@ export default {
   components: {
     Tab,
     TabItem,
-    PopupPicker
+    PopupPicker,
+    XDialog,
+    XInput,
+    XButton,
+    scroller,
+    Radio,
+    Group
   },
   data () {
     return {
+      departmentList: ['上海', '北京', '天津', '南京', '河南', '河北', '内蒙古'],
+      department: '上海',
+      show: false,
+      deptLevel1: '上海',
+      deptLevel2: '请选择',
+      deptLevel3: '请选择',
+      deptLevelType: 1,
       listQuery: {
         dept: 1,
         active: 1,
@@ -312,70 +344,18 @@ export default {
         name: '拨打电话',
         num: 0
       }],
-      showDepartment: false,
-      department: ['1'],
-      departmentList: [
-        {
-          name: '上海',
-          value: '1',
-          parent: 0
-        },
-        {
-          name: '广州',
-          value: '2',
-          parent: 0
-        },
-        {
-          name: '深圳',
-          value: '3',
-          parent: 0
-        },
-        {
-          name: '苏州',
-          value: '4',
-          parent: 0
-        },
-        {
-          name: '营销一部',
-          value: '1-1',
-          parent: '1'
-        },
-        {
-          name: '营销二部',
-          value: '1-2',
-          parent: '1'
-        },
-        {
-          name: '营销三部',
-          value: '1-3',
-          parent: '1'
-        },
-        {
-          name: '营销四部',
-          value: '1-4',
-          parent: '1'
-        },
-        {
-          name: '营销一部',
-          value: '2-1',
-          parent: '2'
-        },
-        {
-          name: '营销一组',
-          value: '1-1-1',
-          parent: '1-1'
-        },
-        {
-          name: '营销二组',
-          value: '1-1-2',
-          parent: '1-1'
-        },
-        {
-          name: '营销一组',
-          value: '1-2-1',
-          parent: '2-1'
-        }
-      ]
+      showDepartment: false
+    }
+  },
+  watch: {
+    department () {
+      if (this.deptLevelType === 1) {
+        this.deptLevel1 = this.department
+      } else if (this.deptLevelType === 2) {
+        this.deptLevel2 = this.department
+      } else if (this.deptLevelType === 3) {
+        this.deptLevel3 = this.department
+      }
     }
   },
   methods: {
@@ -389,6 +369,9 @@ export default {
       } else if (type === 3) { // AI分析
         this.AIAnalyse()
       }
+    },
+    choseDept (type) {
+      this.deptLevelType = type
     },
     choseCustomerType (type) {
       this.listQuery4.type = type
@@ -872,7 +855,7 @@ export default {
       }
     }
     &>i{
-      width: 1.7rem;
+      width: 1.5rem;
       height: 0.7rem;
       background-color: #f3f3f3;
       color: #5977fe;
@@ -1296,6 +1279,36 @@ export default {
         clear: both;
         margin-top: 1.5rem;
       }
+    }
+  }
+}
+.departmentSwarp{
+  position: fixed;
+  background-color: rgba(0,0,0,0.5);
+  height: 100vh;
+  width: 100%;
+  top: 0;
+  .box1 {
+    height: 8rem;
+    width: 40rem;
+    position: absolute;
+    bottom: 0;
+  }
+  .box1-item {
+    width: 7.5rem;
+    height: 100%;
+    background-color: #ffffff;
+    display:inline-block;
+    margin-left: 0.15rem;
+    float: left;
+    text-align: center;
+    line-height: 1rem;
+    ul li:nth-child(2) span{
+      display: inline-block;
+      width: 30%;
+    }
+    .span_active {
+      color: #5584ff;
     }
   }
 }

@@ -2,13 +2,14 @@ import axios from 'axios'
 import store from '../store'
 import {getToken} from './auth'
 // import { getToken } from '@/utils/auth'
+import { AlertModule } from 'vux'
 
 let baseURL = ''
 if (process.env.NODE_ENV === 'development') {
   baseURL = '/index.php'
 } else {
   baseURL = 'https://zhentuityun.71360.com'
-  //process.env.BASE_API
+  // process.env.BASE_API
 }
 
 // 创建axios实例
@@ -38,11 +39,17 @@ service.interceptors.response.use(
   */
     const res = response.data
     if (res.code !== 200) {
-      alert(res.msg)
-
+      // alert(res.msg)
+      AlertModule.show({
+        title: '提示',
+        content: res.msg
+      })
       // 201:Token 过期了;
       if (res.code === 201) {
-        alert('用户信息过期，请重新登录')
+        AlertModule.show({
+          title: '提示',
+          content: '用户信息过期，请重新登录'
+        })
         // 如果可以请关闭窗口
       }
       return Promise.reject('error')
@@ -52,8 +59,11 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error)
-      const token = getToken()
-    alert('token:'+token)
+    const token = getToken()
+    AlertModule.show({
+      title: '提示',
+      content: token
+    })
     return Promise.reject(error)
   }
 )

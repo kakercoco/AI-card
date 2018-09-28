@@ -14,7 +14,7 @@
     <ul class="list-message">
       <li class="card-shadow" v-for="(item, index) in $store.state.message.messageList" :key="index" @click="gotoIM(item)">
         <badge :text="item.num" class="my-badge" v-if="item.num != 0"></badge>
-        <img :src="item.wx_image ? item.wx_image : '/static/image/moren.jpg'" alt="">
+        <img :src="item.wx_image ? item.wx_image : '@/assets/img/moren.jpg'" alt="">
         <div>
           <p>
             <span class="name">{{item.wx_name}}</span>

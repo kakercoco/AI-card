@@ -23,7 +23,7 @@
         <ul class="list">
           <li v-for="(item, index) in list" :key="index" @click="to_details(item)">
             <p>{{item.time}}</p>
-            <img :src="item.wx_image ? item.wx_image : '/static/image/moren.jpg'">
+            <img :src="item.wx_image ? item.wx_image : '@/assets/img/moren.jpg'">
             <div v-html="item.ele"></div>
             <x-icon type="ios-arrow-right" size="25" class="icon-right"></x-icon>
           </li>

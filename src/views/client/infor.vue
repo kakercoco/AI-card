@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-08 18:18:43
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-20 16:43:14
+ * @Last Modified time: 2018-09-27 15:44:34
  */
 <template>
   <div class="client-infor">
@@ -11,8 +11,8 @@
       <x-input placeholder="未填写" title="客户来源" v-model="inforForm.source" :readonly="true"></x-input>
       <x-input placeholder="未填写" title="姓名备注" v-model="inforForm.name"></x-input>
       <popup-radio title="性别" placeholder="未填写" :options="options" v-model="sex" align-items="left"></popup-radio>
-      <x-input placeholder="未填写" title="邮箱" v-model="inforForm.email"></x-input>
-      <x-input placeholder="未填写" title="手机号码" v-model="inforForm.phone"></x-input>
+      <x-input placeholder="未填写" title="邮箱" v-model="inforForm.email" type="email"></x-input>
+      <x-input placeholder="未填写" title="手机号码" v-model="inforForm.phone" type="tel"></x-input>
       <x-input placeholder="未填写" title="公司名称" v-model="inforForm.company"></x-input>
       <x-input placeholder="未填写" title="详细地址" v-model="inforForm.address"></x-input>
       <div class="my-birthday">
@@ -22,7 +22,7 @@
         <p class="update"><check-icon :value.sync="is_calendar"></check-icon>同步到销售日历 </p>
       </div>
       <x-switch title="屏蔽他的消息推送" v-model="inforForm.is_shield_employ" :value-map="[0,1]"></x-switch>
-      <x-textarea title="备注" v-model="inforForm.desc" autosize></x-textarea>
+      <x-textarea title="备注" v-model="inforForm.desc" autosize placeholder="请输入备注"></x-textarea>
     </group>
     <p class="btn">
       <x-button type="primary" @click.native="save">保存</x-button>
@@ -66,7 +66,7 @@ export default {
         is_shield_employ: '',
         desc: '',
         source: '',
-        day: ''
+        day: 0
       }
     }
   },
@@ -135,6 +135,11 @@ export default {
       color: #717171;
       font-weight: normal;
       width: 3rem !important;
+    }
+    .vux-x-textarea{
+      .weui-label{
+        width: 1rem !important;
+      }
     }
     .weui-input{
       font-size: 0.28rem;

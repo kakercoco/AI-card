@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:27:30
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-26 16:35:26
+ * @Last Modified time: 2018-09-27 21:07:36
  */
 <template>
   <div class="self">
@@ -11,7 +11,7 @@
         <img :src="cardInfor.image" alt="" @click="gotoCard">
         <div class="infor" @click="gotoCard">
           <p>{{cardInfor.username}}</p>
-          <p>销售总监 {{cardInfor.phone}}</p>
+          <p>{{cardInfor.job}} {{cardInfor.phone}}</p>
           <p>{{cardInfor.address}}</p>
         </div>
         <div class="card" @click="gotoQrcode">
@@ -42,10 +42,10 @@
       </group>
       <p style="margin-top: 0.5rem"></p>
       <group>
-        <cell is-link>
+        <!-- <cell is-link>
           <img src="@/assets/nav/step.png" alt="" slot="icon" class="title-icon">
           <span slot="title" class="nav-title">使用教程</span>
-        </cell>
+        </cell> -->
         <cell is-link link="/setting">
           <img src="@/assets/nav/setting.png" alt="" slot="icon" class="title-icon">
           <span slot="title" class="nav-title">设置</span>

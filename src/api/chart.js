@@ -21,7 +21,7 @@ export function getMyChart () {
 export function not_online (data) {
     // 我的报表图表
     return request({
-        url: '/api/Weworkapi/setCompanyMessage',
+        url: '/api/Weworkapi/setWechatMessage',
         method: 'post',
         data:data
     })

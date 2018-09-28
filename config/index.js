@@ -19,7 +19,8 @@ module.exports = {
         }
       }
     },
-    token: '7%21%C2n%7D%0B%7E%81%DA%D1%8D%D9%B3%9F%BFFi%BB%AFG%F6%0F%B6%9D%DD%FC%9E%86-Y%96%3AF%D2%2C%FDk-%27P%8F%D2j%F4%F2%B3%A0BU%AD%DA%81%8D%C4%CD%07.qGG%C9%16FN',
+    //token: '7%21%C2n%7D%0B%7E%81%8E%88%A7%3C%7C%D3%2A%95i%BB%AFG%F6%0F%B6%9D%DD%FC%9E%86-Y%96%3A%C9%93%8D%FD%E6%C9%04%8C%8F%D2j%F4%F2%B3%A0BU%AD%DA%81%8D%C4%CD%07.qGG%C9%16FN',
+    token: '7%21%C2n%7D%0B%7E%81%8E%88%A7%3C%7C%D3%2A%95i%BB%AFG%F6%0F%B6%9D%DD%FC%9E%86-Y%96%3A%DBa%7B%B4%3D%E4%A2%40%8F%D2j%F4%F2%B3%A0BU%AD%DA%81%8D%C4%CD%07.qGG%C9%16FN',
 
     // Various Dev Server settings
     host: '0.0.0.0', // can be overwritten by process.env.HOST

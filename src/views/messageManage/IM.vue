@@ -12,8 +12,8 @@
       <li class="clearfix" v-for="(item,i) in $store.state.chat.char_list" :key="i">
         <p class="tac">{{item.time}}</p>
         <div :class="item.from === 'me' ? 'right-message' : 'left-message'">
-          <img :src="item.fead_src ? item.fead_src : '/static/image/moren.jpg'" v-if="item.from === 'me'">
-          <img :src="wx_image ? wx_image : '/static/image/moren.jpg'" v-if="item.from === 'others'">
+          <img :src="item.fead_src ? item.fead_src : '@/assets/img/moren.jpg'" v-if="item.from === 'me'">
+          <img :src="wx_image ? wx_image : '@/assets/img/moren.jpg'" v-if="item.from === 'others'">
           <div class="content">
 
             <tpl :content="item.content" v-if="item.type === 'text'"></tpl>
@@ -27,14 +27,14 @@
             <div class='shop' v-if="item.type ==='shop'">
               <p class='title'>来自：{{item.p_title}}</p>
               <div class='introduce'>
-                <img :src='item.p_image ? item.p_image : "../../image/moren.jpg"'>
+                <img :src='item.p_image ? item.p_image : "@/assets/img/moren.jpg"'>
                 <span class="name">{{item.p_name}}</span>
-                <span v-if="item.p_class === 'product_details'" class="p_price_sell">售价:￥{{item.p_price_sell}}</span>
+                <!--<span v-if="item.p_class === 'product_details'" class="p_price_sell">售价:￥{{item.p_price_sell}}</span>-->
               </div>
             </div>
 
           </div>
-          <img src="/static/image/l.gif" class="loading" v-if="item.from === 'me' && item.is_loading">
+          <img src="@/assets/img/l.gif" class="loading" v-if="item.from === 'me' && item.is_loading">
 
         </div>
       </li>
@@ -81,7 +81,7 @@
           <form action="" id="myFrom">
           <input type="file" accept="image/*;capture=camera" class="file_input" name="avatar">
           </form>
-          <img src="/static/image/p_icon.jpg">
+          <img src="@/assets/img/p_icon.jpg">
           <p>照片</p>
         </div>
       </div>

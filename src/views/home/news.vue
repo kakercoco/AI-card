@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:27:30
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-04 16:29:27
+ * @Last Modified time: 2018-09-27 16:09:48
  * 动态
  */
 <template>
@@ -21,7 +21,7 @@
     <div class="scroller_frame">
       <div class="header">
         <p>{{$store.state.user.info.username}}</p>
-        <img :src="$store.state.user.info.image ? $store.state.user.info.image : '/static/image/moren.jpg'">
+        <img :src="$store.state.user.info.image ? $store.state.user.info.image : '@/assets/img/moren.jpg'">
         <i @click="to_publish"><x-icon type="ios-camera"></x-icon></i>
       </div>
 
@@ -73,8 +73,7 @@
 
               <li class="clearfix" v-for="(comment,comment_i) in item.comment.rows" :key="comment_i">
                 <img :src="comment.user_image ? comment.user_image : '@/assets/img/comment.png'" class="fl">
-                <span class="name">{{comment.user_name}}</span>
-                <p>{{comment.content}}</p>
+                <p><span class="name">{{comment.user_name}}:</span>{{comment.content}}</p>
               </li>
 
             </ul>
@@ -106,8 +105,8 @@
 <script>
 import { Previewer, TransferDom, Popover, XDialog } from 'vux'
 import { Scroller } from 'vux'
-import { init_list,click_good,to_comment } from '@/api/dynamic'
-import {dateFtt} from '@/utils/base';
+import { init_list, click_good, to_comment } from '@/api/dynamic'
+import {dateFtt} from '@/utils/base'
 export default {
   name: 'news',
   directives: {
@@ -117,7 +116,7 @@ export default {
     Previewer,
     Popover,
     XDialog,
-    Scroller,
+    Scroller
   },
   data () {
     return {
@@ -139,26 +138,26 @@ export default {
         }
       },
       pullup_config: {
-          content: '加载中...',
-          pullUpHeight: 60,
-          height: 40,
-          autoRefresh: false,
-          downContent: '加载中...',
-          upContent: '加载中...',
-          loadingContent: '加载中...'
+        content: '加载中...',
+        pullUpHeight: 60,
+        height: 40,
+        autoRefresh: false,
+        downContent: '加载中...',
+        upContent: '加载中...',
+        loadingContent: '加载中...'
       },
-      page:1,
-      pagesize:10,
-      max_page:0,
-      data_list:[],
-      test:[1,2,3,4],
-      isAjax:true,
+      page: 1,
+      pagesize: 10,
+      max_page: 0,
+      data_list: [],
+      test: [1, 2, 3, 4],
+      isAjax: true,
       scrollerStatus: {
-          pullupStatus: 'default'
+        pullupStatus: 'default'
       },
-      comment_obj:null,//品论的中专对象
-      comment_content:'',
-      comment_index:null
+      comment_obj: null, // 品论的中专对象
+      comment_content: '',
+      comment_index: null
     }
   },
   methods: {
@@ -167,203 +166,193 @@ export default {
     },
 
     show (img_item) {
-        const list= this.pic_list;
-        let index = null;
-        for(let i = 0;i<list.length;i++){
-            if(img_item.id === list[i].id){
-                index = i;
-            }
+      const list = this.pic_list
+      let index = null
+      for (let i = 0; i < list.length; i++) {
+        if (img_item.id === list[i].id) {
+          index = i
         }
-        if(index != null){
-            this.$refs.previewer.show(index);
-        }
+      }
+      if (index != null) {
+        this.$refs.previewer.show(index)
+      }
     },
 
-    loadMore(){
-        if (this.isAjax && this.page < this.max_page) {
-            this.page ++;
-            this.get_list();
-        }
-        else if(this.page >= this.max_page){
-            this.$refs.scrollerBottom.disablePullup() // 禁用上拉
-        }
+    loadMore () {
+      if (this.isAjax && this.page < this.max_page) {
+        this.page++
+        this.get_list()
+      } else if (this.page >= this.max_page) {
+        this.$refs.scrollerBottom.disablePullup() // 禁用上拉
+      }
     },
 
-    get_list(){
-        this.isAjax = false;
-        init_list({
-            page:this.page,
-            pagesize: this.pagesize,
-        }).then((e)=>{
-            this.isAjax = true;
-            if(e.data && e.data.rows && e.data.rows instanceof Array){
-                let list = e.data.rows;
-                let max_page = Math.ceil(e.data.total / 10);
-                list.map((val,i)=>{
-                    //公司动态就一张图片
-                    if (typeof val.cover === 'string' && val.cover != ''){
-                        const id = Number(Math.random().toString().substr(3, 10) + Date.now()).toString(36);
-                        const con = {
-                            id,
-                            src:val.cover
-                        };
-                        val.cover = [con];
-                        this.pic_list.push(con);
-                    }
-
-                    else if(val.cover instanceof Array && val.cover.length > 0){
-
-                        let arr = [];
-                        val.cover.map((data,i)=>{
-                            const id = Number(Math.random().toString().substr(3, 10) + Date.now()).toString(36);
-                            const obj = {
-                                id,
-                                src:data
-                            };
-                            this.pic_list.push(obj);
-                            arr.push(obj);
-
-
-                        });
-                        val.cover = arr;
-                    }
-
-                    //处理时间
-                    val.time = dateFtt("yyyy-MM-dd hh:mm:ss", new Date(val.create_time*1000));
-
-                    //点赞开关
-                    val.comment_two = false;
-                });
-
-                this.data_list = this.data_list.concat(list);
-                this.total = e.data.total;
-                this.max_page = Math.ceil(e.data.total / 10);
-                this.$nextTick(() => {
-                    this.$refs.scrollerBottom.donePullup();//上啦完成
-                    this.$refs.scrollerBottom.donePulldown();//下拉完成
-                    this.$refs.scrollerBottom.reset()
-
-                    if(this.max_page == 1){
-                        this.$refs.scrollerBottom.disablePullup();//禁止上啦
-                    }
-                    else{
-                        this.$refs.scrollerBottom.enablePullup();//恢复上啦
-                    }
-                });
-
-
-                console.log(this.data_list);
-            }
-        }).catch((err)=>{
-            console.log(err);
-            this.isAjax = true;
-        })
-    },
-
-    Refresh(){
-        if (this.isAjax){
-            //重置
-            this.data_list = [];
-            this.pic_list = [];
-            this.page = 1;
-            this.total = 0;
-            this.max_page = 0;
-            this.$refs.scrollerBottom.disablePullup(); // 禁用上拉
-            this.get_list();
-        }
-    },
-
-    good(item,i){
-        const is_zan = item.praise.is_praise;
-        const id = item.id;
-        if (is_zan == 1){
-            alert('已点赞，不能再次点赞！');
-            return;
-        }
-        click_good({id}).then((ev)=>{
-            if(ev.code == 200){
-                this.data_list[i].praise.is_praise = 1;
+    get_list () {
+      this.isAjax = false
+      init_list({
+        page: this.page,
+        pagesize: this.pagesize
+      }).then((e) => {
+        this.isAjax = true
+        if (e.data && e.data.rows && e.data.rows instanceof Array) {
+          let list = e.data.rows
+          let max_page = Math.ceil(e.data.total / 10)
+          list.map((val, i) => {
+            // 公司动态就一张图片
+            if (typeof val.cover === 'string' && val.cover != '') {
+              const id = Number(Math.random().toString().substr(3, 10) + Date.now()).toString(36)
+              const con = {
+                id,
+                src: val.cover
+              }
+              val.cover = [con]
+              this.pic_list.push(con)
+            } else if (val.cover instanceof Array && val.cover.length > 0) {
+              let arr = []
+              val.cover.map((data, i) => {
+                const id = Number(Math.random().toString().substr(3, 10) + Date.now()).toString(36)
                 const obj = {
-                    user_image:this.$store.state.user.info.image,
-                    user_name:this.$store.state.user.info.username
-                };
-                this.data_list[i].praise.rows.push(obj);
+                  id,
+                  src: data
+                }
+                this.pic_list.push(obj)
+                arr.push(obj)
+              })
+              val.cover = arr
             }
-        })
-    },
 
-    dialog_hide(){
-        this.comment_obj = null;
-        this.comment_content = '';
-        this.comment_index = null;
-    },
+            // 处理时间
+            val.time = dateFtt('yyyy-MM-dd hh:mm:ss', new Date(val.create_time * 1000))
 
-    open_commentDialog(item,i){
-        this.commentDialog = true;
-        this.comment_obj = item;
-        this.comment_index = i;
-    },
+            // 点赞开关
+            val.comment_two = false
+          })
 
-    //评论发送
-    comment_send(){
-        if(this.comment_obj === null || this.comment_index === null){
-            alert('评论发生错误，请重新操作！');
-            this.commentDialog = false;
-            return;
+          this.data_list = this.data_list.concat(list)
+          this.total = e.data.total
+          this.max_page = Math.ceil(e.data.total / 10)
+          this.$nextTick(() => {
+            this.$refs.scrollerBottom.donePullup()// 上啦完成
+            this.$refs.scrollerBottom.donePulldown()// 下拉完成
+            this.$refs.scrollerBottom.reset()
+
+            if (this.max_page == 1) {
+              this.$refs.scrollerBottom.disablePullup()// 禁止上啦
+            } else {
+              this.$refs.scrollerBottom.enablePullup()// 恢复上啦
+            }
+          })
+
+          console.log(this.data_list)
         }
-        if(this.comment_content === ''){
-            alert('评论内容不能为空！');
-            return;
-        }
+      }).catch((err) => {
+        console.log(err)
+        this.isAjax = true
+      })
+    },
 
-        const dynamic_id = this.comment_obj.id;
-        const content = this.comment_content;
-        to_comment({
-            dynamic_id,
+    Refresh () {
+      if (this.isAjax) {
+        // 重置
+        this.data_list = []
+        this.pic_list = []
+        this.page = 1
+        this.total = 0
+        this.max_page = 0
+        this.$refs.scrollerBottom.disablePullup() // 禁用上拉
+        this.get_list()
+      }
+    },
+
+    good (item, i) {
+      const is_zan = item.praise.is_praise
+      const id = item.id
+      if (is_zan == 1) {
+        alert('已点赞，不能再次点赞！')
+        return
+      }
+      click_good({id}).then((ev) => {
+        if (ev.code == 200) {
+          this.data_list[i].praise.is_praise = 1
+          const obj = {
+            user_image: this.$store.state.user.info.image,
+            user_name: this.$store.state.user.info.username
+          }
+          this.data_list[i].praise.rows.push(obj)
+        }
+      })
+    },
+
+    dialog_hide () {
+      this.comment_obj = null
+      this.comment_content = ''
+      this.comment_index = null
+    },
+
+    open_commentDialog (item, i) {
+      this.commentDialog = true
+      this.comment_obj = item
+      this.comment_index = i
+    },
+
+    // 评论发送
+    comment_send () {
+      if (this.comment_obj === null || this.comment_index === null) {
+        alert('评论发生错误，请重新操作！')
+        this.commentDialog = false
+        return
+      }
+      if (this.comment_content === '') {
+        alert('评论内容不能为空！')
+        return
+      }
+
+      const dynamic_id = this.comment_obj.id
+      const content = this.comment_content
+      to_comment({
+        dynamic_id,
+        content
+      }).then((e) => {
+        if (e.code === 200) {
+          const obj = {
+            user_image: this.$store.state.user.info.image,
+            user_name: this.$store.state.user.info.username,
             content
-        }).then((e)=>{
-            if(e.code === 200){
-                const obj = {
-                    user_image:this.$store.state.user.info.image,
-                    user_name:this.$store.state.user.info.username,
-                    content
-                };
-                this.data_list[this.comment_index].comment.rows.push(obj);
-                this.commentDialog = false;
-                this.dialog_hide();
-            }
-            else{
-                alert('评论发生错误，请重新操作！');
-                this.commentDialog = false;
-                this.dialog_hide();
-            }
-        }).catch(()=>{
-            alert('评论发生错误，请重新操作！');
-            this.commentDialog = false;
-            this.dialog_hide();
-        })
-
+          }
+          this.data_list[this.comment_index].comment.rows.push(obj)
+          this.commentDialog = false
+          this.dialog_hide()
+        } else {
+          alert('评论发生错误，请重新操作！')
+          this.commentDialog = false
+          this.dialog_hide()
+        }
+      }).catch(() => {
+        alert('评论发生错误，请重新操作！')
+        this.commentDialog = false
+        this.dialog_hide()
+      })
     },
 
-    to_publish(){
-        this.$router.push({
-            path:'/newsPublish',
-        });
+    to_publish () {
+      this.$router.push({
+        path: '/newsPublish'
+      })
     },
 
-    to_details(item){
-        this.$router.push({
-            path:'/companyDetails',
-            query: {
-                id: item.id,
-            }
+    to_details (item) {
+      this.$router.push({
+        path: '/companyDetails',
+        query: {
+          id: item.id
+        }
 
-        });
+      })
     }
 
   },
   mounted () {
-      this.get_list();
+    this.get_list()
   }
 }
 </script>
@@ -500,11 +489,14 @@ export default {
         .heart{
           width: 0.4rem;
           margin-left: 0.1rem;
+          margin-top: 0.1rem;
+          float: left;
         }
         &>span{
           display: inline-block;
           height: 0.5rem;
           margin-left: 0.1rem;
+          margin-bottom: 0.1rem;
           img{
             width: 0.5rem;
             height: 0.5rem;
@@ -520,26 +512,26 @@ export default {
       li{
         border-bottom: 1px solid #ddd;
         padding: 0.25rem;
+        min-height: 1.1rem;
+        position: relative;
+        padding-left: 1rem;
         &:last-child{
           border: none;
         }
         img{
-          float: left;
+          position: absolute;
+          top: 0.25rem;
+          left: 0.25rem;
           width: 0.6rem;
           height: 0.6rem;
           border-radius: 0.1rem;
-          margin-right: 0.2rem;
-        }
-        span{
-          float: left;
-          width: 1rem;
-          font-size: 0.24rem;
-          color: #717171;
-          margin-right: 0.2rem;
         }
         p{
-          float: left;
-          width: calc(100% - 2rem);
+          span{
+            font-size: 0.24rem;
+            color: #717171;
+            margin-right: 0.2rem;
+          }
           font-size: 0.22rem;
           color: #717171;
         }

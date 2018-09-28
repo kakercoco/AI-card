@@ -2,14 +2,14 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 15:05:29
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-17 19:58:45
+ * @Last Modified time: 2018-09-28 15:43:16
  */
 <template>
   <div class="say-setting">
     <div class="main">
       <h5>欢迎语设置</h5>
       <group>
-        <x-textarea v-model="value" show-counter :max="100" autosize></x-textarea>
+        <x-textarea v-model="value" show-counter :max="100" autosize placeholder="请输入欢迎语"></x-textarea>
       </group>
       <p class="btn">
         <x-button type="primary" @click.native="set">提交</x-button>
@@ -66,6 +66,7 @@ export default {
       }
       employsetUpdate(data)
         .then(res => {
+          this.$router.back(-1)
         })
     }
   },

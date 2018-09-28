@@ -128,8 +128,9 @@ export default {
                         }, 2000)
           }
         } else if (data.cmd === 'Error') {
-          // alert(data.content);
+            alert(data.content);
         }
+
         else if(data.cmd === 'Offline' && data.content){
             const message_id = data.content.split(',')[0];
             const content_id = data.content.split(',')[1];
@@ -226,6 +227,20 @@ export default {
             }
       return end_obj
         },
+
+      create_shop(data){
+          const obj = {
+              type:'shop',
+              p_class: data.p_class,
+              p_id: data.p_id,
+              p_image: data.p_image,
+              p_name: data.p_name,
+              p_price_sell: data.p_price_sell,
+              p_title: '测试',
+              content:''
+          }
+          return obj;
+      },
 
     chat_logic (res) {
       const data = JSON.parse(res.data)
