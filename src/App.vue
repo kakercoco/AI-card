@@ -150,9 +150,12 @@ export default {
                     break;
                 }
             }
+
             not_online({
-                touser:message_id,
-                content
+                message_id,
+                text:content,
+                time:Date.now(),
+                name:this.$store.state.user.info.username
             }).then((e)=>{})
 
         }

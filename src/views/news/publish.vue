@@ -17,7 +17,7 @@
         </span>
         <span class="upload-btn">
         <form action="" id="myFrom">
-          <input type="file" accept="image/*;capture=camera" multiple="multiple" @change="changeFile($event)" name="avatar" v-if="isRendering"/>
+          <input type="file" accept="image/*;capture=camera" @change="changeFile($event)" name="avatar" v-if="isRendering"/>
         </form>
           <x-icon type="ios-plus-empty" size="50"></x-icon>
         </span>

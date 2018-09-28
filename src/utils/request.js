@@ -60,10 +60,10 @@ service.interceptors.response.use(
   error => {
     console.log('err' + error)
     const token = getToken()
-    AlertModule.show({
+    /*AlertModule.show({
       title: '提示',
       content: token
-    })
+    })*/
     return Promise.reject(error)
   }
 )

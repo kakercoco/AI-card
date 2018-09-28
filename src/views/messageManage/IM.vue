@@ -45,7 +45,7 @@
       <span @click="open_seech">话术库</span>
       <p class="my-textarea">
         <group>
-          <x-textarea v-model="value" autosize :rows="1"></x-textarea>
+          <x-textarea v-model="value" autosize :rows="1" @on-focus="onFocus"></x-textarea>
         </group>
       </p>
       <div class="fr">
@@ -577,6 +577,13 @@ export default {
     open_seech(){
         this.slideDownTalk = true;
         this.speech_list_init();
+    },
+
+    onFocus(){
+        var timer = setTimeout(()=>{
+            document.body.scrollTop = document.body.scrollHeight;
+            clearTimeout(timer);
+        },300)
     }
 
   },
