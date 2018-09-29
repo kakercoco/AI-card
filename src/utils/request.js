@@ -8,7 +8,7 @@ let baseURL = ''
 if (process.env.NODE_ENV === 'development') {
   baseURL = '/index.php'
 } else {
-  baseURL = 'https://zhentuityun.71360.com'
+  baseURL = ''
   // process.env.BASE_API
 }
 

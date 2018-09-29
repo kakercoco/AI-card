@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-08 18:18:43
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-27 15:44:34
+ * @Last Modified time: 2018-09-28 21:00:05
  */
 <template>
   <div class="client-infor">
@@ -122,6 +122,7 @@ export default {
   overflow: auto;
   height: 100%;
   padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
   h5{
     text-align: center;
     font-size: 0.26rem;

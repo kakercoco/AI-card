@@ -453,6 +453,7 @@ export default {
         padding-bottom: 0.05rem;
         background-color: #fff;
         img{
+          object-fit: cover;
           width: 100%;
           height: 100%;
         }

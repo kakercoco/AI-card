@@ -11,6 +11,9 @@ const message = {
         PUSH_messageList:(state, data) => {
             state.messageList.push(data);
         },
+        Unshift_messageList:(state, data)=>{
+            state.messageList.unshift(data);
+        },
     },
     actions: {
 

@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:27:30
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-27 21:07:36
+ * @Last Modified time: 2018-09-28 16:27:48
  */
 <template>
   <div class="self">
@@ -98,6 +98,7 @@ export default {
 .self{
   height: 100%;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   .header-bg{
     background: url('~@/assets/img/tabbar.png') no-repeat top;
     background-size: contain;

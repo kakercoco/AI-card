@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 16:25:17
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-20 16:32:01
+ * @Last Modified time: 2018-09-28 20:59:36
  */
 <template>
   <div class="client">
@@ -74,7 +74,7 @@
         <!-- <p class="title">
           <img src="@/assets/img/u112.png" alt="" class="avatar">
         </p> -->
-        <div class="tac">T-Wan在7日内和你互动了{{forMeTotal}}次</div>
+        <div class="tac">{{clientInfor.wx_name}}在7日内和你互动了{{forMeTotal}}次</div>
         <p v-for="(item, index) in forMeList" :key="index" class="graph" v-if="item.nums > 0">
           <span>{{item.name}}</span>
           <i :style="{width: item.nums/forMeTotal*100 + '%'}"></i>
@@ -174,9 +174,9 @@ export default {
             type: 'pie',
             radius: '75%',
             data: [
-              {value: this.lookData[0], name: `${this.lookData[0] / (this.lookData[0] + this.lookData[1] + this.lookData[2]) * 100}%`},
-              {value: this.lookData[1], name: `${this.lookData[1] / (this.lookData[0] + this.lookData[1] + this.lookData[2]) * 100}%`},
-              {value: this.lookData[2], name: `${this.lookData[2] / (this.lookData[0] + this.lookData[1] + this.lookData[2]) * 100}%`}
+              {value: this.lookData[0], name: `${(this.lookData[0] / (this.lookData[0] + this.lookData[1] + this.lookData[2]) * 100).toFixed(1)}%`},
+              {value: this.lookData[1], name: `${(this.lookData[1] / (this.lookData[0] + this.lookData[1] + this.lookData[2]) * 100).toFixed(1)}%`},
+              {value: this.lookData[2], name: `${(this.lookData[2] / (this.lookData[0] + this.lookData[1] + this.lookData[2]) * 100).toFixed(1)}%`}
             ],
             itemStyle: {
               emphasis: {
@@ -421,6 +421,7 @@ export default {
   padding-bottom: 45px;
   overflow: auto;
   height: 100%;
+  -webkit-overflow-scrolling: touch;
   .card{
     height: 4rem;
     padding: 0.3rem 0.25rem;
@@ -651,26 +652,31 @@ export default {
         &:nth-of-type(5n+1){
           i{
             background: linear-gradient(left, #cc00ff, #b1181a);
+            background: -webkit-linear-gradient(left, #cc00ff, #b1181a);
           }
         }
         &:nth-of-type(5n+2){
           i{
             background: linear-gradient(left, #cc00ff, #5747fe);
+            background: -webkit-linear-gradient(left, #cc00ff, #5747fe);
           }
         }
         &:nth-of-type(5n+3){
           i{
             background: linear-gradient(left, #cc00ff, #6eaffb);
+            background: -webkit-linear-gradient(left, #cc00ff, #6eaffb);
           }
         }
         &:nth-of-type(5n+4){
           i{
             background: linear-gradient(left, #cd01fd, #fd5b66);
+            background: -webkit-linear-gradient(left, #cd01fd, #fd5b66);
           }
         }
         &:nth-of-type(5n+5){
           i{
             background: linear-gradient(left, #c781f9, #0fba40);
+            background: -webkit-linear-gradient(left, #c781f9, #0fba40);
           }
         }
       }

@@ -92,6 +92,7 @@ export default {
           if (data.content) {
             const my = JSON.parse(data.content)
             this.$store.commit('user/SET_my_chat_token', my.token)
+              this.send_heartbeat();
               console.log('使用员工账号的message_id：', my.id)
             // 判断员工信息中是否包含message_id
             if (!this.$store.state.user.info.message_id) {
@@ -102,7 +103,7 @@ export default {
         } else if (data.cmd === 'GetChat' && data.content) {
           this.$store.commit('chat/SET_my_chat_room_id', data.content);
             console.log('聊天连接成功！,房间号：', data.content);
-          this.send_heartbeat();
+
                 } else if (data.cmd === 'SpeakFromDialog' && this.$route.path === '/main/message') {
           this.message_logic(res)
                 } else if (data.cmd === 'SpeakFromDialog' && this.$route.path === '/messageIM') {
@@ -165,47 +166,55 @@ export default {
     // 消息列表逻辑
     message_logic (res) {
       const data = JSON.parse(res.data)
-            if (data.content) {
+        if (data.content) {
         const chat_obj = JSON.parse(data.content)
                 console.log(chat_obj)
                 //存在内容
-                if (chat_obj.content) {
-          chat_obj.content_obj = JSON.parse(chat_obj.content)
-                    var end_obj = this.create_message(chat_obj)
+        if (chat_obj.content) {
+            chat_obj.content_obj = JSON.parse(chat_obj.content)
+            var end_obj = this.create_message(chat_obj)
 
 
-                    //判断这个用户是否在列表中，如果再列表中，直接插入消息
-                    let isHave = false
-                    let messageList = this.$store.state.message.messageList
-                    for (let i = 0; i < messageList.length; i++) {
+        //判断这个用户是否在列表中，如果再列表中，直接插入消息
+        let isHave = false
+        let messageList = this.$store.state.message.messageList
+        let end_one = {};
+        for (let i = 0; i < messageList.length; i++) {
             if (messageList[i].message_id == chat_obj.speakerId) {
               isHave = true
-                            //直接插入
-                            Object.assign(messageList[i], end_obj)
-                            messageList[i].num++
-                            break;
+                //直接插入
+                Object.assign(messageList[i], end_obj)
+                messageList[i].num++
+                //删除那个 插入到第一个
+                end_one = messageList[i];
+                messageList.splice(i,1);
+                break;
             }
           }
-
+          //如果存在，则插入到列表第一个
+          if(isHave){
+              this.$store.commit('message/Unshift_messageList', end_one)
+          }
           // 不存在，做请求
-          if (!isHave) {
+          else{
             // 做请求要信息
             get_users({
               message_id: chat_obj.speakerId
             }).then((ev) => {
+
               if (ev.code === 200 && ev.data && ev.data instanceof Array) {
-                const user = ev.data[0]
-                                const message = {
-                  is_read: 0,
-                  num: 1,
-                  message_id: chat_obj.speakerId ? chat_obj.speakerId : user.message_id,
-                  uid: user.id,
-                  wx_image: user.wx_image,
-                  wx_name: user.wx_name
+                    const user = ev.data[0]
+                    const message = {
+                      is_read: 0,
+                      num: 1,
+                      message_id: chat_obj.speakerId ? chat_obj.speakerId : user.message_id,
+                      uid: user.id,
+                      wx_image: user.wx_image,
+                      wx_name: user.wx_name
+                    }
+                    Object.assign(message, end_obj)
+                    this.$store.commit('message/Unshift_messageList', message)
                 }
-                                Object.assign(message, end_obj)
-                                this.$store.commit('message/PUSH_messageList', message)
-                            }
             })
           }
         }

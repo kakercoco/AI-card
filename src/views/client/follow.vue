@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-08 17:56:28
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-20 16:44:30
+ * @Last Modified time: 2018-09-28 21:00:17
  */
 <template>
   <div class="follow">
@@ -72,6 +72,7 @@ export default {
 .follow{
   overflow: auto;
   height: 100%;
+  -webkit-overflow-scrolling: touch;
   & /deep/ .weui-cells{
     &::before{
       border: none;

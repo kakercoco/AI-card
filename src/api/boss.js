@@ -78,3 +78,11 @@ export function salesRanking (listQuery) {
     }
   })
 }
+
+// 获取部门分类&获取话术分类列表，根据type的不同:dept:部门 verbal:话术
+export function getTypelist (deptType) {
+  return request({
+    url: 'api/Category/index?type=' + deptType,
+    method: 'GET'
+  })
+}

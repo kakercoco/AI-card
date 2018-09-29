@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 11:50:00
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-19 18:45:39
+ * @Last Modified time: 2018-09-28 21:00:06
  */
 <template>
   <div class="client-tag">
@@ -115,6 +115,7 @@ export default {
 .client-tag{
   overflow: auto;
   height: 100%;
+  -webkit-overflow-scrolling: touch;
   &>div{
     padding: 0.4rem 0.3rem;
     border-bottom: 1px solid #eee;

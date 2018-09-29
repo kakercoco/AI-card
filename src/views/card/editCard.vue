@@ -2,14 +2,14 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 15:45:24
+ * @Last Modified time: 2018-09-28 22:06:54
  */
 <template>
   <div class="edit-card">
     <div class="my-card" id="card">
       <img :src="seletedTemplate" alt="" class="card-bg">
       <div class="card-infor " :class="selectedClass">
-        <p class="mark" v-if="templateId === 11 || templateId === 12">T云商务</p>
+        <p class="mark" v-if="templateId === 10 || templateId === 11 || templateId === 12">T云商务</p>
         <p class="trueland" v-if="templateId === 10 || templateId === 11 || templateId === 12">
           <img src="@/assets/img/trueland.png" alt="" >
           <span>珍岛股份·上海总部</span>
@@ -20,9 +20,9 @@
           <span class="name">{{cardInfor.username}}</span>
           <span class="job">{{cardInfor.job}}</span>
         </p>
-        <p class="phone"><i class="iconfont icon-dianhua1"></i>{{cardInfor.phone}}</p>
-        <p class="email" v-if="templateId === 10 || templateId === 11 || templateId === 12"><i class="iconfont icon-Email1"></i>{{cardInfor.email}}</p>
-        <p class="address"><i class="iconfont icon-dingwei"></i>{{cardInfor.address}}</p>
+        <p class="phone"><img src="@/assets/nav/phone2.png" alt="" v-if="templateId ===2"><img src="@/assets/nav/phone.png" alt="" v-else>{{cardInfor.phone}}</p>
+        <p class="email" v-if="templateId === 10 || templateId === 11 || templateId === 12"><img src="@/assets/nav/email2.png" alt="" v-if="templateId ===2"><img src="@/assets/nav/email.png" alt="" v-else>{{cardInfor.email}}</p>
+        <p class="address"><img src="@/assets/nav/map2.png" alt="" v-if="templateId ===2"><img src="@/assets/nav/map.png" alt="" v-else>{{cardInfor.address}}</p>
         <p class="tip" v-if="templateId === 10 || templateId === 11 || templateId === 12">中国领先的SaaS级智能营销云平台</p>
       </div>
     </div>
@@ -45,8 +45,7 @@
         <x-input title="手机:" is-type="china-mobile" placeholder="未填写信息" v-model="cardInfor.phone" type="tel" @on-blur="myFocus"></x-input>
         <x-input title="座机:" placeholder="未填写信息" v-model="cardInfor.tel" type="tel" @on-blur="myFocus"></x-input>
         <x-input title="微信:" placeholder="未填写信息" v-model="cardInfor.weixin" @on-blur="myFocus"></x-input>
-        <x-input title="邮箱:" is-type="email" placeholder="未填写信息" v-model="cardInfor.email" type="email" @on-blur="myFocus"></x-input>
-        <x-input title="公司:"  v-model="cardInfor.company" disabled readonly></x-input>
+        <x-input title="邮箱:" is-type="email" placeholder="未填写信息" v-model="cardInfor.email" type="text" @on-blur="myFocus"></x-input>
         <x-input title="地址:" placeholder="未填写信息" v-model="cardInfor.address" @on-blur="myFocus"></x-input>
       </group>
     </div>
@@ -139,6 +138,7 @@ import { Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle, Al
 import html2canvas from 'html2canvas'
 import { updateCard, cardRead, cardTagDelete, cardTagInsert } from '@/api/card'
 import { upload_img } from '@/api/upload_file'
+import Cookies from 'js-cookie'
 
 export default {
   name: 'editCard',
@@ -221,6 +221,17 @@ export default {
           if (this.cardInfor.album != null) {
             this.albumList = this.cardInfor.album.split(',')
           }
+          const cardInforCookie = Cookies.get('cardInfor')
+          if (cardInforCookie) {
+            debugger
+            const data = JSON.parse(cardInforCookie)
+            this.cardInfor.phone = data.phone
+            this.cardInfor.tel = data.tel
+            this.cardInfor.address = data.address
+            this.cardInfor.weixin = data.weixin
+            this.cardInfor.email = data.email
+            Cookies.remove('cardInfor')
+          }
         })
     },
     changeFile (e, type) {
@@ -295,7 +306,7 @@ export default {
     dataURLtoBlob (dataurl) {
       let arr = dataurl.split(',')
       let mime = arr[0].match(/:(.*?);/)[1]
-      let bstr = atob(arr[1])
+      let bstr = atob(arr[1].replace(/\s/g, ''))
       let n = bstr.length
       let u8arr = new Uint8Array(n)
       while (n--) {
@@ -334,29 +345,15 @@ export default {
       })
     },
     myFocus () {
-      var phoneReg = /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/
-      var mailReg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
-      var phone = this.cardInfor.phone
-      var email = this.cardInfor.email
-      if (!phoneReg.test(phone)) {
-        AlertModule.show({
-          title: '提示',
-          content: '请输入有效的手机号码！'
-        })
-        return false
+      const data = {
+        phone: this.cardInfor.phone,
+        tel: this.cardInfor.tel,
+        address: this.cardInfor.address,
+        weixin: this.cardInfor.weixin,
+        email: this.cardInfor.email
       }
-      if (!mailReg.test(email)) {
-        AlertModule.show({
-          title: '提示',
-          content: '请输入有效的邮箱！'
-        })
-        return false
-      }
-      delete this.cardInfor.tag
-      this.cardInfor.album = this.albumList.join(',')
-      updateCard(this.cardInfor)
-        .then(res => {
-        })
+      Cookies.set('cardInfor', JSON.stringify(data))
+      console.log(this.cardInfor)
     },
     save () {
       var phoneReg = /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/

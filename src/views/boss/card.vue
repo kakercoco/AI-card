@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-12 19:33:04
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-13 10:31:07
+ * @Last Modified time: 2018-09-28 21:16:38
  */
 <template>
   <div class="boss-card">
@@ -822,6 +822,7 @@ export default {
         }
         i{
           background: linear-gradient(left, #cc00ff, #b1181a);
+          background: -webkit-linear-gradient(left, #cc00ff, #b1181a);
         }
       }
       &:nth-child(2){
@@ -830,6 +831,7 @@ export default {
         }
         i{
           background: linear-gradient(left, #cc00ff, #5747fe);
+          background: -webkit-linear-gradient(left, #cc00ff, #5747fe);
         }
       }
       &:nth-child(3){
@@ -838,16 +840,19 @@ export default {
         }
         i{
           background: linear-gradient(left, #cc00ff, #6eaffb);
+          background: -webkit-linear-gradient(left, #cc00ff, #6eaffb);
         }
       }
       &:nth-child(4){
         i{
           background: linear-gradient(left, #cd01fd, #fd5b66);
+          background: -webkit-linear-gradient(left, #cd01fd, #fd5b66);
         }
       }
       &:nth-child(5){
         i{
           background: linear-gradient(left, #c781f9, #0fba40);
+          background: -webkit-linear-gradient(left, #c781f9, #0fba40);
         }
       }
     }

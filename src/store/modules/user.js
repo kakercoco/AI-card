@@ -12,7 +12,7 @@ const user = {
     // chat_domain:'http://192.168.40.176:8080',
     // chat_ws: 'ws://192.168.40.176:3838',
     chat_domain: 'https://chattyun.71360.com',
-    chat_ws: 'wss://chattyun.71360.com/wss'
+chat_ws: 'wss://chattyun.71360.com/wss'
 
   },
 

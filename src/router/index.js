@@ -56,7 +56,7 @@ export default new Router({
     {
       path: '/callPhone',
       name: 'callPhone',
-      meta: { title: '拨打电话' },
+      meta: { title: '行为详情' },
       component: () => import('@/views/homeList/callPhone')
     },
     {

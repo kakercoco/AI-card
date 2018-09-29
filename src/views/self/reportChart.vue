@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 17:01:37
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-26 11:58:42
+ * @Last Modified time: 2018-09-28 21:18:40
  */
 <template>
   <div class="report-chart">
@@ -425,26 +425,31 @@ export default {
 
         i{
           background: linear-gradient(left, #cc00ff, #b1181a);
+          background: -webkit-linear-gradient(left, #cc00ff, #b1181a);
         }
       }
       &:nth-child(5n+2){
         i{
           background: linear-gradient(left, #cc00ff, #5747fe);
+          background: -webkit-linear-gradient(left, #cc00ff, #5747fe);
         }
       }
       &:nth-child(5n+3){
         i{
           background: linear-gradient(left, #cc00ff, #6eaffb);
+          background:-webkit- linear-gradient(left, #cc00ff, #6eaffb);
         }
       }
       &:nth-child(5n+4){
         i{
           background: linear-gradient(left, #cd01fd, #fd5b66);
+          background: -webkit-linear-gradient(left, #cd01fd, #fd5b66);
         }
       }
       &:nth-child(5n+5){
         i{
           background: linear-gradient(left, #c781f9, #0fba40);
+          background: -webkit-linear-gradient(left, #c781f9, #0fba40);
         }
       }
     }

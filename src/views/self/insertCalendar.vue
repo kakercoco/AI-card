@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-05 17:36:16
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-17 15:43:12
+ * @Last Modified time: 2018-09-28 16:28:02
  */
 <template>
   <div class="insert-calendar">
@@ -19,7 +19,7 @@
       </popup-radio>
     </group>
     <group>
-      <x-textarea title="日程标题:" v-model="title" :show-counter="true" :max="20" :rows="1"></x-textarea>
+      <x-textarea title="日程标题:" v-model="title" :show-counter="true" :max="10" :rows="1"></x-textarea>
     </group>
     <group>
       <datetime title="时间设定："  v-model="time" format="HH:mm" :minute-list="['00', '15', '30', '45']"  ></datetime>
@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     getUrl (i) {
-      return `http://jiatui.api.com/static/calendar/calendar${i + 1}.png`
+      return `https://zhentuityun.71360.com/static/calendar/calendar${i + 1}.png`
     },
     getCalendarTypeList () {
       calendarType()
@@ -242,9 +242,11 @@ export default {
 <style lang='scss' rel='stylesheet/scss' scoped>
 .insert-calendar{
   padding: 0.3rem 0;
+  padding-top: 0;
   height: 100%;
   overflow: auto;
   position: relative;
+  -webkit-overflow-scrolling: touch;
   .show-icon{
     margin-right: 0.2rem;
     width: 0.32rem;

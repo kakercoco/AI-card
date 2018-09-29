@@ -9,7 +9,7 @@
     <canvas id="myCanvas"></canvas>
     <ul class="chat-list" id="chatList" @click="close_bottom" :class="char_list_top ? 'chat-list_top' : ''">
 
-      <li class="clearfix" v-for="(item,i) in $store.state.chat.char_list" :key="i">
+      <li class="clearfix" v-for="(item,i) in $store.state.chat.char_list" :key="i" :data-index="i">
         <p class="tac">{{item.time}}</p>
         <div :class="item.from === 'me' ? 'right-message' : 'left-message'">
           <img :src="item.fead_src ? item.fead_src : '@/assets/img/moren.jpg'" v-if="item.from === 'me'">
@@ -282,7 +282,14 @@ export default {
                     }
                     else if (data.type === 'img'){
                         obj.type = 'img';
-                        obj.content = data.content;
+
+                        if(data.content.indexOf('wxfile') > -1 || data.content.indexOf('blob:http') > -1){
+                            obj.content = data.original;
+                        }
+                        else{
+                            obj.content = data.content;
+                        }
+
                         obj.original = data.original;
                         this.$store.commit('chat/PUSH_char_list',obj);
                         this.$store.commit('chat/PUSH_img_list',{
@@ -404,21 +411,27 @@ export default {
               that.c.drawImage(this,0,0,end_widht,end_height);
 
               var dta = that.c.getImageData(0,0,end_widht,end_height).data;
-              var png = UPNG.encode([dta.buffer], end_widht, end_height, 100);
-              const base64 = that.arrayBufferToBase64(png);
-
-              const end_url = `data:image/jpeg;base64,${base64}`;
+              var end_url = '';
+              try {
+                  var png = UPNG.encode([dta.buffer], end_widht, end_height, 100);
+                  var base64 = that.arrayBufferToBase64(png);
+                  end_url = `data:image/jpeg;base64,${base64}`;
+              }
+              catch (err){
+                  end_url = url;
+              }
 
               //先把缩略图，前端发出去
               var obj = {
                   id,
                   type: 'img',
                   from: 'me',
-                  fead_src: that.$store.state.user.image,
+                  fead_src: that.$store.state.user.info.image,
                   content: end_url,
                   is_loading: true
                   //original: src
               };
+
               that.$store.commit('chat/PUSH_char_list',obj);
               that.frame_Reset();
               all_srcollBtoom(that);

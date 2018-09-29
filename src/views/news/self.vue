@@ -2,14 +2,15 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-05 09:18:27
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-18 16:20:21
+ * @Last Modified time: 2018-09-28 16:54:35
  */
 <template>
   <div class="self-news">
     <scroller use-pulldown use-pullup lock-x @on-pulldown-loading="pulldown" @on-pullup-loading="loadMore" :pulldown-config="config" :pullup-config="config" :bounce="true" ref="scrollerBottom">
       <div>
+        <p class="card-img"><img :src="cardInfor.card_image" alt="" ></p>
         <ul>
-          <li v-for="(e, index) in dynamicList" :key="index" @click="gotoDetail">
+          <li v-for="(e, index) in dynamicList" :key="index" >
             <span class="time">{{Global.parseTime(e.create_time,'{h}:{i}')}}</span>
             <div class="img-wrap">
               <img :src="e.user_image" alt="" v-for="item in e.cover" :key="item" :class="{'img-one':e.cover.length ===1,'img-list':e.cover.length>1}">
@@ -30,6 +31,7 @@
 import { Scroller } from 'vux'
 
 import { init_list } from '@/api/dynamic'
+import { cardRead } from '@/api/card'
 export default {
   name: 'newsSelf',
   components: {
@@ -37,6 +39,7 @@ export default {
   },
   data () {
     return {
+      cardInfor: {},
       config: {
         content: '请上拉刷新数据...',
         pullUpHeight: 60,
@@ -56,6 +59,12 @@ export default {
     }
   },
   methods: {
+    getCard () {
+      cardRead()
+        .then(res => {
+          this.cardInfor = res.data
+        })
+    },
     pulldown () {
       this.pageForm.page = 1
       init_list(this.pageForm)
@@ -96,12 +105,21 @@ export default {
   },
   mounted () {
     this.getDynamicList()
+    this.getCard()
   }
 }
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
 .self-news{
+  .card-img{
+    padding: 0.3rem;
+    img{
+      width: 100%;
+      box-shadow: 0 0 15px #aaa;
+      border-radius: 0.1rem;
+    }
+  }
   li{
     position: relative;
     border-bottom: 1px solid #ddd;

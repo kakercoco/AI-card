@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-11 17:04:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 14:50:49
+ * @Last Modified time: 2018-09-28 17:18:18
  */
 <template>
   <div class="produce">
@@ -347,7 +347,6 @@ export default {
           color: #717171;
           span{
             float: right;
-            margin-top: 0.05rem;
             width: 0.9rem;
             height: 0.4rem;
             line-height: 0.45rem;

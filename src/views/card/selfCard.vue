@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 15:23:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 11:58:30
+ * @Last Modified time: 2018-09-28 20:40:35
  */
 <template>
   <div class="self-card">
@@ -15,7 +15,6 @@
       <p><span>座机： </span><i>{{cardInfor.tel}}</i></p>
       <p><span>微信： </span><i>{{cardInfor.weixin}}</i></p>
       <p><span>邮箱： </span><i>{{cardInfor.email}}</i></p>
-      <p><span>公司： </span><i>{{cardInfor.company}}</i></p>
       <p><span>地址： </span><i>{{cardInfor.address}}</i></p>
     </div>
     <p class="btn">

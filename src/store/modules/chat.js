@@ -23,6 +23,7 @@ const chat = {
         PUSH_char_list:(state, data)=>{
             state.char_list.push(data);
         },
+
         PUSH_img_list:(state, data)=>{
             state.img_list.push(data);
         }

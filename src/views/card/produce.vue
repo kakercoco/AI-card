@@ -358,7 +358,6 @@ export default {
           color: #717171;
           span{
             float: right;
-            margin-top: 0.05rem;
             width: 0.9rem;
             height: 0.4rem;
             line-height: 0.45rem;

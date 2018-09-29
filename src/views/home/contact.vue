@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:26:07
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-27 16:43:13
+ * @Last Modified time: 2018-09-28 17:26:03
  */
 <template>
   <div class="contact">
@@ -185,11 +185,11 @@ export default {
         }
       })
     },
-    gotoClient (id) {
+    gotoClient (uid) {
       this.$router.push({
         path: '/client',
         query: {
-          id
+          uid
         }
       })
     },
