@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-11 17:04:26
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 14:58:08
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-09-29 14:27:11
  */
 <template>
   <div class="produce">
@@ -341,12 +341,19 @@ export default {
           height: 0.5rem;
           line-height: 0.5rem;
           overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          margin-top: 0.2rem;
         }
         h5{
           color: #717171;
           font-size: 0.28rem;
-          height: 1.6rem;
-          overflow: hidden;
+          height: 1.2rem;
+          overflow : hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
         }
         p{
           position: absolute;

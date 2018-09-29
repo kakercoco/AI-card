@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-11 17:04:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 17:18:18
+ * @Last Modified time: 2018-09-29 13:43:47
  */
 <template>
   <div class="produce">
@@ -11,9 +11,9 @@
         <span @click="showFirstDialog">{{activeTabFirstName}}</span>
         <div class="tab-wrap" v-show="activeTabFirstStatus" @click="closeDialog">
           <ul>
-            <li @click.stop="switchProduce(0, '全部案例')">全部案例 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===0"></x-icon></li>
-            <li @click.stop="switchProduce(1, '已推荐案例')">已推荐案例 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===1"></x-icon></li>
-            <li @click.stop="switchProduce(2, '未推荐案例')">未推荐案例 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===2"></x-icon></li>
+            <li @click.stop="switchProduce(1, '全部案例')">全部案例 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===1"></x-icon></li>
+            <li @click.stop="switchProduce(2, '已推荐案例')">已推荐案例 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===2"></x-icon></li>
+            <li @click.stop="switchProduce(3, '未推荐案例')">未推荐案例 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===3"></x-icon></li>
           </ul>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default {
       produceList: [], // 产品列表
       recommend: [], // 推荐列表
       pageForm: {
-        opt: 0, // 类型 默认1 查看全部 2查看推荐的 3 查看不推荐的
+        opt: 1, // 类型 默认1 查看全部 2查看推荐的 3 查看不推荐的
         page: 1,
         rows: 10,
         type_id: null
@@ -108,8 +108,8 @@ export default {
         id: 0,
         type: 3
       }
-      axios.post(`${this.baseUrl}/api/Scratch/webClient`,
-        data, this.proxyTable)
+      axios
+        .post(`${this.baseUrl}/api/Scratch/webClient`, data, this.proxyTable)
         .then(res => {
           if (res.data.isSuccess) {
             const list = res.data.data
@@ -121,11 +121,10 @@ export default {
         })
     },
     getProduceList () {
-      employcaseIndex(this.pageForm)
-        .then(res => {
-          this.produceList = res.data.rows
-          this.recommend = res.data.recommend.split(',')
-        })
+      employcaseIndex(this.pageForm).then(res => {
+        this.produceList = res.data.rows
+        this.recommend = res.data.recommend.split(',')
+      })
     },
     switchProduce (val, name) {
       this.pageForm.opt = val
@@ -133,7 +132,7 @@ export default {
       this.activeTabFirstName = name
       this.pageForm.page = 1
       this.getProduceList()
-      this.$refs.loadingMore.reset({top: 0})
+      this.$refs.loadingMore.reset({ top: 0 })
       if (this.isFlag) {
         this.$refs.loadingMore.enablePullup()
       }
@@ -154,7 +153,7 @@ export default {
       this.pageForm.type_id = item.id
       this.pageForm.page = 1
       this.getProduceList()
-      this.$refs.loadingMore.reset({top: 0})
+      this.$refs.loadingMore.reset({ top: 0 })
       if (this.isFlag) {
         this.$refs.loadingMore.enablePullup()
       }
@@ -162,16 +161,15 @@ export default {
     },
     loadMore () {
       this.pageForm.page += 1
-      employcaseIndex(this.pageForm)
-        .then(res => {
-          if (res.data.length === 0) {
-            this.$refs.loadingMore.disablePullup() // 禁用上拉
-            this.isFlag = true
-          } else {
-            this.produceList = this.produceList.concat(res.data.rows)
-            this.$refs.loadingMore.donePullup()
-          }
-        })
+      employcaseIndex(this.pageForm).then(res => {
+        if (res.data.length === 0) {
+          this.$refs.loadingMore.disablePullup() // 禁用上拉
+          this.isFlag = true
+        } else {
+          this.produceList = this.produceList.concat(res.data.rows)
+          this.$refs.loadingMore.donePullup()
+        }
+      })
     },
     employcaseSave (item) {
       const data = {
@@ -179,21 +177,19 @@ export default {
         case_name: item.title,
         case_img: item.img
       }
-      employcaseSave(data)
-        .then(res => {
-          this.$vux.toast.text('推荐成功', 'top')
-          this.getProduceList()
-        })
+      employcaseSave(data).then(res => {
+        this.$vux.toast.text('推荐成功', 'top')
+        this.getProduceList()
+      })
     },
     employcaseDetele (item) {
       const data = {
         case_id: item.id
       }
-      employcaseDetele(data)
-        .then(res => {
-          this.$vux.toast.text('取消推荐成功', 'top')
-          this.getProduceList()
-        })
+      employcaseDetele(data).then(res => {
+        this.$vux.toast.text('取消推荐成功', 'top')
+        this.getProduceList()
+      })
     },
     isRecommend (id) {
       return this.recommend.includes(id)
@@ -207,44 +203,44 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.produce{
+.produce {
   overflow: auto;
   height: 100%;
-  .picker{
+  .picker {
     height: 0.9rem;
     border-bottom: 1px solid #eee;
-    .tab{
+    .tab {
       width: 50%;
       float: left;
       height: 100%;
       line-height: 0.9rem;
       font-size: 0.34rem;
-      &>span{
+      & > span {
         width: 100%;
         text-align: center;
         float: left;
       }
     }
-    .tab-wrap{
+    .tab-wrap {
       position: fixed;
       top: 0.9rem;
       left: 0;
       width: 100%;
       height: calc(100% - 0.9rem);
-      background-color: rgba(0,0,0,0.5);
+      background-color: rgba(0, 0, 0, 0.5);
       z-index: 2;
       overflow: auto;
     }
-    .tab-1{
-      ul{
+    .tab-1 {
+      ul {
         background-color: #fff;
-        li{
+        li {
           padding: 0 0.2rem;
           border-bottom: 1px solid #eee;
           height: 0.9rem;
           font-size: 0.3rem;
           color: #717171;
-          .icon-checked{
+          .icon-checked {
             fill: #0fd35d;
             width: 0.6rem;
             height: 0.6rem;
@@ -254,26 +250,26 @@ export default {
         }
       }
     }
-    .tab-2{
-      .tab-wrap>ul{
+    .tab-2 {
+      .tab-wrap > ul {
         padding-right: 0.2rem;
       }
-      ul{
+      ul {
         background-color: #fff;
-        li{
+        li {
           border-bottom: 1px solid #eee;
           font-size: 0.3rem;
           color: #717171;
           min-height: 0.9rem;
           padding-left: 0.2rem;
-          .icon-down{
+          .icon-down {
             fill: #999;
             width: 0.6rem;
             height: 0.6rem;
             float: right;
             margin-top: 0.15rem;
           }
-          .icon-checked{
+          .icon-checked {
             fill: #0fd35d;
             width: 0.6rem;
             height: 0.6rem;
@@ -284,11 +280,11 @@ export default {
       }
     }
   }
-  .produce-list{
-    li{
+  .produce-list {
+    li {
       height: 4rem;
       padding: 0.5rem 0.3rem;
-      .left{
+      .left {
         width: 3rem;
         height: 3rem;
         float: left;
@@ -296,48 +292,55 @@ export default {
         border-radius: 0.1rem;
         overflow: hidden;
         margin-right: 0.2rem;
-        img{
+        img {
           width: 100%;
           height: 100%;
         }
-        p{
+        p {
           position: absolute;
           bottom: 0;
           left: 0;
           width: 100%;
-          height: .55rem;
+          height: 0.55rem;
           line-height: 0.55rem;
           text-align: center;
           background-color: rgba(255, 255, 255, 0.5);
-          span{
-            &:first-child{
+          span {
+            &:first-child {
               color: #5977fe;
             }
-            &:last-child{
+            &:last-child {
               color: #fff;
             }
           }
         }
       }
-      .right{
+      .right {
         width: 3.6rem;
         height: 100%;
         float: left;
         position: relative;
-        h4{
+        h4 {
           color: #5977fe;
           font-size: 0.3rem;
           height: 0.5rem;
           line-height: 0.5rem;
           overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          margin-top: 0.2rem;
         }
-        h5{
+        h5 {
           color: #717171;
           font-size: 0.28rem;
-          height: 1.6rem;
-          overflow: hidden;
+          height: 1.2rem;
+          overflow : hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
         }
-        p{
+        p {
           position: absolute;
           bottom: 0;
           left: 0;
@@ -345,7 +348,7 @@ export default {
           height: 0.5rem;
           line-height: 0.5rem;
           color: #717171;
-          span{
+          span {
             float: right;
             width: 0.9rem;
             height: 0.4rem;
@@ -353,11 +356,11 @@ export default {
             font-size: 0.22rem;
             text-align: center;
             border-radius: 0.4rem;
-            &:first-child{
+            &:first-child {
               background-color: #5977fe;
               color: #fff;
             }
-            &:last-child{
+            &:last-child {
               background-color: #d8d8d8;
               color: #333;
             }

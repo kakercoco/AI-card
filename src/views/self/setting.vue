@@ -2,21 +2,21 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 09:39:57
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-17 16:51:25
+ * @Last Modified time: 2018-09-29 14:10:23
  */
 <template>
   <div class="setting">
     <group>
-      <cell title="互动窗口" is-link link="/chatwindow">
+      <!-- <cell title="互动窗口" is-link link="/chatwindow">
         <img src="@/assets/nav/chat.png" alt="" slot="icon">
-      </cell>
-      <cell title="欢迎语设置" is-link link="/sayHi">
+      </cell> -->
+      <cell title="欢迎语设置" is-link link="/saySetting">
         <img src="@/assets/nav/hi.png" alt="" slot="icon">
       </cell>
-      <cell title="转发名片" >
+      <!-- <cell title="转发名片" >
         <img src="@/assets/nav/card.png" alt="" slot="icon">
         <inline-x-switch v-model="value" slot="default" :value-map="[0,1]" @click.native="set"></inline-x-switch>
-      </cell>
+      </cell> -->
     </group>
   </div>
 </template>

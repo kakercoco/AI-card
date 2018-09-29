@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 17:01:37
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 21:18:40
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2018-09-29 11:11:55
  */
 <template>
   <div class="report-chart">
@@ -74,7 +74,7 @@
         <b>{{item.num.num}}</b>
       </p>
     </div>
-    <h3>近15日客户活跃度</h3>
+    <h3>近30日客户活跃度</h3>
     <div class="dynamic">
       <div id="dynamic"></div>
     </div>
@@ -140,30 +140,31 @@ export default {
       const data = {
         time_type: this.tabIndex
       }
-      getMyNums(data)
-        .then(res => {
-          this.dataInfor = res.data
-        })
+      getMyNums(data).then(res => {
+        this.dataInfor = res.data
+      })
     },
     tabItemClick () {
       this.getMyTopChart()
     },
     getMydownChart () {
-      getMyChart()
-        .then(res => {
-          this.downChartInfor = res.data
-          for (const key in this.downChartInfor.user_avtive) {
-            this.dynamicXData.push(key)
-            this.dynamicYData.push(this.downChartInfor.user_avtive[key])
-          }
-          for (let i = 0; i < this.downChartInfor.for_me.length; i++) {
-            const element = this.downChartInfor.for_me[i].num
-            this.forTotal += element.num
-          }
-          this.likeTotal = this.downChartInfor.like_company.num + this.downChartInfor.like_me.num + this.downChartInfor.like_product.num
-          this.drawCare()
-          this.drawDynamic()
-        })
+      getMyChart().then(res => {
+        this.downChartInfor = res.data
+        for (const key in this.downChartInfor.user_avtive) {
+          this.dynamicXData.push(key)
+          this.dynamicYData.push(this.downChartInfor.user_avtive[key])
+        }
+        for (let i = 0; i < this.downChartInfor.for_me.length; i++) {
+          const element = this.downChartInfor.for_me[i].num
+          this.forTotal += element.num
+        }
+        this.likeTotal =
+          this.downChartInfor.like_company.num +
+          this.downChartInfor.like_me.num +
+          this.downChartInfor.like_product.num
+        this.drawCare()
+        this.drawDynamic()
+      })
     },
     drawChart (option, dom) {
       var myChart = echarts.init(document.getElementById(dom))
@@ -179,9 +180,27 @@ export default {
             type: 'pie',
             radius: '75%',
             data: [
-              {value: this.downChartInfor.like_company.num, name: `${(this.downChartInfor.like_company.num / this.likeTotal * 100).toFixed(1)}%`},
-              {value: this.downChartInfor.like_product.num, name: `${(this.downChartInfor.like_product.num / this.likeTotal * 100).toFixed(1)}%`},
-              {value: this.downChartInfor.like_me.num, name: `${(this.downChartInfor.like_me.num / this.likeTotal * 100).toFixed(1)}%`}
+              {
+                value: this.downChartInfor.like_company.num,
+                name: `${(
+                  (this.downChartInfor.like_company.num / this.likeTotal) *
+                  100
+                ).toFixed(1)}%`
+              },
+              {
+                value: this.downChartInfor.like_product.num,
+                name: `${(
+                  (this.downChartInfor.like_product.num / this.likeTotal) *
+                  100
+                ).toFixed(1)}%`
+              },
+              {
+                value: this.downChartInfor.like_me.num,
+                name: `${(
+                  (this.downChartInfor.like_me.num / this.likeTotal) *
+                  100
+                ).toFixed(1)}%`
+              }
             ],
             itemStyle: {
               emphasis: {
@@ -192,8 +211,7 @@ export default {
             },
             label: {
               normal: {
-                show: true,
-                position: 'inside'
+                show: true
               }
             }
           }
@@ -218,12 +236,14 @@ export default {
           top: '20',
           left: '15%'
         },
-        series: [{
-          data: this.dynamicYData,
-          type: 'line',
-          showSymbol: false,
-          smooth: true
-        }]
+        series: [
+          {
+            data: this.dynamicYData,
+            type: 'line',
+            showSymbol: false,
+            smooth: true
+          }
+        ]
       }
       this.drawChart(option, 'dynamic')
     }
@@ -236,10 +256,10 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.report-chart{
+.report-chart {
   overflow: auto;
   height: 100%;
-  h3{
+  h3 {
     height: 1.4rem;
     line-height: 1.4rem;
     text-align: center;
@@ -248,9 +268,9 @@ export default {
     border-top: 1px solid #eee;
     border-bottom: 1px solid #eee;
   }
-  .vux-tab-item{
+  .vux-tab-item {
     flex: 0 0 20%;
-    span{
+    span {
       height: 10px;
       width: 100%;
       float: left;
@@ -259,56 +279,56 @@ export default {
       border-right: 1px solid #aaa;
     }
   }
-  .tab-list{
+  .tab-list {
     width: 100%;
     height: 6.5rem;
     padding: 0.3rem 0.2rem;
-    li{
+    li {
       width: 33.33%;
       float: left;
-      padding:  0.1rem;
+      padding: 0.1rem;
       margin-top: 0.3rem;
       text-align: center;
       height: 2.5rem;
       background: url('~@/assets/img/six.png') no-repeat center;
       background-size: contain;
-      span{
+      span {
         margin-top: 0.5rem;
         display: block;
         color: #717171;
-        &:first-child{
+        &:first-child {
           font-size: 0.26rem;
         }
-        &:last-child{
+        &:last-child {
           font-size: 0.46rem;
         }
       }
     }
   }
-  .funnel{
-    #main{
+  .funnel {
+    #main {
       width: 60%;
       height: 6rem;
       background: url('~@/assets/img/chart.png') no-repeat center;
       background-size: contain;
       margin: 0 auto;
       padding-top: 1.2rem;
-      p{
+      p {
         text-align: center;
         margin-bottom: 0.7rem;
         color: #fff;
       }
     }
-    &>p{
+    & > p {
       text-align: center;
       font-size: 0.26rem;
       color: #717171;
       margin-bottom: 0.4rem;
     }
-    ul{
+    ul {
       padding: 0 0.2rem;
     }
-    li{
+    li {
       float: left;
       width: 25%;
       height: 0.5rem;
@@ -317,40 +337,41 @@ export default {
       color: #adbaff;
       margin-bottom: 0.4rem;
       position: relative;
-      &::after{
+      &::after {
         content: '';
         position: absolute;
-        top: 0.14rem;
+        top: 50%;
+        transform: translateY(-60%);
         left: 0;
         width: 0.22rem;
         height: 0.22rem;
         border-radius: 0.22rem;
       }
-      &:nth-child(1)::after{
+      &:nth-child(1)::after {
         background-color: #3ec4d2;
       }
-      &:nth-child(2)::after{
+      &:nth-child(2)::after {
         background-color: #0fd35d;
       }
-      &:nth-child(3)::after{
+      &:nth-child(3)::after {
         background-color: #feab2b;
       }
-      &:nth-child(4)::after{
-        background-color: #3ec4d2;
+      &:nth-child(4)::after {
+        background-color: #ff5f1a;
       }
     }
   }
-  .care{
+  .care {
     border-bottom: 1px solid #eee;
     border-top: 1px solid #eee;
-    #care{
+    #care {
       width: 100%;
       height: 3.6rem;
     }
-    ul{
+    ul {
       padding: 0 0.2rem;
     }
-    li{
+    li {
       width: 33.33%;
       float: left;
       height: 0.5rem;
@@ -359,7 +380,7 @@ export default {
       color: #717171;
       position: relative;
       margin-bottom: 0.4rem;
-      &::after{
+      &::after {
         content: '';
         position: absolute;
         top: 0.14rem;
@@ -368,94 +389,97 @@ export default {
         height: 0.22rem;
         border-radius: 0.22rem;
       }
-      &:nth-child(1)::after{
+      &:nth-child(1)::after {
         background-color: #ff0000;
       }
-      &:nth-child(2)::after{
+      &:nth-child(2)::after {
         background-color: #feab2b;
       }
-      &:nth-child(3)::after{
+      &:nth-child(3)::after {
         background-color: #3ec4d2;
       }
     }
   }
-  .action{
+  .action {
     padding: 0.3rem;
-    .graph{
+    .graph {
       height: 0.7rem;
       line-height: 0.7rem;
       padding: 0 0.3rem;
-      span{
+      display: flex;
+      align-items: center;
+      span {
         width: 2rem;
         padding-left: 0.3rem;
         position: relative;
-        &::after{
+        &::after {
           content: '';
           width: 0.2rem;
           height: 0.2rem;
           border-radius: 50%;
           position: absolute;
-          top: 0.05rem;
+          top: 50%;
           left: 0;
+          transform: translateY(-60%);
         }
       }
-      i{
+      i {
         display: inline-block;
         height: 0.2rem;
         border-radius: 0.1rem;
         margin-left: 0.5rem;
         max-width: 55%;
+        margin-right: 0.1rem;
       }
-      &:nth-child(1){
-        span::after{
+      &:nth-child(1) {
+        span::after {
           background-color: #ff0000;
         }
       }
-      &:nth-child(2){
-        span::after{
+      &:nth-child(2) {
+        span::after {
           background-color: #653ffe;
         }
       }
-      &:nth-child(3){
-        span::after{
+      &:nth-child(3) {
+        span::after {
           background-color: #73a6fb;
         }
       }
-      &:nth-child(5n+1){
-
-        i{
+      &:nth-child(5n + 1) {
+        i {
           background: linear-gradient(left, #cc00ff, #b1181a);
           background: -webkit-linear-gradient(left, #cc00ff, #b1181a);
         }
       }
-      &:nth-child(5n+2){
-        i{
+      &:nth-child(5n + 2) {
+        i {
           background: linear-gradient(left, #cc00ff, #5747fe);
           background: -webkit-linear-gradient(left, #cc00ff, #5747fe);
         }
       }
-      &:nth-child(5n+3){
-        i{
+      &:nth-child(5n + 3) {
+        i {
           background: linear-gradient(left, #cc00ff, #6eaffb);
-          background:-webkit- linear-gradient(left, #cc00ff, #6eaffb);
+          background: -webkit- linear-gradient(left, #cc00ff, #6eaffb);
         }
       }
-      &:nth-child(5n+4){
-        i{
+      &:nth-child(5n + 4) {
+        i {
           background: linear-gradient(left, #cd01fd, #fd5b66);
           background: -webkit-linear-gradient(left, #cd01fd, #fd5b66);
         }
       }
-      &:nth-child(5n+5){
-        i{
+      &:nth-child(5n + 5) {
+        i {
           background: linear-gradient(left, #c781f9, #0fba40);
           background: -webkit-linear-gradient(left, #c781f9, #0fba40);
         }
       }
     }
   }
-  .dynamic{
-    #dynamic{
+  .dynamic {
+    #dynamic {
       width: 100%;
       height: 4rem;
     }

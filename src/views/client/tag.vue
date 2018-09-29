@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 11:50:00
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 21:00:06
+ * @Last Modified time: 2018-09-29 13:59:01
  */
 <template>
   <div class="client-tag">
@@ -24,7 +24,7 @@
         <div class="insert-dialog">
           <h4>添加自定义标签</h4>
           <group>
-            <x-input v-model="value"></x-input>
+            <x-input v-model="value" placeholder="5个字以内" :max="5"></x-input>
           </group>
           <p class="btn">
             <button class="btn-cancle" @click="closeDialog">取消</button>

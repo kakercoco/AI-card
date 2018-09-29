@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:53:27
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-17 15:33:44
+ * @Last Modified time: 2018-09-29 11:10:33
  */
 <template>
   <div class="calendar">
@@ -49,10 +49,10 @@ export default {
     return {
       buildSlotFn: () => '',
       value: ['筛选'],
-      list: [['日常', '预约', '会议', '拜访', '生日']],
+      list: [['全部', '日常', '预约', '会议', '拜访', '生日']],
       calendar: [],
       time: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate()}`,
-      type: 0
+      type: 99
     }
   },
   methods: {
@@ -64,13 +64,12 @@ export default {
       console.log(val)
     },
     useCustomFn (val) {
-      this.buildSlotFn = val
-        ? (line, index, data) => {
-          return /8/.test(data.date)
-            ? '<div style="font-size:12px;text-align:center;"><span style="display:inline-block;width:5px;height:5px;background-color:red;border-radius:50%;"></span></div>'
-            : '<div style="height:19px;"></div>'
-        }
-        : () => ''
+      this.buildSlotFn =
+         (line, index, data) => {
+           return /8/.test(data.date)
+             ? '<div style="font-size:12px;text-align:center;"><span style="display:inline-block;width:20px;height:2px;background-color:red;"></span></div>'
+             : '<div style="height:14px;"></div>'
+         }
     },
     gotoInsertCalendar () {
       this.$router.push({
@@ -99,6 +98,8 @@ export default {
         this.type = 3
       } else if (this.value[0] === '生日') {
         this.type = 4
+      } else if (this.value[0] === '全部') {
+        this.type = 99
       }
     },
     getCalendarList () {
@@ -122,6 +123,7 @@ export default {
   },
   mounted () {
     this.getCalendarList()
+    // this.useCustomFn()
   }
 }
 </script>
@@ -191,7 +193,8 @@ export default {
       color: #717171;
     }
     li{
-      height: 1.7rem;
+      // height: 1.7rem;
+      min-height: 1.7rem;
       padding: 0.25rem 0;
       position: relative;
       &::after{
@@ -224,12 +227,12 @@ export default {
         overflow: hidden;
         h5{
           font-size: 0.3rem;
-          line-height: 0.3rem;
-          height: 0.3rem;
+          // line-height: 0.3rem;
+          // height: 0.3rem;
           overflow: hidden;
         }
         p{
-          height: 0.3rem;
+          // height: 0.3rem;
           overflow: hidden;
           font-size: 0.26rem;
           margin-top: 0.2rem;

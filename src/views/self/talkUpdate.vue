@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 15:14:03
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-18 14:05:35
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2018-09-29 12:32:02
  */
 <template>
   <div class="insert-talk">
@@ -21,7 +21,7 @@
       <div class="dialog-tag">
         <h5>添加关键词</h5>
         <group>
-        <x-input placeholder="十个字以内" :max="10" v-model="tag"></x-input>
+        <x-input placeholder="10个字以内" :max="10" v-model="tag"></x-input>
         </group>
         <p><button @click="closeDialog">取消</button><button @click="insertTag">确定</button></p>
       </div>

@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 14:51:27
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-26 16:39:33
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2018-09-29 14:13:37
  */
 <template>
   <div class="talk-manage">
@@ -10,8 +10,10 @@
     <div>
       <div class="talk-group">
         <a :class="{active: item.id === groupId}" v-for="(item, index) in talkGroupList" :key="index" @click="getTalkList(item.id)">{{item.label}}</a>
+        <!-- <a :class="{active: -1 == groupId}" @click="getMyTalk()">自定义话术</a> -->
       </div>
       <div class="talk-list">
+         <!-- v-if="groupId==-1" -->
         <p class="tac" @click="gotoInsert">新增话术</p>
         <ul>
           <li v-for="(item, index) in talk" :key="index" @click="gotoDetail(item.id, item.group_id)">
@@ -77,6 +79,9 @@ export default {
         .then(res => {
           this.talk = res.data.rows
         })
+    },
+    getMyTalk () {
+      this.groupId = -1
     }
   },
   mounted () {

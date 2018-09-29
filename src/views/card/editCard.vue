@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 22:06:54
+ * @Last Modified time: 2018-09-29 14:51:00
  */
 <template>
   <div class="edit-card">
@@ -105,7 +105,7 @@
       <div class="insert-dialog">
         <h4>添加自定义标签</h4>
         <group>
-          <x-input v-model="tagKeyword" placeholder="十字以内" :max="10"></x-input>
+          <x-input v-model="tagKeyword" placeholder="10字以内" :max="10"></x-input>
         </group>
         <p class="btn">
           <button class="btn-cancle" @click="closeTagDialog">取消</button>
@@ -193,13 +193,17 @@ export default {
       this.tagKeyword = ''
     },
     insertTag () {
+      this.$vux.loading.show({
+        text: 'Loading'
+      })
       const data = {
         tag: this.tagKeyword
       }
+      this.closeTagDialog()
       cardTagInsert(data)
         .then(res => {
+          this.$vux.loading.hide()
           this.cardInfor.tag.push({tag_name: this.tagKeyword, id: res.data.card_tag_id})
-          this.closeTagDialog()
         })
     },
     removeTag (index, id) {
@@ -254,10 +258,14 @@ export default {
       }
     },
     uploadFile_p (obj) {
+      this.$vux.loading.show({
+        text: 'Loading'
+      })
       const ele = document.querySelector('#myFrom')
       const fd = new FormData(ele)
       upload_img(fd).then(res => {
         if (res.data && res.data.url) {
+          this.$vux.loading.hide()
           this.cardInfor.image = res.data.url
         }
       })
@@ -514,6 +522,9 @@ export default {
         text-align: center;
         margin-top: 0.3rem;
         height: 0.4rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }
@@ -553,6 +564,9 @@ export default {
           color: #fff;
           border-radius: 0.1rem;
           font-size: 0.28rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
     }

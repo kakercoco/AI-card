@@ -1,14 +1,14 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 16:09:14
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-18 13:45:34
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2018-09-29 12:54:07
  */
 <template>
   <div class="talk-detail">
     <div class="clearfix">
       <p>关键词</p>
-      <span class="tag" v-for="(item, index) in keyWord" :key="index">{{item}}</span>
+      <span class="tag" v-for="(item, index) in keyWord" :key="index" v-if="keyWord.length>0">{{item}}</span>
     </div>
     <div>
       <p>编辑话术</p>
@@ -37,12 +37,13 @@ export default {
       const data = {
         id: this.id
       }
-      talkEdit(data)
-        .then(res => {
-          this.infor = res.data
+      talkEdit(data).then(res => {
+        this.infor = res.data
+        if (this.infor.keyword !== '') {
           this.keyWord = this.infor.keyword.split(',')
-          console.log(this.keyWord)
-        })
+        }
+        console.log(this.keyWord)
+      })
     },
     gotoEdit () {
       this.$router.push({
@@ -54,12 +55,11 @@ export default {
       const data = {
         id: this.$route.query.id
       }
-      talkDelete(data)
-        .then(res => {
-          this.$router.push({
-            path: '/talkManage'
-          })
+      talkDelete(data).then(res => {
+        this.$router.push({
+          path: '/talkManage'
         })
+      })
     }
   },
   mounted () {
@@ -69,13 +69,13 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.talk-detail{
+.talk-detail {
   overflow: auto;
   height: 100%;
-  &>div{
+  & > div {
     border-bottom: 1px solid #ddd;
     padding: 0.3rem;
-    .tag{
+    .tag {
       font-size: 0.28rem;
       float: left;
       margin-left: 0.5rem;
@@ -87,18 +87,18 @@ export default {
       line-height: 0.55rem;
       color: #717171;
     }
-    p{
+    p {
       color: #717171;
-      &:first-child{
+      &:first-child {
         font-size: 0.32rem;
         margin-bottom: 0.3rem;
       }
-      &:last-child{
+      &:last-child {
         font-size: 0.28rem;
       }
     }
   }
-  .btn{
+  .btn {
     margin-top: 1rem;
   }
 }

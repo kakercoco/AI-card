@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:26:07
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 17:26:03
+ * @Last Modified time: 2018-09-29 14:19:17
  */
 <template>
   <div class="contact">
@@ -280,12 +280,12 @@ export default {
           height: 100%;
           margin-left: 0.2rem;
           line-height: 0.5rem;
-          max-width: calc(100% - 2.4rem);
           overflow: hidden;
           p{
             color: #717171;
             &:first-child{
               font-size: 0.3rem;
+              min-height: 0.5rem;
             }
           }
         }

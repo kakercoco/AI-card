@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 16:25:17
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 20:59:36
+ * @Last Modified time: 2018-09-29 11:41:27
  */
 <template>
   <div class="client">
@@ -19,13 +19,13 @@
       </div>
       <div class="center clearfix">
         <p class="fl">
-          <popup-picker :data="options1"  v-model="option1" value-text-align="center" @on-change="customerSetTurnover" @on-show="pickerShow">
+          <popup-picker :data="options1"  v-model="option1" :show="turnoverVisibility" value-text-align="center" @on-change="customerSetTurnover" @on-show="pickerShow">
           </popup-picker>
-          <span>设置成交概率</span>
+          <span @click="turnoverVisibility = true">设置成交概率</span>
         </p>
         <p class="fr">
-            <datetime v-model="clientInfor.turnover_date" @on-confirm="customerSetTurnoverDate"></datetime>
-          <span>预设成交时间</span>
+            <datetime v-model="clientInfor.turnover_date" @on-confirm="customerSetTurnoverDate" :show.sync="dateVisibility"></datetime>
+          <span @click="dateVisibility = true">预设成交时间</span>
         </p>
       </div>
       <div class="down">
@@ -127,6 +127,8 @@ export default {
     return {
       isPicker: false,
       typeConfig: config,
+      dateVisibility: false, // 成交时间是否显示
+      turnoverVisibility: false, // 成交率是否显示
       clientInfor: {}, // 客户信息
       chartInfor: {}, // 客户图标信息
       forMeTotal: 0, // 图表互动总次数
@@ -134,7 +136,7 @@ export default {
       lookData: [], // 圆饼图数据
       activeXData: [], // 折线图数据
       activeYData: [], // 折线图数据
-      option1: ['80%'],
+      option1: ['0%'],
       active: 0,
       visitList: [], // 互动列表
       followList: [], // 跟进列表
@@ -374,7 +376,11 @@ export default {
     },
     gotoIM () {
       this.$router.push({
-        path: '/messageIM'
+        path: '/messageIM',
+        query: {
+          id: this.clientInfor.message_id,
+          wx_image: this.clientInfor.wx_image
+        }
       })
     },
     gotoTag () {
@@ -523,7 +529,6 @@ export default {
       }
     }
     .timeline-wrap{
-      height: 1.2rem;
       background-color: #f4f4f4;
       padding: 0.2rem;
       color: #717171;

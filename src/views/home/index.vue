@@ -338,7 +338,7 @@ export default {
             if (e.code === 200 && e.data && e.data.rows instanceof Array) {
           let list = e.data.rows
                 list.map((val, i) => {
-            val.ele = config[val.type] ? val.wx_name + '第' + val.num +config[val.type] : ''
+            val.ele = config[val.type] ? val.wx_name + '第' + val.num + '次'+config[val.type] : ''
                     val.time = dateFtt('MM-dd hh:mm', new Date(val.create_time))
                 })
                 this.time_list = this.time_list.concat(list)

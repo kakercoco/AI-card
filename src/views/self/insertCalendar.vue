@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-05 17:36:16
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 16:28:02
+ * @Last Modified time: 2018-09-29 10:43:22
  */
 <template>
   <div class="insert-calendar">
@@ -22,7 +22,7 @@
       <x-textarea title="日程标题:" v-model="title" :show-counter="true" :max="10" :rows="1"></x-textarea>
     </group>
     <group>
-      <datetime title="时间设定："  v-model="time" format="HH:mm" :minute-list="['00', '15', '30', '45']"  ></datetime>
+      <datetime title="时间设定："  v-model="time" format="HH:mm" ></datetime>
     </group>
     <div class="insert-client clearfix">
       <p>添加客户：</p>
@@ -314,6 +314,7 @@ export default {
       font-size: 0.32rem;
       color: #717171;
       font-weight: normal;
+      margin-top: -2px;
     }
     .weui-cell__ft{
       text-align: left;

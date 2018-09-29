@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-08 18:18:43
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 21:00:05
+ * @Last Modified time: 2018-09-29 11:48:29
  */
 <template>
   <div class="client-infor">
@@ -148,7 +148,6 @@ export default {
     .my-birthday{
       border-top: 1px solid #eee;
       .my-label{
-        width: 1.2rem;
         color: #717171;
         font-weight: normal;
         font-size: 0.3rem;

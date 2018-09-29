@@ -218,7 +218,7 @@ export default new Router({
     {
       path: '/selfCard',
       name: 'selfCard',
-      meta: { title: '我的名片' },
+      meta: { title: '名片海报' },
       component: () => import('@/views/card/selfCard')
     },
     {

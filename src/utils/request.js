@@ -40,10 +40,10 @@ service.interceptors.response.use(
     const res = response.data
     if (res.code !== 200) {
       // alert(res.msg)
-      AlertModule.show({
+      /*AlertModule.show({
         title: '提示',
         content: res.msg
-      })
+      })*/
       // 201:Token 过期了;
       if (res.code === 201) {
         AlertModule.show({

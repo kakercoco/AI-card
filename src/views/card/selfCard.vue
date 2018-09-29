@@ -2,12 +2,12 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 15:23:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 20:40:35
+ * @Last Modified time: 2018-09-29 09:15:29
  */
 <template>
   <div class="self-card">
     <div class="card-shadow clearfix">
-      <img :src="cardInfor.card_image" alt="" class="logo fl">
+      <img :src="cardInfor.card_image" alt="" class="logo fl" v-if="cardInfor.card_image !== ''">
     </div>
     <div class="self-infor">
       <h5>个人信息</h5>

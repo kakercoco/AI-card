@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-05 17:36:16
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-17 15:54:49
+ * @Last Modified time: 2018-09-29 10:43:08
  */
 <template>
   <div class="insert-calendar">
@@ -22,7 +22,7 @@
       <x-textarea title="日程标题:" v-model="title" :show-counter="true" :max="20" :rows="1"></x-textarea>
     </group>
     <group>
-      <datetime title="时间设定："  v-model="time" format="HH:mm" :minute-list="['00', '15', '30', '45']"  ></datetime>
+      <datetime title="时间设定："  v-model="time" format="HH:mm" ></datetime>
     </group>
     <div class="insert-client clearfix">
       <p>添加客户：</p>
@@ -62,7 +62,7 @@
 
 <script>
 import { Group, PopupRadio, XInput, XTextarea, Datetime, XButton, Search, CheckIcon } from 'vux'
-import { calendarSave, calendarType, calendarRead } from '@/api/calendar'
+import { calendarUpdate, calendarType, calendarRead } from '@/api/calendar'
 import { customerList } from '@/api/contact'
 
 export default {
@@ -80,7 +80,7 @@ export default {
   data () {
     return {
       infor: {}, // 日历详情
-      id: this.$route.query.id,
+      id: this.$route.query.id, // 日程id
       title: '',
       notes: '',
       date: '',
@@ -239,17 +239,16 @@ export default {
         }
       })
       const data = {
+        id: this.id,
         title: this.title,
         time: `${this.date} ${this.time}`,
         add_user: uid,
         reference: this.notes,
         type: this.calendarType
       }
-      calendarSave(data)
+      calendarUpdate(data)
         .then(res => {
-          this.$router.push({
-            path: '/calendar'
-          })
+          this.$router.back(-1)
         })
     }
   },
@@ -264,7 +263,7 @@ export default {
     infor (val) {
       this.customer.forEach(e => {
         val.add_user.forEach(item => {
-          if (item == e.uid) {
+          if (item === e.uid) {
             this.customerCheckList.push(e)
             this.getCustomerList()
           }
