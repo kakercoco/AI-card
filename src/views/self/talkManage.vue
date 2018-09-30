@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 14:51:27
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2018-09-29 14:13:37
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-09-29 16:25:05
  */
 <template>
   <div class="talk-manage">
@@ -13,7 +13,7 @@
         <!-- <a :class="{active: -1 == groupId}" @click="getMyTalk()">自定义话术</a> -->
       </div>
       <div class="talk-list">
-         <!-- v-if="groupId==-1" -->
+        <!-- v-if="groupId==-1" -->
         <p class="tac" @click="gotoInsert">新增话术</p>
         <ul>
           <li v-for="(item, index) in talk" :key="index" @click="gotoDetail(item.id, item.group_id)">
@@ -60,12 +60,11 @@ export default {
       const data = {
         type: 'verbal'
       }
-      talkGroup(data)
-        .then(res => {
-          this.talkGroupList = res.data
-          this.groupId = this.talkGroupList[0].id
-          this.getTalkList(this.groupId)
-        })
+      talkGroup(data).then(res => {
+        this.talkGroupList = res.data
+        this.groupId = this.talkGroupList[0].id
+        this.getTalkList(this.groupId)
+      })
     },
     getTalkList (id) {
       this.groupId = id
@@ -75,10 +74,9 @@ export default {
         pagesize: 1000,
         keyword: ''
       }
-      talkList(data)
-        .then(res => {
-          this.talk = res.data.rows
-        })
+      talkList(data).then(res => {
+        this.talk = res.data.rows
+      })
     },
     getMyTalk () {
       this.groupId = -1
@@ -91,27 +89,27 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.talk-manage{
+.talk-manage {
   height: 100%;
   overflow: hidden;
-  h3{
+  h3 {
     height: 1rem;
     line-height: 1rem;
     border-bottom: 1px solid #2f80ed;
     text-align: center;
     font-size: 0.36rem;
   }
-  &>div{
+  & > div {
     height: calc(100% - 1rem);
   }
-  .talk-group{
+  .talk-group {
     float: left;
     width: 1.6rem;
     height: 100%;
     overflow: auto;
     padding: 0.2rem;
     border-right: 1px solid #2f80ed;
-    a{
+    a {
       width: 100%;
       display: block;
       height: 0.7rem;
@@ -120,40 +118,45 @@ export default {
       font-size: 0.28rem;
       color: #2d2d2d;
       overflow: hidden;
-      &.active{
+      &.active {
         text-decoration: underline;
         color: #5977fe;
       }
     }
   }
-  .talk-list{
+  .talk-list {
     padding: 0.3rem;
     float: left;
     width: calc(100% - 1.6rem);
     height: 100%;
     overflow: auto;
-    &>p{
+    & > p {
       color: #5977fe;
       font-size: 0.28rem;
       text-decoration: underline;
     }
-    li{
+    li {
       height: 1.2rem;
       border-bottom: 1px solid #ddd;
       color: #717171;
       padding: 0.2rem 0.5rem 0.2rem 0.3rem;
       position: relative;
-      .title{
+      .title {
         font-size: 0.2rem;
         height: 0.35rem;
         overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
-      .content{
-        font-size: 0.26rem;
+      .content {
+        font-size: 0.28rem;
         height: 0.35rem;
         overflow: hidden;
+        color: #333;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
-      .icon-right{
+      .icon-right {
         position: absolute;
         top: 0.34rem;
         right: 0;

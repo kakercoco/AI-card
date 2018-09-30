@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-05 09:18:27
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 16:54:35
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-09-29 17:59:11
  */
 <template>
   <div class="self-news">
@@ -13,7 +13,8 @@
           <li v-for="(e, index) in dynamicList" :key="index" >
             <span class="time">{{Global.parseTime(e.create_time,'{h}:{i}')}}</span>
             <div class="img-wrap">
-              <img :src="e.user_image" alt="" v-for="item in e.cover" :key="item" :class="{'img-one':e.cover.length ===1,'img-list':e.cover.length>1}">
+              <!-- <img :src="e.user_image" alt="" v-for="item in e.cover" :key="item" :class="{'img-one':e.cover.length ===1,'img-list':e.cover.length>1}"> -->
+              <img :src="e.cover[0]" alt="" class="img-one">
             </div>
             <p class="content">{{e.title}}</p>
             <p class="comment">

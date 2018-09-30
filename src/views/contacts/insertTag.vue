@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-04 09:31:33
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-14 16:56:54
+ * @Last Modified time: 2018-09-30 11:18:25
  */
 <template>
   <div class="insert-tag">
@@ -94,14 +94,11 @@ export default {
       }
       insertCustomerTag(data)
         .then(res => {
-          this.$router.push({
-            path: '/main/contact'
-          })
+          this.$router.back(-1)
         })
     }
   },
   mounted () {
-    console.log(this.$route.query)
     this.getCustomerList()
   }
 }

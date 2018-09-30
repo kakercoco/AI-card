@@ -32,7 +32,7 @@
         .text_frame{
             line-height:29px;
             float: left;
-            height:0.58rem;
+            min-height:0.58rem;
             line-height:29px;
 
             .text{

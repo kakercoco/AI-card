@@ -2,41 +2,60 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 14:51:00
+ * @Last Modified time: 2018-09-29 21:07:33
  */
 <template>
   <div class="edit-card">
     <div class="my-card" id="card">
       <img :src="seletedTemplate" alt="" class="card-bg">
       <div class="card-infor " :class="selectedClass">
-        <p class="mark" v-if="templateId === 10 || templateId === 11 || templateId === 12">T云商务</p>
-        <p class="trueland" v-if="templateId === 10 || templateId === 11 || templateId === 12">
+        <p class="mark" v-if="templateId === 1 || templateId === 4 || templateId === 7 || templateId === 10 || templateId === 13 || templateId === 17 || templateId === 20">T云商务</p>
+        <p class="mark" v-if="templateId === 2 || templateId === 5 || templateId === 8 || templateId === 11 || templateId === 14 || templateId === 18 || templateId === 21">T云客服</p>
+        <p class="trueland">
           <img src="@/assets/img/trueland.png" alt="" >
-          <span>珍岛股份·上海总部</span>
+          <span v-if="templateId === 0 || templateId === 1 || templateId === 2">珍岛股份·上海</span>
+          <span v-if="templateId === 3 || templateId === 4 || templateId === 5">珍岛股份·无锡</span>
+          <span v-if="templateId === 6 || templateId === 7 || templateId === 8">珍岛股份·苏州</span>
+          <span v-if="templateId === 9 || templateId === 10 || templateId === 11">珍岛股份·宁波</span>
+          <span v-if="templateId === 12 || templateId === 13 || templateId === 14">珍岛股份·温州</span>
+          <span v-if="templateId === 15 || templateId === 16 || templateId === 17">珍岛股份·深圳</span>
+          <span v-if="templateId === 18 || templateId === 19 || templateId === 20">珍岛股份·成都</span>
         </p>
-        <p class="company" v-else>{{cardInfor.company}}</p>
+        <!-- <p class="company">{{cardInfor.company}}</p> -->
         <p class="bio">
           <img :src="cardInfor.image" alt="" class="avatar">
           <span class="name">{{cardInfor.username}}</span>
           <span class="job">{{cardInfor.job}}</span>
         </p>
-        <p class="phone"><img src="@/assets/nav/phone2.png" alt="" v-if="templateId ===2"><img src="@/assets/nav/phone.png" alt="" v-else>{{cardInfor.phone}}</p>
-        <p class="email" v-if="templateId === 10 || templateId === 11 || templateId === 12"><img src="@/assets/nav/email2.png" alt="" v-if="templateId ===2"><img src="@/assets/nav/email.png" alt="" v-else>{{cardInfor.email}}</p>
-        <p class="address"><img src="@/assets/nav/map2.png" alt="" v-if="templateId ===2"><img src="@/assets/nav/map.png" alt="" v-else>{{cardInfor.address}}</p>
-        <p class="tip" v-if="templateId === 10 || templateId === 11 || templateId === 12">中国领先的SaaS级智能营销云平台</p>
+        <p class="phone">
+          <!-- <img src="@/assets/nav/phone2.png" alt=""> -->
+          <img src="@/assets/nav/phone.png" alt="">
+          {{cardInfor.phone}}
+          </p>
+        <p class="email">
+          <!-- <img src="@/assets/nav/email2.png" alt="" > -->
+          <img src="@/assets/nav/email.png" alt="">
+          {{cardInfor.email}}
+        </p>
+        <p class="address">
+          <!-- <img src="@/assets/nav/map2.png" alt="" > -->
+          <img src="@/assets/nav/map.png" alt="">
+          {{cardInfor.address}}
+        </p>
+        <p class="tip">中国领先的SaaS级智能营销云平台</p>
       </div>
     </div>
     <h5>名片样式</h5>
     <scroller ref="scrollerEvent" lock-y :scrollbar-x='false' style="margin-top: 0.2rem;">
      <div class="template-list">
-        <img :src="item" alt="" :class="{active: index === templateId}" v-for="(item, index) in templateCard" :key="index" @click="changeTemplate(item, index)" v-show="index < 3 || index > 8">
+        <img src="@/assets/card/1.png" alt="" :class="{active: index === templateId}" v-for="(item, index) in 21" :key="index" @click="changeTemplate(item, index)">
       </div>
     </scroller>
     <h5>名片头像</h5>
     <div class="card-avatar">
       <img :src="cardInfor.image" alt="">
       <form action="" id="myFrom">
-        <input type="file" accept="image/*;capture=camera" multiple="multiple" @change="changeFile($event, 'avatar')" name="avatar"/>
+        <input type="file" accept="image/*;capture=camera"  @change="changeFile($event, 'avatar')" name="avatar"/>
       </form>
     </div>
     <h5>个人信息</h5>
@@ -82,10 +101,13 @@
     </div> -->
     <h5>我的图片</h5>
     <div class="self-img clearfix">
-      <img :src="item" alt="" v-for="(item, index) in albumList" :key="index" v-if="item != ''">
+      <p v-for="(item, index) in albumList" :key="index" class="fl" v-if="item != ''">
+        <x-icon type="ios-close" class="icon-close" @click="removeAlbum(index)"></x-icon>
+        <img :src="item" alt=""  >
+      </p>
       <span>
         <form action="" id="album">
-          <input type="file" accept="image/*;capture=camera" multiple="multiple" @change="changeFile($event, 'album')" name="avatar"/>
+          <input type="file" accept="image/*;capture=camera"  @change="changeFile($event, 'album')" name="avatar"/>
         </form>
         <x-icon type="ios-plus-empty" class="icon-insert"></x-icon>
       </span>
@@ -169,18 +191,8 @@ export default {
       selectedClass: 'card-template-1',
       templateCard: [
         require('@/assets/card/1.png'),
-        require('@/assets/card/2.png'),
-        require('@/assets/card/3.png'),
-        require('@/assets/card/4.png'),
-        require('@/assets/card/5.png'),
-        require('@/assets/card/6.png'),
-        require('@/assets/card/7.png'),
-        require('@/assets/card/8.png'),
-        require('@/assets/card/9.png'),
-        require('@/assets/card/10.png'),
-        require('@/assets/card/11.png'),
-        require('@/assets/card/12.png'),
-        require('@/assets/card/13.png')
+        require('@/assets/card/1.png'),
+        require('@/assets/card/1.png'),
       ]
     }
   },
@@ -225,9 +237,11 @@ export default {
           if (this.cardInfor.album != null) {
             this.albumList = this.cardInfor.album.split(',')
           }
+          if (this.cardInfor.image === '') {
+            this.cardInfor.image = require('@/assets/card/comm.jpg')
+          }
           const cardInforCookie = Cookies.get('cardInfor')
           if (cardInforCookie) {
-            debugger
             const data = JSON.parse(cardInforCookie)
             this.cardInfor.phone = data.phone
             this.cardInfor.tel = data.tel
@@ -271,13 +285,20 @@ export default {
       })
     },
     uploadFileAlbum (obj) {
+      this.$vux.loading.show({
+        text: 'Loading'
+      })
       const ele = document.querySelector('#album')
       const fd = new FormData(ele)
       upload_img(fd).then(res => {
         if (res.data && res.data.url) {
+          this.$vux.loading.hide()
           this.albumList.push(res.data.url)
         }
       })
+    },
+    removeAlbum (index) {
+      this.albumList.splice(index, 1)
     },
     touchstart () {
       console.log('start')
@@ -347,6 +368,7 @@ export default {
             updateCard(this.cardInfor)
               .then(res => {
                 this.$router.back(-1)
+                this.$vux.loading.hide()
               })
           }
         })
@@ -361,7 +383,6 @@ export default {
         email: this.cardInfor.email
       }
       Cookies.set('cardInfor', JSON.stringify(data))
-      console.log(this.cardInfor)
     },
     save () {
       var phoneReg = /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/
@@ -382,6 +403,9 @@ export default {
         })
         return false
       }
+      this.$vux.loading.show({
+        text: 'Loading'
+      })
       this.switchImg()
     }
 
@@ -438,7 +462,7 @@ export default {
   }
   .template-list{
     height: 1rem;
-    width: 12.6rem;
+    width: 37.8rem;
     img{
       width: 1.4rem;
       height: 1rem;
@@ -552,16 +576,12 @@ export default {
         border-radius: 0.1rem;
       }
       p{
-        height: 0.8rem;
         text-align: center;
-        line-height: 0.8rem;
         span{
           width: 1.5rem;
           height: 0.45rem;
           line-height: 0.45rem;
           display: inline-block;
-          background-color: #778dfe;
-          color: #fff;
           border-radius: 0.1rem;
           font-size: 0.28rem;
           overflow: hidden;
@@ -588,6 +608,17 @@ export default {
     }
   }
   .self-img{
+    p{
+      position: relative;
+    }
+    .icon-close{
+      position: absolute;
+      top: -0.15rem;
+      right: 0;
+      width: 0.4rem;
+      height: 0.4rem;
+      fill: red;
+    }
     img{
       width: 2rem;
       height: 2rem;

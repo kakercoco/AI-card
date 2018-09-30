@@ -339,7 +339,7 @@ export default {
           let list = e.data.rows
                 list.map((val, i) => {
             val.ele = config[val.type] ? val.wx_name + '第' + val.num + '次'+config[val.type] : ''
-                    val.time = dateFtt('MM-dd hh:mm', new Date(val.create_time))
+                    val.time = dateFtt('MM-dd hh:mm', new Date(val.create_time*1000))
                 })
                 this.time_list = this.time_list.concat(list)
                 this.timeScroller.total = e.data.total
@@ -353,7 +353,7 @@ export default {
               this.$refs.scrollerBottom.reset()
                     }
 
-            if (this.timeScroller.max_page <= 1) {
+            if (this.timeScroller.max_page <= 1 || this.time_list.length === 0) {
               this.$refs.scrollerBottom.disablePullup()//禁止上啦
                     } else {
               this.$refs.scrollerBottom.enablePullup()//恢复上啦

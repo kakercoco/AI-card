@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:26:07
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 14:19:17
+ * @Last Modified time: 2018-09-30 14:24:33
  */
 <template>
   <div class="contact">
@@ -47,7 +47,7 @@
             <x-icon type="ios-arrow-down" size="20" v-if="!item.status" class="fr" style="fill: #717171;" @click.native="showDetail(index)"></x-icon>
             <span class="fr" v-else @click="gotoUpdateTag(item.id)">添加用户 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></span>
           </p>
-          <div v-if="item.status" class="client-list " v-for="(element, i) in item.customer" :key="i" @click="gotoClient(element.uid)">
+          <div v-if="item.status" class="client-list " v-for="(element, i) in item.customer" :key="i" @click="gotoClient(element.id)">
             <img :src="element.wx_image" alt="">
             <div>
               <x-icon type="ios-minus" size="14" class="delete-icon" @click.native.stop="deleteCustomerTag(element.tag_id, element.id, index, i)"></x-icon>
@@ -56,7 +56,7 @@
             </div>
             <span>
               <i>跟进时间</i>
-              <!-- <i>{{element.date}}</i> -->
+              <i>{{element.date}}</i>
             </span>
           </div>
           <p class="tar arrow-up" @click="showDetail(index)" v-if="item.status"><x-icon type="ios-arrow-up" size="20" ></x-icon></p>
@@ -136,12 +136,15 @@ export default {
     getCustomerTagList () {
       customerTagList()
         .then(res => {
-          if (res.data.length <= 0) {
-            return false
-          }
-          const tagList = res.data[0].rows
-          tagList.forEach(element => {
-            element.status = false
+          const list = res.data
+          const tagList = []
+          list.forEach(e => {
+            e.forEach(i => {
+              tagList.push(i)
+            })
+          })
+          tagList.forEach(e => {
+            e.status = false
           })
           this.tagList = tagList
         })
@@ -166,6 +169,7 @@ export default {
       this.customerAll = []
       if (this.isFlag) {
         this.$refs.scrollerBottom.enablePullup()
+        this.isFlag = false
       }
       this.getCustomerList()
     },
@@ -373,7 +377,7 @@ export default {
         float: right;
         height: 100%;
         text-align: right;
-        width: 1.2rem;
+        width: 1.4rem;
         font-size: 0.26rem;
         color: #717171;
         line-height: 0.5rem;

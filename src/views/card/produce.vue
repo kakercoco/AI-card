@@ -1,19 +1,19 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-11 17:04:26
- * @Last Modified by: Jessica
- * @Last Modified time: 2018-09-29 14:27:11
+ * @Last Modified by: kaker.xutianxing
+ * @Last Modified time: 2018-09-30 14:22:43
  */
 <template>
   <div class="produce">
     <div class="picker">
       <div class="tab tab-1">
-        <span @click="showFirstDialog">{{activeTabFirstName}}</span>
+        <span @click="showFirstDialog">产品推荐</span>
         <div class="tab-wrap" v-show="activeTabFirstStatus" @click="closeDialog">
           <ul>
-            <li @click.stop="switchProduce(0, '全部产品')">全部产品 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===0"></x-icon></li>
-            <li @click.stop="switchProduce(1, '已推荐产品')">已推荐产品 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===1"></x-icon></li>
-            <li @click.stop="switchProduce(2, '未推荐产品')">未推荐产品 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===2"></x-icon></li>
+            <li @click.stop="switchProduce(1, '全部产品')">全部产品 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===1"></x-icon></li>
+            <li @click.stop="switchProduce(2, '已推荐产品')">已推荐产品 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===2"></x-icon></li>
+            <li @click.stop="switchProduce(3, '未推荐产品')">未推荐产品 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===3"></x-icon></li>
           </ul>
         </div>
       </div>
@@ -21,13 +21,13 @@
         <span @click="showSecondDialog">产品分类</span>
         <div class="tab-wrap" v-show="activeTabSecondStatus" @click="closeDialog">
           <ul>
-            <li v-for="(item, index) in tabSecondList" :key="index" @click.stop="selsectedSortId(item)">
+            <li v-for="(item, index) in tabSecondList" :key="index" @click.stop="selsectedSortId(item, 1)">
               {{item.name}}
               <x-icon type="ios-arrow-right" class="icon-down" v-if="item.child.length > 0 && !item.status"></x-icon>
               <x-icon type="ios-arrow-down" class="icon-down" v-if="item.child.length > 0&& item.status"></x-icon>
               <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="item.child.length <= 0&& item.id === pageForm.type_id"></x-icon>
               <ul v-show="item.status">
-                <li v-for="(e, i) in item.child" :key="i" @click.stop="selsectedSortId(e)">
+                <li v-for="(e, i) in item.child" :key="i" @click.stop="selsectedSortId(e, 2)">
                   {{e.name}}
                   <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="e.id === pageForm.type_id"></x-icon>
                 </li>
@@ -43,15 +43,15 @@
           <li v-for="(item, index) in produceList" :key="index">
             <div class="left">
               <img :src="item.img" alt="">
-              <p><span v-show="isRecommend(item.goods_id)">已推荐</span> <span v-show="!isRecommend(item.goods_id)">未推荐</span></p>
+              <p><span v-show="item.status">已推荐</span> <span v-show="!item.status">未推荐</span></p>
             </div>
             <div class="right">
               <h4>{{item.name}}</h4>
               <h5>{{item.summary}}</h5>
               <p>
                 发布日期:{{Global.parseTime(item.createtime, '{y}-{m}-{d}')}}
-                <span v-show="isRecommend(item.goods_id)" @click="employgoodsDetele(item)">取消</span>
-                <span v-show="!isRecommend(item.goods_id)" @click="employgoodsSave(item)">推荐</span>
+                <span v-show="item.status" @click="employgoodsDetele(item)">取消</span>
+                <span v-show="!item.status" @click="employgoodsSave(item)">推荐</span>
               </p>
             </div>
           </li>
@@ -63,8 +63,7 @@
 
 <script>
 import { PopupPicker, Scroller } from 'vux'
-import { employgoodsIndex, employgoodsSave, employgoodsDetele } from '@/api/card'
-import axios from 'axios'
+import { employgoodsIndex, employgoodsSave, employgoodsDetele, webClient } from '@/api/card'
 
 export default {
   name: 'produce',
@@ -84,7 +83,6 @@ export default {
         loadingContent: '加载中...',
         clsPrefix: 'xs-plugin-pullup-'
       },
-      baseUrl: '/index.php',
       activeTabFirstStatus: false,
       activeTabFirstName: '全部产品',
       activeTabSecondStatus: false,
@@ -92,21 +90,12 @@ export default {
       produceList: [], // 产品列表
       recommend: [], // 推荐列表
       pageForm: {
-        opt: 0, // 类型 默认1 查看全部 2查看推荐的 3 查看不推荐的
+        opt: 1, // 类型 默认1 查看全部 2查看推荐的 3 查看不推荐的
         page: 1,
         rows: 10,
         type_id: null
       },
-      isFlag: false, // 是否禁止上拉加载
-      proxyTable: {
-        '/index.php': {
-          target: 'http://jiatui.api.com',
-          changeOrigin: true,
-          pathRewrite: {
-            '^/index.php': '/index.php'
-          }
-        }
-      }
+      isFlag: false // 是否禁止上拉加载
     }
   },
   methods: {
@@ -115,25 +104,30 @@ export default {
         method: 'xcx.card.gcat_list',
         id: 0
       }
-      axios.post(`${this.baseUrl}/api/Scratch/webClient`,
-        data, this.proxyTable)
+      webClient(data)
         .then(res => {
-          if (res.data.isSuccess) {
-            const list = res.data.data
-            list.forEach(element => {
-              if (element.child.length > 0) {
-                element.status = false
-              }
-            })
-            this.tabSecondList = list
-          }
+          const list = res.data
+          list.forEach(element => {
+            if (element.child.length > 0) {
+              element.status = false
+            }
+          })
+          this.tabSecondList = list
         })
     },
     getProduceList () {
       employgoodsIndex(this.pageForm)
         .then(res => {
-          this.produceList = res.data.rows
+          const list = res.data.rows
           this.recommend = res.data.recommend.split(',')
+          list.forEach(e => {
+            if (this.recommend.includes(e.goods_id)) {
+              e.status = true
+            } else {
+              e.status = false
+            }
+          })
+          this.produceList = list
         })
     },
     switchProduce (val, name) {
@@ -145,6 +139,7 @@ export default {
       this.$refs.loadingMore.reset({top: 0})
       if (this.isFlag) {
         this.$refs.loadingMore.enablePullup()
+        this.isFlag = false
       }
     },
     showFirstDialog () {
@@ -159,8 +154,8 @@ export default {
       this.activeTabSecondStatus = false
       this.activeTabFirstStatus = false
     },
-    selsectedSortId (item) {
-      if (item.child.length > 0) {
+    selsectedSortId (item, nav) {
+      if (item.child.length > 0 && nav === 1) {
         item.status = !item.status
       } else {
         this.pageForm.type_id = item.id
@@ -169,6 +164,7 @@ export default {
         this.$refs.loadingMore.reset({top: 0})
         if (this.isFlag) {
           this.$refs.loadingMore.enablePullup()
+          this.isFlag = false
         }
         this.closeDialog()
       }
@@ -177,7 +173,7 @@ export default {
       this.pageForm.page += 1
       employgoodsIndex(this.pageForm)
         .then(res => {
-          if (res.data.length === 0) {
+          if (res.data.rows.length === 0) {
             this.$refs.loadingMore.disablePullup() // 禁用上拉
             this.isFlag = true
           } else {
@@ -195,6 +191,7 @@ export default {
       employgoodsSave(data)
         .then(res => {
           this.$vux.toast.text('推荐成功', 'top')
+          item.status = !item.status
         })
     },
     employgoodsDetele (item) {
@@ -204,6 +201,7 @@ export default {
       employgoodsDetele(data)
         .then(res => {
           this.$vux.toast.text('取消推荐成功', 'top')
+          item.status = !item.status
         })
     },
     isRecommend (id) {

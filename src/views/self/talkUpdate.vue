@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 15:14:03
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2018-09-29 12:32:02
+ * @Last Modified by: kaker.xutianxing
+ * @Last Modified time: 2018-09-29 15:00:29
  */
 <template>
   <div class="insert-talk">
@@ -65,6 +65,14 @@ export default {
         })
     },
     save () {
+      if (this.content === '') {
+        this.$vux.toast.text('话术内容不能为空', 'top')
+        return false
+      }
+      if (this.tagList.length <= 0) {
+        this.$vux.toast.text('关键词不能为空', 'top')
+        return false
+      }
       const data = {
         group_id: this.groupId,
         id: this.id,
@@ -73,9 +81,7 @@ export default {
       }
       talkUpdate(data)
         .then(res => {
-          this.$router.push({
-            path: '/talkManage'
-          })
+          this.$router.back(-1)
         })
     },
     openDialog () {
@@ -86,6 +92,10 @@ export default {
       this.tagDialog = false
     },
     insertTag () {
+      if (this.tag === '') {
+        this.$vux.toast.text('关键词内容不能为空', 'top')
+        return false
+      }
       this.tagList.push(this.tag)
       this.closeDialog()
     },

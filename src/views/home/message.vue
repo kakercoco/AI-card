@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:46:11
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-03 10:23:41
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-09-29 16:06:51
  */
 <template>
   <div class="message">
@@ -31,9 +31,9 @@
 
 <script>
 import { Badge } from 'vux'
-import axios from 'axios';
-import {get_list,look} from '@/api/message';
-import {dateFtt} from '@/utils/base';
+import axios from 'axios'
+import {get_list, look} from '@/api/message'
+import {dateFtt} from '@/utils/base'
 export default {
   name: 'message',
   components: {
@@ -41,7 +41,7 @@ export default {
   },
   data () {
     return {
-        messageList:[]
+      messageList: []
     }
   },
   methods: {
@@ -52,28 +52,28 @@ export default {
     },
 
     gotoIM (item) {
-        const message_id = item.message_id;
-        const wx_image = item.wx_image;
-        const uid = item.uid;
-        if(message_id){
-            this.$router.push({
-                path:`/messageIM`,
-                query: {
-                    id: message_id,
-                    wx_image
-                }
-            });
-        }
-        else{
-            alert('缺少message_id！');
-        }
+      const message_id = item.message_id
+      const wx_image = item.wx_image
+      const wx_name = item.wx_name
+      const uid = item.uid
+      if (message_id) {
+        this.$router.push({
+          path: `/messageIM`,
+          query: {
+            id: message_id,
+            wx_image,
+            wx_name
+          }
+        })
+      } else {
+        alert('缺少message_id！')
+      }
 
-        if(uid){
-            look({
-                uid
-            }).then((res)=>{})
-        }
-
+      if (uid) {
+        look({
+          uid
+        }).then((res) => {})
+      }
     },
 
     // async init(){
@@ -136,51 +136,47 @@ export default {
     //
     // },
 
-    get_message_list(){
-        this.$vux.loading.show({
-            text: '加载中...'
-        });
-        get_list().then((res)=>{
-            this.$vux.loading.hide();
-            if(res.code === 200 && res.data && res.data instanceof Array){
-                let list = res.data;
-                list.map((val,i)=>{
-                    val.time = dateFtt("yyyy-MM-dd", new Date(val.update_time*1000));
-                    try {
-                        val.last_content = val.last ? JSON.parse(val.last) : '';
-                    }
-                    catch (err){
-                        val.last_content = val.last;
-                    }
-
-                });
-                this.$store.commit('message/SET_messageList',list);
+    get_message_list () {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
+      get_list().then((res) => {
+        this.$vux.loading.hide()
+        if (res.code === 200 && res.data && res.data instanceof Array) {
+          let list = res.data
+          list.map((val, i) => {
+            val.time = dateFtt('yyyy-MM-dd', new Date(val.update_time * 1000))
+            try {
+              val.last_content = val.last ? JSON.parse(val.last) : ''
+            } catch (err) {
+              val.last_content = val.last
             }
-        }).catch((err)=>{
-            this.$vux.loading.hide();
-        });
+          })
+          this.$store.commit('message/SET_messageList', list)
+        }
+      }).catch((err) => {
+        this.$vux.loading.hide()
+      })
     },
 
-    create_message(data){
-        let end_obj = {};
-        end_obj.message_id = data.speakerId;
-        end_obj.last = data.content;
-        end_obj.time = dateFtt("yyyy-MM-dd", new Date(data.createTime));
-        end_obj.last_content = {};
-        if(data.content_obj.type === 'text'){
-            end_obj.last_content.type = 'text';
-            end_obj.last_content.content = data.content_obj.content;
-        }
-        else if(data.content_obj.type === 'img'){
-            end_obj.last_content.type = 'img';
-            end_obj.last_content.original = data.content_obj.original;
-        }
-        else if(data.content_obj.type === 'shop'){
-            end_obj.last_content.type = 'shop';
-            end_obj.last_content.p_id = data.content_obj.p_id;
-        }
-        return end_obj;
-    },
+    create_message (data) {
+      let end_obj = {}
+      end_obj.message_id = data.speakerId
+      end_obj.last = data.content
+      end_obj.time = dateFtt('yyyy-MM-dd', new Date(data.createTime))
+      end_obj.last_content = {}
+      if (data.content_obj.type === 'text') {
+        end_obj.last_content.type = 'text'
+        end_obj.last_content.content = data.content_obj.content
+      } else if (data.content_obj.type === 'img') {
+        end_obj.last_content.type = 'img'
+        end_obj.last_content.original = data.content_obj.original
+      } else if (data.content_obj.type === 'shop') {
+        end_obj.last_content.type = 'shop'
+        end_obj.last_content.p_id = data.content_obj.p_id
+      }
+      return end_obj
+    }
 
     // chat_watch(){
     //     this.$store.state.user.websocketConnection.onmessage = (res)=>{
@@ -239,9 +235,8 @@ export default {
 
   },
   mounted () {
-      this.get_message_list();
-
-  },
+    this.get_message_list()
+  }
 
 }
 </script>

@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:53:27
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 11:10:33
+ * @Last Modified time: 2018-09-29 22:58:30
  */
 <template>
   <div class="calendar">
@@ -25,11 +25,12 @@
           <img src="@/assets/img/calendar3.png" alt="" class="icon-tag" v-if="item.type === 2">
           <img src="@/assets/img/calendar4.png" alt="" class="icon-tag" v-if="item.type === 3">
           <img src="@/assets/img/calendar5.png" alt="" class="icon-tag" v-if="item.type === 4">
+          <x-icon type="ios-arrow-right" class="icon-right"></x-icon>
           <div>
             <h5>{{item.title}}</h5>
             <p>备注：{{item.reference}}</p>
           </div>
-          <x-icon type="ios-arrow-right" class="icon-right"></x-icon>
+
         </li>
       </ul>
     </div>
@@ -217,12 +218,11 @@ export default {
       .icon-tag{
         width: 0.35rem;
         float: left;
+        margin-right: 0.3rem;
       }
       &>div{
         height: 100%;
-        float: left;
         color: #717171;
-        margin: 0 0.3rem;
         max-width: 3.5rem;
         overflow: hidden;
         h5{

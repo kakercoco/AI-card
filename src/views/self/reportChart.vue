@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 17:01:37
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2018-09-29 11:11:55
+ * @Last Modified by: kaker.xutianxing
+ * @Last Modified time: 2018-09-30 09:19:36
  */
 <template>
   <div class="report-chart">
@@ -179,27 +179,81 @@ export default {
             name: '访问来源',
             type: 'pie',
             radius: '75%',
+            center: ['50%', '54%'],
+            // data: [
+            //   {
+            //     value: this.downChartInfor.like_company.num,
+            //     name: `${(
+            //       (this.downChartInfor.like_company.num / this.likeTotal) *
+            //       100
+            //     ).toFixed(1)}%`,
+            //     label: {
+            //       normal: {
+            //         formatter: '{b} {c}%'
+            //       }
+            //     }
+            //   },
+            //   {
+            //     value: this.downChartInfor.like_product.num,
+            //     name: `${(
+            //       (this.downChartInfor.like_product.num / this.likeTotal) *
+            //       100
+            //     ).toFixed(1)}%`,
+            //     label: {
+            //       normal: {
+            //         formatter: '{b} {c}%'
+            //       }
+            //     }
+            //   },
+            //   {
+            //     value: this.downChartInfor.like_me.num,
+            //     name: `${(
+            //       (this.downChartInfor.like_me.num / this.likeTotal) *
+            //       100
+            //     ).toFixed(1)}%`,
+            //     label: {
+            //       normal: {
+            //         formatter: '{b} {c}%'
+            //       }
+            //     }
+            //   }
+            // ],
             data: [
               {
-                value: this.downChartInfor.like_company.num,
-                name: `${(
+                value: `${(
                   (this.downChartInfor.like_company.num / this.likeTotal) *
                   100
-                ).toFixed(1)}%`
+                ).toFixed(1)}`,
+                name: '公司',
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
               },
               {
-                value: this.downChartInfor.like_product.num,
-                name: `${(
+                name: '产品',
+                value: `${(
                   (this.downChartInfor.like_product.num / this.likeTotal) *
                   100
-                ).toFixed(1)}%`
+                ).toFixed(1)}`,
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
               },
               {
-                value: this.downChartInfor.like_me.num,
-                name: `${(
+                name: '个人',
+                value: `${(
                   (this.downChartInfor.like_me.num / this.likeTotal) *
                   100
-                ).toFixed(1)}%`
+                ).toFixed(1)}`,
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
               }
             ],
             itemStyle: {
@@ -366,7 +420,7 @@ export default {
     border-top: 1px solid #eee;
     #care {
       width: 100%;
-      height: 3.6rem;
+      height: 3.8rem;
     }
     ul {
       padding: 0 0.2rem;
@@ -461,7 +515,7 @@ export default {
       &:nth-child(5n + 3) {
         i {
           background: linear-gradient(left, #cc00ff, #6eaffb);
-          background: -webkit- linear-gradient(left, #cc00ff, #6eaffb);
+          background: -webkit-linear-gradient(left, #cc00ff, #6eaffb);
         }
       }
       &:nth-child(5n + 4) {

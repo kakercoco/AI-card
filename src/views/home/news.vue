@@ -229,6 +229,7 @@ export default {
           })
 
           this.data_list = this.data_list.concat(list)
+          //this.data_list = []
           this.total = e.data.total
           this.max_page = Math.ceil(e.data.total / 10)
           this.$nextTick(() => {
@@ -236,7 +237,7 @@ export default {
             this.$refs.scrollerBottom.donePulldown()// 下拉完成
             this.$refs.scrollerBottom.reset()
 
-            if (this.max_page == 1) {
+            if (this.max_page == 1 || this.data_list.length === 0) {
               this.$refs.scrollerBottom.disablePullup()// 禁止上啦
             } else {
               this.$refs.scrollerBottom.enablePullup()// 恢复上啦

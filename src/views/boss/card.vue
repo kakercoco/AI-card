@@ -137,7 +137,7 @@
           </p>
         </div>
         <p class="line"></p>
-        <h3>近15日客户活跃度</h3>
+        <h3>近30日客户活跃度</h3>
         <div class="dynamic">
           <div id="dynamic"></div>
         </div>
@@ -148,7 +148,7 @@
           <li v-for="(item, index) in followData" :key="index">
             <img :src="item.wx_image" alt="">
             <div>
-              {{item.username}} <i>拨打</i>了你的<i>手机号码</i>，{{item.content}}。
+              {{item.username}}{{item.content}}。
             </div>
             <span>{{ item.create_time.substr(item.create_time.indexOf(':')- 2, item.create_time.length) }}</span>
           </li>
@@ -298,15 +298,16 @@ export default {
             }
           } else if (param.type === 3) {
             this.topTitleInfor = res.data.data
-            this.followData = res.data.follow.rows
-            this.setCurrentDate(this.followData)
+            if (res.data.follow.rows !== undefined) {
+              this.followData = res.data.follow.rows
+              this.setCurrentDate(this.followData)
+            }
           }
         }
       })
     },
     setCurrentDate (data) {
       const date = data[0].create_time.replace(/-/g, '/')
-      console.log(date)
       if (data.length > 0) {
         if (data.length === 10) {
           this.currentDate = date + '00:00'
@@ -786,7 +787,7 @@ export default {
         background-color: #feab2b;
       }
       &:nth-child(3)::after{
-        background-color: #3ec4d2;
+        background-color: #ff5f1a;
       }
     }
   }

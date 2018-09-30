@@ -113,3 +113,12 @@ export function employcaseDetele (data) {
     params: data
   })
 }
+
+export function webClient (data) {
+  // 产品分类
+  return request({
+    url: '/api/Scratch/webClient',
+    method: 'post',
+    data: data
+  })
+}

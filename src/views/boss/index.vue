@@ -1,71 +1,58 @@
 /*
- * @Author: kaker.xutianxing
- * @Date: 2018-09-12 09:25:21
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-27 17:51:41
- */
+* @Author: kaker.xutianxing
+* @Date: 2018-09-12 09:25:21
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-09-29 17:28:32
+*/
 <template>
   <div class="boss">
     <p class="search clearfix">
       <span>
-        <input type="text" placeholder="搜索">
-        <x-icon type="ios-search-strong"></x-icon>
+        <input type="text" placeholder="搜索" v-model="keywords" @change="searchList(keywords)">
+        <x-icon type="ios-search-strong" @click="searchList(keywords)"></x-icon>
       </span>
       <i @click="showDepartment = true">选择部门</i>
     </p>
-    <!-- <x-dialog v-model="showDepartment" :hide-on-blur="true" class="departmentSwarp" :dialog-style="{'max-width': '100%', width: '100%', top: '60%'}"> -->
-      <div class="departmentSwarp" v-if="showDepartment">
-        <scroller lock-y :scrollbar-x=false>
-          <div class="box1">
-            <div class="box1-item">
-              <ul>
-                <li>
-                  <h3>选择部门</h3>
-                </li>
-                <li style="border-bottom: 1px solid #ccc;">
+    <div>
+      <div v-transfer-dom>
+        <x-dialog v-model="showDepartment" class="dialog-demo" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', top:'380px'}">
+          <h3 class="dialog-title">选择部门</h3>
+            <div>
+              <swiper v-model="demo01_index" @on-index-change="demo01_onIndexChange" height="50px" :show-dots="false" style="background-color: #FBFBFB">
+                <swiper-item>
+                  <x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 2"></x-icon>
                   <span :class="{span_active:currentDeptType==0}" @click="choseDept(0)">{{choseDeptTop1.deptLevel0}}</span>
                   <span :class="{span_active:currentDeptType==1}" @click="choseDept(1)">{{choseDeptTop1.deptLevel1}}</span>
                   <span :class="{span_active:currentDeptType==2}" @click="choseDept(2)">{{choseDeptTop1.deptLevel2}}</span>
-                </li>
-                <li v-for="item in departmentList1" :key="item.id" style="border-bottom: 1px solid #ccc;text-align: left;padding-left: 20px">
-                  <p @click="clickDept(item)">{{item.label}}</p>
-                </li>
-              </ul>
-            </div>
-            <div class="box1-item">
-              <ul>
-                <li>
-                  <h3>选择部门</h3>
-                </li>
-                <li style="border-bottom: 1px solid #ccc;">
+                  <x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 1"></x-icon>
+                </swiper-item>
+                <swiper-item>
+                  <x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 0"></x-icon>
                   <span :class="{span_active:currentDeptType==3}" @click="choseDept(3)">{{choseDeptTop2.deptLevel3}}</span>
                   <span :class="{span_active:currentDeptType==4}" @click="choseDept(4)">{{choseDeptTop2.deptLevel4}}</span>
                   <span :class="{span_active:currentDeptType==5}" @click="choseDept(5)">{{choseDeptTop2.deptLevel5}}</span>
-                </li>
-                <li v-for="item in departmentList2" :key="item.id" style="border-bottom: 1px solid #ccc;text-align: left;padding-left: 20px">
-                  <p @click="clickDept(item)">{{item.label}}</p>
-                </li>
-              </ul>
-            </div>
-            <div class="box1-item">
-              <ul>
-                <li>
-                  <h3>选择部门</h3>
-                </li>
-                <li style="border-bottom: 1px solid #ccc;">
+                  <x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 2"></x-icon>
+                </swiper-item>
+                <swiper-item>
+                  <x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 1"></x-icon>
                   <span :class="{span_active:currentDeptType==6}" @click="choseDept(6)">{{choseDeptTop3.deptLevel6}}</span>
                   <span :class="{span_active:currentDeptType==7}" @click="choseDept(7)">{{choseDeptTop3.deptLevel7}}</span>
                   <span :class="{span_active:currentDeptType==8}" @click="choseDept(8)">{{choseDeptTop3.deptLevel8}}</span>
-                </li>
-                <li v-for="item in departmentList3" :key="item.id" style="border-bottom: 1px solid #ccc;text-align: left;padding-left: 20px">
-                  <p @click="clickDept(item)">{{item.label}}</p>
-                </li>
+                  <x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 0"></x-icon>
+                </swiper-item>
+              </swiper>
+              <ul>
+               <li v-for="(item,index) in departmentList" :key="index">
+                 <p @click="clickDept(item)">{{item.label}} </p>
+               </li>
               </ul>
             </div>
-          </div>
-        </scroller>
+          <!--<div @click="showDepartment=false">
+            <span class="vux-close"></span>
+          </div>-->
+        </x-dialog>
       </div>
-    <!-- </x-dialog> -->
+    </div>
     <tab v-model="activeTab">
       <tab-item><span @click="choseActive(1)">总览</span></tab-item>
       <tab-item><span @click="choseActive(2)">销售排行</span></tab-item>
@@ -263,12 +250,15 @@
 </template>
 
 <script>
-import { Tab, TabItem, PopupPicker, XDialog, XButton, XInput, Scroller as scroller, Radio, Group } from 'vux'
+import { Tab, TabItem, PopupPicker, XDialog, XButton, XInput, Scroller as scroller, Radio, Group, TransferDomDirective as TransferDom, Swiper, SwiperItem, Icon } from 'vux'
 import echarts from 'echarts'
 import { bossOverview, bossOverviewTotal, customerStatistics, salesRanking, AIAnalyse, getTypelist } from '@/api/boss'
 
 export default {
   name: 'boss',
+  directives: {
+    TransferDom
+  },
   components: {
     Tab,
     TabItem,
@@ -278,10 +268,15 @@ export default {
     XButton,
     scroller,
     Radio,
-    Group
+    Group,
+    Swiper,
+    SwiperItem,
+    Icon
   },
   data () {
     return {
+      keywords: '',
+      demo01_index: 0,
       tree_data: [],
       deptIdList: [0, 0, 0, 0, 0, 0, 0],
       currentDeptType: 0,
@@ -289,8 +284,6 @@ export default {
       currentDeptLabel: '',
       departmentList: [],
       departmentList1: [],
-      departmentList2: [],
-      departmentList3: [],
       choseDeptTop1: {
         deptLevel0: '请选择',
         deptLevel1: '请选择',
@@ -321,7 +314,8 @@ export default {
         user_type: 1,
         interaction: 1,
         probability_type: 1,
-        interaction_time: 1
+        interaction_time: 1,
+        keywords: ''
       },
       listQuery3: {
         dept: 1,
@@ -334,7 +328,8 @@ export default {
       },
       listQuery5: {
         dept: 1,
-        active: 3
+        active: 3,
+        keywords: ''
       },
       overviewTotal: [],
       forTotal: 0,
@@ -358,7 +353,7 @@ export default {
         num_4: 0,
         user_avtive: {}
       },
-      chartTopData: [50, 50, 50, 50, 50, 50],
+      chartTopData: [],
       dynamicXData: [],
       dynamicYData: [],
       clientCountXData: [],
@@ -397,17 +392,31 @@ export default {
     }
   },
   watch: {
-    // department () {
-    //   if (this.deptLevelType === 1) {
-    //     this.deptLevel1 = this.department
-    //   } else if (this.deptLevelType === 2) {
-    //     this.deptLevel2 = this.department
-    //   } else if (this.deptLevelType === 3) {
-    //     this.deptLevel3 = this.department
+    // departmentList (val, oldVal) {
+    //   if (this.currentDeptType === 1) {
+    //     const obj = {
+    //       id: this.deptIdList[0],
+    //       label: '全部'
+    //     }
+    //     this.departmentList.unshift(obj)
+    //     console.log(this.departmentList)
     //   }
     // }
   },
   methods: {
+    searchList (val) {
+      if (this.activeTab === 1) {
+        this.listQuery2.keywords = val
+        this.getSalesRanking()
+      }
+      if (this.activeTab === 2) {
+        this.listQuery5.keywords = val
+        this.AIAnalyse()
+      }
+    },
+    demo01_onIndexChange (index) {
+      this.demo01_index = index
+    },
     closeDept () {
       this.showDepartment = false
     },
@@ -422,8 +431,8 @@ export default {
           this.tree_data.forEach(item => {
             map.push(item)
           })
-          this.departmentList1 = map
           this.departmentList = map
+          this.departmentList1 = map
         }
       })
     },
@@ -469,11 +478,11 @@ export default {
       } else if (this.currentDeptType === 8) {
         this.choseDeptTop3.deptLevel8 = this.currentDeptLabel
       }
+      this.setDeptData(this.tree_data, this.currentDeptId, type)
     },
     choseDept (type) {
       this.currentDeptType = type
       if (this.currentDeptId !== undefined && type !== 0) {
-        console.log(this.deptIdList)
         if (type === 1) {
           this.currentDeptId = this.deptIdList[0]
           this.choseDeptTop1.deptLevel2 = '请选择'
@@ -483,8 +492,6 @@ export default {
           this.choseDeptTop3.deptLevel6 = '请选择'
           this.choseDeptTop3.deptLevel7 = '请选择'
           this.choseDeptTop3.deptLevel8 = '请选择'
-          this.departmentList2 = []
-          this.departmentList3 = []
         } else if (type === 2) {
           this.currentDeptId = this.deptIdList[1]
           this.choseDeptTop2.deptLevel3 = '请选择'
@@ -493,8 +500,6 @@ export default {
           this.choseDeptTop3.deptLevel6 = '请选择'
           this.choseDeptTop3.deptLevel7 = '请选择'
           this.choseDeptTop3.deptLevel8 = '请选择'
-          this.departmentList2 = []
-          this.departmentList3 = []
         } else if (type === 3) {
           this.currentDeptId = this.deptIdList[2]
           this.choseDeptTop2.deptLevel4 = '请选择'
@@ -502,20 +507,17 @@ export default {
           this.choseDeptTop3.deptLevel6 = '请选择'
           this.choseDeptTop3.deptLevel7 = '请选择'
           this.choseDeptTop3.deptLevel8 = '请选择'
-          this.departmentList3 = []
         } else if (type === 4) {
           this.currentDeptId = this.deptIdList[3]
           this.choseDeptTop2.deptLevel5 = '请选择'
           this.choseDeptTop3.deptLevel6 = '请选择'
           this.choseDeptTop3.deptLevel7 = '请选择'
           this.choseDeptTop3.deptLevel8 = '请选择'
-          this.departmentList3 = []
         } else if (type === 5) {
           this.currentDeptId = this.deptIdList[4]
           this.choseDeptTop3.deptLevel6 = '请选择'
           this.choseDeptTop3.deptLevel7 = '请选择'
           this.choseDeptTop3.deptLevel8 = '请选择'
-          this.departmentList3 = []
         } else if (type === 6) {
           this.currentDeptId = this.deptIdList[5]
           this.choseDeptTop3.deptLevel7 = '请选择'
@@ -528,9 +530,7 @@ export default {
         }
         this.setDeptData(this.tree_data, this.currentDeptId, type)
       } else {
-        this.departmentList1 = this.departmentList
-        this.departmentList2 = []
-        this.departmentList3 = []
+        this.departmentList = this.departmentList1
         this.choseDeptTop1.deptLevel1 = '请选择'
         this.choseDeptTop1.deptLevel2 = '请选择'
         this.choseDeptTop2.deptLevel3 = '请选择'
@@ -544,12 +544,16 @@ export default {
     setDeptData (data, id, type) {
       for (var i in data) {
         if (data[i].id === id) {
-          if (type === 1 || type === 2) {
-            this.departmentList1 = data[i].children
-          } else if (type === 3 || type === 4 || type === 5) {
-            this.departmentList2 = data[i].children
-          } else if (type === 6 || type === 7 || type === 8) {
-            this.departmentList3 = data[i].children
+          if (data[i].children !== undefined) {
+            this.departmentList = []
+            this.departmentList = JSON.parse(JSON.stringify(data[i].children))
+            const obj = {
+              id: id,
+              label: '全部'
+            }
+            this.departmentList.unshift(obj)
+          } else {
+            this.departmentList = []
           }
           break
         } else {
@@ -684,7 +688,7 @@ export default {
               this.salesRankList = []
             }
             if (dataList.me !== undefined) {
-              this.firstRankRow = dataList.me
+              this.firstRankRow = dataList.me[0]
             } else {
               this.firstRankRow = []
             }
@@ -745,13 +749,96 @@ export default {
     setArawAITop (data) {
       if (data !== undefined && data.length > 1) {
         let firstRow = data[0]
-        this.chartTopData[0] = firstRow.num_1
-        this.chartTopData[1] = firstRow.num_6
-        this.chartTopData[2] = firstRow.num_5
-        this.chartTopData[3] = firstRow.num_4
-        this.chartTopData[4] = firstRow.num_3
-        this.chartTopData[5] = firstRow.num_2
+        const temp = []
+        temp.push(firstRow.num_1)
+        temp.push(firstRow.num_6)
+        temp.push(firstRow.num_5)
+        temp.push(firstRow.num_4)
+        temp.push(firstRow.num_3)
+        temp.push(firstRow.num_2)
+        this.chartTopData = temp
       }
+      setTimeout(() => {
+        this.drawAITop()
+        const option = {
+          tooltip: {
+
+          },
+          radar: {
+
+            // shape: 'circle',
+            name: {
+              show: false,
+              textStyle: {
+                color: '#333',
+                borderRadius: 3,
+                padding: [3, 5]
+              }
+            },
+            radius: 20,
+            indicator: [
+              {name: '个人能力', max: 100},
+              {name: '获客能力', max: 100},
+              {name: '客户互动', max: 100},
+              {name: '官网推广', max: 100},
+              {name: '产品推广', max: 100},
+              {name: '销售主动性', max: 100}
+            ],
+
+            axisLine: {
+              lineStyle: {
+                color: '#82abff'
+              }
+            },
+            splitLine: {
+              lineStyle: {
+                color: '#82abff'
+              }
+            },
+            splitArea: {
+              areaStyle: {
+                color: ['#fff']
+              }
+            }
+          },
+          series: [{
+
+            name: '预算 vs 开销（Budget vs spending）',
+            type: 'radar',
+            areaStyle: {
+              color: '#b9d0ff'
+            },
+            data: [
+
+              {
+                symbolSize: 0,
+                value: [],
+                name: '数量',
+                label: {
+                  normal: {
+                    show: false,
+                    color: '#333'
+                  }
+                },
+                lineStyle: {
+                  width: 0
+                }
+              }
+            ]
+          }]
+        }
+        for (let i = 1; i < this.AIList.length; i++) {
+          const temp = []
+          temp.push(this.AIList[i].num_1)
+          temp.push(this.AIList[i].num_6)
+          temp.push(this.AIList[i].num_5)
+          temp.push(this.AIList[i].num_4)
+          temp.push(this.AIList[i].num_3)
+          temp.push(this.AIList[i].num_2)
+          option.series[0].data[0].value = temp
+          this.drawChart(option, `chart-${i}`)
+        }
+      }, 1000)
     },
     changeClientDate1 (index) {
       this.clientDateIndex1 = index
@@ -866,7 +953,7 @@ export default {
         },
         radar: {
 
-        // shape: 'circle',
+          // shape: 'circle',
           name: {
             textStyle: {
               color: '#333',
@@ -943,578 +1030,515 @@ export default {
     this.customerStatistics() // Boss雷达-总览-客户统计
     this.getOrgList()
     this.drawCare()
-    setTimeout(() => {
-      this.drawAITop()
-      const option = {
-        tooltip: {
-
-        },
-        radar: {
-
-        // shape: 'circle',
-          name: {
-            show: false,
-            textStyle: {
-              color: '#333',
-              borderRadius: 3,
-              padding: [3, 5]
-            }
-          },
-          radius: 20,
-          indicator: [
-            {name: '个人能力', max: 100},
-            {name: '获客能力', max: 100},
-            {name: '客户互动', max: 100},
-            {name: '官网推广', max: 100},
-            {name: '产品推广', max: 100},
-            {name: '销售主动性', max: 100}
-          ],
-
-          axisLine: {
-            lineStyle: {
-              color: '#82abff'
-            }
-          },
-          splitLine: {
-            lineStyle: {
-              color: '#82abff'
-            }
-          },
-          splitArea: {
-            areaStyle: {
-              color: ['#fff']
-            }
-          }
-        },
-        series: [{
-
-          name: '预算 vs 开销（Budget vs spending）',
-          type: 'radar',
-          areaStyle: {
-            color: '#b9d0ff'
-          },
-          data: [
-
-            {
-              symbolSize: 0,
-              value: this.chartTopData,
-              name: '数量',
-              label: {
-                normal: {
-                  show: false,
-                  color: '#333'
-                }
-              },
-              lineStyle: {
-                width: 0
-              }
-            }
-          ]
-        }]
-      }
-      for (let i = 0; i < 4; i++) {
-        this.drawChart(option, `chart-${i}`)
-      }
-    }, 2000)
   }
 }
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.boss{
-  overflow: auto;
-  height: 100%;
-  .line{
-    height: 0.15rem;
-    background-color: #f3f3f3;
-  }
-  .search{
-    padding: 0.3rem;
-    &>span{
-      float: left;
-      width: 5rem;
-      height: 0.7rem;
+  .boss{
+    overflow: auto;
+    height: 100%;
+    .line{
+      height: 0.15rem;
       background-color: #f3f3f3;
-      border-radius: 0.1rem;
-      input{
-        width: 80%;
-        height: 98%;
+    }
+    .search{
+      padding: 0.3rem;
+      &>span{
         float: left;
-        border: none;
-        outline: none;
+        width: 5rem;
+        height: 0.7rem;
         background-color: #f3f3f3;
-        padding-left: 0.2rem;
-      }
-      .vux-x-icon{
-        float: right;
-        margin-top: 0.1rem;
-        margin-right: 0.2rem;
-        fill: #717171;
-      }
-    }
-    &>i{
-      width: 1.5rem;
-      height: 0.7rem;
-      background-color: #f3f3f3;
-      color: #5977fe;
-      font-size: 0.3rem;
-      float: right;
-      text-align: center;
-      border-radius: 0.1rem;
-      line-height: 0.7rem;
-    }
-  }
-  .department{
-    height: 0.6rem;
-    background-color: #f3f3f3;
-    padding: 0 0.3rem;
-    line-height: 0.6rem;
-    & /deep/ .weui-cell{
-      padding: 0;
-      .weui-cell__ft{
-        &::after{
-          display: none;
+        border-radius: 0.1rem;
+        input{
+          width: 80%;
+          height: 98%;
+          float: left;
+          border: none;
+          outline: none;
+          background-color: #f3f3f3;
+          padding-left: 0.2rem;
+        }
+        .vux-x-icon{
+          float: right;
+          margin-top: 0.1rem;
+          margin-right: 0.2rem;
+          fill: #717171;
         }
       }
-    }
-    span{
-      float: left;
-      color: #717171;
-    }
-  }
-  .nav-tab{
-    .vux-tab-item{
-      flex: 0 0 20%;
-      span{
-        height: 10px;
-        width: 100%;
-        float: left;
-        line-height: 10px;
-        margin-top: 15px;
-        border-right: 1px solid #aaa;
-      }
-    }
-    h3{
-      height: 1.4rem;
-      line-height: 1.4rem;
-      text-align: center;
-      font-size: 0.36rem;
-      color: #717171;
-    }
-  }
-  .second-tab-list{
-    width: 100%;
-    height: 6.5rem;
-    padding: 0.3rem 0.2rem;
-    li{
-      width: 33.33%;
-      float: left;
-      padding:  0.1rem;
-      margin-top: 0.3rem;
-      text-align: center;
-      height: 2.5rem;
-      background: url('~@/assets/img/six.png') no-repeat center;
-      background-size: contain;
-      span{
-        margin-top: 0.5rem;
-        display: block;
-        color: #717171;
-        &.red{
-          color: #ff0000;
-        }
-        &.blue{
-          color: #00ea48;
-        }
-        &:first-child{
-          font-size: 0.26rem;
-        }
-        &:last-child{
-          font-size: 0.46rem;
-        }
-      }
-    }
-  }
-  .second-nav-list-2{
-    li{
-      span{
-        margin-top: 0;
-        &:first-child{
-          font-size: 0.26rem;
-          margin-top: 0.5rem;
-        }
-        &:nth-of-type(2) {
-          font-size: 0.36rem;
-          margin-top: 0.2rem;
-        }
-        &:last-child{
-          margin-top: 0.2rem;
-          font-size: 0.28rem;
-        }
-      }
-    }
-  }
-  .funnel{
-    #main{
-      width: 60%;
-      height: 6rem;
-      background: url('~@/assets/img/chart.png') no-repeat center;
-      background-size: contain;
-      margin: 0 auto;
-      padding-top: 1.2rem;
-      p{
-        text-align: center;
-        margin-bottom: 0.7rem;
-        color: #fff;
-      }
-    }
-    &>p{
-      text-align: center;
-      font-size: 0.26rem;
-      color: #717171;
-      margin-bottom: 0.4rem;
-    }
-    ul{
-      padding: 0 0.2rem;
-    }
-    li{
-      float: left;
-      width: 25%;
-      height: 0.5rem;
-      text-align: center;
-      line-height: 0.5rem;
-      color: #adbaff;
-      margin-bottom: 0.4rem;
-      position: relative;
-      &::after{
-        content: '';
-        position: absolute;
-        top: 0.14rem;
-        left: 0;
-        width: 0.22rem;
-        height: 0.22rem;
-        border-radius: 0.22rem;
-      }
-      &:nth-child(1)::after{
-        background-color: #3ec4d2;
-      }
-      &:nth-child(2)::after{
-        background-color: #0fd35d;
-      }
-      &:nth-child(3)::after{
-        background-color: #feab2b;
-      }
-      &:nth-child(4)::after{
-        background-color: #ff5f1a;
-      }
-    }
-  }
-  .client{
-    .vux-tab-item{
-      flex: 0 0 33.33%;
-    }
-  }
-  .client-date-tab{
-    ul{
-      height: 0.9rem;
-    }
-    li{
-      width: 25%;
-      float: left;
-      height: 0.9rem;
-      line-height: 0.9rem;
-      text-align: center;
-      font-size: 0.28rem;
-      &.active{
+      &>i{
+        width: 1.5rem;
+        height: 0.7rem;
+        background-color: #f3f3f3;
         color: #5977fe;
+        font-size: 0.3rem;
+        float: right;
+        text-align: center;
+        border-radius: 0.1rem;
+        line-height: 0.7rem;
       }
     }
-    #clientDate1,#clientDate2,#clientDate3{
-      width: 100%;
-      height: 4rem;
-    }
-  }
-  .care{
-    border-bottom: 1px solid #eee;
-    border-top: 1px solid #eee;
-    #care{
-      width: 100%;
-      height: 3.6rem;
-    }
-    ul{
-      padding: 0 0.2rem;
-    }
-    li{
-      width: 33.33%;
-      float: left;
-      height: 0.5rem;
-      line-height: 0.5rem;
-      text-align: center;
-      color: #717171;
-      position: relative;
-      margin-bottom: 0.4rem;
-      &::after{
-        content: '';
-        position: absolute;
-        top: 0.14rem;
-        left: 0;
-        width: 0.22rem;
-        height: 0.22rem;
-        border-radius: 0.22rem;
-      }
-      &:nth-child(1)::after{
-        background-color: #ff0000;
-      }
-      &:nth-child(2)::after{
-        background-color: #feab2b;
-      }
-      &:nth-child(3)::after{
-        background-color: #3ec4d2;
-      }
-    }
-  }
-  .action{
-    padding: 0.3rem;
-    .graph{
-      height: 0.7rem;
-      line-height: 0.7rem;
+    .department{
+      height: 0.6rem;
+      background-color: #f3f3f3;
       padding: 0 0.3rem;
+      line-height: 0.6rem;
+      & /deep/ .weui-cell{
+        padding: 0;
+        .weui-cell__ft{
+          &::after{
+            display: none;
+          }
+        }
+      }
       span{
-        width: 2rem;
-        padding-left: 0.3rem;
+        float: left;
+        color: #717171;
+      }
+    }
+    .nav-tab{
+      .vux-tab-item{
+        flex: 0 0 20%;
+        span{
+          height: 10px;
+          width: 100%;
+          float: left;
+          line-height: 10px;
+          margin-top: 15px;
+          border-right: 1px solid #aaa;
+        }
+      }
+      h3{
+        height: 1.4rem;
+        line-height: 1.4rem;
+        text-align: center;
+        font-size: 0.36rem;
+        color: #717171;
+      }
+    }
+    .second-tab-list{
+      width: 100%;
+      height: 6.5rem;
+      padding: 0.3rem 0.2rem;
+      li{
+        width: 33.33%;
+        float: left;
+        padding:  0.1rem;
+        margin-top: 0.3rem;
+        text-align: center;
+        height: 2.5rem;
+        background: url('~@/assets/img/six.png') no-repeat center;
+        background-size: contain;
+        span{
+          margin-top: 0.5rem;
+          display: block;
+          color: #717171;
+          &.red{
+            color: #ff0000;
+          }
+          &.blue{
+            color: #00ea48;
+          }
+          &:first-child{
+            font-size: 0.26rem;
+          }
+          &:last-child{
+            font-size: 0.46rem;
+          }
+        }
+      }
+    }
+    .second-nav-list-2{
+      li{
+        span{
+          margin-top: 0;
+          &:first-child{
+            font-size: 0.26rem;
+            margin-top: 0.5rem;
+          }
+          &:nth-of-type(2) {
+            font-size: 0.36rem;
+            margin-top: 0.2rem;
+          }
+          &:last-child{
+            margin-top: 0.2rem;
+            font-size: 0.28rem;
+          }
+        }
+      }
+    }
+    .funnel{
+      #main{
+        width: 60%;
+        height: 6rem;
+        background: url('~@/assets/img/chart.png') no-repeat center;
+        background-size: contain;
+        margin: 0 auto;
+        padding-top: 1.2rem;
+        p{
+          text-align: center;
+          margin-bottom: 0.68rem;
+          color: #fff;
+        }
+      }
+      &>p{
+        text-align: center;
+        font-size: 0.26rem;
+        color: #717171;
+        margin-bottom: 0.68rem;
+      }
+      ul{
+        padding: 0 0.2rem;
+      }
+      li{
+        float: left;
+        width: 25%;
+        height: 0.5rem;
+        text-align: center;
+        line-height: 0.5rem;
+        color: #adbaff;
+        margin-bottom: 0.4rem;
         position: relative;
         &::after{
           content: '';
-          width: 0.2rem;
-          height: 0.2rem;
-          border-radius: 50%;
           position: absolute;
-          top: 0.05rem;
+          top: 0.14rem;
           left: 0;
+          width: 0.22rem;
+          height: 0.22rem;
+          border-radius: 0.22rem;
+        }
+        &:nth-child(1)::after{
+          background-color: #3ec4d2;
+        }
+        &:nth-child(2)::after{
+          background-color: #0fd35d;
+        }
+        &:nth-child(3)::after{
+          background-color: #feab2b;
+        }
+        &:nth-child(4)::after{
+          background-color: #ff5f1a;
         }
       }
-      i{
-        display: inline-block;
-        height: 0.2rem;
-        border-radius: 0.1rem;
-        margin-left: 0.5rem;
+    }
+    .client{
+      .vux-tab-item{
+        flex: 0 0 33.33%;
       }
-      &:nth-child(1){
-        span::after{
+    }
+    .client-date-tab{
+      ul{
+        height: 0.9rem;
+      }
+      li{
+        width: 25%;
+        float: left;
+        height: 0.9rem;
+        line-height: 0.9rem;
+        text-align: center;
+        font-size: 0.28rem;
+        &.active{
+          color: #5977fe;
+        }
+      }
+      #clientDate1,#clientDate2,#clientDate3{
+        width: 100%;
+        height: 4rem;
+      }
+    }
+    .care{
+      border-bottom: 1px solid #eee;
+      border-top: 1px solid #eee;
+      #care{
+        width: 100%;
+        height: 3.6rem;
+      }
+      ul{
+        padding: 0 0.2rem;
+      }
+      li{
+        width: 33.33%;
+        float: left;
+        height: 0.5rem;
+        line-height: 0.5rem;
+        text-align: center;
+        color: #717171;
+        position: relative;
+        margin-bottom: 0.4rem;
+        &::after{
+          content: '';
+          position: absolute;
+          top: 0.14rem;
+          left: 0;
+          width: 0.22rem;
+          height: 0.22rem;
+          border-radius: 0.22rem;
+        }
+        &:nth-child(1)::after{
           background-color: #ff0000;
         }
-        i{
-          background: linear-gradient(left, #cc00ff, #b1181a);
-          background: -webkit-linear-gradient(left, #cc00ff, #b1181a);
+        &:nth-child(2)::after{
+          background-color: #feab2b;
         }
-      }
-      &:nth-child(2){
-        span::after{
-          background-color: #653ffe;
-        }
-        i{
-          background: linear-gradient(left, #cc00ff, #5747fe);
-          background: -webkit-linear-gradient(left, #cc00ff, #5747fe);
-        }
-      }
-      &:nth-child(3){
-        span::after{
-          background-color: #73a6fb;
-        }
-        i{
-          background: linear-gradient(left, #cc00ff, #6eaffb);
-          background: -webkit-linear-gradient(left, #cc00ff, #6eaffb);
-        }
-      }
-      &:nth-child(4){
-        i{
-          background: linear-gradient(left, #cd01fd, #fd5b66);
-          background: -webkit-linear-gradient(left, #cd01fd, #fd5b66);
-        }
-      }
-      &:nth-child(5){
-        i{
-          background: linear-gradient(left, #c781f9, #0fba40);
-          background: -webkit-linear-gradient(left, #c781f9, #0fba40);
+        &:nth-child(3)::after{
+          background-color: #3ec4d2;
         }
       }
     }
-  }
-  .dynamic{
-    #dynamic{
-      width: 100%;
-      height: 4rem;
+    .action{
+      padding: 0.3rem;
+      .graph{
+        height: 0.7rem;
+        line-height: 0.7rem;
+        padding: 0 0.3rem;
+        span{
+          width: 2rem;
+          padding-left: 0.3rem;
+          position: relative;
+          &::after{
+            content: '';
+            width: 0.2rem;
+            height: 0.2rem;
+            border-radius: 50%;
+            position: absolute;
+            top: 0.05rem;
+            left: 0;
+          }
+        }
+        i{
+          display: inline-block;
+          height: 0.2rem;
+          border-radius: 0.1rem;
+          margin-left: 0.5rem;
+        }
+        &:nth-child(1){
+          span::after{
+            background-color: #ff0000;
+          }
+          i{
+            background: linear-gradient(left, #cc00ff, #b1181a);
+          }
+        }
+        &:nth-child(2){
+          span::after{
+            background-color: #653ffe;
+          }
+          i{
+            background: linear-gradient(left, #cc00ff, #5747fe);
+          }
+        }
+        &:nth-child(3){
+          span::after{
+            background-color: #73a6fb;
+          }
+          i{
+            background: linear-gradient(left, #cc00ff, #6eaffb);
+          }
+        }
+        &:nth-child(4){
+          i{
+            background: linear-gradient(left, #cd01fd, #fd5b66);
+          }
+        }
+        &:nth-child(5){
+          i{
+            background: linear-gradient(left, #c781f9, #0fba40);
+          }
+        }
+      }
     }
-  }
-  .sell{
-    .vux-tab-item{
-      span{
-        height: 10px;
+    .dynamic{
+      #dynamic{
         width: 100%;
-        float: left;
-        line-height: 10px;
-        margin-top: 15px;
-        border-right: 1px solid #aaa;
+        height: 4rem;
       }
     }
-  }
-  .sell-list{
-    .self{
-      height: 2rem;
-      padding: 0.25rem 0.3rem;
-      line-height: 1.4rem;
-      span{
-        height: 100%;
-        color: #5977fe;
-        font-size: 0.32rem;
-      }
-      img{
-        width: 1.5rem;
-        height: 1.5rem;
-        float: left;
-        margin: 0 0.5rem;
-        border-radius: 0.1rem;
+    .sell{
+      .vux-tab-item{
+        span{
+          height: 10px;
+          width: 100%;
+          float: left;
+          line-height: 10px;
+          margin-top: 15px;
+          border-right: 1px solid #aaa;
+        }
       }
     }
-    li{
-      height: 1.8rem;
-      padding: 0.4rem 0.3rem;
-      line-height: 1rem;
-      border-top: 1px solid #eee;
-      position: relative;
-      .avatar{
-        width: 1rem;
-        height: 1rem;
-        border-radius: 0.1rem;
-        margin: 0 0.5rem;
-        float: left;
+    .sell-list{
+      .self{
+        height: 2rem;
+        padding: 0.25rem 0.3rem;
+        line-height: 1.4rem;
+        span{
+          height: 100%;
+          color: #5977fe;
+          font-size: 0.32rem;
+        }
+        img{
+          width: 1.5rem;
+          height: 1.5rem;
+          float: left;
+          margin: 0 0.5rem;
+          border-radius: 0.1rem;
+        }
       }
-      .icon-top{
-        width: 0.35rem;
-        height: 0.35rem;
-        float: left;
-        margin-top: 0.4rem;
+      li{
+        height: 1.8rem;
+        padding: 0.4rem 0.3rem;
+        line-height: 1rem;
+        border-top: 1px solid #eee;
+        position: relative;
+        .avatar{
+          width: 1rem;
+          height: 1rem;
+          border-radius: 0.1rem;
+          margin: 0 0.5rem;
+          float: left;
+        }
+        .icon-top{
+          width: 0.35rem;
+          height: 0.35rem;
+          float: left;
+          margin-top: 0.4rem;
+        }
+        .icon-champion{
+          position: absolute;
+          top: 0.25rem;
+          left: 1rem;
+          width: 0.5rem;
+        }
+        span{
+          height: 100%;
+          color: #333;
+          font-size: 0.32rem;
+          &:first-child{
+            width: 0.35rem;
+            text-align: center;
+          }
+          &.top1{
+            color: #ff5f1a;
+          }
+          &.top2{
+            color: #feab2b;
+          }
+          &.top3{
+            color: #e7d59a;
+          }
+        }
       }
-      .icon-champion{
-        position: absolute;
-        top: 0.25rem;
-        left: 1rem;
-        width: 0.5rem;
-      }
-      span{
-        height: 100%;
-        color: #333;
-        font-size: 0.32rem;
-        &:first-child{
+    }
+    .AI{
+      li{
+        height: 2.2rem;
+        border-bottom: 1px solid #eee;
+        padding: 0.5rem 0.3rem;
+        position: relative;
+        &.first-item{
+          height: 5.7rem;
+          padding-bottom: 0;
+        }
+        .icon-top{
+          width: 0.35rem;
+          margin-top: 0.4rem;
+        }
+        .avatar{
+          width: 1.2rem;
+          height: 1.2rem;
+          border-radius: 0.1rem;
+          margin-left: 0.5rem;
+          margin-right: 0.3rem;
+        }
+        .icon-champion{
+          position: absolute;
+          top: 0.35rem;
+          left: 1rem;
+          width: 0.5rem;
+        }
+        &>span{
           width: 0.35rem;
           text-align: center;
+          line-height: 1.2rem;
         }
-        &.top1{
-          color: #ff5f1a;
+        p{
+          height: 1.2rem;
         }
-        &.top2{
-          color: #feab2b;
+        .name{
+          display: block;
+          font-size: 0.32rem;
         }
-        &.top3{
-          color: #e7d59a;
+        .job{
+          display: block;
+          font-size: 0.26rem;
+          color: #717171;
+          margin-top: 0.3rem;
+        }
+        .charts{
+          width: 1.5rem;
+          height: 1.2rem;
+          margin-right: 0.5rem;
+        }
+        .vux-x-icon{
+          fill: #717171;
+          margin-top: 0.4rem;
+          width: 0.5rem;
+          height: 0.5rem;
+        }
+        #top-chart{
+          border-top: 1px solid #eee;
+          height: 3.6rem;
+          clear: both;
+          margin-top: 1.5rem;
         }
       }
     }
   }
-  .AI{
-    li{
-      height: 2.2rem;
-      border-bottom: 1px solid #eee;
-      padding: 0.5rem 0.3rem;
-      position: relative;
-      &.first-item{
-        height: 5.7rem;
-        padding-bottom: 0;
-      }
-      .icon-top{
-        width: 0.35rem;
-        margin-top: 0.4rem;
-      }
-      .avatar{
-        width: 1.2rem;
-        height: 1.2rem;
-        border-radius: 0.1rem;
-        margin-left: 0.5rem;
-        margin-right: 0.3rem;
-      }
-      .icon-champion{
-        position: absolute;
-        top: 0.35rem;
-        left: 1rem;
-        width: 0.5rem;
-      }
-      &>span{
-        width: 0.35rem;
-        text-align: center;
-        line-height: 1.2rem;
-      }
-      p{
-        height: 1.2rem;
-      }
-      .name{
-        display: block;
-        font-size: 0.32rem;
-      }
-      .job{
-        display: block;
-        font-size: 0.26rem;
-        color: #717171;
-        margin-top: 0.3rem;
-      }
-      .charts{
-        width: 1.5rem;
-        height: 1.2rem;
-        margin-right: 0.5rem;
-      }
-      .vux-x-icon{
-        fill: #717171;
-        margin-top: 0.4rem;
-        width: 0.5rem;
-        height: 0.5rem;
-      }
-      #top-chart{
-        border-top: 1px solid #eee;
-        height: 3.6rem;
-        clear: both;
-        margin-top: 1.5rem;
-      }
-    }
-  }
-}
-.departmentSwarp{
-  position: fixed;
-  background-color: rgba(0,0,0,0.5);
-  height: 100%;
-  width: 100%;
-  z-index: 6000;
-  top: 0;
-  .box1 {
-    height: 8rem;
-    width: 23rem;
-    margin-top: 265px;
-    /*position: absolute;
-    bottom: 0;*/
-  }
-  .box1-item {
-    width: 7.5rem;
-    height: 100%;
-    background-color: #ffffff;
-    display:inline-block;
-    margin-left: 0.15rem;
-    float: left;
-    text-align: center;
-    line-height: 1rem;
-    ul li:nth-child(2) span{
+  .dialog-demo {
+    width: 100%;
+    bottom: 250px;
+    height: 250px;
+    span {
+      width: 25%;
+      height: 50px;
+      line-height: 50px;
+      padding: 0px 15px;
       display: inline-block;
-      width: 30%;
+      color: #B0B0B0;
+    }
+    .vux-x-icon{
+      line-height: 50px;
+      height: 50px;
+      fill: #5584ff;
     }
     .span_active {
       color: #5584ff;
     }
+    ul{
+      height: 186px;
+      overflow-y: auto;
+      li{
+        height: 40px;
+        width: 100%;
+        text-align: left;
+        padding-left: 20px;
+        border-bottom: 1px solid rgba(204, 200, 189, 0.95);
+        line-height: 40px;
+        .vux-icon{
+          fill: #5584ff;
+          padding-top: 10px;
+          line-height: 30px;
+          height: 30px;
+        }
+      }
+    }
+    .dialog-title {
+      height: 50px;
+      line-height: 50px;
+      padding: 0px 15px;
+    }
+    span.vux-close {
+      background-color: #fff;
+    }
   }
-}
 </style>

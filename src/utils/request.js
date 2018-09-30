@@ -37,13 +37,19 @@ service.interceptors.response.use(
   /**
   * code为非20000是抛错 可结合自己业务进行修改
   */
+    if (response.isSuccess) {
+      return response.data
+    }
     const res = response.data
+    if (res.isSuccess) {
+      return response.data
+    }
     if (res.code !== 200) {
       // alert(res.msg)
-      /*AlertModule.show({
+      AlertModule.show({
         title: '提示',
         content: res.msg
-      })*/
+      })
       // 201:Token 过期了;
       if (res.code === 201) {
         AlertModule.show({
@@ -60,10 +66,10 @@ service.interceptors.response.use(
   error => {
     console.log('err' + error)
     const token = getToken()
-    /*AlertModule.show({
+    /* AlertModule.show({
       title: '提示',
       content: token
-    })*/
+    }) */
     return Promise.reject(error)
   }
 )

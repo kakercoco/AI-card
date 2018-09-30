@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // Boss雷达-总览
 export function bossOverview (listQuery) {
   return request({
-    url: 'api/boss/index',
+    url: '/api/boss/index',
     method: 'GET',
     params: {
       dept: listQuery.dept,
@@ -17,7 +17,7 @@ export function bossOverview (listQuery) {
 // Boss雷达-总览-总数
 export function bossOverviewTotal (listQuery) {
   return request({
-    url: 'api/boss/index_data',
+    url: '/api/boss/index_data',
     method: 'GET',
     params: {
       dept: listQuery.dept,
@@ -29,7 +29,7 @@ export function bossOverviewTotal (listQuery) {
 // Boss雷达-总览-客户统计
 export function customerStatistics (listQuery) {
   return request({
-    url: 'api/boss/index_user',
+    url: '/api/boss/index_user',
     method: 'GET',
     params: {
       dept: listQuery.dept,
@@ -42,18 +42,19 @@ export function customerStatistics (listQuery) {
 // Boss雷达-AI分析
 export function AIAnalyse (listQuery) {
   return request({
-    url: 'api/boss/index',
+    url: '/api/boss/index',
     method: 'GET',
     params: {
       dept: listQuery.dept,
-      active: listQuery.active
+      active: listQuery.active,
+      keywords: listQuery.keywords
     }
   })
 }
 // Boss雷达-AI分析详情
 export function AIAnalyseDetail (listQuery) {
   return request({
-    url: 'api/boss/read',
+    url: '/api/boss/read',
     method: 'GET',
     params: {
       type: listQuery.type,
@@ -65,7 +66,7 @@ export function AIAnalyseDetail (listQuery) {
 // Boss雷达-销售排行
 export function salesRanking (listQuery) {
   return request({
-    url: 'api/boss/index',
+    url: '/api/boss/index',
     method: 'get',
     params: {
       dept: listQuery.dept,
@@ -74,7 +75,8 @@ export function salesRanking (listQuery) {
       user_type: listQuery.user_type,
       interaction: listQuery.interaction,
       probability_type: listQuery.probability_type,
-      interaction_time: listQuery.interaction_time
+      interaction_time: listQuery.interaction_time,
+      keywords: listQuery.keywords
     }
   })
 }
@@ -82,7 +84,7 @@ export function salesRanking (listQuery) {
 // 获取部门分类&获取话术分类列表，根据type的不同:dept:部门 verbal:话术
 export function getTypelist (deptType) {
   return request({
-    url: 'api/Category/index?type=' + deptType,
+    url: '/api/Category/index?type=' + deptType,
     method: 'GET'
   })
 }

@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-08 18:18:43
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 11:48:29
+ * @Last Modified time: 2018-09-30 10:04:14
  */
 <template>
   <div class="client-infor">
@@ -11,7 +11,7 @@
       <x-input placeholder="未填写" title="客户来源" v-model="inforForm.source" :readonly="true"></x-input>
       <x-input placeholder="未填写" title="姓名备注" v-model="inforForm.name"></x-input>
       <popup-radio title="性别" placeholder="未填写" :options="options" v-model="sex" align-items="left"></popup-radio>
-      <x-input placeholder="未填写" title="邮箱" v-model="inforForm.email" type="email"></x-input>
+      <x-input placeholder="未填写" title="邮箱" v-model="inforForm.email"></x-input>
       <x-input placeholder="未填写" title="手机号码" v-model="inforForm.phone" type="tel"></x-input>
       <x-input placeholder="未填写" title="公司名称" v-model="inforForm.company"></x-input>
       <x-input placeholder="未填写" title="详细地址" v-model="inforForm.address"></x-input>
@@ -19,7 +19,7 @@
         <datetime v-model="inforForm.birthday" >
           <p slot="title" class="my-label">生日时间</p>
         </datetime>
-        <p class="update"><check-icon :value.sync="is_calendar"></check-icon>同步到销售日历 </p>
+        <p class="update"><check-icon :value.sync="is_calendar" @click.native="updateCalendar"></check-icon>同步到销售日历 </p>
       </div>
       <x-switch title="屏蔽他的消息推送" v-model="inforForm.is_shield_employ" :value-map="[0,1]"></x-switch>
       <x-textarea title="备注" v-model="inforForm.desc" autosize placeholder="请输入备注"></x-textarea>
@@ -32,7 +32,7 @@
 
 <script>
 import { XInput, Group, Cell, XTextarea, XButton, XSwitch, Datetime, CheckIcon, PopupRadio } from 'vux'
-import { customerEdit, customerUpdate } from '@/api/customer'
+import { customerEdit, customerUpdate, setBirthdayAdd, birthdayDell } from '@/api/customer'
 
 export default {
   name: 'clientInfor',
@@ -91,6 +91,17 @@ export default {
             this.sex = '女'
           }
         })
+    },
+    updateCalendar () {
+      if (this.inforForm.birthday === '') {
+        this.$vux.toast.text('生日不能为空', 'top')
+        return false
+      }
+      const data = {
+        id: this.id,
+        time: this.inforForm.birthday
+      }
+      setBirthdayAdd(data)
     },
     save () {
       if (this.is_calendar) {

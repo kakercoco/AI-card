@@ -2,13 +2,13 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-11 17:04:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 13:43:47
+ * @Last Modified time: 2018-09-30 14:22:16
  */
 <template>
   <div class="produce">
     <div class="picker">
       <div class="tab tab-1">
-        <span @click="showFirstDialog">{{activeTabFirstName}}</span>
+        <span @click="showFirstDialog">案例推荐</span>
         <div class="tab-wrap" v-show="activeTabFirstStatus" @click="closeDialog">
           <ul>
             <li @click.stop="switchProduce(1, '全部案例')">全部案例 <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.opt ===1"></x-icon></li>
@@ -21,6 +21,10 @@
         <span @click="showSecondDialog">案例分类</span>
         <div class="tab-wrap" v-show="activeTabSecondStatus" @click="closeDialog">
           <ul>
+            <li  @click.stop="selsectedSortId({id:''})">
+              全部
+              <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="pageForm.type_id === ''"></x-icon>
+            </li>
             <li v-for="(item, index) in tabSecondList" :key="index" @click.stop="selsectedSortId(item)">
               {{item.name}}
               <x-icon type="ios-checkmark-empty" class="icon-checked" v-if="item.id === pageForm.type_id"></x-icon>
@@ -35,15 +39,15 @@
           <li v-for="(item, index) in produceList" :key="index">
             <div class="left">
               <img :src="item.img" alt="">
-              <p><span v-show="isRecommend(item.id)">已推荐</span> <span v-show="!isRecommend(item.id)">未推荐</span></p>
+              <p><span v-show="item.status">已推荐</span> <span v-show="!item.status">未推荐</span></p>
             </div>
             <div class="right">
               <h4>{{item.title}}</h4>
               <h5>{{item.summary}}</h5>
               <p>
                 发布日期:{{Global.parseTime(item.createtime, '{y}-{m}-{d}')}}
-                <span v-show="isRecommend(item.id)" @click="employcaseDetele(item)">取消</span>
-                <span v-show="!isRecommend(item.id)" @click="employcaseSave(item)">推荐</span>
+                <span v-show="item.status" @click="employcaseDetele(item)">取消</span>
+                <span v-show="!item.status" @click="employcaseSave(item)">推荐</span>
               </p>
             </div>
           </li>
@@ -55,8 +59,7 @@
 
 <script>
 import { PopupPicker, Scroller } from 'vux'
-import { employcaseIndex, employcaseSave, employcaseDetele } from '@/api/card'
-import axios from 'axios'
+import { employcaseIndex, employcaseSave, employcaseDetele, webClient } from '@/api/card'
 
 export default {
   name: 'produce',
@@ -76,7 +79,6 @@ export default {
         loadingContent: '加载中...',
         clsPrefix: 'xs-plugin-pullup-'
       },
-      baseUrl: '/index.php',
       activeTabFirstStatus: false,
       activeTabFirstName: '全部案例',
       activeTabSecondStatus: false,
@@ -89,16 +91,7 @@ export default {
         rows: 10,
         type_id: null
       },
-      isFlag: false, // 是否禁止上拉加载
-      proxyTable: {
-        '/index.php': {
-          target: 'http://jiatui.api.com',
-          changeOrigin: true,
-          pathRewrite: {
-            '^/index.php': '/index.php'
-          }
-        }
-      }
+      isFlag: false // 是否禁止上拉加载
     }
   },
   methods: {
@@ -108,22 +101,27 @@ export default {
         id: 0,
         type: 3
       }
-      axios
-        .post(`${this.baseUrl}/api/Scratch/webClient`, data, this.proxyTable)
+      webClient(data)
         .then(res => {
-          if (res.data.isSuccess) {
-            const list = res.data.data
-            list.forEach(element => {
-              element.status = false
-            })
-            this.tabSecondList = list
-          }
+          const list = res.data
+          list.forEach(element => {
+            element.status = false
+          })
+          this.tabSecondList = list
         })
     },
     getProduceList () {
       employcaseIndex(this.pageForm).then(res => {
-        this.produceList = res.data.rows
+        const list = res.data.rows
         this.recommend = res.data.recommend.split(',')
+        list.forEach(e => {
+          if (this.recommend.includes(e.id)) {
+            e.status = true
+          } else {
+            e.status = false
+          }
+        })
+        this.produceList = list
       })
     },
     switchProduce (val, name) {
@@ -135,6 +133,7 @@ export default {
       this.$refs.loadingMore.reset({ top: 0 })
       if (this.isFlag) {
         this.$refs.loadingMore.enablePullup()
+        this.isFlag = false
       }
     },
     showFirstDialog () {
@@ -156,6 +155,7 @@ export default {
       this.$refs.loadingMore.reset({ top: 0 })
       if (this.isFlag) {
         this.$refs.loadingMore.enablePullup()
+        this.isFlag = false
       }
       this.closeDialog()
     },
@@ -179,20 +179,20 @@ export default {
       }
       employcaseSave(data).then(res => {
         this.$vux.toast.text('推荐成功', 'top')
-        this.getProduceList()
+        // this.getProduceList()
+        item.status = !item.status
       })
     },
     employcaseDetele (item) {
       const data = {
         case_id: item.id
       }
-      employcaseDetele(data).then(res => {
-        this.$vux.toast.text('取消推荐成功', 'top')
-        this.getProduceList()
-      })
-    },
-    isRecommend (id) {
-      return this.recommend.includes(id)
+      employcaseDetele(data)
+        .then(res => {
+          this.$vux.toast.text('取消推荐成功', 'top')
+          // this.getProduceList()
+          item.status = !item.status
+        })
     }
   },
   mounted () {

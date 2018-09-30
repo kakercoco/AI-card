@@ -1,467 +1,27 @@
 .card-template-1{
-  .company{
-    text-align: left;
-    font-size: 0.24rem;
-  }
-  .bio{
-    .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      margin-right: 0.4rem;
-      position: absolute;
-      top: 0.6rem;
-      right: 0.4rem;
-    }
-    .name{
-      margin-top: 0.5rem;
-      margin-right: 0.3rem;
-      font-size: 0.46rem;
-      display: block;
-    }
-    .job{
-      font-size: 0.26rem;
-      display: block;
-    }
-  }
-  .phone{
-    margin-top: 0.6rem;
-    img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-    }
-  }
-  .address{
-    position: relative;
-    margin-top: 0.2rem;
-    padding-left: 0.5rem;
-    img{
-      position: absolute;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-      top: 0;
-      left: 0rem;
-    }
-  }
-}
-.card-template-2{
-  .company{
-    text-align: left;
-    font-size: 0.24rem;
-  }
-  .bio{
-    .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      margin-right: 0.4rem;
-      position: absolute;
-      top: 0.6rem;
-      right: 0.4rem;
-    }
-    .name{
-      margin-top: 0.5rem;
-      margin-right: 0.3rem;
-      font-size: 0.46rem;
-      display: block;
-    }
-    .job{
-      font-size: 0.26rem;
-      display: block;
-    }
-  }
-  .phone{
-    margin-top: 0.6rem;
-    img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-    }
-  }
-  .address{
-    position: relative;
-    margin-top: 0.2rem;
-    padding-left: 0.5rem;
-    img{
-      position: absolute;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-      top: 0;
-      left: 0rem;
-    }
-  }
-}
-.card-template-3{
-  color: #fff;
-  .company{
-    text-align: left;
-    font-size: 0.24rem;
-  }
-  .bio{
-    .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      margin-right: 0.4rem;
-      position: absolute;
-      top: 0.6rem;
-      right: 0.4rem;
-    }
-    .name{
-      margin-top: 0.5rem;
-      margin-right: 0.3rem;
-      font-size: 0.46rem;
-      display: block;
-    }
-    .job{
-      font-size: 0.26rem;
-      display: block;
-    }
-  }
-  .phone{
-    margin-top: 0.6rem;
-    img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-    }
-  }
-  .address{
-    position: relative;
-    margin-top: 0.2rem;
-    padding-left: 0.5rem;
-    img{
-      position: absolute;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-      top: 0;
-      left: 0rem;
-    }
-  }
-}
-.card-template-4{
-  color: #fff;
-  .company{
-    text-align: left;
-    font-size: 0.24rem;
-  }
-  .bio{
-    .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      margin-right: 0.4rem;
-      position: absolute;
-      top: 0.6rem;
-      right: 0.4rem;
-    }
-    .name{
-      margin-top: 0.5rem;
-      margin-right: 0.3rem;
-      font-size: 0.46rem;
-      display: block;
-    }
-    .job{
-      font-size: 0.26rem;
-      display: block;
-    }
-  }
-  .phone{
-    margin-top: 0.6rem;
-    img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-    }
-  }
-  .address{
-    position: relative;
-    margin-top: 0.2rem;
-    padding-left: 0.5rem;
-    img{
-      position: absolute;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-      top: 0;
-      left: 0rem;
-    }
-  }
-}
-.card-template-5{
-  .company{
-    text-align: left;
-    font-size: 0.24rem;
-  }
-  .bio{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 0.8rem;
-    .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      margin-right: 0.4rem;
-      display: none;
-    }
-    .name{
-      margin-right: 0.3rem;
-      font-size: 0.46rem;
-      align-items: baseline;
-    }
-    .job{
-      font-size: 0.26rem;
-    }
-  }
-  .phone{
-    margin-top: 0.6rem;
-    padding-left: 0.8rem;
-    i{
-      margin-right: 0.2rem;
-    }
-  }
-  .address{
-    margin-top: 0.4rem;
-    padding-left: 0.8rem;
-    i{
-      margin-right: 0.2rem;
-    }
-  }
-}
-.card-template-6{
-  .company{
-    text-align: left;
-    font-size: 0.24rem;
-  }
-  .bio{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 0.8rem;
-    .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      margin-right: 0.4rem;
-      display: none;
-    }
-    .name{
-      margin-right: 0.3rem;
-      font-size: 0.46rem;
-      align-items: baseline;
-    }
-    .job{
-      font-size: 0.26rem;
-    }
-  }
-  .phone{
-    margin-top: 0.6rem;
-    padding-left: 0.8rem;
-    i{
-      margin-right: 0.2rem;
-    }
-  }
-  .address{
-    margin-top: 0.4rem;
-    padding-left: 0.8rem;
-    i{
-      margin-right: 0.2rem;
-    }
-  }
-}
-.card-template-7{
-  color: #c9a063;
-  .company{
-    text-align: left;
-    font-size: 0.24rem;
-  }
-  .bio{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 0.8rem;
-    padding-left: 0.8rem;
-    .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      order: 10;
-      justify-content: space-between;
-      margin-left: 0.8rem;
-    }
-    .name{
-      margin-right: 0.3rem;
-      font-size: 0.46rem;
-      align-items: baseline;
-    }
-    .job{
-      font-size: 0.26rem;
-    }
-  }
-  .phone{
-    margin-top: 0.1rem;
-    i{
-      margin-right: 0.2rem;
-    }
-  }
-  .address{
-    margin-top: 0.4rem;
-    i{
-      margin-right: 0.2rem;
-    }
-  }
-}
-.card-template-8{
-  .company{
-    text-align: left;
-    font-size: 0.24rem;
-  }
-  .bio{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 0.8rem;
-    .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      order: 10;
-      justify-content: space-between;
-      margin-left: 0.8rem;
-      display: none;
-    }
-    .name{
-      margin-right: 0.3rem;
-      font-size: 0.46rem;
-      align-items: baseline;
-    }
-    .job{
-      font-size: 0.26rem;
-    }
-  }
-  .phone{
-    margin-top: 0.8rem;
-    i{
-      margin-right: 0.2rem;
-    }
-  }
-  .address{
-    margin-top: 0.4rem;
-    i{
-      margin-right: 0.2rem;
-    }
-  }
-}
-.card-template-9{
-  color: #9f7c45;
-  .company{
-    text-align: left;
-    font-size: 0.24rem;
-  }
-  .bio{
-    margin-top: 0.1rem;
-    .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      margin-right: 0.4rem;
-      display: block;
-      margin-bottom: 0.1rem;
-    }
-    .name{
-      margin-right: 0.3rem;
-      font-size: 0.46rem;
-      align-items: baseline;
-    }
-    .job{
-      font-size: 0.26rem;
-    }
-  }
-  .phone{
-    margin-top: 0.2rem;
-    i{
-      margin-right: 0.2rem;
-    }
-  }
-  .address{
-    margin-top: 0.4rem;
-    i{
-      margin-right: 0.2rem;
-    }
-  }
-}
-.card-template-10{
-  .company{
-    text-align: left;
-    font-size: 0.24rem;
-  }
-  .bio{
-    .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      margin-right: 0.4rem;
-      position: absolute;
-      top: 0.6rem;
-      right: 0.4rem;
-    }
-    .name{
-      margin-top: 0.5rem;
-      margin-right: 0.3rem;
-      font-size: 0.46rem;
-      display: block;
-    }
-    .job{
-      font-size: 0.26rem;
-      display: block;
-    }
-  }
-  .phone{
-    margin-top: 0.6rem;
-    img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-    }
-  }
-  .address{
-    position: relative;
-    margin-top: 0.2rem;
-    padding-left: 0.5rem;
-    img{
-      position: absolute;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-      top: 0;
-      left: 0rem;
-    }
-  }
-}
-.card-template-11{
   padding: 0.3rem !important;
   position: relative;
   .mark{
     position: absolute;
-    top: 0.3rem;
+    top: 0.2rem;
     right: 0;
     background-color: #bc2400;
-    font-size: 0.3rem;
+    font-size: 0.26rem;
     color: #fff;
-    height: 0.5rem;
+    height: 0.4rem;
     padding: 0 0.3rem;
-    line-height: 0.5rem;
+    line-height: 0.42rem;
     font-weight: normal;
     &::after{
       content: '';
       display: block;
       background-color: #fff;
       transform: rotateZ(45deg);
-      width: 0.5rem;
-      height: 0.5rem;
+      width: 0.3rem;
+      height: 0.3rem;
       position: absolute;
-      left: -0.4rem;
-      top: 0;
+      left: -0.2rem;
+      top: 0.06rem;
     }
   }
   .trueland{
@@ -527,7 +87,1076 @@
     }
   }
   .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
     padding-left: 0.2rem;
+  }
+}
+.card-template-2{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-3{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-4{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-5{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-6{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-7{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-8{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-9{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-10{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-11{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
     margin-top: 0.15rem;
     position: relative;
     padding-left: 0.7rem;
@@ -551,25 +1180,25 @@
   position: relative;
   .mark{
     position: absolute;
-    top: 0.3rem;
+    top: 0.2rem;
     right: 0;
     background-color: #bc2400;
-    font-size: 0.3rem;
+    font-size: 0.26rem;
     color: #fff;
-    height: 0.5rem;
+    height: 0.4rem;
     padding: 0 0.3rem;
-    line-height: 0.5rem;
+    line-height: 0.42rem;
     font-weight: normal;
     &::after{
       content: '';
       display: block;
       background-color: #fff;
       transform: rotateZ(45deg);
-      width: 0.5rem;
-      height: 0.5rem;
+      width: 0.3rem;
+      height: 0.3rem;
       position: absolute;
-      left: -0.4rem;
-      top: 0;
+      left: -0.2rem;
+      top: 0.06rem;
     }
   }
   .trueland{
@@ -635,7 +1264,6 @@
     }
   }
   .address{
-    padding-left: 0.2rem;
     margin-top: 0.15rem;
     position: relative;
     padding-left: 0.7rem;
@@ -659,25 +1287,25 @@
   position: relative;
   .mark{
     position: absolute;
-    top: 0.3rem;
+    top: 0.2rem;
     right: 0;
     background-color: #bc2400;
-    font-size: 0.3rem;
+    font-size: 0.26rem;
     color: #fff;
-    height: 0.5rem;
+    height: 0.4rem;
     padding: 0 0.3rem;
-    line-height: 0.5rem;
+    line-height: 0.42rem;
     font-weight: normal;
     &::after{
       content: '';
       display: block;
       background-color: #fff;
       transform: rotateZ(45deg);
-      width: 0.5rem;
-      height: 0.5rem;
+      width: 0.3rem;
+      height: 0.3rem;
       position: absolute;
-      left: -0.4rem;
-      top: 0;
+      left: -0.2rem;
+      top: 0.06rem;
     }
   }
   .trueland{
@@ -743,7 +1371,6 @@
     }
   }
   .address{
-    padding-left: 0.2rem;
     margin-top: 0.15rem;
     position: relative;
     padding-left: 0.7rem;
@@ -762,3 +1389,860 @@
     padding-left: 0.2rem;
   }
 }
+.card-template-14{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-15{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-16{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-17{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-18{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-19{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-20{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+.card-template-21{
+  padding: 0.3rem !important;
+  position: relative;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    line-height: 1rem;
+    img{
+      width: 2rem;
+      float: left;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #5a5a5a;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    height: 1.5rem;
+    width: 3.6rem;
+    .avatar{
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 1.5rem;
+      float: right;
+      margin-left: 0.3rem;
+    }
+    .name{
+      font-size: 0.4rem;
+      margin-top: 0.4rem;
+      float: right;
+      max-width: 1.8rem;
+      overflow: hidden;
+      width: calc(100% - 1.8rem);
+      text-align: right;
+    }
+    .job{
+      font-size: 0.26rem;
+      display: block;
+      float: right;
+      text-align: right;
+    }
+  }
+  .phone{
+    margin-top: 1.1rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .email{
+    margin-top: 0.15rem;
+    padding-left: 0.2rem;
+    img{
+      float: left;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+    }
+  }
+  .address{
+    margin-top: 0.15rem;
+    position: relative;
+    padding-left: 0.7rem;
+    img{
+      position: absolute;
+      width: 0.32rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.2rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+  }
+}
+

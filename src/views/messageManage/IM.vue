@@ -231,7 +231,7 @@ export default {
             p_image: data.p_image,
             p_name: data.p_name,
             p_price_sell: data.p_price_sell,
-            p_title: '测试',
+            p_title: this.$route.query.wx_name ? this.$route.query.wx_name :'测试',
             content:''
         }
         return obj;

@@ -88,3 +88,21 @@ export function followIndex (data) {
     params: data
   })
 }
+
+export function setBirthdayAdd (data) {
+  // 同步客户生日
+  return request({
+    url: '/api/Customer/setBirthdayAdd',
+    method: 'post',
+    data: data
+  })
+}
+
+export function birthdayDell (data) {
+  // 删除同步客户生日
+  return request({
+    url: '/api/Customer/birthdayDell',
+    method: 'post',
+    data: data
+  })
+}

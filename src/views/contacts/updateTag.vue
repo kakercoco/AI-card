@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-04 09:31:33
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-14 16:26:26
+ * @Last Modified time: 2018-09-30 11:17:06
  */
 <template>
   <div class="insert-tag">
@@ -118,9 +118,7 @@ export default {
       }
       updateCustomerTag(data)
         .then(res => {
-          this.$router.push({
-            path: '/main/contact'
-          })
+          this.$router.back(-1)
         })
     }
   },

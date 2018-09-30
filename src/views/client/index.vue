@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 16:25:17
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 11:41:27
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-09-29 22:40:02
  */
 <template>
   <div class="client">
@@ -11,20 +11,20 @@
         <img :src="clientInfor.wx_image" alt="" class="avatar">
         <div>
           <p><span class="name">{{clientInfor.wx_name}}</span><img src="@/assets/icon/edit.png" class="fr edit" alt="" @click="gotoInfor"></p>
-          <p class="tag-list">
-            <span v-for="(item, index) in clientInfor.tag" :key="index">{{item}}</span>
-            <x-icon type="ios-plus-outline"  class="fr icon-insert" @click.native="gotoTag"></x-icon>
-          </p>
+            <p class="tag-list">
+              <span v-for="(item, index) in clientInfor.tag" :key="index">{{item}}</span>
+              <x-icon type="ios-plus-outline" class="fr icon-insert" @click.native="gotoTag"></x-icon>
+            </p>
         </div>
       </div>
       <div class="center clearfix">
         <p class="fl">
-          <popup-picker :data="options1"  v-model="option1" :show="turnoverVisibility" value-text-align="center" @on-change="customerSetTurnover" @on-show="pickerShow">
+          <popup-picker :data="options1" v-model="option1" :show="turnoverVisibility" value-text-align="center" @on-change="customerSetTurnover" @on-show="pickerShow">
           </popup-picker>
           <span @click="turnoverVisibility = true">设置成交概率</span>
         </p>
         <p class="fr">
-            <datetime v-model="clientInfor.turnover_date" @on-confirm="customerSetTurnoverDate" :show.sync="dateVisibility"></datetime>
+          <datetime v-model="clientInfor.turnover_date" @on-confirm="customerSetTurnoverDate" :show.sync="dateVisibility"></datetime>
           <span @click="dateVisibility = true">预设成交时间</span>
         </p>
       </div>
@@ -33,9 +33,9 @@
           <span>会话</span>
           <img src="@/assets/img/wchat.png" alt="">
         </p>
-        <p class="fr" @click="gotoFollow">
-          <span>跟进</span>
-          <img src="@/assets/img/detail.png" alt="">
+          <p class="fr" @click="gotoFollow">
+            <span>跟进</span>
+            <img src="@/assets/img/detail.png" alt="">
         </p>
       </div>
     </div>
@@ -62,7 +62,7 @@
             <timeline-item v-for="(item, index) in followList" :key="index">
               <div class="timeline-wrap">
                 <h4>{{item.content}}</h4>
-                <p >{{Global.parseTime(item.create_time)}}</p>
+                <p>{{Global.parseTime(item.create_time)}}</p>
               </div>
             </timeline-item>
           </timeline>
@@ -77,10 +77,10 @@
         <div class="tac">{{clientInfor.wx_name}}在7日内和你互动了{{forMeTotal}}次</div>
         <p v-for="(item, index) in forMeList" :key="index" class="graph" v-if="item.nums > 0">
           <span>{{item.name}}</span>
-          <i :style="{width: item.nums/forMeTotal*100 + '%'}"></i>
+          <i :style="{width: item.nums/forMeTotal*80 + '%'}"></i>
           <b>{{item.nums}}</b>
         </p>
-        <p class="tar" ></p>
+        <p class="tar"></p>
       </div>
       <div class="care clearfix">
         <h5 class="tac">客户兴趣</h5>
@@ -105,9 +105,25 @@
 </template>
 
 <script>
-import { PopupRadio, PopupPicker, Group, Datetime, Timeline, TimelineItem, Tab, TabItem, Scroller } from 'vux'
+import {
+  PopupRadio,
+  PopupPicker,
+  Group,
+  Datetime,
+  Timeline,
+  TimelineItem,
+  Tab,
+  TabItem,
+  Scroller
+} from 'vux'
 import echarts from 'echarts'
-import { customerRead, customerSetTurnover, customerSetTurnoverDate, visitIndex, followIndex } from '@/api/customer'
+import {
+  customerRead,
+  customerSetTurnover,
+  customerSetTurnoverDate,
+  visitIndex,
+  followIndex
+} from '@/api/customer'
 import { config } from '@/utils/base'
 
 export default {
@@ -176,9 +192,45 @@ export default {
             type: 'pie',
             radius: '75%',
             data: [
-              {value: this.lookData[0], name: `${(this.lookData[0] / (this.lookData[0] + this.lookData[1] + this.lookData[2]) * 100).toFixed(1)}%`},
-              {value: this.lookData[1], name: `${(this.lookData[1] / (this.lookData[0] + this.lookData[1] + this.lookData[2]) * 100).toFixed(1)}%`},
-              {value: this.lookData[2], name: `${(this.lookData[2] / (this.lookData[0] + this.lookData[1] + this.lookData[2]) * 100).toFixed(1)}%`}
+              {
+                name: '公司',
+                value: `${(
+                  (this.lookData[0] /
+                    (this.lookData[0] + this.lookData[1] + this.lookData[2])) *
+                  100
+                ).toFixed(1)}`,
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
+              },
+              {
+                name: '产品',
+                value: `${(
+                  (this.lookData[1] /
+                    (this.lookData[0] + this.lookData[1] + this.lookData[2])) *
+                  100
+                ).toFixed(1)}`,
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
+              },
+              {
+                name: '个人',
+                value: `${(
+                  (this.lookData[2] /
+                    (this.lookData[0] + this.lookData[1] + this.lookData[2])) *
+                  100
+                ).toFixed(1)}`,
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
+              }
             ],
             itemStyle: {
               emphasis: {
@@ -189,8 +241,9 @@ export default {
             },
             label: {
               normal: {
-                show: true,
-                position: 'inside'
+                show: true
+                // ,
+                // position: 'inside'
               }
             }
           }
@@ -215,12 +268,14 @@ export default {
           top: '20',
           left: '15%'
         },
-        series: [{
-          data: this.activeYData,
-          type: 'line',
-          showSymbol: false
-          // smooth: true
-        }]
+        series: [
+          {
+            data: this.activeYData,
+            type: 'line',
+            showSymbol: false
+            // smooth: true
+          }
+        ]
       }
       this.drawChart(option, 'dynamic')
     },
@@ -228,17 +283,16 @@ export default {
       const data = {
         id: this.uid
       }
-      customerRead(data)
-        .then(res => {
-          this.clientInfor = res.data.info
-          this.chartInfor = res.data.analyze
-          this.getForMeTotal(this.chartInfor.count.for_me)
-          this.filterConfig(this.chartInfor.count.for_me)
-          this.getLookData(this.chartInfor.interest)
-          this.getActiveData(this.chartInfor.active)
-          this.id = this.clientInfor.id
-          this.option1 = [`${this.clientInfor.turnover}%`]
-        })
+      customerRead(data).then(res => {
+        this.clientInfor = res.data.info
+        this.chartInfor = res.data.analyze
+        this.getForMeTotal(this.chartInfor.count.for_me)
+        this.filterConfig(this.chartInfor.count.for_me)
+        this.getLookData(this.chartInfor.interest)
+        this.getActiveData(this.chartInfor.active)
+        this.id = this.clientInfor.id
+        this.option1 = [`${this.clientInfor.turnover}%`]
+      })
     },
     pickerShow () {
       this.isPicker = true
@@ -252,20 +306,18 @@ export default {
         id: this.id,
         turnover: num
       }
-      customerSetTurnover(data)
-        .then(res => {
-          this.getFollowIndex()
-        })
+      customerSetTurnover(data).then(res => {
+        this.getFollowIndex()
+      })
     },
     customerSetTurnoverDate (val) {
       const data = {
         id: this.id,
         date: val
       }
-      customerSetTurnoverDate(data)
-        .then(res => {
-          this.getFollowIndex()
-        })
+      customerSetTurnoverDate(data).then(res => {
+        this.getFollowIndex()
+      })
     },
     getVisitIndex () {
       const data = {
@@ -274,10 +326,9 @@ export default {
         page: this.page,
         pagesize: this.pagesize
       }
-      visitIndex(data)
-        .then(res => {
-          this.visitList = res.data.rows
-        })
+      visitIndex(data).then(res => {
+        this.visitList = res.data.rows
+      })
     },
     loadMore () {
       this.page += 1
@@ -287,17 +338,16 @@ export default {
         page: this.page,
         pagesize: this.pagesize
       }
-      visitIndex(data)
-        .then(res => {
-          if (res.data.rows.length === 0) {
-            this.$refs.loadingMore.disablePullup() // 禁用上拉
-            this.isFlag = true
-            return false
-          } else {
-            this.visitList = this.visitList.concat(res.data.rows)
-            this.$refs.loadingMore.donePullup()
-          }
-        })
+      visitIndex(data).then(res => {
+        if (res.data.rows.length === 0) {
+          this.$refs.loadingMore.disablePullup() // 禁用上拉
+          this.isFlag = true
+          return false
+        } else {
+          this.visitList = this.visitList.concat(res.data.rows)
+          this.$refs.loadingMore.donePullup()
+        }
+      })
     },
     getFollowIndex () {
       const data = {
@@ -305,10 +355,9 @@ export default {
         page: this.followPage,
         pagesize: this.followPagesize
       }
-      followIndex(data)
-        .then(res => {
-          this.followList = res.data.rows
-        })
+      followIndex(data).then(res => {
+        this.followList = res.data.rows
+      })
     },
     loadMoreFollow () {
       this.followPage += 1
@@ -317,17 +366,16 @@ export default {
         page: this.followPage,
         pagesize: this.followPagesize
       }
-      followIndex(data)
-        .then(res => {
-          if (res.data.rows.length === 0) {
-            this.$refs.loadingMoreFollow.disablePullup() // 禁用上拉
-            this.isFlagFollow = true
-            return false
-          } else {
-            this.followList = this.followList.concat(res.data.rows)
-            this.$refs.loadingMoreFollow.donePullup()
-          }
-        })
+      followIndex(data).then(res => {
+        if (res.data.rows.length === 0) {
+          this.$refs.loadingMoreFollow.disablePullup() // 禁用上拉
+          this.isFlagFollow = true
+          return false
+        } else {
+          this.followList = this.followList.concat(res.data.rows)
+          this.$refs.loadingMoreFollow.donePullup()
+        }
+      })
     },
     getForMeTotal (arr) {
       arr.forEach(element => {
@@ -337,7 +385,13 @@ export default {
     filterConfig (arr) {
       const reg = /<i>\W+<\/i>/g
       arr.forEach(element => {
-        element.name = this.typeConfig[element.type].match(reg) ? this.typeConfig[element.type].match(reg).join('').replace(/<i>/g, '').replace(/<\/i>/g, '') : ''
+        element.name = this.typeConfig[element.type].match(reg)
+          ? this.typeConfig[element.type]
+            .match(reg)
+            .join('')
+            .replace(/<i>/g, '')
+            .replace(/<\/i>/g, '')
+          : ''
       })
       this.forMeList = arr
     },
@@ -422,42 +476,42 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.client{
+.client {
   padding: 0.5rem 0.3rem;
   padding-bottom: 45px;
   overflow: auto;
   height: 100%;
   -webkit-overflow-scrolling: touch;
-  .card{
+  .card {
     height: 4rem;
     padding: 0.3rem 0.25rem;
-    .top{
+    .top {
       height: 1.6rem;
-      .avatar{
+      .avatar {
         float: left;
         width: 1.6rem;
         height: 100%;
         border-radius: 0.1rem;
       }
-      &>div{
+      & > div {
         width: 4.5rem;
         float: right;
         height: 100%;
-        p{
+        p {
           height: 50%;
           line-height: 0.8rem;
-          .name{
+          .name {
             font-size: 0.3rem;
           }
-          .edit{
+          .edit {
             width: 0.4rem;
             margin-top: 0.2rem;
           }
         }
-        .tag-list{
+        .tag-list {
           position: relative;
           overflow: hidden;
-          span{
+          span {
             padding: 0 0.15rem;
             height: 0.4rem;
             line-height: 0.4rem;
@@ -469,7 +523,7 @@ export default {
             margin-right: 0.1rem;
             margin-top: 0.2rem;
           }
-          .icon-insert{
+          .icon-insert {
             position: absolute;
             top: 0.15rem;
             right: -0.06rem;
@@ -480,71 +534,71 @@ export default {
         }
       }
     }
-    .center{
+    .center {
       padding: 0.2rem 0;
       border-bottom: 1px solid #ddd;
-      & /deep/ .weui-cell{
+      & /deep/ .weui-cell {
         min-height: 0.32rem;
         padding: 0;
-        .weui-cell__ft{
+        .weui-cell__ft {
           padding: 0;
           text-align: center;
-          &::after{
+          &::after {
             display: none;
           }
         }
       }
-      p{
+      p {
         text-align: center;
         width: 2.5rem;
         height: 0.7rem;
-        span{
+        span {
           color: #717171;
         }
-        & /deep/ .vux-datetime-value{
+        & /deep/ .vux-datetime-value {
           color: #717171;
           min-height: 0.32rem;
         }
       }
     }
-    .down{
-      p{
+    .down {
+      p {
         text-align: center;
         width: 2.5rem;
         height: 0.7rem;
         line-height: 0.8rem;
         font-size: 0.3rem;
-        img{
+        img {
           width: 0.28rem;
         }
       }
     }
   }
-  .time-line{
+  .time-line {
     padding: 0;
-    & /deep/ .vux-timeline{
+    & /deep/ .vux-timeline {
       padding: 0.2rem;
-      .vux-timeline-item-content{
+      .vux-timeline-item-content {
         padding: 0 0 0.3rem 0.8rem;
       }
     }
-    .timeline-wrap{
+    .timeline-wrap {
       background-color: #f4f4f4;
       padding: 0.2rem;
       color: #717171;
-      p{
+      p {
         margin-top: 0.1rem;
       }
     }
   }
-  .client-tab{
+  .client-tab {
     border-top: 1px solid #eee;
     position: fixed;
     width: 100%;
     bottom: 0;
     left: 0;
-    .vux-tab-item{
-      span{
+    .vux-tab-item {
+      span {
         display: inline-block;
         border-radius: 28px;
         height: 28px;
@@ -552,36 +606,36 @@ export default {
         padding: 0 0.2rem;
       }
     }
-    .vux-tab-selected{
-      span{
+    .vux-tab-selected {
+      span {
         border: 1px solid #5977fe;
       }
     }
   }
-  .client-action{
-    &>p{
+  .client-action {
+    & > p {
       text-align: center;
       margin-top: 0.4rem;
     }
-    li{
+    li {
       height: 2.2rem;
-      &>p{
+      & > p {
         margin: 0.4rem 0;
         font-size: 0.3rem;
         color: #717171;
         text-decoration: underline;
         text-align: center;
       }
-      &>div{
+      & > div {
         height: 1.4rem;
         padding: 0.25rem;
-        img{
+        img {
           height: 100%;
           width: 0.9rem;
           float: left;
           margin-right: 0.3rem;
         }
-        p{
+        p {
           font-size: 0.3rem;
           color: #717171;
           height: 100%;
@@ -591,10 +645,10 @@ export default {
       }
     }
   }
-  .client-chart{
-    .news-list-detail{
+  .client-chart {
+    .news-list-detail {
       margin-top: 0.3rem;
-      .avatar{
+      .avatar {
         display: block;
         margin: 0 auto;
         width: 1.5rem;
@@ -614,95 +668,100 @@ export default {
       //     fill: #999;
       //   }
       // }
-      .graph{
+      .graph {
         height: 0.7rem;
         line-height: 0.7rem;
         padding: 0 0.3rem;
-        span{
+        display: flex;
+        align-items: center;
+        span {
           width: 2rem;
           padding-left: 0.3rem;
           position: relative;
-          &::after{
+
+          &::after {
             content: '';
             width: 0.1rem;
             height: 0.1rem;
             border-radius: 50%;
             position: absolute;
-            top: 0.1rem;
+            top: 50%;
+            transform: translateY(-60%);
             left: 0;
           }
         }
-        i{
+        i {
           display: inline-block;
           height: 0.2rem;
           border-radius: 0.1rem;
           margin-left: 0.5rem;
+          margin-right: 0.1rem;
           max-width: 60%;
         }
         &:nth-of-type(1) {
-          span::after{
+          span::after {
             background-color: #ff0000;
           }
         }
         &:nth-of-type(2) {
-          span::after{
+          span::after {
             background-color: #653ffe;
           }
         }
         &:nth-of-type(3) {
-          span::after{
+          span::after {
             background-color: #73a6fb;
           }
         }
-        &:nth-of-type(5n+1){
-          i{
+        &:nth-of-type(5n + 1) {
+          i {
             background: linear-gradient(left, #cc00ff, #b1181a);
             background: -webkit-linear-gradient(left, #cc00ff, #b1181a);
           }
         }
-        &:nth-of-type(5n+2){
-          i{
+        &:nth-of-type(5n + 2) {
+          i {
             background: linear-gradient(left, #cc00ff, #5747fe);
             background: -webkit-linear-gradient(left, #cc00ff, #5747fe);
           }
         }
-        &:nth-of-type(5n+3){
-          i{
+        &:nth-of-type(5n + 3) {
+          i {
             background: linear-gradient(left, #cc00ff, #6eaffb);
             background: -webkit-linear-gradient(left, #cc00ff, #6eaffb);
           }
         }
-        &:nth-of-type(5n+4){
-          i{
+        &:nth-of-type(5n + 4) {
+          i {
             background: linear-gradient(left, #cd01fd, #fd5b66);
             background: -webkit-linear-gradient(left, #cd01fd, #fd5b66);
           }
         }
-        &:nth-of-type(5n+5){
-          i{
+        &:nth-of-type(5n + 5) {
+          i {
             background: linear-gradient(left, #c781f9, #0fba40);
             background: -webkit-linear-gradient(left, #c781f9, #0fba40);
           }
         }
       }
     }
-    .care{
+    .care {
       border-bottom: 1px solid #eee;
       border-top: 1px solid #eee;
-      h5{
+      h5 {
         margin: 0.4rem 0 0rem;
         font-size: 0.3rem;
         color: #717171;
         font-weight: normal;
       }
-      #care{
+      #care {
         width: 100%;
         height: 3.6rem;
       }
-      ul{
+      ul {
         padding: 0 0.2rem;
       }
-      li{
+      li {
         width: 33.33%;
         float: left;
         height: 0.5rem;
@@ -711,7 +770,7 @@ export default {
         color: #717171;
         position: relative;
         margin-bottom: 0.4rem;
-        &::after{
+        &::after {
           content: '';
           position: absolute;
           top: 0.14rem;
@@ -720,25 +779,25 @@ export default {
           height: 0.22rem;
           border-radius: 0.22rem;
         }
-        &:nth-child(1)::after{
+        &:nth-child(1)::after {
           background-color: #ff0000;
         }
-        &:nth-child(2)::after{
+        &:nth-child(2)::after {
           background-color: #feab2b;
         }
-        &:nth-child(3)::after{
+        &:nth-child(3)::after {
           background-color: #3ec4d2;
         }
       }
     }
-    .dynamic{
-      h5{
+    .dynamic {
+      h5 {
         margin: 0.4rem 0 0rem;
         font-size: 0.3rem;
         color: #717171;
         font-weight: normal;
       }
-      #dynamic{
+      #dynamic {
         width: 100%;
         height: 4rem;
       }

@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:22:54
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-14 16:44:52
+ * @Last Modified time: 2018-09-29 17:45:43
  */
 <template>
   <div class="my-footer">
@@ -12,7 +12,7 @@
         <img slot="icon-active" src="@/assets/icon/index2.png">
         <span slot="label">足迹</span>
       </tabbar-item>
-      <tabbar-item show-dot link="/main/message" :selected="$route.path === '/main/message'">
+      <tabbar-item :badge="num" link="/main/message" :selected="$route.path === '/main/message'">
         <img slot="icon" src="@/assets/icon/message.png">
         <img slot="icon-active" src="@/assets/icon/message2.png">
         <span slot="label">消息</span>
@@ -27,7 +27,7 @@
         <img slot="icon-active" src="@/assets/icon/news2.png">
         <span slot="label">动态</span>
       </tabbar-item>
-      <tabbar-item link="/main/self" badge="2" :selected="$route.path === '/main/self'">
+      <tabbar-item link="/main/self" :selected="$route.path === '/main/self'">
         <img slot="icon" src="@/assets/icon/self.png">
         <img slot="icon-active" src="@/assets/icon/self2.png">
         <span slot="label">我的</span>
@@ -46,11 +46,36 @@ export default {
   },
   data () {
     return {
-      red: '#fff000'
+      red: '#fff000',
+      num:'0',
     }
   },
   methods: {
   },
+    watch:{
+      '$store.state.message.messageList':{
+          handler:function (val, oldVal) {
+              let num = 0;
+              val.map((data,i)=>{
+                  num = num + data.num
+              })
+
+              this.num = num.toString();
+          },
+
+          deep: true
+      }
+    },
+  // computed: {
+  //   num () {
+  //     const list = this.$store.state.message.messageList
+  //     let i = 0
+  //     list.forEach(e => {
+  //       i += e.num
+  //     })
+  //     return i.toString()
+  //   }
+  // },
   mounted () {
   }
 }
