@@ -17,7 +17,7 @@
         <div class="card">
           <img src="@/assets/img/card2.png" alt="" class="card-icon">
           <span>扫码名片</span>
-          <img :src="topTitleInfor.image" alt="" class="code-icon">
+          <img :src="topTitleInfor.card_poster" alt="" class="code-icon" @click="gotoQrcode">
           <!--<img src="@/assets/img/code.png" alt=""  >-->
         </div>
       </div>
@@ -182,7 +182,8 @@ export default {
       listQuery: {
         type: 1,
         date_type: 1,
-        time_type: 0
+        time_type: 0,
+        employ_id: this.$route.query.employ_id
       },
       chartData: [],
       drawCareData: [
@@ -220,6 +221,11 @@ export default {
     }
   },
   methods: {
+    gotoQrcode () {
+      this.$router.push({
+        path: '/qrcode'
+      })
+    },
     getDataType () {
       if (this.option === '互动记录') {
         this.listQuery.date_type = 1

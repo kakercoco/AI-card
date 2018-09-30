@@ -231,7 +231,7 @@
     </div>
     <div v-show="activeTab === 2" class="AI">
       <ul>
-        <li v-for="(item, index) in AIList" :key="index" :class="{'first-item': index ===0 }" @click="gotoCard">
+        <li v-for="(item, index) in AIList" :key="index" :class="{'first-item': index ===0 }" @click="gotoCard(item)">
           <img src="@/assets/icon/top.png" alt="" class="icon-champion" v-if="index ===0">
           <span class="fl">{{index+1}}</span>
           <img :src="item.image" alt="" class="fl avatar">
@@ -276,6 +276,7 @@ export default {
   data () {
     return {
       keywords: '',
+      likeTotal: 0, // 兴趣总数
       demo01_index: 0,
       tree_data: [],
       deptIdList: [0, 0, 0, 0, 0, 0, 0],
@@ -728,6 +729,11 @@ export default {
       bossOverview(this.listQuery).then(res => {
         if (res.code === 200) {
           this.downChartInfor = res.data
+          this.likeTotal =
+            this.downChartInfor.like_company.num +
+            this.downChartInfor.like_me.num +
+            this.downChartInfor.like_product.num
+          this.drawCare()
           this.setTotalCustomer(res.data)
           let userActive = res.data.user_avtive
           if (userActive !== undefined) {
@@ -897,10 +903,44 @@ export default {
             name: '访问来源',
             type: 'pie',
             radius: '75%',
+            center: ['50%', '54%'],
             data: [
-              {value: this.downChartInfor.like_company, name: '25%'},
-              {value: this.downChartInfor.like_product, name: '40%'},
-              {value: this.downChartInfor.like_me, name: '35%'}
+              {
+                value: `${(
+                  (this.downChartInfor.like_company.num / this.likeTotal) *
+                  100
+                ).toFixed(1)}`,
+                name: '公司',
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
+              },
+              {
+                name: '产品',
+                value: `${(
+                  (this.downChartInfor.like_product.num / this.likeTotal) *
+                  100
+                ).toFixed(1)}`,
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
+              },
+              {
+                name: '个人',
+                value: `${(
+                  (this.downChartInfor.like_me.num / this.likeTotal) *
+                  100
+                ).toFixed(1)}`,
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
+              }
             ],
             itemStyle: {
               emphasis: {
@@ -911,8 +951,7 @@ export default {
             },
             label: {
               normal: {
-                show: true,
-                position: 'inside'
+                show: true
               }
             }
           }
@@ -1018,9 +1057,12 @@ export default {
     getChartId (index) {
       return `chart-${index}`
     },
-    gotoCard () {
+    gotoCard (item) {
       this.$router.push({
-        path: '/bossCard'
+        path: '/bossCard',
+        query: {
+          employ_id: item.id
+        }
       })
     }
   },
@@ -1029,7 +1071,6 @@ export default {
     this.bossOverviewTotal() // Boss雷达-总览-总数
     this.customerStatistics() // Boss雷达-总览-客户统计
     this.getOrgList()
-    this.drawCare()
   }
 }
 </script>

@@ -59,7 +59,8 @@ export function AIAnalyseDetail (listQuery) {
     params: {
       type: listQuery.type,
       date_type: listQuery.date_type,
-      time_type: listQuery.time_type
+      time_type: listQuery.time_type,
+      employ_id: listQuery.employ_id
     }
   })
 }

@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 16:25:17
- * @Last Modified by: Jessica
- * @Last Modified time: 2018-09-29 22:40:02
+ * @Last Modified by: kaker.xutianxing
+ * @Last Modified time: 2018-09-30 18:05:43
  */
 <template>
   <div class="client">
@@ -307,7 +307,12 @@ export default {
         turnover: num
       }
       customerSetTurnover(data).then(res => {
+        this.followPage = 1
         this.getFollowIndex()
+        this.$refs.loadingMoreFollow.reset({top: 0})
+        if (this.isFlagFollow) {
+          this.$refs.loadingMoreFollow.enablePullup() // 启用上拉
+        }
       })
     },
     customerSetTurnoverDate (val) {
@@ -316,7 +321,12 @@ export default {
         date: val
       }
       customerSetTurnoverDate(data).then(res => {
+        this.followPage = 1
         this.getFollowIndex()
+        this.$refs.loadingMoreFollow.reset({top: 0})
+        if (this.isFlagFollow) {
+          this.$refs.loadingMoreFollow.enablePullup() // 启用上拉
+        }
       })
     },
     getVisitIndex () {
@@ -483,7 +493,7 @@ export default {
   height: 100%;
   -webkit-overflow-scrolling: touch;
   .card {
-    height: 4rem;
+    height: 3.8rem;
     padding: 0.3rem 0.25rem;
     .top {
       height: 1.6rem;
@@ -529,7 +539,6 @@ export default {
             right: -0.06rem;
             fill: #5977fe;
             width: 0.5rem;
-            background-color: #fff;
           }
         }
       }
@@ -563,13 +572,15 @@ export default {
     }
     .down {
       p {
-        text-align: center;
         width: 2.5rem;
         height: 0.7rem;
-        line-height: 0.8rem;
         font-size: 0.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         img {
           width: 0.28rem;
+          margin-left: 0.2rem;
         }
       }
     }
@@ -579,15 +590,17 @@ export default {
     & /deep/ .vux-timeline {
       padding: 0.2rem;
       .vux-timeline-item-content {
-        padding: 0 0 0.3rem 0.8rem;
+        padding: 0 0 0.3rem 0.3rem;
       }
     }
     .timeline-wrap {
-      background-color: #f4f4f4;
-      padding: 0.2rem;
+      padding-left: 0.35rem;
       color: #717171;
       p {
         margin-top: 0.1rem;
+      }
+      h4{
+        font-weight: normal;
       }
     }
   }

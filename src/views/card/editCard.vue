@@ -2,12 +2,12 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 21:07:33
+ * @Last Modified time: 2018-09-30 18:29:03
  */
 <template>
   <div class="edit-card">
     <div class="my-card" id="card">
-      <img :src="seletedTemplate" alt="" class="card-bg">
+      <img src="@/assets/card/1.png" alt="" class="card-bg">
       <div class="card-infor " :class="selectedClass">
         <p class="mark" v-if="templateId === 1 || templateId === 4 || templateId === 7 || templateId === 10 || templateId === 13 || templateId === 17 || templateId === 20">T云商务</p>
         <p class="mark" v-if="templateId === 2 || templateId === 5 || templateId === 8 || templateId === 11 || templateId === 14 || templateId === 18 || templateId === 21">T云客服</p>
@@ -192,7 +192,7 @@ export default {
       templateCard: [
         require('@/assets/card/1.png'),
         require('@/assets/card/1.png'),
-        require('@/assets/card/1.png'),
+        require('@/assets/card/1.png')
       ]
     }
   },
@@ -231,7 +231,7 @@ export default {
       cardRead()
         .then(res => {
           this.cardInfor = res.data
-          this.seletedTemplate = require(`@/assets/card/${this.cardInfor.style_id + 1}.png`)
+          // this.seletedTemplate = require(`@/assets/card/${this.cardInfor.style_id + 1}.png`)
           this.selectedClass = `card-template-${this.cardInfor.style_id + 1}`
           this.templateId = this.cardInfor.style_id
           if (this.cardInfor.album != null) {

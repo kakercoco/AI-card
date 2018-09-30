@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-27 18:30:51
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-07 16:27:28
+ * @Last Modified time: 2018-09-30 18:14:59
  */
 <template>
   <div class="index footprint">
@@ -141,9 +141,9 @@
 
 <script>
 import { Tab, TabItem, Scroller, XDialog, XButton, Group, Cell, Datetime } from 'vux'
-import {dateFtt, config} from '@/utils/base'
-import {get_user_info} from '@/api/user_info'
-import {init_list, init_Interaction} from '@/api/footprint'
+import { dateFtt, config } from '@/utils/base'
+import { get_user_info } from '@/api/user_info'
+import { init_list, init_Interaction } from '@/api/footprint'
 
 export default {
   name: 'index',
@@ -221,9 +221,9 @@ export default {
 
     toggleDetail (index) {
       let status = this.interaction_list[index].status
-        this.interaction_list[index].status = !status
-        //点击展开
-        if (status) {
+      this.interaction_list[index].status = !status
+      // 点击展开
+      if (status) {
         // const ele = document.querySelector('.interaction_frame .xs-container');
         // var transformY = 0;
         // try {
@@ -236,15 +236,15 @@ export default {
       else {
         this.$nextTick(() => {
           this.$refs.scroller.reset({top: 0})
-            })
-        }
+        })
+      }
     },
 
     timeLoadMore () {
       if (this.timeScroller.isAjax && this.timeScroller.page < this.timeScroller.max_page) {
         this.timeScroller.page++
-            this.get_time_list()
-        } else if (this.timeScroller.page >= this.timeScroller.max_page) {
+        this.get_time_list()
+      } else if (this.timeScroller.page >= this.timeScroller.max_page) {
         this.$refs.scrollerBottom.disablePullup() // 禁用上拉
       }
     },
@@ -254,41 +254,38 @@ export default {
     },
 
     sureTime () {
-
-        if(this.startTIme == ''){
-          alert('开始时间不能为空！');
-          return;
-        }
-        if(this.endTime == ''){
-            alert('结束时间不能为空！');
-            return;
-        }
-        this.datePickerDialog = false
-      //如果是互动页面
+      if (this.startTIme === '') {
+        alert('开始时间不能为空！')
+        return
+      }
+      if (this.endTime === '') {
+        alert('结束时间不能为空！')
+        return
+      }
+      this.datePickerDialog = false
+      // 如果是互动页面
       if (this.tabIndex === 2) {
         this.interactionScroller.time_slot = `${this.startTIme}到${this.endTime}`
-          if (this.interactionScroller.isAjax) {
+        if (this.interactionScroller.isAjax) {
           this.$refs.scroller.disablePullup()
-              this.interaction_list = []
-              this.interactionScroller.page = 1
-              this.interactionScroller.total = 0
-              this.interactionScroller.max_page = 0
-              this.Interaction_init(this.startTIme, this.endTime, true)
-          }
+          this.interaction_list = []
+          this.interactionScroller.page = 1
+          this.interactionScroller.total = 0
+          this.interactionScroller.max_page = 0
+          this.Interaction_init(this.startTIme, this.endTime, true)
+        }
       } else {
         this.behavior_config.time_slot = `${this.startTIme}到${this.endTime}`
-          this.$vux.loading.show({
+        this.$vux.loading.show({
           text: '加载中...'
         })
-          if (this.behavior_config.isAjax) {
+        if (this.behavior_config.isAjax) {
           // 重置
           this.behavior_init(this.startTIme, this.endTime)
-
-          }
+        }
       }
       this.startTIme = ''
       this.endTime = ''
-
     },
 
     changeStartTime (val) {
@@ -328,53 +325,53 @@ export default {
     // 获取时间列表
     get_time_list (isTop) {
       this.timeScroller.isAjax = false
-        init_list({
+      init_list({
         type: 'time',
         page: this.timeScroller.page,
         pagesize: this.timeScroller.pagesize
       }).then((e) => {
         this.timeScroller.isAjax = true
-            this.$vux.loading.hide()
-            if (e.code === 200 && e.data && e.data.rows instanceof Array) {
+        this.$vux.loading.hide()
+        if (e.code === 200 && e.data && e.data.rows instanceof Array) {
           let list = e.data.rows
-                list.map((val, i) => {
-            val.ele = config[val.type] ? val.wx_name + '第' + val.num + '次'+config[val.type] : ''
-                    val.time = dateFtt('MM-dd hh:mm', new Date(val.create_time*1000))
-                })
-                this.time_list = this.time_list.concat(list)
-                this.timeScroller.total = e.data.total
-                this.timeScroller.max_page = Math.ceil(e.data.total / 10)
-                this.$nextTick(() => {
-            this.$refs.scrollerBottom.donePullup()//上啦完成
+          list.map((val, i) => {
+            val.ele = config[val.type] ? val.wx_name + '第' + val.num + '次' + config[val.type] : ''
+            val.time = dateFtt('MM-dd hh:mm', new Date(val.create_time * 1000))
+          })
+          this.time_list = this.time_list.concat(list)
+          this.timeScroller.total = e.data.total
+          this.timeScroller.max_page = Math.ceil(e.data.total / 10)
+          this.$nextTick(() => {
+            this.$refs.scrollerBottom.donePullup()// 上啦完成
 
-                    if (isTop) {
+            if (isTop) {
               this.$refs.scrollerBottom.reset({top: 0})
-                    } else {
+            } else {
               this.$refs.scrollerBottom.reset()
-                    }
+            }
 
             if (this.timeScroller.max_page <= 1 || this.time_list.length === 0) {
-              this.$refs.scrollerBottom.disablePullup()//禁止上啦
-                    } else {
-              this.$refs.scrollerBottom.enablePullup()//恢复上啦
-                    }
-          })
+              this.$refs.scrollerBottom.disablePullup()// 禁止上啦
             } else {
-          this.$refs.scrollerBottom.disablePullup()
+              this.$refs.scrollerBottom.enablePullup()// 恢复上啦
             }
+          })
+        } else {
+          this.$refs.scrollerBottom.disablePullup()
+        }
       }).catch((err) => {
         console.log(err)
-            this.$vux.loading.hide()
-            this.timeScroller.isAjax = true
-            this.$refs.scrollerBottom.disablePullup()
-        })
+        this.$vux.loading.hide()
+        this.timeScroller.isAjax = true
+        this.$refs.scrollerBottom.disablePullup()
+      })
     },
 
     Interaction_loadMore () {
       if (this.interactionScroller.isAjax && this.interactionScroller.page < this.interactionScroller.max_page) {
         this.interactionScroller.page++
-            this.Interaction_init()
-        } else if (this.interactionScroller.page >= this.interactionScroller.max_page) {
+        this.Interaction_init()
+      } else if (this.interactionScroller.page >= this.interactionScroller.max_page) {
         this.$refs.scroller.disablePullup() // 禁用上拉
       }
     },
@@ -385,15 +382,15 @@ export default {
         this.$vux.loading.show({
           text: '加载中...'
         })
-            this.$store.commit('app/Empty')
-            this.timeScroller.test = true
-            this.time_list = []
-            this.$refs.scrollerBottom.disablePullup()
-            this.timeScroller.page = 1
-            this.timeScroller.total = 0
-            this.timeScroller.max_page = 0
-            this.get_time_list(true)
-            /*this.$nextTick(()=>{
+        this.$store.commit('app/Empty')
+        this.timeScroller.test = true
+        this.time_list = []
+        this.$refs.scrollerBottom.disablePullup()
+        this.timeScroller.page = 1
+        this.timeScroller.total = 0
+        this.timeScroller.max_page = 0
+        this.get_time_list(true)
+        /* this.$nextTick(()=>{
                 this.timeScroller.test = false;
                 this.$nextTick(()=>{
                     this.$store.commit('app/Empty');
@@ -404,15 +401,14 @@ export default {
                     this.timeScroller.max_page = 0;
                     this.get_time_list();
                 })
-            })*/
-
-        }
+            }) */
+      }
     },
 
     // 获取互动列表
     Interaction_init (start_time, end_time, isTop) {
       this.interactionScroller.isAjax = false
-          init_list({
+      init_list({
         type: 'interact',
         page: this.interactionScroller.page,
         pagesize: this.interactionScroller.pagesize,
@@ -421,107 +417,106 @@ export default {
       }).then((e) => {
         // debugger;
         this.interactionScroller.isAjax = true
-              this.$vux.loading.hide()
-              if (e.code === 200 && e.data && e.data.rows instanceof Array) {
+        this.$vux.loading.hide()
+        if (e.code === 200 && e.data && e.data.rows instanceof Array) {
           let list = e.data.rows
 
-                  const reg = /<i>\W+<\/i>/g
+          const reg = /<i>\W+<\/i>/g
 
-                  list.map((val, i) => {
+          list.map((val, i) => {
             if (val.typeGroup && val.typeGroup instanceof Array) {
               val.typeGroup.map((item, index) => {
                 if (config[item.type]) {
                   item.title = config[item.type].match(reg) ? config[item.type].match(reg).join('').replace(/<i>/g, '').replace(/<\/i>/g, '') : ''
-                              } else {
+                } else {
                   item.title = ''
-                              }
+                }
                 // item.percent = (item.num / val.num).toFixed(2) * 100 + '%';
                 item.percent = parseInt((item.num / val.num) * 170 * 2) / 100
-                          })
+              })
             }
             val.status = true
-                  })
-                  console.log('互动', list)
-                  this.interaction_list = this.interaction_list.concat(list)
-                  this.interactionScroller.total = e.data.total
-                  this.interactionScroller.max_page = Math.ceil(e.data.total / 10)
-                  this.$nextTick(() => {
-            this.$refs.scroller.donePullup()//上啦完成
+          })
+          console.log('互动', list)
+          this.interaction_list = this.interaction_list.concat(list)
+          this.interactionScroller.total = e.data.total
+          this.interactionScroller.max_page = Math.ceil(e.data.total / 10)
+          this.$nextTick(() => {
+            this.$refs.scroller.donePullup()// 上啦完成
 
-                      if (isTop) {
+            if (isTop) {
               this.$refs.scroller.reset({top: 0})
-                      } else {
+            } else {
               this.$refs.scroller.reset()
-                      }
+            }
 
             if (this.interactionScroller.max_page <= 1) {
-              this.$refs.scroller.disablePullup()//禁止上啦
-                      } else {
-              this.$refs.scroller.enablePullup()//恢复上啦
-                      }
+              this.$refs.scroller.disablePullup()// 禁止上啦
+            } else {
+              this.$refs.scroller.enablePullup()// 恢复上啦
+            }
           })
-              } else {
+        } else {
           this.$refs.scroller.disablePullup()
-              }
+        }
       }).catch((err) => {
         console.log(err)
-              this.$vux.loading.hide()
-              this.interactionScroller.isAjax = true
-          })
+        this.$vux.loading.hide()
+        this.interactionScroller.isAjax = true
+      })
     },
 
     // 获取行为列表
     behavior_init (start_time, end_time) {
       this.behavior_config.isAjax = false
-        this.$vux.loading.show({
+      this.$vux.loading.show({
         text: '加载中...'
       })
-        init_list({
+      init_list({
         type: 'behavior',
         start_time,
         end_time
       }).then((e) => {
         this.behavior_config.isAjax = true
-            this.$vux.loading.hide()
+        this.$vux.loading.hide()
 
-            if (e.code === 200 && e.data && e.data instanceof Array) {
+        if (e.code === 200 && e.data && e.data instanceof Array) {
           let list = e.data
-                let end_list = []
-                const reg = /<i>\W+<\/i>/g
-                list.map((val, i) => {
+          let end_list = []
+          const reg = /<i>\W+<\/i>/g
+          list.map((val, i) => {
             if (val.type === 0) {
               this.behavior_config.card = val.nums
-                    } else if (val.type === 1) {
+            } else if (val.type === 1) {
               this.behavior_config.web = val.nums
-                    } else if (val.type === 2) {
+            } else if (val.type === 2) {
               this.behavior_config.case = val.nums
-                    } else if (val.type === 3) {
+            } else if (val.type === 3) {
               this.behavior_config.product = val.nums
-                    } else {
+            } else {
               if (config[val.type]) {
                 val.title = config[val.type].match(reg) ? config[val.type].match(reg).join('').replace(/<i>/g, '').replace(/<\/i>/g, '') : ''
-                        } else {
+              } else {
                 val.title = ''
-                        }
+              }
               end_list.push(val)
-                    }
+            }
           })
 
-                this.behavior_list = end_list
-
-            }
+          this.behavior_list = end_list
+        }
       }).catch((err) => {
         console.log(err)
-            this.$vux.loading.hide()
-            this.behavior_config.isAjax = true
-        })
+        this.$vux.loading.hide()
+        this.behavior_config.isAjax = true
+      })
     }
 
   },
   mounted () {
     this.get_time_list()
-      this.Interaction_init()
-      this.behavior_init()
+    this.Interaction_init()
+    this.behavior_init()
   }
 }
 </script>
@@ -532,6 +527,10 @@ $color:#717171;
   overflow: auto;
   height: 100%;
   padding-top: 44px;
+  -webkit-overflow-scrolling: touch;
+  & /deep/ .vux-tab-item{
+    font-size: 16px;
+  }
   .Unread_dialog{
     position: fixed;
     top:2rem;
@@ -575,6 +574,7 @@ $color:#717171;
         float: left;
         height: 100%;
         width: 1.3rem;
+        border-radius: 0.1rem;
       }
       div{
         width: 65%;
@@ -594,7 +594,8 @@ $color:#717171;
         height: 100%;
         color: #717171;
         font-size: 0.22rem;
-        line-height: .5rem;
+        padding-top: 0.1rem;
+        line-height: 0.4rem;
       }
     }
   }
@@ -603,7 +604,7 @@ $color:#717171;
   padding: 0 0.2rem;
   .action-card{
     padding: 0.25rem;
-    margin-top: 0.6rem;
+    margin-top: 0.2rem;
     & > p{
       font-size: 0.3rem;
       color: $color;
@@ -618,7 +619,6 @@ $color:#717171;
     li{
       width: 25%;
       float: left;
-      height: 2rem;
       text-align: center;
       img{
         width: 0.7rem;
@@ -627,7 +627,7 @@ $color:#717171;
         display: block;
         text-decoration: underline;
         color:$color;
-        margin: 0.3rem 0;
+        margin: 0.1rem 0;
         font-size: 0.22rem;
       }
       h5{
@@ -644,7 +644,8 @@ $color:#717171;
       margin-top: 0.3rem;
       img{
         float: left;
-        height: 100%;
+        height: 0.4rem;
+        width: 0.4rem;
         margin-right: 0.2rem;
       }
       span{
@@ -667,11 +668,12 @@ $color:#717171;
     height: 1.4rem;
     padding: 0.2rem 0.15rem;
     line-height: 1rem;
-    margin-top: 0rem;
+    margin-top: 0.3rem;
     img{
       float: left;
       height: 100%;
       margin-right: 0.2rem;
+      border-radius: 0.08rem;
     }
     span{
       float: left;
@@ -692,12 +694,14 @@ $color:#717171;
     }
   }
   .news-list-detail{
-    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+    padding-top: 0.3rem;
     .avatar{
       display: block;
       margin: 0 auto;
       width: 1.5rem;
       height: 1.5rem;
+      border-radius: 0.1rem;
     }
     .title{
       position: relative;
@@ -717,7 +721,7 @@ $color:#717171;
         color: $color;
       }
       &:last-child{
-        height: 1rem;
+        height: 0.5rem;
         padding: 0 0.15rem;
       }
       .icon{
@@ -748,6 +752,7 @@ $color:#717171;
         width:4.2rem;
         height: 0.7rem;
         margin-left: 0.3rem;
+        color: #717171;
       }
       i{
         display: inline-block;
@@ -827,11 +832,18 @@ $color:#717171;
 
 }
 .dialog-datepicker{
+  & /deep/ .weui-cell__ft{
+    padding-right: 20px;
+    &::after{
+      margin-top: -6px;
+    }
+  }
   h5{
     height: 0.9rem;
-    line-height: 0.9rem;
-    font-size: 0.32rem;
-    color: $color;
+    line-height: 1.2rem;
+    font-size: 0.36rem;
+    color: #000;
+    font-weight: normal;
   }
   .title-icon{
     width: 0.4rem;
