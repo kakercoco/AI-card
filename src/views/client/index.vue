@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 16:25:17
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-30 18:05:43
+ * @Last Modified time: 2018-10-09 16:02:38
  */
 <template>
   <div class="client">
@@ -12,7 +12,8 @@
         <div>
           <p><span class="name">{{clientInfor.wx_name}}</span><img src="@/assets/icon/edit.png" class="fr edit" alt="" @click="gotoInfor"></p>
             <p class="tag-list">
-              <span v-for="(item, index) in clientInfor.tag" :key="index">{{item}}</span>
+              <span v-for="(item, index) in clientInfor.tag" :key="index" v-if="index<2">{{item}}</span>
+              <span v-if="clientInfor.tag.length>2">···</span>
               <x-icon type="ios-plus-outline" class="fr icon-insert" @click.native="gotoTag"></x-icon>
             </p>
         </div>

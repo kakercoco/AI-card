@@ -90,6 +90,7 @@
                   <x-icon type="ios-arrow-down" size="20" class="icon"></x-icon>
                 </li>
                 <div v-else class="news-list-detail">
+                  <div style="height: 0.3rem"></div>
                   <p class="title">
                     <img src="@/assets/img/datapicker.png" alt="" class="fr" style="display: none">
                     <img :src="item.wx_image ? item.wx_image : '@/assets/img/moren.jpg'" class="avatar">
@@ -695,7 +696,7 @@ $color:#717171;
   }
   .news-list-detail{
     margin-bottom: 0.3rem;
-    padding-top: 0.3rem;
+    border: 1px #f5f5f5 solid;
     .avatar{
       display: block;
       margin: 0 auto;

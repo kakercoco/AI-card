@@ -32,7 +32,8 @@ export default {
         content: '',
         time: '',
         heartbeat: null
-      }
+      },
+        heartbeat:null
     }
   },
   created () {
@@ -55,11 +56,13 @@ export default {
       this.$store.commit('user/SET_websocket', Socket_data)
 
       this.$store.state.user.websocketConnection.onopen = () => {
-        this.webSocket_login();
-        this.webSocket_error();
+        this.webSocket_login();//登陆
+        this.webSocket_error();//错误
+        this.send_heartbeat();//心跳
       }
     },
 
+    //登录
     webSocket_login () {
       const loginDto = {
         userName: this.$store.state.user.info.message_name, // 用户名
@@ -81,22 +84,20 @@ export default {
       this.chat_watch()
     },
 
+      //监听
     chat_watch () {
       this.$store.state.user.websocketConnection.onmessage = res => {
         const data = JSON.parse(res.data)
         // 如果返回是登录信息
-        if (data.cmd === 'LoginSuccess') {
-
-          if (data.content) {
+        if (data.cmd === 'LoginSuccess' && data.content) {
             const my = JSON.parse(data.content)
             this.$store.commit('user/SET_my_chat_token', my.token)
-            this.send_heartbeat()
+
             console.log('员工账号的message_id：', my.id)
             // 判断员工信息中是否包含message_id
             if (!this.$store.state.user.info.message_id) {
-              this.$store.commit('user/SET_my_message_id', my.id)
+                this.$store.commit('user/SET_my_message_id', my.id)
             }
-          }
         } else if (data.cmd === 'GetChat' && data.content) {
           this.$store.commit('chat/SET_my_chat_room_id', data.content)
           console.log('聊天连接成功！,房间号：', data.content)
@@ -133,7 +134,7 @@ export default {
             }, 2000)
           }
         } else if (data.cmd === 'Error') {
-          alert(data.content)
+          //alert(data.content)
         } else if (data.cmd === 'Offline' && data.content) {
           const message_id = data.content.split(',')[0]
           const content_id = data.content.split(',')[1]
@@ -294,16 +295,27 @@ export default {
         }
     },
 
+      //关闭socket
+      socket_close(){
+
+      },
+
+      //心跳
     send_heartbeat () {
-      if (this.heartbeat == null) {
-        this.heartbeat = setInterval(() => {
-          const req = {
-            cmd: 'HeartBeat'
-          }
-          this.$store.state.user.websocketConnection.send(JSON.stringify(req))
-        }, 550000)
-        // 550000
+      if(this.heartbeat === null){
+          this.heartbeat = setTimeout(()=>{
+              const req = {
+                  cmd: 'HeartBeat'
+              }
+              this.$store.state.user.websocketConnection.send(JSON.stringify(req));
+              console.log('发送心跳')
+              clearTimeout(this.heartbeat);//清除这次的定时器
+              this.heartbeat = null;//重置开关
+              this.send_heartbeat();
+          },300000)
       }
+
+
     }
   },
   mounted () {

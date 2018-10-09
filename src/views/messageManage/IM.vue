@@ -34,7 +34,7 @@
             </div>
 
           </div>
-          <!--<img src="@/assets/img/l.gif" class="loading" v-if="item.from === 'me' && item.is_loading">-->
+          <img src="@/assets/img/l.gif" class="loading" v-if="item.from === 'me' && item.is_loading">
 
         </div>
       </li>
@@ -657,6 +657,7 @@ export default {
   .chat-list{
     background: #ebebeb;
     transition: transform 0.2s;
+    -webkit-overflow-scrolling:touch;
     li{
       padding: 0.6rem 0.3rem 0;
       &>p{

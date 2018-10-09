@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 15:14:03
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 11:22:29
+ * @Last Modified time: 2018-10-09 16:05:39
  */
 <template>
   <div class="insert-talk">
@@ -60,13 +60,13 @@ export default {
         })
         return false
       }
-      if (this.tagList.length <= 0) {
-        AlertModule.show({
-          title: '提示',
-          content: '标签不能为空'
-        })
-        return false
-      }
+      // if (this.tagList.length <= 0) {
+      //   AlertModule.show({
+      //     title: '提示',
+      //     content: '标签不能为空'
+      //   })
+      //   return false
+      // }
       const data = {
         group_id: this.group_id,
         content: this.content,
@@ -85,6 +85,13 @@ export default {
       this.tagDialog = false
     },
     insertTag () {
+      if (this.tag === '') {
+        AlertModule.show({
+          title: '提示',
+          content: '标签内容不能为空'
+        })
+        return false
+      }
       this.tagList.push(this.tag)
       this.closeDialog()
     },

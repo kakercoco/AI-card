@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-10-09 09:34:10
+ * @Last Modified time: 2018-10-09 20:55:32
  */
 <template>
   <div class="edit-card">
@@ -56,18 +56,64 @@
     <div class="card-avatar">
       <img :src="cardInfor.image" alt="">
       <form action="" id="myFrom">
-        <input type="file" accept="image/*;capture=camera"  @change="changeFile($event, 'avatar')" name="avatar"/>
+        <input type="file" accept="image/*;capture=camera"  @change="setImage" name="avatar" id="avatar"/>
       </form>
+      <div class="cropWrap" v-show="crop">
+        <div style="width: 100%; height:300px; border: 1px solid gray; display: inline-block;">
+          <vue-cropper
+              ref='cropper'
+              :guides="true"
+              :view-mode="2"
+              drag-mode="crop"
+              :auto-crop-area="0.5"
+              :min-container-width="250"
+              :min-container-height="180"
+              :background="true"
+              :rotatable="true"
+              :src="imgSrc"
+              alt="Source Image"
+              :img-style="{ 'width': '100%', 'height': '300px' }">
+          </vue-cropper>
+        </div>
+        <p class="crop-btn tac">
+          <button @click="cropImage" v-if="imgSrc != ''">裁剪</button>
+          <button @click="rotate" v-if="imgSrc != ''">旋转</button>
+          <button @click="closeCrop" v-if="imgSrc != ''">取消</button>
+        </p>
+      </div>
     </div>
     <h5>个人信息</h5>
     <div class="self-message">
-      <group>
+      <p>
+        <i>*</i>
+        <span>手机：</span>
+        <input type="text" placeholder="手机号" v-model="cardInfor.phone" @blur="myFocus">
+      </p>
+      <p>
+        <span>座机：</span>
+        <input type="text" placeholder="座机号" v-model="cardInfor.tel" @blur="myFocus">
+      </p>
+      <p>
+        <span>微信：</span>
+        <input type="text" placeholder="微信号" v-model="cardInfor.weixin" @blur="myFocus">
+      </p>
+      <p>
+        <i>*</i>
+        <span>邮箱：</span>
+        <input type="text" placeholder="邮箱" v-model="cardInfor.email" @blur="myFocus">
+      </p>
+      <p>
+        <i>*</i>
+        <span>地址：</span>
+        <input type="text" placeholder="地址" v-model="cardInfor.address" @blur="myFocus">
+      </p>
+      <!-- <group>
         <x-input title="手机:" is-type="china-mobile" placeholder="未填写信息" v-model="cardInfor.phone" type="tel" @on-blur="myFocus"></x-input>
         <x-input title="座机:" placeholder="未填写信息" v-model="cardInfor.tel" type="tel" @on-blur="myFocus"></x-input>
         <x-input title="微信:" placeholder="未填写信息" v-model="cardInfor.weixin" @on-blur="myFocus"></x-input>
         <x-input title="邮箱:" is-type="email" placeholder="未填写信息" v-model="cardInfor.email" type="text" @on-blur="myFocus"></x-input>
         <x-input title="地址:" placeholder="未填写信息" v-model="cardInfor.address" @on-blur="myFocus"></x-input>
-      </group>
+      </group> -->
     </div>
     <h5>个人简介</h5>
     <div class="self-bio">
@@ -95,11 +141,11 @@
         </li>
       </ul>
     </div>
-    <!-- <h5>录制语音</h5>
+    <h5>录制语音</h5>
     <div class="self-audio">
       <p @click="audioDialog = true">暂无声音录制，请点击录制 <x-icon type="ios-plus-outline"></x-icon></p>
       <audio src="@/assets/audio/audio.ogg" controls="controls"></audio>
-    </div> -->
+    </div>
     <h5>我的图片</h5>
     <div class="self-img clearfix">
       <p v-for="(item, index) in albumList" :key="index" class="fl" v-if="item != ''">
@@ -108,7 +154,7 @@
       </p>
       <span>
         <form action="" id="album">
-          <input type="file" accept="image/*;capture=camera"  @change="changeFile($event, 'album')" name="avatar"/>
+          <input type="file" accept="image/*;capture=camera"  @change="changeFile($event, 'album')" name="avatar" multiple/>
         </form>
         <x-icon type="ios-plus-empty" class="icon-insert"></x-icon>
       </span>
@@ -162,14 +208,18 @@ import html2canvas from 'html2canvas'
 import { updateCard, cardRead, cardTagDelete, cardTagInsert } from '@/api/card'
 import { upload_img } from '@/api/upload_file'
 import Cookies from 'js-cookie'
+import VueCropper from 'vue-cropperjs'
 
 export default {
   name: 'editCard',
   components: {
-    Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle, AlertModule
+    Scroller, XInput, Group, XButton, Cell, XTextarea, XDialog, XCircle, AlertModule, VueCropper
   },
   data () {
     return {
+      imgSrc: '', // 选择的头像图片路径
+      cropImg: '', // 裁剪过后的图片路径base64
+      crop: false, // 裁剪头像弹框
       cardInfor: {
         phone: '',
         tel: '',
@@ -198,6 +248,56 @@ export default {
     }
   },
   methods: {
+    setImage (e) {
+      this.crop = true
+      const file = e.target.files[0]
+      if (!file.type.includes('image/')) {
+        alert('Please select an image file')
+        return
+      }
+      if (typeof FileReader === 'function') {
+        const reader = new FileReader()
+        reader.onload = (event) => {
+          this.imgSrc = event.target.result
+          // rebuild cropperjs with the updated source
+          this.$refs.cropper.replace(event.target.result)
+        }
+        reader.readAsDataURL(file)
+      } else {
+        alert('Sorry, FileReader API not supported')
+      }
+    },
+    cropImage () {
+      this.$vux.loading.show({
+        text: 'Loading'
+      })
+      // get image data for post processing, e.g. upload or setting image src
+      this.cropImg = this.$refs.cropper.getCroppedCanvas().toDataURL()
+      let blob = this.dataURLtoBlob(this.cropImg)// base64转blob对象，用于上传
+      // var size = blob.size
+      // if (size > 131584) {
+      //   alert('上传头像小于1MB！')
+      // }
+      // 创建FormData对象
+      let fd = new FormData()
+      let filename = 'card.png'
+      fd.append('avatar', blob, filename)
+      upload_img(fd).then(res => {
+        if (res.data && res.data.url) {
+          this.cardInfor.image = res.data.url
+          this.crop = false
+          this.$vux.loading.hide()
+        }
+      })
+    },
+    rotate () {
+      // guess what this does :)
+      this.$refs.cropper.rotate(90)
+    },
+    closeCrop () {
+      this.crop = false
+      document.querySelector('#avatar').value = ''
+    },
     closeTagDialog () {
       this.insertTagDialog = false
     },
@@ -303,19 +403,19 @@ export default {
     },
     touchstart () {
       console.log('start')
-      // this.$wechat.startRecord()
+      this.$wechat.startRecord()
     },
     touchend () {
       console.log('end')
-      // this.$wechat.stopRecord({
-      //   success: function (res) {
-      //     var localId = res.localId
-      //     console.log(localId, 'url')
-      //   },
-      //   fail: function (res) {
-      //     console.log(JSON.stringify(res))
-      //   }
-      // })
+      this.$wechat.stopRecord({
+        success: function (res) {
+          var localId = res.localId
+          console.log(localId, 'url')
+        },
+        fail: function (res) {
+          console.log(JSON.stringify(res))
+        }
+      })
     },
     changeTemplate (val, index) {
       this.seletedTemplate = val
@@ -404,6 +504,13 @@ export default {
         })
         return false
       }
+      if (this.cardInfor.address === '') {
+        AlertModule.show({
+          title: '提示',
+          content: '请输入地址！'
+        })
+        return false
+      }
       this.$vux.loading.show({
         text: 'Loading'
       })
@@ -413,9 +520,9 @@ export default {
   },
   mounted () {
     this.getCard()
-    // this.$wechat.ready(() => {
-    //   console.log('ready')
-    // })
+    this.$wechat.ready(() => {
+      console.log('ready')
+    })
   }
 }
 </script>
@@ -447,6 +554,15 @@ export default {
       height: 100%;
       width: 100%;
       font-weight: bold;
+      .phone{
+        height: 0.32rem;
+      }
+      .email{
+        height: 0.32rem;
+      }
+      .address{
+        height: 0.32rem;
+      }
     }
   }
   h5{
@@ -505,6 +621,32 @@ export default {
         font-size: 0.32rem;
         color: #717171;
         font-weight: normal;
+      }
+    }
+    p{
+      position: relative;
+      height: 0.9rem;
+      padding: 0.2rem 0.3rem;
+      i{
+        position: absolute;
+        top: 0.25rem;
+        left: 0.12rem;
+        color: red;
+      }
+      span{
+        font-size: 0.32rem;
+        color: #717171;
+        width: 1rem;
+        float: left;
+      }
+      input{
+        float: left;
+        width: calc(100% - 1rem);
+        height: 0.5rem;
+        border: none;
+        outline: none;
+        font-size: 0.34rem;
+        color: #777;
       }
     }
   }
@@ -718,6 +860,27 @@ export default {
   }
   & /deep/ .weui-dialog{
     max-width: 6rem;
+  }
+}
+.cropWrap{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #fff;
+  z-index: 3;
+  .crop-btn{
+    button{
+      background-color: #5977fe;
+      width: 120px;
+      height: 40px;
+      border-radius: 40px;
+      border: none;
+      color: #fff;
+      outline: none;
+      margin-top: 30px;
+    }
   }
 }
 </style>

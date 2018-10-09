@@ -20,6 +20,7 @@
     "js-cookie": "^2.2.0",
     "upng-js": "^2.1.0",
     "vue": "^2.5.2",
+    "vue-cropperjs": "^2.2.2",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "vux": "^2.9.2"

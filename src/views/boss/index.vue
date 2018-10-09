@@ -5,8 +5,8 @@
  * @Last Modified time: 2018-09-29 17:28:32
 */
 <template>
-  <div class="boss">
-    <p class="search clearfix">
+  <div class="boss" :class="activeTab === 2 ? 'boss_min':'boss_max'">
+    <p class="search clearfix" style="position: fixed;top:0;width: 100%;z-index: 1000;background-color: #fff;">
       <span>
         <input type="text" placeholder="搜索" v-model="keywords" @change="searchList(keywords)">
         <x-icon type="ios-search-strong" @click="searchList(keywords)"></x-icon>
@@ -15,36 +15,40 @@
     </p>
     <div>
       <div v-transfer-dom>
-        <x-dialog v-model="showDepartment" class="dialog-demo" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', top:'380px'}">
+        <x-dialog v-if="showDepartment" v-model="showDepartment" class="dialog-content" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', top:'380px'}">
           <p class="dialog-title">
             <span @click="selectDept">确定</span>
             <span>选择部门</span>
             <span @click="showDepartment=false">取消</span>
           </p>
             <div>
-              <swiper v-model="demo01_index" @on-index-change="demo01_onIndexChange" height="50px" :show-dots="false" style="background-color: #FBFBFB">
+              <!--<swiper v-model="demo01_index" @on-index-change="demo01_onIndexChange" height="50px" :show-dots="false" style="background-color: #FBFBFB">
                 <swiper-item v-if="swiper_item_1" class="swiper_swrap">
-                  <!--<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 2"></x-icon>-->
+                  &lt;!&ndash;<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 2"></x-icon>&ndash;&gt;
                   <span :class="{span_active:currentDeptType==0}" @click="choseDept(0)">{{deptLevel0}}</span>
                   <span :class="{span_active:currentDeptType==1}" @click="choseDept(1)">{{deptLevel1}}</span>
                   <span :class="{span_active:currentDeptType==2}" @click="choseDept(2)">{{deptLevel2}}</span>
-                  <!--<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 1"></x-icon>-->
+                  &lt;!&ndash;<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 1"></x-icon>&ndash;&gt;
                 </swiper-item>
                 <swiper-item v-if="swiper_item_2" class="swiper_swrap">
-                  <!--<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 0"></x-icon>-->
+                  &lt;!&ndash;<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 0"></x-icon>&ndash;&gt;
                   <span :class="{span_active:currentDeptType==3}" @click="choseDept(3)">{{deptLevel3}}</span>
                   <span :class="{span_active:currentDeptType==4}" @click="choseDept(4)">{{deptLevel4}}</span>
                   <span :class="{span_active:currentDeptType==5}" @click="choseDept(5)">{{deptLevel5}}</span>
-                  <!--<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 2"></x-icon>-->
+                  &lt;!&ndash;<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 2"></x-icon>&ndash;&gt;
                 </swiper-item>
                 <swiper-item v-if="swiper_item_3" class="swiper_swrap">
-                  <!--<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 1"></x-icon>-->
+                  &lt;!&ndash;<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 1"></x-icon>&ndash;&gt;
                   <span :class="{span_active:currentDeptType==6}" @click="choseDept(6)">{{deptLevel6}}</span>
                   <span :class="{span_active:currentDeptType==7}" @click="choseDept(7)">{{deptLevel7}}</span>
                   <span :class="{span_active:currentDeptType==8}" @click="choseDept(8)">{{deptLevel8}}</span>
-                  <!--<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 0"></x-icon>-->
+                  &lt;!&ndash;<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 0"></x-icon>&ndash;&gt;
                 </swiper-item>
-              </swiper>
+              </swiper>-->
+              <tab id="tab1">
+                <tab-item></tab-item>
+                <tab-item v-for="(item,index) in depList" :key="index" @on-item-click="clickLevel"></tab-item>
+              </tab>
               <ul>
                <li v-for="(item,index) in departmentList" :key="index">
                  <p @click="clickDept(item)">{{item.label}} </p>
@@ -57,14 +61,14 @@
         </x-dialog>
       </div>
     </div>
-    <tab v-model="activeTab">
+    <tab v-model="activeTab" style="position: fixed;top:65px;width: 100%;z-index: 1000;background-color: #fff;">
       <tab-item><span @click="choseActive(1)">总览</span></tab-item>
       <tab-item><span @click="choseActive(2)">销售排行</span></tab-item>
       <tab-item><span @click="choseActive(3)">AI分析</span></tab-item>
     </tab>
-    <p class="line"></p>
+    <p class="line" style="position: fixed;;top:109px;width: 100%;z-index: 1000;background-color: #f3f3f3;"></p>
     <div v-show="activeTab === 0" class="nav-tab">
-      <tab v-model="tabIndex">
+      <tab v-model="tabIndex" style="position: fixed;top:116.5px;width: 100%;z-index: 1000;background-color: #fff;">
         <tab-item><span @click="choseTimeType(0)">汇总</span></tab-item>
         <tab-item><span @click="choseTimeType(1)">昨日</span></tab-item>
         <tab-item><span @click="choseTimeType(2)">近七天</span></tab-item>
@@ -81,7 +85,12 @@
       </div>
       <div v-show="tabIndex === 1" class="second-tab-list second-nav-list-2">
         <ul>
-          <li v-for="(item,index) in totalCustomer" :key="index">
+          <li v-for="(item,index) in totalCustomer1" :key="index">
+            <span>{{item.title}}</span>
+            <span class="red">{{item.pertenage}}</span>
+            <span class="red">{{item.num}}</span>
+          </li>
+          <li v-for="(item,index) in totalCustomer2" :key="index + 3">
             <span>{{item.title}}</span>
             <span class="blue">{{item.pertenage}}</span>
             <span class="blue">{{item.num}}</span>
@@ -90,7 +99,12 @@
       </div>
       <div v-show="tabIndex === 2" class="second-tab-list second-nav-list-2">
         <ul>
-          <li v-for="(item,index) in totalCustomer" :key="index">
+          <li v-for="(item,index) in totalCustomer1" :key="index">
+            <span>{{item.title}}</span>
+            <span class="red">{{item.pertenage}}</span>
+            <span class="red">{{item.num}}</span>
+          </li>
+          <li v-for="(item,index) in totalCustomer2" :key="index + 3">
             <span>{{item.title}}</span>
             <span class="blue">{{item.pertenage}}</span>
             <span class="blue">{{item.num}}</span>
@@ -99,7 +113,12 @@
       </div>
       <div v-show="tabIndex === 3" class="second-tab-list second-nav-list-2">
         <ul>
-          <li v-for="(item,index) in totalCustomer" :key="index">
+          <li v-for="(item,index) in totalCustomer1" :key="index">
+            <span>{{item.title}}</span>
+            <span class="red">{{item.pertenage}}</span>
+            <span class="red">{{item.num}}</span>
+          </li>
+          <li v-for="(item,index) in totalCustomer2" :key="index + 3">
             <span>{{item.title}}</span>
             <span class="blue">{{item.pertenage}}</span>
             <span class="blue">{{item.num}}</span>
@@ -108,7 +127,12 @@
       </div>
       <div v-show="tabIndex === 4" class="second-tab-list second-nav-list-2">
         <ul>
-          <li v-for="(item,index) in totalCustomer" :key="index">
+          <li v-for="(item,index) in totalCustomer1" :key="index">
+            <span>{{item.title}}</span>
+            <span class="red">{{item.pertenage}}</span>
+            <span class="red">{{item.num}}</span>
+          </li>
+          <li v-for="(item,index) in totalCustomer2" :key="index + 3">
             <span>{{item.title}}</span>
             <span class="blue">{{item.pertenage}}</span>
             <span class="blue">{{item.num}}</span>
@@ -117,6 +141,7 @@
       </div>
       <p class="line"></p>
       <h3>成交率</h3>
+      <p style="border: 0.5px solid #eee"></p>
       <div class="funnel clearfix">
         <div id="main">
           <p>{{downChartInfor.num_1}}</p>
@@ -185,38 +210,38 @@
       </div>
     </div>
     <div v-show="activeTab === 1" class="sell">
-      <tab v-model="sellTabIndex">
+      <tab v-model="sellTabIndex" style="position: fixed;top:116.5px;width: 100%;z-index: 1000;background-color: #fff;">
         <tab-item ><span @click="choseType(1)">按客户人数</span></tab-item>
         <tab-item ><span @click="choseType(2)">按互动频率</span></tab-item>
         <tab-item ><span style="border: none;" @click="choseType(3)">按成交概率</span></tab-item>
       </tab>
       <div v-show="sellTabIndex === 0">
-        <tab v-model="sellClientTabIndex" :line-width="0">
+        <tab v-model="sellClientTabIndex" :line-width="0" style="position: fixed;top:160.5px;width: 100%;z-index: 1000;background-color: #fff;">
           <tab-item ><span @click="selectedUserType(1)">客户总数</span></tab-item>
           <tab-item ><span style="border: none;" @click="selectedUserType(2)">新增客户</span></tab-item>
         </tab>
       </div>
       <div v-show="sellTabIndex === 1">
-        <tab v-model="sellActionTabIndex" :line-width="0">
+        <tab v-model="sellActionTabIndex" :line-width="0" style="position: fixed;top:160.5px;width: 100%;z-index: 1000;background-color: #fff;">
           <tab-item><span @click="selectedInteraction(1)">跟进总数</span></tab-item>
           <tab-item ><span style="border: none;" @click="selectedInteraction(2)">咨询总数</span></tab-item>
         </tab>
-        <tab v-model="sellDateTabIndex" :line-width="0">
-          <tab-item><span @click="selectedInteractionTime(1)">昨日</span></tab-item>
+        <tab v-model="sellDateTabIndex" :line-width="0" style="position: fixed;top:204.5px;width: 100%;z-index: 1000;background-color: #fff;">
+          <tab-item><span @click="selectedInteractionTime(1)">昨日33</span></tab-item>
           <tab-item><span @click="selectedInteractionTime(2)">近七天</span></tab-item>
           <tab-item><span @click="selectedInteractionTime(3)">当月</span></tab-item>
           <tab-item><span @click="selectedInteractionTime(4)">近30天</span></tab-item>
         </tab>
       </div>
       <div v-show="sellTabIndex === 2">
-        <tab v-model="sellProbTabIndex" :line-width="0">
+        <tab v-model="sellProbTabIndex" :line-width="0" style="position: fixed;top:160.5px;width: 100%;z-index: 1000;background-color: #fff;">
           <tab-item><span @click="selectedProbability(1)">1%~50%</span></tab-item>
           <tab-item><span @click="selectedProbability(2)">51%~80%</span></tab-item>
           <tab-item><span @click="selectedProbability(3)">81%~99%</span></tab-item>
           <tab-item><span @click="selectedProbability(4)">100%</span></tab-item>
         </tab>
       </div>
-      <div class="sell-list">
+      <div class="sell-list" :class=" sellTabIndex === 1 ? 'sell-list_max':'sell-list_min'">
         <p class="self">
           <span class="fl">{{firstRankRow.lv}}</span>
           <img :src="firstRankRow.image" alt="">
@@ -279,6 +304,7 @@ export default {
   },
   data () {
     return {
+      depList: [0, 0, 0, 0, 0, 0, 0, 0, 0],
       keywords: '',
       swiper_item_1: true,
       swiper_item_2: false,
@@ -292,7 +318,7 @@ export default {
       currentDeptLabel: '',
       departmentList: [],
       departmentList1: [],
-      deptLevel0: '',
+      deptLevel0: '请选择部门',
       deptLevel1: '',
       deptLevel2: '',
       deptLevel3: '',
@@ -339,6 +365,8 @@ export default {
       salesRankAllList: [],
       firstRankRow: [],
       totalCustomer: [],
+      totalCustomer1: [],
+      totalCustomer2: [],
       AIList: [],
       downChartInfor: {
         like_company: 0,
@@ -407,7 +435,6 @@ export default {
   },
   methods: {
     selectDept () {
-      alert(this.currentDeptId)
       this.showDepartment = false
       // 销售排行
       this.listQuery2.dept = this.currentDeptId
@@ -438,13 +465,14 @@ export default {
           this.tree_data = res.data
           this.currentDeptLabel = res.data[0].label
           this.currentDeptId = res.data[0].id
-          this.deptLevel0 = res.data[0].label
           const map = []
           this.tree_data.forEach(item => {
             map.push(item)
           })
           this.departmentList = map
           this.departmentList1 = map
+          var nodeList = document.querySelectorAll('#tab1 .vux-tab-item')
+          nodeList[1].click()
         }
       })
     },
@@ -453,6 +481,11 @@ export default {
       this.currentDeptType = type + 1
       this.currentDeptLabel = item.label
       this.currentDeptId = item.id
+
+      this.depList[type] = item.id
+      var nodeList = document.querySelectorAll('#tab1 .vux-tab-item')
+      nodeList[type + 1].innerText = item.label
+      nodeList[type + 2].click()
       if (type === 0) {
         this.deptIdList[0] = this.currentDeptId
         this.deptLevel0 = this.currentDeptLabel
@@ -489,12 +522,13 @@ export default {
         }
         if (this.departmentList.length !== 0) {
           this.deptLevel3 = '请选择部门'
-          this.swiper_item_2 = true
         } else {
           this.deptLevel3 = '无下级部门'
           this.swiper_item_2 = false
           this.swiper_item_3 = false
         }
+        this.swiper_item_2 = true
+        this.demo01_index = 1
       } else if (type === 3) {
         this.deptIdList[3] = this.currentDeptId
         this.deptLevel3 = this.currentDeptLabel
@@ -531,11 +565,11 @@ export default {
         }
         if (this.departmentList.length !== 0) {
           this.deptLevel6 = '请选择部门'
-          this.swiper_item_3 = true
         } else {
           this.deptLevel6 = '无下级部门'
-          this.swiper_item_3 = false
         }
+        this.swiper_item_3 = true
+        this.demo01_index = 2
       } else if (type === 6) {
         this.deptIdList[6] = this.currentDeptId
         this.deptLevel6 = this.currentDeptLabel
@@ -567,116 +601,140 @@ export default {
         this.deptLevel8 = this.currentDeptLabel
       }
     },
-    choseDept (type) {
-      this.currentDeptType = type
-      if (type === 0) {
-        this.departmentList = this.departmentList1
-        this.swiper_item_2 = false
-        this.swiper_item_3 = false
-        this.deptLevel1 = ''
-        this.deptLevel2 = ''
-        this.deptLevel3 = ''
-        this.deptLevel4 = ''
-        this.deptLevel5 = ''
-        this.deptLevel6 = ''
-        this.deptLevel7 = ''
-        this.deptLevel8 = ''
-      } else if (type === 1) {
-        this.swiper_item_2 = false
-        this.swiper_item_3 = false
-        if (this.deptIdList[0] !== 0) {
-          this.currentDeptId = this.deptIdList[0]
-        }
-        if (this.deptLevel0 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        this.deptLevel2 = ''
-        this.deptLevel3 = ''
-        this.deptLevel4 = ''
-        this.deptLevel5 = ''
-        this.deptLevel6 = ''
-        this.deptLevel7 = ''
-        this.deptLevel8 = ''
-      } else if (type === 2) {
-        this.swiper_item_2 = false
-        this.swiper_item_3 = false
-        this.currentDeptId = this.deptIdList[1]
-        if (this.deptLevel1 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        this.deptLevel3 = ''
-        this.deptLevel4 = ''
-        this.deptLevel5 = ''
-        this.deptLevel6 = ''
-        this.deptLevel7 = ''
-        this.deptLevel8 = ''
-      } else if (type === 3) {
-        this.swiper_item_3 = false
-        this.currentDeptId = this.deptIdList[2]
-        if (this.deptLevel2 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        this.deptLevel4 = ''
-        this.deptLevel5 = ''
-        this.deptLevel6 = ''
-        this.deptLevel7 = ''
-        this.deptLevel8 = ''
-      } else if (type === 4) {
-        this.swiper_item_3 = false
-        this.currentDeptId = this.deptIdList[3]
-        if (this.deptLevel3 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        this.deptLevel5 = ''
-        this.deptLevel6 = ''
-        this.deptLevel7 = ''
-        this.deptLevel8 = ''
-      } else if (type === 5) {
-        this.swiper_item_3 = false
-        this.currentDeptId = this.deptIdList[4]
-        if (this.deptLevel4 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        this.deptLevel6 = ''
-        this.deptLevel7 = ''
-        this.deptLevel8 = ''
-      } else if (type === 6) {
-        this.currentDeptId = this.deptIdList[5]
-        if (this.deptLevel5 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        this.deptLevel7 = ''
-        this.deptLevel8 = ''
-      } else if (type === 7) {
-        this.currentDeptId = this.deptIdList[6]
-        if (this.deptLevel6 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        this.deptLevel8 = ''
-      } else if (type === 8) {
-        this.currentDeptId = this.deptIdList[7]
-        if (this.deptLevel7 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
+    clickLevel (index) {
+      console.log(index)
+      this.currentDeptType = index - 1
+      var nodeList = document.querySelectorAll('#tab1 .vux-tab-item')
+      for (var i = index; i < nodeList.length; i++) {
+        nodeList[i].innerHTML = ''
+        this.depList[i] = 0
+      }
+      if (nodeList[index - 1].innerText !== '全部') {
+        this.setDeptData(this.tree_data, this.depList[index - 2], index - 1)
+      } else {
+        this.departmentList = []
+      }
+      if (this.departmentList.length !== 0) {
+        nodeList[index].innerText = '请选择部门'
+      } else {
+        nodeList[index].innerText = '无下级部门'
       }
     },
+    // choseDept (type) {
+    //   this.currentDeptType = type
+    //   if (type === 0) {
+    //     this.departmentList = this.departmentList1
+    //     this.swiper_item_2 = false
+    //     this.swiper_item_3 = false
+    //     this.deptLevel1 = ''
+    //     this.deptLevel2 = ''
+    //     this.deptLevel3 = ''
+    //     this.deptLevel4 = ''
+    //     this.deptLevel5 = ''
+    //     this.deptLevel6 = ''
+    //     this.deptLevel7 = ''
+    //     this.deptLevel8 = ''
+    //   } else if (type === 1) {
+    //     this.swiper_item_2 = false
+    //     this.swiper_item_3 = false
+    //     if (this.deptIdList[0] !== 0) {
+    //       this.currentDeptId = this.deptIdList[0]
+    //     }
+    //     if (this.deptLevel0 !== '全部') {
+    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
+    //     } else {
+    //       this.departmentList = []
+    //     }
+    //     this.deptLevel2 = ''
+    //     this.deptLevel3 = ''
+    //     this.deptLevel4 = ''
+    //     this.deptLevel5 = ''
+    //     this.deptLevel6 = ''
+    //     this.deptLevel7 = ''
+    //     this.deptLevel8 = ''
+    //   } else if (type === 2) {
+    //     this.swiper_item_2 = false
+    //     this.swiper_item_3 = false
+    //     this.currentDeptId = this.deptIdList[1]
+    //     if (this.deptLevel1 !== '全部') {
+    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
+    //     } else {
+    //       this.departmentList = []
+    //     }
+    //     this.deptLevel3 = ''
+    //     this.deptLevel4 = ''
+    //     this.deptLevel5 = ''
+    //     this.deptLevel6 = ''
+    //     this.deptLevel7 = ''
+    //     this.deptLevel8 = ''
+    //   } else if (type === 3) {
+    //     this.swiper_item_3 = false
+    //     this.currentDeptId = this.deptIdList[2]
+    //     if (this.deptLevel2 !== '全部') {
+    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
+    //     } else {
+    //       this.departmentList = []
+    //     }
+    //     this.deptLevel4 = ''
+    //     this.deptLevel5 = ''
+    //     this.deptLevel6 = ''
+    //     this.deptLevel7 = ''
+    //     this.deptLevel8 = ''
+    //   } else if (type === 4) {
+    //     this.swiper_item_3 = false
+    //     this.currentDeptId = this.deptIdList[3]
+    //     if (this.deptLevel3 !== '全部') {
+    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
+    //     } else {
+    //       this.departmentList = []
+    //     }
+    //     this.deptLevel5 = ''
+    //     this.deptLevel6 = ''
+    //     this.deptLevel7 = ''
+    //     this.deptLevel8 = ''
+    //   } else if (type === 5) {
+    //     this.swiper_item_3 = false
+    //     this.currentDeptId = this.deptIdList[4]
+    //     if (this.deptLevel4 !== '全部') {
+    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
+    //     } else {
+    //       this.departmentList = []
+    //     }
+    //     this.deptLevel6 = ''
+    //     this.deptLevel7 = ''
+    //     this.deptLevel8 = ''
+    //   } else if (type === 6) {
+    //     this.currentDeptId = this.deptIdList[5]
+    //     if (this.deptLevel5 !== '全部') {
+    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
+    //     } else {
+    //       this.departmentList = []
+    //     }
+    //     this.deptLevel7 = ''
+    //     this.deptLevel8 = ''
+    //   } else if (type === 7) {
+    //     this.currentDeptId = this.deptIdList[6]
+    //     if (this.deptLevel6 !== '全部') {
+    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
+    //     } else {
+    //       this.departmentList = []
+    //     }
+    //     this.deptLevel8 = ''
+    //   } else if (type === 8) {
+    //     this.currentDeptId = this.deptIdList[7]
+    //     if (this.deptLevel7 !== '全部') {
+    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
+    //     } else {
+    //       this.departmentList = []
+    //     }
+    //   }
+    // },
     setDeptData (data, id, type) {
+      if (type === 0) {
+        this.departmentList = []
+        this.departmentList = JSON.parse(JSON.stringify(data))
+        return
+      }
       for (var i in data) {
         if (data[i].id === id) {
           if (data[i].children !== undefined) {
@@ -769,6 +827,18 @@ export default {
         map.push(obj)
       }
       this.totalCustomer = map
+      let array = this.sliceArray(map, 3)
+      this.totalCustomer1 = array[0]
+      this.totalCustomer2 = array[1]
+    },
+    sliceArray (array, size) {
+      var result = []
+      for (var x = 0; x < Math.ceil(array.length / size); x++) {
+        var start = x * size
+        var end = start + size
+        result.push(array.slice(start, end))
+      }
+      return result
     },
     setData (data, num) {
       let XData = []
@@ -863,6 +933,7 @@ export default {
       bossOverview(this.listQuery).then(res => {
         if (res.code === 200) {
           this.downChartInfor = res.data
+          // 客户兴趣占比
           this.likeTotal =
             this.downChartInfor.like_company.num +
             this.downChartInfor.like_me.num +
@@ -1210,9 +1281,19 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
+  .boss_min{
+    padding-top:120.5px;
+  }
+  .boss_max{
+    padding-top:160.5px;
+  }
+  ::-webkit-scrollbar{
+    width: 0.01px;
+  }
   .boss{
     overflow: auto;
     height: 100%;
+    -webkit-overflow-scrolling: touch;
     .line{
       height: 0.15rem;
       background-color: #f3f3f3;
@@ -1242,7 +1323,7 @@ export default {
         }
       }
       &>i{
-        width: 1.5rem;
+        width: 1.8rem;
         height: 0.7rem;
         background-color: #f3f3f3;
         color: #5977fe;
@@ -1290,6 +1371,12 @@ export default {
         font-size: 0.36rem;
         color: #717171;
       }
+    }
+    .sell-list_max{
+      padding-top: 91px;
+    }
+    .sell-list_min{
+      padding-top: 53px;
     }
     .second-tab-list{
       width: 100%;
@@ -1342,30 +1429,30 @@ export default {
         }
       }
     }
-    .funnel{
-      #main{
+    .funnel {
+      #main {
         width: 60%;
         height: 6rem;
         background: url('~@/assets/img/chart.png') no-repeat center;
         background-size: contain;
         margin: 0 auto;
-        padding-top: 1.2rem;
-        p{
+        padding-top: 1.3rem;
+        p {
           text-align: center;
-          margin-bottom: 0.68rem;
+          margin-bottom: 0.64rem;
           color: #fff;
         }
       }
-      &>p{
+      & > p {
         text-align: center;
         font-size: 0.26rem;
         color: #717171;
-        margin-bottom: 0.68rem;
+        margin-bottom: 0.4rem;
       }
-      ul{
+      ul {
         padding: 0 0.2rem;
       }
-      li{
+      li {
         float: left;
         width: 25%;
         height: 0.5rem;
@@ -1374,25 +1461,26 @@ export default {
         color: #adbaff;
         margin-bottom: 0.4rem;
         position: relative;
-        &::after{
+        &::after {
           content: '';
           position: absolute;
-          top: 0.14rem;
+          top: 50%;
+          transform: translateY(-60%);
           left: 0;
           width: 0.22rem;
           height: 0.22rem;
           border-radius: 0.22rem;
         }
-        &:nth-child(1)::after{
+        &:nth-child(1)::after {
           background-color: #3ec4d2;
         }
-        &:nth-child(2)::after{
+        &:nth-child(2)::after {
           background-color: #0fd35d;
         }
-        &:nth-child(3)::after{
+        &:nth-child(3)::after {
           background-color: #feab2b;
         }
-        &:nth-child(4)::after{
+        &:nth-child(4)::after {
           background-color: #ff5f1a;
         }
       }
@@ -1669,10 +1757,14 @@ export default {
       }
     }
   }
-  .dialog-demo {
+  .dialog-content {
+    position: fixed;
+    bottom: 0;
     width: 100%;
-    bottom: 250px;
     height: 250px;
+    #tab1{
+      background-color: #fbfbfb;
+    }
     .swiper_swrap{
       height: 50px;
       span {
@@ -1694,7 +1786,6 @@ export default {
     }
     ul{
       height: 186px;
-      overflow-y: auto;
       li{
         height: 40px;
         width: 100%;
@@ -1721,11 +1812,15 @@ export default {
       }
       span:nth-child(2){
         color: black;
-        font-size: 20px;
+        font-size: 18px;
       }
     }
     span.vux-close {
       background-color: #fff;
     }
+    
+    .scrollable .vux-tab-item {
+    	flex: 0 0 33.33%;
+   	}
   }
 </style>

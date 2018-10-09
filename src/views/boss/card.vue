@@ -69,7 +69,12 @@
         </div>
         <div v-show="dataTabIndex === 1" class="second-tab-list second-nav-list-2">
           <ul>
-            <li v-for="(item,index) in totalCustomer" :key="index">
+            <li v-for="(item,index) in totalCustomer1" :key="index">
+              <span>{{item.title}}</span>
+              <span class="red">{{item.pertenage}}%</span>
+              <span class="red">{{item.num}}</span>
+            </li>
+            <li v-for="(item,index) in totalCustomer2" :key="index + 3">
               <span>{{item.title}}</span>
               <span class="blue">{{item.pertenage}}%</span>
               <span class="blue">{{item.num}}</span>
@@ -78,7 +83,12 @@
         </div>
         <div v-show="dataTabIndex === 2" class="second-tab-list second-nav-list-2">
           <ul>
-            <li v-for="(item,index) in totalCustomer" :key="index">
+            <li v-for="(item,index) in totalCustomer1" :key="index">
+              <span>{{item.title}}</span>
+              <span class="red">{{item.pertenage}}%</span>
+              <span class="red">{{item.num}}</span>
+            </li>
+            <li v-for="(item,index) in totalCustomer2" :key="index + 3">
               <span>{{item.title}}</span>
               <span class="blue">{{item.pertenage}}%</span>
               <span class="blue">{{item.num}}</span>
@@ -87,7 +97,12 @@
         </div>
         <div v-show="dataTabIndex === 3" class="second-tab-list second-nav-list-2">
           <ul>
-            <li v-for="(item,index) in totalCustomer" :key="index">
+            <li v-for="(item,index) in totalCustomer1" :key="index">
+              <span>{{item.title}}</span>
+              <span class="red">{{item.pertenage}}%</span>
+              <span class="red">{{item.num}}</span>
+            </li>
+            <li v-for="(item,index) in totalCustomer2" :key="index + 3">
               <span>{{item.title}}</span>
               <span class="blue">{{item.pertenage}}%</span>
               <span class="blue">{{item.num}}</span>
@@ -96,7 +111,12 @@
         </div>
         <div v-show="dataTabIndex === 4" class="second-tab-list second-nav-list-2">
           <ul>
-            <li v-for="(item,index) in totalCustomer" :key="index">
+            <li v-for="(item,index) in totalCustomer1" :key="index">
+              <span>{{item.title}}</span>
+              <span class="red">{{item.pertenage}}%</span>
+              <span class="red">{{item.num}}</span>
+            </li>
+            <li v-for="(item,index) in totalCustomer2" :key="index + 3">
               <span>{{item.title}}</span>
               <span class="blue">{{item.pertenage}}%</span>
               <span class="blue">{{item.num}}</span>
@@ -105,9 +125,14 @@
         </div>
         <p class="line"></p>
         <h3>成交率</h3>
+        <p style="border: 0.5px solid #eee"></p>
         <div class="funnel clearfix">
           <div id="main">
-            <p v-for="(item, index) in turnoverData" :key="index">{{item.num}}</p>
+            <p>{{downChartInfor.num_0.num}}</p>
+            <p>{{downChartInfor.num_1.num}}</p>
+            <p>{{downChartInfor.num_2.num}}</p>
+            <p>{{downChartInfor.num_3.num}}</p>
+            <!--<p v-for="(item, index) in turnoverData" :key="index">{{item.num}}</p>-->
           </div>
           <p>成交概率区间</p>
           <ul>
@@ -132,7 +157,7 @@
         <div class="action">
           <p v-for="(item, index) in countObj" :key="index" class="graph">
             <span>{{item.name}}</span>
-            <i :style="{width: item.num/forTotal*10 + '%'}"></i>
+            <i :style="{width: item.num/forTotal*60 + '%'}"></i>
             <b>{{item.num}}</b>
           </p>
         </div>
@@ -179,6 +204,16 @@ export default {
   },
   data () {
     return {
+      likeTotal: 0, // 兴趣总数
+      downChartInfor: {
+        look_goods: 0,
+        look_me: 0,
+        look_web: 0,
+        num_0: {},
+        num_1: {},
+        num_2: {},
+        num_3: {}
+      },
       listQuery: {
         type: 1,
         date_type: 1,
@@ -186,24 +221,15 @@ export default {
         employ_id: this.$route.query.employ_id
       },
       chartData: [],
-      drawCareData: [
-        {value: 0, name: '25%'},
-        {value: 0, name: '40%'},
-        {value: 0, name: '35%'}
-      ],
       employData: [],
       followData: [],
       currentDate: '',
-      turnoverData: [
-        {num: 0},
-        {num: 0},
-        {num: 0},
-        {num: 0}
-      ],
       forTotal: 0,
       topTitleInfor: [],
       pertenageData: [],
       totalCustomer: [],
+      totalCustomer1: [],
+      totalCustomer2: [],
       chartTopData: [],
       dynamicXData: [],
       dynamicYData: [],
@@ -262,6 +288,18 @@ export default {
         }
       }
       this.totalCustomer = map
+      let array = this.sliceArray(map, 3)
+      this.totalCustomer1 = array[0]
+      this.totalCustomer2 = array[1]
+    },
+    sliceArray (array, size) {
+      var result = []
+      for (var x = 0; x < Math.ceil(array.length / size); x++) {
+        var start = x * size
+        var end = start + size
+        result.push(array.slice(start, end))
+      }
+      return result
     },
     setArawAITop (data) {
       if (data !== undefined) {
@@ -296,10 +334,22 @@ export default {
             this.topTitleInfor = res.data.data
             const data = res.data.user_data
             this.employData = res.data.employ_data
+            this.downChartInfor = this.employData
+            // 与我互动
             this.setForMeData(res.data.employ_res.for_me)
-            this.setEmployData(this.employData)
+            // 客户兴趣占比
+            this.likeTotal =
+              this.downChartInfor.look_goods.num +
+              this.downChartInfor.look_me.num +
+              this.downChartInfor.look_web.num
+            if (this.likeTotal === 0) {
+              this.likeTotal = 1
+            }
+            this.drawCare()
+            // 数据总览
             this.setOverviewTotal(this.employData)
             if (data !== undefined) {
+              // 客户活跃度
               this.setData(data)
             }
           } else if (param.type === 3) {
@@ -334,17 +384,6 @@ export default {
       this.dynamicXData = XData
       this.dynamicYData = YData
       this.drawDynamic()
-    },
-    setEmployData (data) {
-      this.turnoverData[0].num = data.num_0.num
-      this.turnoverData[1].num = data.num_1.num
-      this.turnoverData[2].num = data.num_2.num
-      this.turnoverData[3].num = data.num_3.num
-
-      this.drawCareData[0].value = data.look_web.num
-      this.drawCareData[1].value = data.look_goods.num
-      this.drawCareData[2].value = data.look_me.num
-      this.drawCare()
     },
     setForMeData (data) {
       let temp = []
@@ -464,7 +503,45 @@ export default {
             name: '访问来源',
             type: 'pie',
             radius: '75%',
-            data: this.drawCareData,
+            center: ['50%', '54%'],
+            data: [
+              {
+                value: `${(
+                  (this.downChartInfor.look_web.num / this.likeTotal) *
+                  100
+                ).toFixed(1)}`,
+                name: '公司',
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
+              },
+              {
+                name: '产品',
+                value: `${(
+                  (this.downChartInfor.look_goods.num / this.likeTotal) *
+                  100
+                ).toFixed(1)}`,
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
+              },
+              {
+                name: '个人',
+                value: `${(
+                  (this.downChartInfor.look_me.num / this.likeTotal) *
+                  100
+                ).toFixed(1)}`,
+                label: {
+                  normal: {
+                    formatter: '{c}%'
+                  }
+                }
+              }
+            ],
             itemStyle: {
               emphasis: {
                 shadowBlur: 10,
@@ -474,8 +551,7 @@ export default {
             },
             label: {
               normal: {
-                show: true,
-                position: 'inside'
+                show: true
               }
             }
           }
@@ -704,16 +780,16 @@ export default {
     }
   }
   .funnel{
-    #main{
+    #main {
       width: 60%;
       height: 6rem;
       background: url('~@/assets/img/chart.png') no-repeat center;
       background-size: contain;
       margin: 0 auto;
-      padding-top: 1.2rem;
-      p{
+      padding-top: 1.3rem;
+      p {
         text-align: center;
-        margin-bottom: 0.7rem;
+        margin-bottom: 0.64rem;
         color: #fff;
       }
     }

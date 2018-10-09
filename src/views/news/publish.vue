@@ -12,7 +12,7 @@
     <group title="添加图片">
       <p class="upload-imglist clearfix">
         <span v-for="(item,i) in fileList" :key="i" class="fl" style="position:relative;">
-          <x-icon type="ios-close-outline" class="vux-close"></x-icon>
+          <x-icon type="ios-close-outline" class="vux-close" @click.native="del_pic(i)"></x-icon>
           <img :src="item">
         </span>
         <span class="upload-btn">
@@ -48,6 +48,9 @@ export default {
     }
   },
   methods: {
+      del_pic(index){
+          this.fileList.splice(index,1);
+      },
     changeFile (e) {
       var obj = e.target.files[0]// 获取图片对象
       if (!obj) {
@@ -86,6 +89,11 @@ export default {
       if (this.value === '') {
         alert('内容不能为空！')
         return
+      }
+
+      if(this.fileList.length == 0){
+          alert('图片不能为空！')
+          return
       }
 
       const content = this.fileList.join(',')
