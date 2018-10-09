@@ -16,29 +16,33 @@
     <div>
       <div v-transfer-dom>
         <x-dialog v-model="showDepartment" class="dialog-demo" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', top:'380px'}">
-          <h3 class="dialog-title">选择部门</h3>
+          <p class="dialog-title">
+            <span @click="selectDept">确定</span>
+            <span>选择部门</span>
+            <span @click="showDepartment=false">取消</span>
+          </p>
             <div>
               <swiper v-model="demo01_index" @on-index-change="demo01_onIndexChange" height="50px" :show-dots="false" style="background-color: #FBFBFB">
-                <swiper-item>
-                  <x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 2"></x-icon>
-                  <span :class="{span_active:currentDeptType==0}" @click="choseDept(0)">{{choseDeptTop1.deptLevel0}}</span>
-                  <span :class="{span_active:currentDeptType==1}" @click="choseDept(1)">{{choseDeptTop1.deptLevel1}}</span>
-                  <span :class="{span_active:currentDeptType==2}" @click="choseDept(2)">{{choseDeptTop1.deptLevel2}}</span>
-                  <x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 1"></x-icon>
+                <swiper-item v-if="swiper_item_1" class="swiper_swrap">
+                  <!--<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 2"></x-icon>-->
+                  <span :class="{span_active:currentDeptType==0}" @click="choseDept(0)">{{deptLevel0}}</span>
+                  <span :class="{span_active:currentDeptType==1}" @click="choseDept(1)">{{deptLevel1}}</span>
+                  <span :class="{span_active:currentDeptType==2}" @click="choseDept(2)">{{deptLevel2}}</span>
+                  <!--<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 1"></x-icon>-->
                 </swiper-item>
-                <swiper-item>
-                  <x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 0"></x-icon>
-                  <span :class="{span_active:currentDeptType==3}" @click="choseDept(3)">{{choseDeptTop2.deptLevel3}}</span>
-                  <span :class="{span_active:currentDeptType==4}" @click="choseDept(4)">{{choseDeptTop2.deptLevel4}}</span>
-                  <span :class="{span_active:currentDeptType==5}" @click="choseDept(5)">{{choseDeptTop2.deptLevel5}}</span>
-                  <x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 2"></x-icon>
+                <swiper-item v-if="swiper_item_2" class="swiper_swrap">
+                  <!--<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 0"></x-icon>-->
+                  <span :class="{span_active:currentDeptType==3}" @click="choseDept(3)">{{deptLevel3}}</span>
+                  <span :class="{span_active:currentDeptType==4}" @click="choseDept(4)">{{deptLevel4}}</span>
+                  <span :class="{span_active:currentDeptType==5}" @click="choseDept(5)">{{deptLevel5}}</span>
+                  <!--<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 2"></x-icon>-->
                 </swiper-item>
-                <swiper-item>
-                  <x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 1"></x-icon>
-                  <span :class="{span_active:currentDeptType==6}" @click="choseDept(6)">{{choseDeptTop3.deptLevel6}}</span>
-                  <span :class="{span_active:currentDeptType==7}" @click="choseDept(7)">{{choseDeptTop3.deptLevel7}}</span>
-                  <span :class="{span_active:currentDeptType==8}" @click="choseDept(8)">{{choseDeptTop3.deptLevel8}}</span>
-                  <x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 0"></x-icon>
+                <swiper-item v-if="swiper_item_3" class="swiper_swrap">
+                  <!--<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 1"></x-icon>-->
+                  <span :class="{span_active:currentDeptType==6}" @click="choseDept(6)">{{deptLevel6}}</span>
+                  <span :class="{span_active:currentDeptType==7}" @click="choseDept(7)">{{deptLevel7}}</span>
+                  <span :class="{span_active:currentDeptType==8}" @click="choseDept(8)">{{deptLevel8}}</span>
+                  <!--<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 0"></x-icon>-->
                 </swiper-item>
               </swiper>
               <ul>
@@ -276,6 +280,9 @@ export default {
   data () {
     return {
       keywords: '',
+      swiper_item_1: true,
+      swiper_item_2: false,
+      swiper_item_3: false,
       likeTotal: 0, // 兴趣总数
       demo01_index: 0,
       tree_data: [],
@@ -285,21 +292,15 @@ export default {
       currentDeptLabel: '',
       departmentList: [],
       departmentList1: [],
-      choseDeptTop1: {
-        deptLevel0: '请选择',
-        deptLevel1: '请选择',
-        deptLevel2: '请选择'
-      },
-      choseDeptTop2: {
-        deptLevel3: '请选择',
-        deptLevel4: '请选择',
-        deptLevel5: '请选择'
-      },
-      choseDeptTop3: {
-        deptLevel6: '请选择',
-        deptLevel7: '请选择',
-        deptLevel8: '请选择'
-      },
+      deptLevel0: '',
+      deptLevel1: '',
+      deptLevel2: '',
+      deptLevel3: '',
+      deptLevel4: '',
+      deptLevel5: '',
+      deptLevel6: '',
+      deptLevel7: '',
+      deptLevel8: '',
       deptType: 'dept',
       show: false,
       listQuery: {
@@ -405,6 +406,16 @@ export default {
     // }
   },
   methods: {
+    selectDept () {
+      alert(this.currentDeptId)
+      this.showDepartment = false
+      // 销售排行
+      this.listQuery2.dept = this.currentDeptId
+      this.getSalesRanking()
+      // AI分析
+      this.listQuery5.dept = this.currentDeptId
+      this.AIAnalyse()
+    },
     searchList (val) {
       if (this.activeTab === 1) {
         this.listQuery2.keywords = val
@@ -427,7 +438,7 @@ export default {
           this.tree_data = res.data
           this.currentDeptLabel = res.data[0].label
           this.currentDeptId = res.data[0].id
-          this.choseDeptTop1.deptLevel0 = res.data[0].label
+          this.deptLevel0 = res.data[0].label
           const map = []
           this.tree_data.forEach(item => {
             map.push(item)
@@ -438,108 +449,231 @@ export default {
       })
     },
     clickDept (item) {
-      const type = this.currentDeptType
+      const type = JSON.parse(JSON.stringify(this.currentDeptType))
+      this.currentDeptType = type + 1
       this.currentDeptLabel = item.label
       this.currentDeptId = item.id
       if (type === 0) {
         this.deptIdList[0] = this.currentDeptId
+        this.deptLevel0 = this.currentDeptLabel
+        if (this.deptLevel0 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        if (this.departmentList.length !== 0) {
+          this.deptLevel1 = '请选择部门'
+        } else {
+          this.deptLevel1 = '无下级部门'
+        }
       } else if (type === 1) {
         this.deptIdList[1] = this.currentDeptId
+        this.deptLevel1 = this.currentDeptLabel
+        if (this.deptLevel1 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        if (this.departmentList.length !== 0) {
+          this.deptLevel2 = '请选择部门'
+        } else {
+          this.deptLevel2 = '无下级部门'
+        }
       } else if (type === 2) {
         this.deptIdList[2] = this.currentDeptId
+        this.deptLevel2 = this.currentDeptLabel
+        if (this.deptLevel2 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        if (this.departmentList.length !== 0) {
+          this.deptLevel3 = '请选择部门'
+          this.swiper_item_2 = true
+        } else {
+          this.deptLevel3 = '无下级部门'
+          this.swiper_item_2 = false
+          this.swiper_item_3 = false
+        }
       } else if (type === 3) {
         this.deptIdList[3] = this.currentDeptId
+        this.deptLevel3 = this.currentDeptLabel
+        if (this.deptLevel3 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        if (this.departmentList.length !== 0) {
+          this.deptLevel4 = '请选择部门'
+        } else {
+          this.deptLevel4 = '无下级部门'
+        }
       } else if (type === 4) {
         this.deptIdList[4] = this.currentDeptId
+        this.deptLevel4 = this.currentDeptLabel
+        if (this.deptLevel4 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        if (this.departmentList.length !== 0) {
+          this.deptLevel5 = '请选择部门'
+        } else {
+          this.deptLevel5 = '无下级部门'
+        }
       } else if (type === 5) {
         this.deptIdList[5] = this.currentDeptId
+        this.deptLevel5 = this.currentDeptLabel
+        if (this.deptLevel5 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        if (this.departmentList.length !== 0) {
+          this.deptLevel6 = '请选择部门'
+          this.swiper_item_3 = true
+        } else {
+          this.deptLevel6 = '无下级部门'
+          this.swiper_item_3 = false
+        }
       } else if (type === 6) {
         this.deptIdList[6] = this.currentDeptId
+        this.deptLevel6 = this.currentDeptLabel
+        if (this.deptLevel6 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        if (this.departmentList.length !== 0) {
+          this.deptLevel7 = '请选择部门'
+        } else {
+          this.deptLevel7 = '无下级部门'
+        }
       } else if (type === 7) {
         this.deptIdList[7] = this.currentDeptId
+        this.deptLevel7 = this.currentDeptLabel
+        if (this.deptLevel7 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        if (this.departmentList.length !== 0) {
+          this.deptLevel8 = '请选择部门'
+        } else {
+          this.deptLevel8 = '无下级部门'
+        }
       } else if (type === 8) {
         this.deptIdList[8] = this.currentDeptId
+        this.deptLevel8 = this.currentDeptLabel
       }
-      if (this.currentDeptType === 0) {
-        this.choseDeptTop1.deptLevel0 = this.currentDeptLabel
-      } else if (this.currentDeptType === 1) {
-        this.choseDeptTop1.deptLevel1 = this.currentDeptLabel
-      } else if (this.currentDeptType === 2) {
-        this.choseDeptTop1.deptLevel2 = this.currentDeptLabel
-      } else if (this.currentDeptType === 3) {
-        this.choseDeptTop2.deptLevel3 = this.currentDeptLabel
-      } else if (this.currentDeptType === 4) {
-        this.choseDeptTop2.deptLevel4 = this.currentDeptLabel
-      } else if (this.currentDeptType === 5) {
-        this.choseDeptTop2.deptLevel5 = this.currentDeptLabel
-      } else if (this.currentDeptType === 6) {
-        this.choseDeptTop3.deptLevel6 = this.currentDeptLabel
-      } else if (this.currentDeptType === 7) {
-        this.choseDeptTop3.deptLevel7 = this.currentDeptLabel
-      } else if (this.currentDeptType === 8) {
-        this.choseDeptTop3.deptLevel8 = this.currentDeptLabel
-      }
-      this.setDeptData(this.tree_data, this.currentDeptId, type)
     },
     choseDept (type) {
       this.currentDeptType = type
-      if (this.currentDeptId !== undefined && type !== 0) {
-        if (type === 1) {
-          this.currentDeptId = this.deptIdList[0]
-          this.choseDeptTop1.deptLevel2 = '请选择'
-          this.choseDeptTop2.deptLevel3 = '请选择'
-          this.choseDeptTop2.deptLevel4 = '请选择'
-          this.choseDeptTop2.deptLevel5 = '请选择'
-          this.choseDeptTop3.deptLevel6 = '请选择'
-          this.choseDeptTop3.deptLevel7 = '请选择'
-          this.choseDeptTop3.deptLevel8 = '请选择'
-        } else if (type === 2) {
-          this.currentDeptId = this.deptIdList[1]
-          this.choseDeptTop2.deptLevel3 = '请选择'
-          this.choseDeptTop2.deptLevel4 = '请选择'
-          this.choseDeptTop2.deptLevel5 = '请选择'
-          this.choseDeptTop3.deptLevel6 = '请选择'
-          this.choseDeptTop3.deptLevel7 = '请选择'
-          this.choseDeptTop3.deptLevel8 = '请选择'
-        } else if (type === 3) {
-          this.currentDeptId = this.deptIdList[2]
-          this.choseDeptTop2.deptLevel4 = '请选择'
-          this.choseDeptTop2.deptLevel5 = '请选择'
-          this.choseDeptTop3.deptLevel6 = '请选择'
-          this.choseDeptTop3.deptLevel7 = '请选择'
-          this.choseDeptTop3.deptLevel8 = '请选择'
-        } else if (type === 4) {
-          this.currentDeptId = this.deptIdList[3]
-          this.choseDeptTop2.deptLevel5 = '请选择'
-          this.choseDeptTop3.deptLevel6 = '请选择'
-          this.choseDeptTop3.deptLevel7 = '请选择'
-          this.choseDeptTop3.deptLevel8 = '请选择'
-        } else if (type === 5) {
-          this.currentDeptId = this.deptIdList[4]
-          this.choseDeptTop3.deptLevel6 = '请选择'
-          this.choseDeptTop3.deptLevel7 = '请选择'
-          this.choseDeptTop3.deptLevel8 = '请选择'
-        } else if (type === 6) {
-          this.currentDeptId = this.deptIdList[5]
-          this.choseDeptTop3.deptLevel7 = '请选择'
-          this.choseDeptTop3.deptLevel8 = '请选择'
-        } else if (type === 7) {
-          this.currentDeptId = this.deptIdList[6]
-          this.choseDeptTop3.deptLevel8 = '请选择'
-        } else if (type === 8) {
-          this.currentDeptId = this.deptIdList[7]
-        }
-        this.setDeptData(this.tree_data, this.currentDeptId, type)
-      } else {
+      if (type === 0) {
         this.departmentList = this.departmentList1
-        this.choseDeptTop1.deptLevel1 = '请选择'
-        this.choseDeptTop1.deptLevel2 = '请选择'
-        this.choseDeptTop2.deptLevel3 = '请选择'
-        this.choseDeptTop2.deptLevel4 = '请选择'
-        this.choseDeptTop2.deptLevel5 = '请选择'
-        this.choseDeptTop3.deptLevel6 = '请选择'
-        this.choseDeptTop3.deptLevel7 = '请选择'
-        this.choseDeptTop3.deptLevel8 = '请选择'
+        this.swiper_item_2 = false
+        this.swiper_item_3 = false
+        this.deptLevel1 = ''
+        this.deptLevel2 = ''
+        this.deptLevel3 = ''
+        this.deptLevel4 = ''
+        this.deptLevel5 = ''
+        this.deptLevel6 = ''
+        this.deptLevel7 = ''
+        this.deptLevel8 = ''
+      } else if (type === 1) {
+        this.swiper_item_2 = false
+        this.swiper_item_3 = false
+        if (this.deptIdList[0] !== 0) {
+          this.currentDeptId = this.deptIdList[0]
+        }
+        if (this.deptLevel0 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        this.deptLevel2 = ''
+        this.deptLevel3 = ''
+        this.deptLevel4 = ''
+        this.deptLevel5 = ''
+        this.deptLevel6 = ''
+        this.deptLevel7 = ''
+        this.deptLevel8 = ''
+      } else if (type === 2) {
+        this.swiper_item_2 = false
+        this.swiper_item_3 = false
+        this.currentDeptId = this.deptIdList[1]
+        if (this.deptLevel1 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        this.deptLevel3 = ''
+        this.deptLevel4 = ''
+        this.deptLevel5 = ''
+        this.deptLevel6 = ''
+        this.deptLevel7 = ''
+        this.deptLevel8 = ''
+      } else if (type === 3) {
+        this.swiper_item_3 = false
+        this.currentDeptId = this.deptIdList[2]
+        if (this.deptLevel2 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        this.deptLevel4 = ''
+        this.deptLevel5 = ''
+        this.deptLevel6 = ''
+        this.deptLevel7 = ''
+        this.deptLevel8 = ''
+      } else if (type === 4) {
+        this.swiper_item_3 = false
+        this.currentDeptId = this.deptIdList[3]
+        if (this.deptLevel3 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        this.deptLevel5 = ''
+        this.deptLevel6 = ''
+        this.deptLevel7 = ''
+        this.deptLevel8 = ''
+      } else if (type === 5) {
+        this.swiper_item_3 = false
+        this.currentDeptId = this.deptIdList[4]
+        if (this.deptLevel4 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        this.deptLevel6 = ''
+        this.deptLevel7 = ''
+        this.deptLevel8 = ''
+      } else if (type === 6) {
+        this.currentDeptId = this.deptIdList[5]
+        if (this.deptLevel5 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        this.deptLevel7 = ''
+        this.deptLevel8 = ''
+      } else if (type === 7) {
+        this.currentDeptId = this.deptIdList[6]
+        if (this.deptLevel6 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
+        this.deptLevel8 = ''
+      } else if (type === 8) {
+        this.currentDeptId = this.deptIdList[7]
+        if (this.deptLevel7 !== '全部') {
+          this.setDeptData(this.tree_data, this.currentDeptId, type)
+        } else {
+          this.departmentList = []
+        }
       }
     },
     setDeptData (data, id, type) {
@@ -1539,21 +1673,24 @@ export default {
     width: 100%;
     bottom: 250px;
     height: 250px;
-    span {
-      width: 25%;
+    .swiper_swrap{
       height: 50px;
-      line-height: 50px;
-      padding: 0px 15px;
-      display: inline-block;
-      color: #B0B0B0;
+      span {
+        width: 33%;
+        line-height: 50px;
+        padding: 0px 15px;
+        color: #B0B0B0;
+        display: inline-block;
+        float: left;
+      }
+      .span_active {
+        color: #5584ff;
+      }
     }
     .vux-x-icon{
       line-height: 50px;
       height: 50px;
       fill: #5584ff;
-    }
-    .span_active {
-      color: #5584ff;
     }
     ul{
       height: 186px;
@@ -1575,8 +1712,17 @@ export default {
     }
     .dialog-title {
       height: 50px;
-      line-height: 50px;
-      padding: 0px 15px;
+      span{
+        width: 33%;
+        color: #5584ff;
+        font-size: 15px;
+        line-height: 50px;
+        padding: 15px 30px;
+      }
+      span:nth-child(2){
+        color: black;
+        font-size: 20px;
+      }
     }
     span.vux-close {
       background-color: #fff;

@@ -21,7 +21,7 @@
     <div class="scroller_frame">
       <div class="header">
         <p>{{$store.state.user.info.username}}</p>
-        <img :src="$store.state.user.info.image ? $store.state.user.info.image : '@/assets/img/moren.jpg'">
+        <img :src="$store.state.user.info.image ? $store.state.user.info.image : '@/assets/img/moren.jpg'" @click="my_test">
         <i @click="to_publish"><x-icon type="ios-camera"></x-icon></i>
       </div>
 
@@ -161,6 +161,9 @@ export default {
     }
   },
   methods: {
+      my_test(){
+        alert('1.0')
+    },
     logIndexChange (arg) {
       console.log(arg)
     },

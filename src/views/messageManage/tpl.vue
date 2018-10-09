@@ -38,6 +38,8 @@
             .text{
                 font-size:14px;
                 line-height:29px;
+                word-wrap: break-word;
+                word-break: break-all;
             }
         }
 

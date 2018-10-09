@@ -34,18 +34,22 @@
             </div>
 
           </div>
-          <img src="@/assets/img/l.gif" class="loading" v-if="item.from === 'me' && item.is_loading">
+          <!--<img src="@/assets/img/l.gif" class="loading" v-if="item.from === 'me' && item.is_loading">-->
 
         </div>
       </li>
 
 
     </ul>
-    <div class="footer">
+    <div class="footer chat_foot">
       <span @click="open_seech">话术库</span>
       <p class="my-textarea">
         <group>
-          <x-textarea v-model="value" autosize :rows="1" @on-focus="onFocus"></x-textarea>
+          <x-textarea
+                  v-model="value"
+                  autosize
+                  :rows="1"
+                  @on-focus="onFocus"></x-textarea>
         </group>
       </p>
       <div class="fr">
@@ -122,7 +126,7 @@
 import { Group, XTextarea, WechatEmotion as Emotion, Swiper, SwiperItem } from 'vux';
 import {emojiAnalysis,__emojiObjs} from '@/utils/emoj';
 import axios from 'axios';
-import {dateFtt,all_srcollBtoom} from '@/utils/base';
+import {dateFtt,all_srcollBtoom,mydebounce} from '@/utils/base';
 import tpl from "./tpl";
 import { Previewer,TransferDom  } from 'vux';
 import UPNG from 'upng-js';
@@ -165,7 +169,8 @@ export default {
           select_class_id:'',
           is_loading:false
       },
-      wx_image:''
+      wx_image:'',
+      mydebounce:null,
 
 
     }
@@ -174,7 +179,11 @@ export default {
       TransferDom
   },
   watch:{
-
+      value(){
+          if(this.mydebounce != null){
+              this.mydebounce()
+          }
+      }
   },
   methods: {
     pic_open(){
@@ -597,7 +606,23 @@ export default {
             document.body.scrollTop = document.body.scrollHeight;
             clearTimeout(timer);
         },300)
-    }
+    },
+
+    onChange(){
+        const height = document.querySelector('.chat_foot').clientHeight;
+        var screen_height = document.documentElement.clientHeight || document.body.clientHeight;
+        document.querySelector('#im').style.height = screen_height - height + 'px'
+        all_srcollBtoom(this);
+
+        //debugger;
+    },
+
+    //初始化防抖函数
+    mydebounce_init(){
+        this.mydebounce = mydebounce(()=>{
+            this.onChange();
+        },700);
+    },
 
   },
 
@@ -609,6 +634,7 @@ export default {
       this.get_class_list();
       this.speech_list_init();//话术列表初始化
       this.wx_image =  this.$route.query.wx_image;
+      this.mydebounce_init();//初始化防抖函数
 
       //this.img_select();
 
@@ -619,9 +645,9 @@ export default {
 <style lang='scss' rel='stylesheet/scss' scoped>
 .im{
   background-color: #ebebeb;
-  height: 100%;
   overflow: auto;
-  padding-bottom:1.5rem;
+  height:calc(100% - 1.06rem);
+  padding-bottom:0.4rem;
   #myCanvas{
     position: absolute;
     top: 0;

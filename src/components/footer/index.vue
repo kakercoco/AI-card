@@ -38,6 +38,8 @@
 
 <script>
 import { Tabbar, TabbarItem } from 'vux'
+import {get_list, look} from '@/api/message'
+import {dateFtt} from '@/utils/base'
 export default {
   name: 'myFooter',
   components: {
@@ -51,6 +53,28 @@ export default {
     }
   },
   methods: {
+      get_message_list () {
+          this.$vux.loading.show({
+              text: '加载中...'
+          })
+          get_list().then((res) => {
+              this.$vux.loading.hide()
+              if (res.code === 200 && res.data && res.data instanceof Array) {
+                  let list = res.data
+                  list.map((val, i) => {
+                      val.time = dateFtt('yyyy-MM-dd', new Date(val.update_time * 1000))
+                      try {
+                          val.last_content = val.last ? JSON.parse(val.last) : ''
+                      } catch (err) {
+                          val.last_content = val.last
+                      }
+                  })
+                  this.$store.commit('message/SET_messageList', list)
+              }
+          }).catch((err) => {
+              this.$vux.loading.hide()
+          })
+      },
   },
     watch:{
       '$store.state.message.messageList':{
@@ -77,6 +101,7 @@ export default {
   //   }
   // },
   mounted () {
+      this.get_message_list();
   }
 }
 </script>

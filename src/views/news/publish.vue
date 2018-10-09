@@ -57,8 +57,8 @@ export default {
         alert('只支持jpg、png!')
         return
       }
-      if (obj.size > 2000000) {
-        alert('照片大小不能超过2MB')
+      if (obj.size > 5000000) {
+        alert('照片大小不能超过5MB')
         return
       }
       this.uploadFile_p(obj)

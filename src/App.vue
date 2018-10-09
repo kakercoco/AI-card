@@ -55,7 +55,8 @@ export default {
       this.$store.commit('user/SET_websocket', Socket_data)
 
       this.$store.state.user.websocketConnection.onopen = () => {
-        this.webSocket_login()
+        this.webSocket_login();
+        this.webSocket_error();
       }
     },
 
@@ -85,6 +86,7 @@ export default {
         const data = JSON.parse(res.data)
         // 如果返回是登录信息
         if (data.cmd === 'LoginSuccess') {
+
           if (data.content) {
             const my = JSON.parse(data.content)
             this.$store.commit('user/SET_my_chat_token', my.token)
@@ -100,7 +102,7 @@ export default {
           console.log('聊天连接成功！,房间号：', data.content)
         } else if (
           data.cmd === 'SpeakFromDialog' &&
-          this.$route.path === '/main/message'
+          this.$route.path != '/messageIM'
         ) {
           this.message_logic(res)
         } else if (
@@ -252,30 +254,44 @@ export default {
     },
 
     chat_logic (res) {
+      var Customer_id = this.$route.query.id;
+      if(!Customer_id){
+          alert('聊天对象id不能为空');
+      }
       const data = JSON.parse(res.data)
       var chat_data = {}
       let obj = JSON.parse(data.content)
-      let chat_content = JSON.parse(obj.content)
-      chat_data = {
-        time: dateFtt('yyyy-MM-dd hh:mm:ss', new Date(obj.createTime)),
-        type: chat_content.type,
-        content: chat_content.content,
-        fead_src: '',
-        from: 'others'
+      if(Customer_id == obj.speakerId){
+          let chat_content = JSON.parse(obj.content)
+          chat_data = {
+              time: dateFtt('yyyy-MM-dd hh:mm:ss', new Date(obj.createTime)),
+              type: chat_content.type,
+              content: chat_content.content,
+              fead_src: '',
+              from: 'others'
+          }
+          // 如果是text类型，要重置content类型
+          if (chat_data.type === 'text') {
+              chat_data.content = emojiAnalysis([chat_data.content])
+          } else if (chat_data.type === 'img') {
+              chat_data.original = chat_content.original
+              this.$store.commit('chat/PUSH_img_list', {
+                  src: chat_content.original
+              })
+          } else if (chat_data.type === 'shop') {
+              Object.assign(chat_data, this.create_shop(chat_content))
+          }
+          this.$store.commit('chat/PUSH_char_list', chat_data)
+          all_srcollBtoom(this)
       }
-      // 如果是text类型，要重置content类型
-      if (chat_data.type === 'text') {
-        chat_data.content = emojiAnalysis([chat_data.content])
-      } else if (chat_data.type === 'img') {
-        chat_data.original = chat_content.original
-        this.$store.commit('chat/PUSH_img_list', {
-          src: chat_content.original
-        })
-      } else if (chat_data.type === 'shop') {
-        Object.assign(chat_data, this.create_shop(chat_content))
-      }
-      this.$store.commit('chat/PUSH_char_list', chat_data)
-      all_srcollBtoom(this)
+    },
+
+    webSocket_error(){
+        const that = this;
+        this.$store.state.user.websocketConnection.onerror = (e)=>{
+            this.$store.state.user.websocketConnection.close();//先关闭
+            that.webSocket_init();
+        }
     },
 
     send_heartbeat () {

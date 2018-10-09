@@ -2,15 +2,15 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-30 18:29:03
+ * @Last Modified time: 2018-10-09 09:34:10
  */
 <template>
   <div class="edit-card">
     <div class="my-card" id="card">
       <img src="@/assets/card/1.png" alt="" class="card-bg">
       <div class="card-infor " :class="selectedClass">
-        <p class="mark" v-if="templateId === 1 || templateId === 4 || templateId === 7 || templateId === 10 || templateId === 13 || templateId === 17 || templateId === 20">T云商务</p>
-        <p class="mark" v-if="templateId === 2 || templateId === 5 || templateId === 8 || templateId === 11 || templateId === 14 || templateId === 18 || templateId === 21">T云客服</p>
+        <p class="mark" v-if="templateId === 1 || templateId === 4 || templateId === 7 || templateId === 10 || templateId === 13 || templateId === 17 || templateId === 20 || templateId === 23 ">T云商务</p>
+        <p class="mark" v-if="templateId === 2 || templateId === 5 || templateId === 8 || templateId === 11 || templateId === 14 || templateId === 18 || templateId === 21 || templateId === 24">T云客服</p>
         <p class="trueland">
           <img src="@/assets/img/trueland.png" alt="" >
           <span v-if="templateId === 0 || templateId === 1 || templateId === 2">珍岛股份·上海</span>
@@ -20,6 +20,7 @@
           <span v-if="templateId === 12 || templateId === 13 || templateId === 14">珍岛股份·温州</span>
           <span v-if="templateId === 15 || templateId === 16 || templateId === 17">珍岛股份·深圳</span>
           <span v-if="templateId === 18 || templateId === 19 || templateId === 20">珍岛股份·成都</span>
+          <span v-if="templateId === 21 || templateId === 22 || templateId === 23">珍岛股份·杭州</span>
         </p>
         <!-- <p class="company">{{cardInfor.company}}</p> -->
         <p class="bio">
@@ -48,7 +49,7 @@
     <h5>名片样式</h5>
     <scroller ref="scrollerEvent" lock-y :scrollbar-x='false' style="margin-top: 0.2rem;">
      <div class="template-list">
-        <img src="@/assets/card/1.png" alt="" :class="{active: index === templateId}" v-for="(item, index) in 21" :key="index" @click="changeTemplate(item, index)">
+        <img src="@/assets/card/1.png" alt="" :class="{active: index === templateId}" v-for="(item, index) in 24" :key="index" @click="changeTemplate(item, index)">
       </div>
     </scroller>
     <h5>名片头像</h5>
@@ -462,7 +463,7 @@ export default {
   }
   .template-list{
     height: 1rem;
-    width: 37.8rem;
+    width: 43.2rem;
     img{
       width: 1.4rem;
       height: 1rem;
