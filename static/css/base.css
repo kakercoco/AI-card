@@ -11,3 +11,14 @@
 .see-card .list li i{
     color: #f79700;
 }
+#__vconsole{
+    display: none;
+}
+.v_console_show{
+    width:20px;
+    height:20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index:999;
+}

@@ -12,7 +12,7 @@
         <img slot="icon-active" src="@/assets/icon/index2.png">
         <span slot="label">足迹</span>
       </tabbar-item>
-      <tabbar-item :badge="num" link="/main/message" :selected="$route.path === '/main/message'">
+      <tabbar-item :badge="num != '0' ? num : ''" link="/main/message" :selected="$route.path === '/main/message'">
         <img slot="icon" src="@/assets/icon/message.png">
         <img slot="icon-active" src="@/assets/icon/message2.png">
         <span slot="label">消息</span>

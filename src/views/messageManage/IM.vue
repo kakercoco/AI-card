@@ -5,7 +5,9 @@
  * @Last Modified time: 2018-09-10 15:13:30
  */
 <template>
+  <!--<div style="height: 100%;"></div>-->
   <div class="im" id="im">
+    <div class="myback"></div>
     <canvas id="myCanvas"></canvas>
     <ul class="chat-list" id="chatList" @click="close_bottom" :class="char_list_top ? 'chat-list_top' : ''">
 
@@ -46,9 +48,12 @@
       <p class="my-textarea">
         <group>
           <x-textarea
+                  v-if="textarea_Rendering"
+                  ref="textarea"
                   v-model="value"
                   autosize
                   :rows="1"
+                  @on-change="content_change"
                   @on-focus="onFocus"></x-textarea>
         </group>
       </p>
@@ -83,9 +88,10 @@
 
         <div class="file_input_frame">
           <form action="" id="myFrom">
-          <input type="file" accept="image/*;capture=camera" class="file_input" name="avatar">
+            <input type="file" accept="image/*;capture=camera" class="file_input" name="avatar">
           </form>
-          <img src="@/assets/img/p_icon.jpg">
+
+          <img src="@/assets/img/back_btn.png">
           <p>照片</p>
         </div>
       </div>
@@ -97,10 +103,10 @@
       <div class="talk-group">
         <a class="active" :class="Speech.select_class_id == '' ? 'select_class' : ''" @click="speech_list_init">最近使用</a>
         <a
-          v-for="(item,i) in Speech.class_list"
-          :key="i"
-          :class="Speech.select_class_id == item.id ? 'select_class' : ''"
-          @click="sele_class(item,i)">{{item.label}}</a>
+                v-for="(item,i) in Speech.class_list"
+                :key="i"
+                :class="Speech.select_class_id == item.id ? 'select_class' : ''"
+                @click="sele_class(item,i)">{{item.label}}</a>
       </div>
       <div class="talk-infor">
         <div class="loading" v-if="Speech.is_loading">
@@ -120,6 +126,7 @@
       <previewer :list="$store.state.chat.img_list" ref="previewer" :options="options"></previewer>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -171,6 +178,7 @@ export default {
       },
       wx_image:'',
       mydebounce:null,
+        textarea_Rendering:true
 
 
     }
@@ -223,101 +231,6 @@ export default {
       this.value += `[${val}]`
     },
 
-    chat_init(){
-        const req = {
-            "cmd": "GetChat",
-            "content": this.$route.query.id//对方的id
-        };
-        this.$store.state.user.websocketConnection.send(JSON.stringify(req));
-    },
-
-
-    create_shop(data){
-        const obj = {
-            type:'shop',
-            p_class: data.p_class,
-            p_id: data.p_id,
-            p_image: data.p_image,
-            p_name: data.p_name,
-            p_price_sell: data.p_price_sell,
-            p_title: this.$route.query.wx_name ? this.$route.query.wx_name :'测试',
-            content:''
-        }
-        return obj;
-    },
-
-    chat_record(){
-        const that = this;
-        const user = this.$store.state.user.info;
-
-        if(!user.message_id){
-            alert('用户信息获取失败！');
-            return;
-        }
-
-        const data = {
-            userId: user.message_id,//当前操作者的id
-            aimId:this.$route.query.id,//对方的id
-            token: this.$store.state.user.my_chat_token,
-        };
-
-        this.$vux.loading.show({
-            text: '加载中...'
-        });
-
-        axios({
-            method:"POST",
-            url:`${this.$store.state.user.chat_domain}/chatapi/getChat`,
-            data:JSON.stringify(data)
-        }).then((res)=>{
-            this.$vux.loading.hide();
-            if(res.status === 200 && res.data && res.data.message){
-                const list = JSON.parse(res.data.message);
-                let others_image = user.image;//h5所有者的头像
-                list.map((val,i)=>{
-                    const time = dateFtt("yyyy-MM-dd hh:mm:ss", new Date(val.createtime));
-
-                    let data = JSON.parse(val.content);
-                    let obj = {};
-                    obj.fead_src = val.speaker == user.message_id ? others_image : '';
-
-                    obj.from = val.speaker == user.message_id ? 'me' : 'others';
-                    obj.time = time;
-                    if(data.type === 'text'){
-                        obj.type = 'text';
-                        obj.content = emojiAnalysis([data.content]);
-                        this.$store.commit('chat/PUSH_char_list',obj);
-
-                    }
-                    else if (data.type === 'img'){
-                        obj.type = 'img';
-
-                        if(data.content.indexOf('wxfile') > -1 || data.content.indexOf('blob:http') > -1){
-                            obj.content = data.original;
-                        }
-                        else{
-                            obj.content = data.content;
-                        }
-
-                        obj.original = data.original;
-                        this.$store.commit('chat/PUSH_char_list',obj);
-                        this.$store.commit('chat/PUSH_img_list',{
-                            src:data.original
-                        });
-                    }
-                    else if (data.type === 'shop'){
-                        Object.assign(obj, that.create_shop(data));
-                        this.$store.commit('chat/PUSH_char_list',obj);
-                    }
-                });
-                all_srcollBtoom(this);
-            }
-        }).catch((err)=>{
-            this.$vux.loading.hide();
-            console.log('聊天记录',err)
-        })
-    },
-
     face_list_init(){
         const list_obj = __emojiObjs;
         let list = [];
@@ -338,7 +251,29 @@ export default {
 
     select_face(e){
         this.value = `${this.value}[${e.title}]`;
+        this.textarea_again_Rendering();
+
     },
+
+    //重新渲染
+    textarea_again_Rendering(fn){
+        this.textarea_Rendering = false;
+        this.$nextTick(()=>{
+            this.textarea_Rendering = true;
+            this.$nextTick(()=>{
+                var timer = setTimeout(()=>{
+                    const ele = document.querySelector('.weui-cell__bd');
+                    if (ele) {
+                        ele.scrollTop = ele.scrollHeight
+                    }
+                    clearTimeout(timer)
+                },300)
+
+            })
+
+        })
+    },
+
 
     formSubmit(){
 
@@ -353,6 +288,13 @@ export default {
         const that = this;
         const id = Number(Math.random().toString().substr(3, 10) + Date.now()).toString(36);
         var obj = {};
+
+        const c = this.value.replace(/\s+/g, "").replace(/[\r\n]/g, "");
+        if(c == ''){
+            alert('发送内容不能为空');
+            return;
+        }
+
         obj.type = 'text';
         obj.content = this.value;
 
@@ -382,6 +324,8 @@ export default {
         this.value = '';
         this.frame_Reset();
         all_srcollBtoom(this);
+        this.textarea_again_Rendering();
+
 
     },
 
@@ -437,7 +381,8 @@ export default {
                   from: 'me',
                   fead_src: that.$store.state.user.info.image,
                   content: end_url,
-                  is_loading: true
+                  is_loading: true,
+                  time:dateFtt("yyyy-MM-dd hh:mm:ss", new Date())
                   //original: src
               };
 
@@ -495,6 +440,9 @@ export default {
 
                 this.$store.state.user.websocketConnection.send(JSON.stringify(req));
 
+            }
+            if(res.code != 200){
+                alert('图片上传失败');
             }
 
         })
@@ -593,7 +541,8 @@ export default {
         }
 
         this.slideDownTalk = false;
-        this.value = item.content;
+        this.value = this.value + item.content;
+        this.textarea_again_Rendering();
     },
 
     open_seech(){
@@ -624,13 +573,18 @@ export default {
         },700);
     },
 
+    content_change(val){
+        //this.value = val;
+    }
+
   },
+    created(){
+        //this.chat_init();
+    },
 
   mounted () {
       this.canvas_init();
-      this.chat_init();
       this.face_list_init();
-      this.chat_record();
       this.get_class_list();
       this.speech_list_init();//话术列表初始化
       this.wx_image =  this.$route.query.wx_image;
@@ -648,6 +602,17 @@ export default {
   overflow: auto;
   height:calc(100% - 1.06rem);
   padding-bottom:0.4rem;
+  /*-webkit-overflow-scrolling:touch;*/
+  /*overflow-scrolling:touch;*/
+  .myback{
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #ebebeb;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+  }
   #myCanvas{
     position: absolute;
     top: 0;
@@ -657,7 +622,6 @@ export default {
   .chat-list{
     background: #ebebeb;
     transition: transform 0.2s;
-    -webkit-overflow-scrolling:touch;
     li{
       padding: 0.6rem 0.3rem 0;
       &>p{
@@ -834,8 +798,12 @@ export default {
         .weui-cell{
           padding: 6px 15px;
         }
-        .weui-textarea{
+        .weui-cell__bd{
           max-height: 100px;
+          overflow-y: auto !important;
+        }
+        .weui-textarea{
+
         }
       }
     }
@@ -847,10 +815,11 @@ export default {
       padding-bottom:10px;
       .file_input_frame{
         position: relative;
-        width: 85px;
-        height: 85px;
+        width:85px;
+        height:85px;
         text-align:center;
         overflow: hidden;
+
         .file_input{
           position:absolute;
           width: 100%;
@@ -859,8 +828,9 @@ export default {
           left: 0;
         }
         img{
-          width:50px;
-          height:50px;
+          width:40px;
+          height:34px;
+          margin-top: 13px;
 
         }
         p{

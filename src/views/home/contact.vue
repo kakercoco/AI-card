@@ -30,10 +30,14 @@
                 <p>{{item.wx_name}}</p>
                 <p>{{item.describe}}</p>
               </div>
-              <span>
+              <div>
+                <p>跟进时间</p>
+                <p>{{item.date}}</p>
+              </div>
+              <!--<span>
                 <i>跟进时间</i>
                 <i>{{item.date}}</i>
-              </span>
+              </span>-->
             </li>
           </ul>
         </div>
@@ -54,10 +58,14 @@
               <p>{{element.wx_name}}</p>
               <p>{{element.describe}}</p>
             </div>
-            <span>
+            <div>
+              <p>跟进时间</p>
+              <p>{{element.date}}</p>
+            </div>
+           <!-- <span>
               <i>跟进时间</i>
               <i>{{element.date}}</i>
-            </span>
+            </span>-->
           </div>
           <p class="tar arrow-up" @click="showDetail(index)" v-if="item.status"><x-icon type="ios-arrow-up" size="20" ></x-icon></p>
         </li>
@@ -280,7 +288,7 @@ export default {
           float: left;
         }
         div{
-          float: left;
+          float: right;
           height: 100%;
           margin-left: 0.2rem;
           line-height: 0.5rem;
@@ -292,6 +300,9 @@ export default {
               min-height: 0.5rem;
             }
           }
+        }
+        div:nth-child(2){
+          float: left;
         }
         &>span{
           float: right;
@@ -360,7 +371,7 @@ export default {
         float: left;
       }
       div{
-        float: left;
+        float: right;
         height: 100%;
         margin-left: 0.2rem;
         line-height: 0.5rem;
@@ -372,6 +383,9 @@ export default {
             font-size: 0.3rem;
           }
         }
+      }
+      div:nth-child(2){
+        float: left;
       }
       span{
         float: right;

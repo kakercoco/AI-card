@@ -22,29 +22,6 @@
             <span @click="showDepartment=false">取消</span>
           </p>
             <div>
-              <!--<swiper v-model="demo01_index" @on-index-change="demo01_onIndexChange" height="50px" :show-dots="false" style="background-color: #FBFBFB">
-                <swiper-item v-if="swiper_item_1" class="swiper_swrap">
-                  &lt;!&ndash;<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 2"></x-icon>&ndash;&gt;
-                  <span :class="{span_active:currentDeptType==0}" @click="choseDept(0)">{{deptLevel0}}</span>
-                  <span :class="{span_active:currentDeptType==1}" @click="choseDept(1)">{{deptLevel1}}</span>
-                  <span :class="{span_active:currentDeptType==2}" @click="choseDept(2)">{{deptLevel2}}</span>
-                  &lt;!&ndash;<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 1"></x-icon>&ndash;&gt;
-                </swiper-item>
-                <swiper-item v-if="swiper_item_2" class="swiper_swrap">
-                  &lt;!&ndash;<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 0"></x-icon>&ndash;&gt;
-                  <span :class="{span_active:currentDeptType==3}" @click="choseDept(3)">{{deptLevel3}}</span>
-                  <span :class="{span_active:currentDeptType==4}" @click="choseDept(4)">{{deptLevel4}}</span>
-                  <span :class="{span_active:currentDeptType==5}" @click="choseDept(5)">{{deptLevel5}}</span>
-                  &lt;!&ndash;<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 2"></x-icon>&ndash;&gt;
-                </swiper-item>
-                <swiper-item v-if="swiper_item_3" class="swiper_swrap">
-                  &lt;!&ndash;<x-icon type="ios-arrow-back" size="30" class="fl" @click.native="demo01_index = 1"></x-icon>&ndash;&gt;
-                  <span :class="{span_active:currentDeptType==6}" @click="choseDept(6)">{{deptLevel6}}</span>
-                  <span :class="{span_active:currentDeptType==7}" @click="choseDept(7)">{{deptLevel7}}</span>
-                  <span :class="{span_active:currentDeptType==8}" @click="choseDept(8)">{{deptLevel8}}</span>
-                  &lt;!&ndash;<x-icon type="ios-arrow-forward" size="30" class="fr" @click.native="demo01_index = 0"></x-icon>&ndash;&gt;
-                </swiper-item>
-              </swiper>-->
               <tab id="tab1">
                 <tab-item></tab-item>
                 <tab-item v-for="(item,index) in depList" :key="index" @on-item-click="clickLevel"></tab-item>
@@ -55,9 +32,6 @@
                </li>
               </ul>
             </div>
-          <!--<div @click="showDepartment=false">
-            <span class="vux-close"></span>
-          </div>-->
         </x-dialog>
       </div>
     </div>
@@ -85,57 +59,37 @@
       </div>
       <div v-show="tabIndex === 1" class="second-tab-list second-nav-list-2">
         <ul>
-          <li v-for="(item,index) in totalCustomer1" :key="index">
+          <li v-for="(item,index) in totalCustomer" :key="index">
             <span>{{item.title}}</span>
-            <span class="red">{{item.pertenage}}</span>
-            <span class="red">{{item.num}}</span>
-          </li>
-          <li v-for="(item,index) in totalCustomer2" :key="index + 3">
-            <span>{{item.title}}</span>
-            <span class="blue">{{item.pertenage}}</span>
-            <span class="blue">{{item.num}}</span>
+            <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.pertenage}}</span>
+            <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.num}}</span>
           </li>
         </ul>
       </div>
       <div v-show="tabIndex === 2" class="second-tab-list second-nav-list-2">
         <ul>
-          <li v-for="(item,index) in totalCustomer1" :key="index">
+          <li v-for="(item,index) in totalCustomer" :key="index">
             <span>{{item.title}}</span>
-            <span class="red">{{item.pertenage}}</span>
-            <span class="red">{{item.num}}</span>
-          </li>
-          <li v-for="(item,index) in totalCustomer2" :key="index + 3">
-            <span>{{item.title}}</span>
-            <span class="blue">{{item.pertenage}}</span>
-            <span class="blue">{{item.num}}</span>
+            <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.pertenage}}</span>
+            <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.num}}</span>
           </li>
         </ul>
       </div>
       <div v-show="tabIndex === 3" class="second-tab-list second-nav-list-2">
         <ul>
-          <li v-for="(item,index) in totalCustomer1" :key="index">
+          <li v-for="(item,index) in totalCustomer" :key="index">
             <span>{{item.title}}</span>
-            <span class="red">{{item.pertenage}}</span>
-            <span class="red">{{item.num}}</span>
-          </li>
-          <li v-for="(item,index) in totalCustomer2" :key="index + 3">
-            <span>{{item.title}}</span>
-            <span class="blue">{{item.pertenage}}</span>
-            <span class="blue">{{item.num}}</span>
+            <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.pertenage}}</span>
+            <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.num}}</span>
           </li>
         </ul>
       </div>
       <div v-show="tabIndex === 4" class="second-tab-list second-nav-list-2">
         <ul>
-          <li v-for="(item,index) in totalCustomer1" :key="index">
+          <li v-for="(item,index) in totalCustomer" :key="index">
             <span>{{item.title}}</span>
-            <span class="red">{{item.pertenage}}</span>
-            <span class="red">{{item.num}}</span>
-          </li>
-          <li v-for="(item,index) in totalCustomer2" :key="index + 3">
-            <span>{{item.title}}</span>
-            <span class="blue">{{item.pertenage}}</span>
-            <span class="blue">{{item.num}}</span>
+            <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.pertenage}}</span>
+            <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.num}}</span>
           </li>
         </ul>
       </div>
@@ -199,12 +153,12 @@
       <div class="action">
         <p v-for="(item, index) in countObj" :key="index" class="graph">
           <span>{{item.name}}</span>
-          <i :style="{width: item.num/forTotal*60 + '%'}"></i>
+          <i :style="{width: item.num/forTotal*100 + '%'}"></i>
           <b>{{item.num}}</b>
         </p>
       </div>
       <p class="line"></p>
-      <h3>近15日客户活跃度</h3>
+      <h3>近30日客户活跃度</h3>
       <div class="dynamic">
         <div id="dynamic"></div>
       </div>
@@ -312,7 +266,6 @@ export default {
       likeTotal: 0, // 兴趣总数
       demo01_index: 0,
       tree_data: [],
-      deptIdList: [0, 0, 0, 0, 0, 0, 0],
       currentDeptType: 0,
       currentDeptId: '0',
       currentDeptLabel: '',
@@ -422,16 +375,6 @@ export default {
     }
   },
   watch: {
-    // departmentList (val, oldVal) {
-    //   if (this.currentDeptType === 1) {
-    //     const obj = {
-    //       id: this.deptIdList[0],
-    //       label: '全部'
-    //     }
-    //     this.departmentList.unshift(obj)
-    //     console.log(this.departmentList)
-    //   }
-    // }
   },
   methods: {
     selectDept () {
@@ -472,137 +415,22 @@ export default {
           this.departmentList = map
           this.departmentList1 = map
           var nodeList = document.querySelectorAll('#tab1 .vux-tab-item')
-          nodeList[1].click()
+          if (nodeList.length !== 0) {
+            nodeList[0].innerText = '请选择部门'
+            nodeList[0].click()
+          }
         }
       })
     },
     clickDept (item) {
-      const type = JSON.parse(JSON.stringify(this.currentDeptType))
-      this.currentDeptType = type + 1
-      this.currentDeptLabel = item.label
+      const type = this.currentDeptType
       this.currentDeptId = item.id
-
       this.depList[type] = item.id
       var nodeList = document.querySelectorAll('#tab1 .vux-tab-item')
       nodeList[type + 1].innerText = item.label
       nodeList[type + 2].click()
-      if (type === 0) {
-        this.deptIdList[0] = this.currentDeptId
-        this.deptLevel0 = this.currentDeptLabel
-        if (this.deptLevel0 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        if (this.departmentList.length !== 0) {
-          this.deptLevel1 = '请选择部门'
-        } else {
-          this.deptLevel1 = '无下级部门'
-        }
-      } else if (type === 1) {
-        this.deptIdList[1] = this.currentDeptId
-        this.deptLevel1 = this.currentDeptLabel
-        if (this.deptLevel1 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        if (this.departmentList.length !== 0) {
-          this.deptLevel2 = '请选择部门'
-        } else {
-          this.deptLevel2 = '无下级部门'
-        }
-      } else if (type === 2) {
-        this.deptIdList[2] = this.currentDeptId
-        this.deptLevel2 = this.currentDeptLabel
-        if (this.deptLevel2 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        if (this.departmentList.length !== 0) {
-          this.deptLevel3 = '请选择部门'
-        } else {
-          this.deptLevel3 = '无下级部门'
-          this.swiper_item_2 = false
-          this.swiper_item_3 = false
-        }
-        this.swiper_item_2 = true
-        this.demo01_index = 1
-      } else if (type === 3) {
-        this.deptIdList[3] = this.currentDeptId
-        this.deptLevel3 = this.currentDeptLabel
-        if (this.deptLevel3 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        if (this.departmentList.length !== 0) {
-          this.deptLevel4 = '请选择部门'
-        } else {
-          this.deptLevel4 = '无下级部门'
-        }
-      } else if (type === 4) {
-        this.deptIdList[4] = this.currentDeptId
-        this.deptLevel4 = this.currentDeptLabel
-        if (this.deptLevel4 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        if (this.departmentList.length !== 0) {
-          this.deptLevel5 = '请选择部门'
-        } else {
-          this.deptLevel5 = '无下级部门'
-        }
-      } else if (type === 5) {
-        this.deptIdList[5] = this.currentDeptId
-        this.deptLevel5 = this.currentDeptLabel
-        if (this.deptLevel5 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        if (this.departmentList.length !== 0) {
-          this.deptLevel6 = '请选择部门'
-        } else {
-          this.deptLevel6 = '无下级部门'
-        }
-        this.swiper_item_3 = true
-        this.demo01_index = 2
-      } else if (type === 6) {
-        this.deptIdList[6] = this.currentDeptId
-        this.deptLevel6 = this.currentDeptLabel
-        if (this.deptLevel6 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        if (this.departmentList.length !== 0) {
-          this.deptLevel7 = '请选择部门'
-        } else {
-          this.deptLevel7 = '无下级部门'
-        }
-      } else if (type === 7) {
-        this.deptIdList[7] = this.currentDeptId
-        this.deptLevel7 = this.currentDeptLabel
-        if (this.deptLevel7 !== '全部') {
-          this.setDeptData(this.tree_data, this.currentDeptId, type)
-        } else {
-          this.departmentList = []
-        }
-        if (this.departmentList.length !== 0) {
-          this.deptLevel8 = '请选择部门'
-        } else {
-          this.deptLevel8 = '无下级部门'
-        }
-      } else if (type === 8) {
-        this.deptIdList[8] = this.currentDeptId
-        this.deptLevel8 = this.currentDeptLabel
-      }
     },
     clickLevel (index) {
-      console.log(index)
       this.currentDeptType = index - 1
       var nodeList = document.querySelectorAll('#tab1 .vux-tab-item')
       for (var i = index; i < nodeList.length; i++) {
@@ -620,115 +448,6 @@ export default {
         nodeList[index].innerText = '无下级部门'
       }
     },
-    // choseDept (type) {
-    //   this.currentDeptType = type
-    //   if (type === 0) {
-    //     this.departmentList = this.departmentList1
-    //     this.swiper_item_2 = false
-    //     this.swiper_item_3 = false
-    //     this.deptLevel1 = ''
-    //     this.deptLevel2 = ''
-    //     this.deptLevel3 = ''
-    //     this.deptLevel4 = ''
-    //     this.deptLevel5 = ''
-    //     this.deptLevel6 = ''
-    //     this.deptLevel7 = ''
-    //     this.deptLevel8 = ''
-    //   } else if (type === 1) {
-    //     this.swiper_item_2 = false
-    //     this.swiper_item_3 = false
-    //     if (this.deptIdList[0] !== 0) {
-    //       this.currentDeptId = this.deptIdList[0]
-    //     }
-    //     if (this.deptLevel0 !== '全部') {
-    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
-    //     } else {
-    //       this.departmentList = []
-    //     }
-    //     this.deptLevel2 = ''
-    //     this.deptLevel3 = ''
-    //     this.deptLevel4 = ''
-    //     this.deptLevel5 = ''
-    //     this.deptLevel6 = ''
-    //     this.deptLevel7 = ''
-    //     this.deptLevel8 = ''
-    //   } else if (type === 2) {
-    //     this.swiper_item_2 = false
-    //     this.swiper_item_3 = false
-    //     this.currentDeptId = this.deptIdList[1]
-    //     if (this.deptLevel1 !== '全部') {
-    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
-    //     } else {
-    //       this.departmentList = []
-    //     }
-    //     this.deptLevel3 = ''
-    //     this.deptLevel4 = ''
-    //     this.deptLevel5 = ''
-    //     this.deptLevel6 = ''
-    //     this.deptLevel7 = ''
-    //     this.deptLevel8 = ''
-    //   } else if (type === 3) {
-    //     this.swiper_item_3 = false
-    //     this.currentDeptId = this.deptIdList[2]
-    //     if (this.deptLevel2 !== '全部') {
-    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
-    //     } else {
-    //       this.departmentList = []
-    //     }
-    //     this.deptLevel4 = ''
-    //     this.deptLevel5 = ''
-    //     this.deptLevel6 = ''
-    //     this.deptLevel7 = ''
-    //     this.deptLevel8 = ''
-    //   } else if (type === 4) {
-    //     this.swiper_item_3 = false
-    //     this.currentDeptId = this.deptIdList[3]
-    //     if (this.deptLevel3 !== '全部') {
-    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
-    //     } else {
-    //       this.departmentList = []
-    //     }
-    //     this.deptLevel5 = ''
-    //     this.deptLevel6 = ''
-    //     this.deptLevel7 = ''
-    //     this.deptLevel8 = ''
-    //   } else if (type === 5) {
-    //     this.swiper_item_3 = false
-    //     this.currentDeptId = this.deptIdList[4]
-    //     if (this.deptLevel4 !== '全部') {
-    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
-    //     } else {
-    //       this.departmentList = []
-    //     }
-    //     this.deptLevel6 = ''
-    //     this.deptLevel7 = ''
-    //     this.deptLevel8 = ''
-    //   } else if (type === 6) {
-    //     this.currentDeptId = this.deptIdList[5]
-    //     if (this.deptLevel5 !== '全部') {
-    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
-    //     } else {
-    //       this.departmentList = []
-    //     }
-    //     this.deptLevel7 = ''
-    //     this.deptLevel8 = ''
-    //   } else if (type === 7) {
-    //     this.currentDeptId = this.deptIdList[6]
-    //     if (this.deptLevel6 !== '全部') {
-    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
-    //     } else {
-    //       this.departmentList = []
-    //     }
-    //     this.deptLevel8 = ''
-    //   } else if (type === 8) {
-    //     this.currentDeptId = this.deptIdList[7]
-    //     if (this.deptLevel7 !== '全部') {
-    //       this.setDeptData(this.tree_data, this.currentDeptId, type)
-    //     } else {
-    //       this.departmentList = []
-    //     }
-    //   }
-    // },
     setDeptData (data, id, type) {
       if (type === 0) {
         this.departmentList = []
@@ -827,9 +546,9 @@ export default {
         map.push(obj)
       }
       this.totalCustomer = map
-      let array = this.sliceArray(map, 3)
-      this.totalCustomer1 = array[0]
-      this.totalCustomer2 = array[1]
+      // let array = this.sliceArray(map, 3)
+      // this.totalCustomer1 = array[0]
+      // this.totalCustomer2 = array[1]
     },
     sliceArray (array, size) {
       var result = []
@@ -972,9 +691,9 @@ export default {
       setTimeout(() => {
         this.drawAITop()
         const option = {
-          tooltip: {
-
-          },
+          // tooltip: {
+          //
+          // },
           radar: {
 
             // shape: 'circle',
@@ -1192,9 +911,9 @@ export default {
     },
     drawAITop () {
       const option = {
-        tooltip: {
-
-        },
+        // tooltip: {
+        //
+        // },
         radar: {
 
           // shape: 'circle',
@@ -1281,6 +1000,12 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
+  .red{
+    color: #ff0000;
+  }
+  .blue{
+    color: #00ea48;
+  }
   .boss_min{
     padding-top:120.5px;
   }
@@ -1569,44 +1294,55 @@ export default {
             left: 0;
           }
         }
-        i{
+        i {
           display: inline-block;
           height: 0.2rem;
           border-radius: 0.1rem;
           margin-left: 0.5rem;
         }
-        &:nth-child(1){
-          span::after{
+        &:nth-child(1) {
+          span::after {
             background-color: #ff0000;
           }
-          i{
-            background: linear-gradient(left, #cc00ff, #b1181a);
-          }
         }
-        &:nth-child(2){
-          span::after{
+        &:nth-child(2) {
+          span::after {
             background-color: #653ffe;
           }
-          i{
-            background: linear-gradient(left, #cc00ff, #5747fe);
-          }
         }
-        &:nth-child(3){
-          span::after{
+        &:nth-child(3) {
+          span::after {
             background-color: #73a6fb;
           }
-          i{
+        }
+        &:nth-child(5n + 1) {
+          i {
+            background: linear-gradient(left, #cc00ff, #b1181a);
+            background: -webkit-linear-gradient(left, #cc00ff, #b1181a);
+          }
+        }
+        &:nth-child(5n + 2) {
+          i {
+            background: linear-gradient(left, #cc00ff, #5747fe);
+            background: -webkit-linear-gradient(left, #cc00ff, #5747fe);
+          }
+        }
+        &:nth-child(5n + 3) {
+          i {
             background: linear-gradient(left, #cc00ff, #6eaffb);
+            background: -webkit-linear-gradient(left, #cc00ff, #6eaffb);
           }
         }
-        &:nth-child(4){
-          i{
+        &:nth-child(5n + 4) {
+          i {
             background: linear-gradient(left, #cd01fd, #fd5b66);
+            background: -webkit-linear-gradient(left, #cd01fd, #fd5b66);
           }
         }
-        &:nth-child(5){
-          i{
+        &:nth-child(5n + 5) {
+          i {
             background: linear-gradient(left, #c781f9, #0fba40);
+            background: -webkit-linear-gradient(left, #c781f9, #0fba40);
           }
         }
       }

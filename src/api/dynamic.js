@@ -43,3 +43,12 @@ export function to_companyDetails (data) {
         params: data
     })
 }
+
+//动态详情
+export function dynamic_details (data) {
+    return request({
+        url: '/api/Dynamic/read',
+        method: 'get',
+        params: data
+    })
+}

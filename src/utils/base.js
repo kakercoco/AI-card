@@ -39,7 +39,7 @@ export const config = {
 export function all_srcollBtoom (that) {
   that.$nextTick(function () {
     srcollBtoom()
-    const imgs = document.querySelectorAll('.previewer-demo-img2')
+    const imgs = document.querySelectorAll('.previewer-demo-img')
     for (let i = 0; i < imgs.length; i++) {
       if (!imgs[i].getAttribute('isLoad')) {
         imgs[i].onload = function () {

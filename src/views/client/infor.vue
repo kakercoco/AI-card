@@ -101,7 +101,11 @@ export default {
         id: this.id,
         time: this.inforForm.birthday
       }
-      setBirthdayAdd(data)
+      if (this.is_calendar) {
+        setBirthdayAdd(data)
+      } else {
+        birthdayDell(data)
+      }
     },
     save () {
       if (this.is_calendar) {

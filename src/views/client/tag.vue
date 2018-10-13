@@ -24,7 +24,7 @@
         <div class="insert-dialog">
           <h4>添加自定义标签</h4>
           <group>
-            <x-input v-model="value" placeholder="5个字以内" :max="5"></x-input>
+            <x-input v-model="value" name="tag" :is-type="checkText" placeholder="4个字以内"></x-input>
           </group>
           <p class="btn">
             <button class="btn-cancle" @click="closeDialog">取消</button>
@@ -58,6 +58,12 @@ export default {
     }
   },
   methods: {
+    checkText: function (value) {
+      return {
+        valid: value.length <= 4 || value.length === 0,
+        msg: '自定义标签不可超过4个'
+      }
+    },
     getCustomerTag () {
       const data = {
         uid: this.uid
@@ -138,7 +144,7 @@ export default {
       margin-top: 0.4rem;
       height: 0.5rem;
       border-radius: 0.5rem;
-      line-height: 0.5rem;
+      line-height: 0.535rem;
       width: 1.4rem;
       text-align: center;
       background-color: #f4f4f4;

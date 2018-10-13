@@ -76,7 +76,7 @@ export default {
   },
   data () {
     return {
-      time_slot:'',
+      time_slot: this.$route.query.time,
       startTIme: '',
       endTime: '',
       datePickerDialog: false,

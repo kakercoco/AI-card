@@ -1,10 +1,14 @@
 import request from '@/utils/request'
 
-export function wxConfig () {
+export function wxConfig (url) {
+  const data = {
+    url: url
+  }
   // 企业微信配置
   return request({
     url: '/api/weworkapi/getConfigData',
-    method: 'get'
+    method: 'post',
+    data
   })
 }
 

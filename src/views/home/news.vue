@@ -95,7 +95,7 @@
       <p class="dialog-comment clearfix">
         <input type="text" v-model="comment_content" autofocus></input>
         <button @click="comment_send">发送</button>
-        <img src="@/assets/icon/face.png">
+        <!--<img src="@/assets/icon/face.png">-->
       </p>
     </x-dialog>
   </div>
@@ -162,7 +162,7 @@ export default {
   },
   methods: {
       my_test(){
-        alert('1.0')
+        alert('1.2-10-11')
     },
     logIndexChange (arg) {
       console.log(arg)

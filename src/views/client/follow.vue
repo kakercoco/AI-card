@@ -42,7 +42,7 @@ export default {
   methods: {
     hide () {
       if (this.option !== '') {
-        this.value = this.option
+        this.value = this.value + this.option
       }
     },
     getFollowCreate () {

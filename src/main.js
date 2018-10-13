@@ -12,19 +12,30 @@ import '../static/css/base.css'
 import './permission.js'
 
 import Global from '@/utils/global'
-import { ToastPlugin, LoadingPlugin, WechatPlugin } from 'vux'
+import {
+  ToastPlugin,
+  LoadingPlugin,
+  WechatPlugin,
+  ConfirmPlugin
+} from 'vux'
 
-import { wxConfig } from '@/api/card'
+import {
+  wxConfig
+} from '@/api/card'
+import Vconsole from 'vconsole'
+let vConsole = new Vconsole()
 
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
 Vue.use(WechatPlugin)
-wxConfig()
+Vue.use(ConfirmPlugin)
+
+wxConfig(location.href.split('#')[0])
   .then(res => {
     const config = res.data
     config.beta = true
-    config.debug = true
-    config.jsApiList = ['startRecord', 'stopRecord']
+    config.debug = false
+    config.jsApiList = ['startRecord', 'stopRecord', 'onVoiceRecordEnd', 'uploadVoice', 'downloadVoice', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd']
     Vue.wechat.config(config)
   })
   .catch(error => {
@@ -41,6 +52,8 @@ new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
+  components: {
+    App
+  },
   template: '<App/>'
 })

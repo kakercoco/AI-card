@@ -263,7 +263,7 @@ export default {
     infor (val) {
       this.customer.forEach(e => {
         val.add_user.forEach(item => {
-          if (item === e.uid) {
+          if (item === e.uid.toString()) {
             this.customerCheckList.push(e)
             this.getCustomerList()
           }

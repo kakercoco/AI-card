@@ -77,7 +77,7 @@
         </p> -->
         <div class="tac">{{clientInfor.wx_name}}在7日内和你互动了{{forMeTotal}}次</div>
         <p v-for="(item, index) in forMeList" :key="index" class="graph" v-if="item.nums > 0">
-          <span>{{item.name}}</span>
+          <span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{item.name}}</span>
           <i :style="{width: item.nums/forMeTotal*80 + '%'}"></i>
           <b>{{item.nums}}</b>
         </p>
@@ -440,13 +440,24 @@ export default {
       })
     },
     gotoIM () {
-      this.$router.push({
-        path: '/messageIM',
-        query: {
-          id: this.clientInfor.message_id,
-          wx_image: this.clientInfor.wx_image
+        //进入新的回话前，先清除老的
+        this.$store.commit('chat/Clear_char_list');
+        this.$store.commit('chat/Clear_img_list');
+        if(this.clientInfor.message_id){
+            this.$router.push({
+                path: '/messageIM',
+                query: {
+                    id: this.clientInfor.message_id,
+                    wx_image: this.clientInfor.wx_image
+                }
+            })
+            this.$store.dispatch('chat/GetChat',this.clientInfor.message_id);
+            this.$store.dispatch('chat/chat_record',{
+                id:this.clientInfor.message_id,
+                vm:this,
+            });
         }
-      })
+
     },
     gotoTag () {
       this.$router.push({

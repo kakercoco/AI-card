@@ -13,7 +13,11 @@
         <img src="@/assets/img/calendar3.png" alt="" class="icon" v-if="infor.type === 2">
         <img src="@/assets/img/calendar4.png" alt="" class="icon" v-if="infor.type === 3">
         <img src="@/assets/img/calendar5.png" alt="" class="icon" v-if="infor.type === 4">
-        <span>日常</span>
+        <span v-if="infor.type === 0">日常</span>
+        <span v-if="infor.type === 1">预约</span>
+        <span v-if="infor.type === 2">会议</span>
+        <span v-if="infor.type === 3">拜访</span>
+        <span v-if="infor.type === 4">生日</span>
       </li>
       <li>
         <span class="title">日程标题：</span>

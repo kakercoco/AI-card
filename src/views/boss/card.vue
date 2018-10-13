@@ -17,8 +17,7 @@
         <div class="card">
           <img src="@/assets/img/card2.png" alt="" class="card-icon">
           <span>扫码名片</span>
-          <img :src="topTitleInfor.card_poster" alt="" class="code-icon" @click="gotoQrcode">
-          <!--<img src="@/assets/img/code.png" alt=""  >-->
+          <img src="@/assets/img/code.png" alt="" class="code-icon" @click="gotoQrcode">
         </div>
       </div>
     </div>
@@ -69,57 +68,37 @@
         </div>
         <div v-show="dataTabIndex === 1" class="second-tab-list second-nav-list-2">
           <ul>
-            <li v-for="(item,index) in totalCustomer1" :key="index">
+            <li v-for="(item,index) in totalCustomer" :key="index">
               <span>{{item.title}}</span>
-              <span class="red">{{item.pertenage}}%</span>
-              <span class="red">{{item.num}}</span>
-            </li>
-            <li v-for="(item,index) in totalCustomer2" :key="index + 3">
-              <span>{{item.title}}</span>
-              <span class="blue">{{item.pertenage}}%</span>
-              <span class="blue">{{item.num}}</span>
+              <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.pertenage}}%</span>
+              <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.num}}</span>
             </li>
           </ul>
         </div>
         <div v-show="dataTabIndex === 2" class="second-tab-list second-nav-list-2">
           <ul>
-            <li v-for="(item,index) in totalCustomer1" :key="index">
+            <li v-for="(item,index) in totalCustomer" :key="index">
               <span>{{item.title}}</span>
-              <span class="red">{{item.pertenage}}%</span>
-              <span class="red">{{item.num}}</span>
-            </li>
-            <li v-for="(item,index) in totalCustomer2" :key="index + 3">
-              <span>{{item.title}}</span>
-              <span class="blue">{{item.pertenage}}%</span>
-              <span class="blue">{{item.num}}</span>
+              <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.pertenage}}%</span>
+              <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.num}}</span>
             </li>
           </ul>
         </div>
         <div v-show="dataTabIndex === 3" class="second-tab-list second-nav-list-2">
           <ul>
-            <li v-for="(item,index) in totalCustomer1" :key="index">
+            <li v-for="(item,index) in totalCustomer" :key="index">
               <span>{{item.title}}</span>
-              <span class="red">{{item.pertenage}}%</span>
-              <span class="red">{{item.num}}</span>
-            </li>
-            <li v-for="(item,index) in totalCustomer2" :key="index + 3">
-              <span>{{item.title}}</span>
-              <span class="blue">{{item.pertenage}}%</span>
-              <span class="blue">{{item.num}}</span>
+              <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.pertenage}}%</span>
+              <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.num}}</span>
             </li>
           </ul>
         </div>
         <div v-show="dataTabIndex === 4" class="second-tab-list second-nav-list-2">
           <ul>
-            <li v-for="(item,index) in totalCustomer1" :key="index">
+            <li v-for="(item,index) in totalCustomer" :key="index">
               <span>{{item.title}}</span>
-              <span class="red">{{item.pertenage}}%</span>
-              <span class="red">{{item.num}}</span>
-            </li>
-            <li v-for="(item,index) in totalCustomer2" :key="index + 3">
-              <span>{{item.title}}</span>
-              <span class="blue">{{item.pertenage}}%</span>
-              <span class="blue">{{item.num}}</span>
+              <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.pertenage}}%</span>
+              <span :class="parseFloat(item.pertenage) > 0 ? 'red' : 'blue'">{{item.num}}</span>
             </li>
           </ul>
         </div>
@@ -157,7 +136,7 @@
         <div class="action">
           <p v-for="(item, index) in countObj" :key="index" class="graph">
             <span>{{item.name}}</span>
-            <i :style="{width: item.num/forTotal*60 + '%'}"></i>
+            <i :style="{width: item.num/forTotal*100 + '%'}"></i>
             <b>{{item.num}}</b>
           </p>
         </div>
@@ -288,9 +267,9 @@ export default {
         }
       }
       this.totalCustomer = map
-      let array = this.sliceArray(map, 3)
-      this.totalCustomer1 = array[0]
-      this.totalCustomer2 = array[1]
+      // let array = this.sliceArray(map, 3)
+      // this.totalCustomer1 = array[0]
+      // this.totalCustomer2 = array[1]
     },
     sliceArray (array, size) {
       var result = []
@@ -593,6 +572,12 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
+  .red{
+    color: #ff0000;
+  }
+  .blue{
+    color: #00ea48;
+  }
 .boss-card{
   .header-bg{
     background: url('~@/assets/img/tabbar.png') no-repeat top;
@@ -893,47 +878,53 @@ export default {
           left: 0;
         }
       }
-      i{
+      i {
         display: inline-block;
         height: 0.2rem;
         border-radius: 0.1rem;
         margin-left: 0.5rem;
       }
-      &:nth-child(1){
-        span::after{
+      &:nth-child(1) {
+        span::after {
           background-color: #ff0000;
         }
-        i{
+      }
+      &:nth-child(2) {
+        span::after {
+          background-color: #653ffe;
+        }
+      }
+      &:nth-child(3) {
+        span::after {
+          background-color: #73a6fb;
+        }
+      }
+      &:nth-child(5n + 1) {
+        i {
           background: linear-gradient(left, #cc00ff, #b1181a);
           background: -webkit-linear-gradient(left, #cc00ff, #b1181a);
         }
       }
-      &:nth-child(2){
-        span::after{
-          background-color: #653ffe;
-        }
-        i{
+      &:nth-child(5n + 2) {
+        i {
           background: linear-gradient(left, #cc00ff, #5747fe);
           background: -webkit-linear-gradient(left, #cc00ff, #5747fe);
         }
       }
-      &:nth-child(3){
-        span::after{
-          background-color: #73a6fb;
-        }
-        i{
+      &:nth-child(5n + 3) {
+        i {
           background: linear-gradient(left, #cc00ff, #6eaffb);
           background: -webkit-linear-gradient(left, #cc00ff, #6eaffb);
         }
       }
-      &:nth-child(4){
-        i{
+      &:nth-child(5n + 4) {
+        i {
           background: linear-gradient(left, #cd01fd, #fd5b66);
           background: -webkit-linear-gradient(left, #cd01fd, #fd5b66);
         }
       }
-      &:nth-child(5){
-        i{
+      &:nth-child(5n + 5) {
+        i {
           background: linear-gradient(left, #c781f9, #0fba40);
           background: -webkit-linear-gradient(left, #c781f9, #0fba40);
         }

@@ -10,7 +10,7 @@
       <div>
         <p class="card-img"><img :src="cardInfor.card_image" alt="" ></p>
         <ul>
-          <li v-for="(e, index) in dynamicList" :key="index" >
+          <li v-for="(e, index) in dynamicList" :key="index" @click="newsSelf(e)">
             <span class="time">{{Global.parseTime(e.create_time,'{h}:{i}')}}</span>
             <div class="img-wrap">
               <!-- <img :src="e.user_image" alt="" v-for="item in e.cover" :key="item" :class="{'img-one':e.cover.length ===1,'img-list':e.cover.length>1}"> -->
@@ -102,6 +102,14 @@ export default {
       this.$router.push({
         path: '/newsDetail'
       })
+    },
+    newsSelf(item){
+        this.$router.push({
+            path: '/newsDetail',
+            query: {
+                id: item.id
+            }
+        })
     }
   },
   mounted () {

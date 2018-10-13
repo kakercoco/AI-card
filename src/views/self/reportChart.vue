@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 17:01:37
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-30 09:19:36
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-13 17:37:24
  */
 <template>
   <div class="report-chart">
@@ -381,16 +381,23 @@ export default {
     }
     ul {
       padding: 0 0.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     li {
-      float: left;
-      width: 25%;
+      // float: left;
+      // width: 25%;
       height: 0.5rem;
       text-align: center;
       line-height: 0.5rem;
       color: #adbaff;
       margin-bottom: 0.4rem;
       position: relative;
+      display: inline-flex;
+      justify-content: left;
+      padding-left: 0.3rem;
+      margin: 0 0.2rem;
       &::after {
         content: '';
         position: absolute;

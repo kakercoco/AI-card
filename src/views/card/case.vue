@@ -333,7 +333,7 @@ export default {
         h5 {
           color: #717171;
           font-size: 0.28rem;
-          height: 1.2rem;
+          height: 1.5rem;
           overflow : hidden;
           text-overflow: ellipsis;
           display: -webkit-box;

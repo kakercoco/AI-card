@@ -6,6 +6,7 @@
  */
 <template>
   <div class="index footprint">
+
     <tab :line-width="2" v-model="tabIndex">
       <tab-item @on-item-click="onItemClick">时间</tab-item>
       <tab-item @on-item-click="onItemClick">行为</tab-item>
@@ -215,6 +216,13 @@ export default {
       }
     }
   },
+    watch:{
+        tabIndex(val){
+            if(val == 1){
+                this.behavior_init();
+            }
+        }
+    },
   methods: {
     onItemClick (index) {
       this.tabIndex = index
@@ -318,7 +326,8 @@ export default {
       this.$router.push({
         path: '/callPhone',
         query: {
-          type: item.type
+          type: item.type,
+          time: this.behavior_config.time_slot
         }
       })
     },
@@ -529,6 +538,7 @@ $color:#717171;
   height: 100%;
   padding-top: 44px;
   -webkit-overflow-scrolling: touch;
+
   & /deep/ .vux-tab-item{
     font-size: 16px;
   }
@@ -623,6 +633,9 @@ $color:#717171;
       text-align: center;
       img{
         width: 0.7rem;
+        height: 0.58rem;
+        display: block;
+        margin: 0 auto;
       }
       p{
         display: block;

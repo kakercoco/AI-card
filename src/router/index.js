@@ -256,6 +256,12 @@ export default new Router({
       name: 'qrcode',
       meta: { title: '我的名片' },
       component: () => import('@/views/self/qrcode')
+    },
+    {
+      path: '/error',
+      name: 'error',
+      meta: { title: 'error' },
+      component: () => import('@/error')
     }
   ]
 })

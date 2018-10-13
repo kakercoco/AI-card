@@ -56,7 +56,17 @@ export default {
       const wx_image = item.wx_image
       const wx_name = item.wx_name
       const uid = item.uid
+        //进入新的回话前，先清除老的
+    this.$store.commit('chat/Clear_char_list');
+    this.$store.commit('chat/Clear_img_list');
+
       if (message_id) {
+          this.$store.dispatch('chat/GetChat',message_id);
+          this.$store.dispatch('chat/chat_record',{
+              id:message_id,
+              vm:this,
+          });
+
         this.$router.push({
           path: `/messageIM`,
           query: {

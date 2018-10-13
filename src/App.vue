@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div class="v_console_show" @click="v_console_click"></div>
     <div class="all_dialog" :class="dialog.is_show ? 'all_dialog_show' : ''">
       <div v-if="dialog.is_show">
         <img :src="dialog.wx_image">
@@ -18,6 +19,7 @@ import { dateFtt, config, all_srcollBtoom } from '@/utils/base'
 import { get_users } from '@/api/message'
 import { not_online } from '@/api/chart'
 import { emojiAnalysis, __emojiObjs } from '@/utils/emoj'
+import axios from 'axios';
 if (process.env.NODE_ENV === 'development') {
   var my_config = require('../config/index')
 }
@@ -33,15 +35,25 @@ export default {
         time: '',
         heartbeat: null
       },
-        heartbeat:null
+        heartbeat:null,
+        v_console_num:0
     }
   },
   created () {
     if (process.env.NODE_ENV === 'development') {
       setToken(my_config.dev.token)
     }
+
   },
   methods: {
+    v_console_click(){
+        this.v_console_num ++;
+        if(this.v_console_num >= 4){
+            document.querySelector('#__vconsole').style.display = 'block';
+            this.v_console_num = 0;
+            alert('1.8');
+        }
+    },
     get_user_info () {
       get_user_info().then(res => {
         if (res.data) {
@@ -52,12 +64,15 @@ export default {
     },
 
     webSocket_init () {
+      console.log('聊天开始连接');
       const Socket_data = new WebSocket(this.$store.state.user.chat_ws)
       this.$store.commit('user/SET_websocket', Socket_data)
 
       this.$store.state.user.websocketConnection.onopen = () => {
+        console.log('聊天连接成功');
         this.webSocket_login();//登陆
         this.webSocket_error();//错误
+        this.webSocket_close();//关闭
         this.send_heartbeat();//心跳
       }
     },
@@ -84,8 +99,21 @@ export default {
       this.chat_watch()
     },
 
+    GetChat(id){
+        if(id && this.$store.state.user.websocketConnection != null){
+            const req = {
+                "cmd": "GetChat",
+                "content": id//对方的id
+            };
+            this.$store.state.user.websocketConnection.send(JSON.stringify(req));
+            this.chat_record();
+        }
+
+    },
+
       //监听
     chat_watch () {
+        const that = this;
       this.$store.state.user.websocketConnection.onmessage = res => {
         const data = JSON.parse(res.data)
         // 如果返回是登录信息
@@ -93,14 +121,26 @@ export default {
             const my = JSON.parse(data.content)
             this.$store.commit('user/SET_my_chat_token', my.token)
 
-            console.log('员工账号的message_id：', my.id)
+            console.log('LoginSuccess返回员工message_id：', my.id);
+            console.log('card/read返回员工message_id：',this.$store.state.user.info.message_id);
             // 判断员工信息中是否包含message_id
             if (!this.$store.state.user.info.message_id) {
                 this.$store.commit('user/SET_my_message_id', my.id)
             }
+
+            //GetChat 和 聊天记录
+            //如果在聊天页面，则GetChat，不然就不GetChat
+            if(this.$route.path === '/messageIM' && this.$route.query.id){
+                this.$store.dispatch('chat/GetChat',this.$route.query.id);
+                this.$store.dispatch('chat/chat_record',{
+                    id:this.$route.query.id,
+                    vm:this,
+                });
+            }
+
         } else if (data.cmd === 'GetChat' && data.content) {
           this.$store.commit('chat/SET_my_chat_room_id', data.content)
-          console.log('聊天连接成功！,房间号：', data.content)
+          console.log('GetChat成功！,房间号：', data.content)
         } else if (
           data.cmd === 'SpeakFromDialog' &&
           this.$route.path != '/messageIM'
@@ -123,7 +163,7 @@ export default {
               : ''
             this.dialog.is_show = true
             this.dialog.is_ready = false
-            this.dialog.time = dateFtt('hh:mm', new Date(user.create_time))
+            this.dialog.time = dateFtt('hh:mm', new Date(user.create_time*1000))
             this.dialog.timer = setTimeout(() => {
               this.dialog.is_show = false
               this.dialog.timer = null
@@ -133,9 +173,7 @@ export default {
               clearTimeout(this.dialog.timer)
             }, 2000)
           }
-        } else if (data.cmd === 'Error') {
-          //alert(data.content)
-        } else if (data.cmd === 'Offline' && data.content) {
+        } else if (data.cmd === 'Error') { } else if (data.cmd === 'Offline' && data.content) {
           const message_id = data.content.split(',')[0]
           const content_id = data.content.split(',')[1]
           const list = this.$store.state.chat.char_list
@@ -160,7 +198,34 @@ export default {
             name: this.$store.state.user.info.username
           }).then(e => {})
         }
+
+        //异常断开，需要重新连接
+        else if(data.cmd === 'Disconnect'){
+            that.again_connect();
+        }
+
+        //在其它地方登陆
+        else if(data.cmd === 'OtherLogin'){
+            console.log('您在其它地方登陆，是否重新连接');
+            this.$vux.confirm.show({
+                title: '提示',
+                content: '您在其它地方登陆，是否重新连接',
+                onCancel () {
+                    console.log('没有重连');
+                },
+                onConfirm () {
+                    console.log('点击重连');
+                    that.again_connect();
+                }
+            })
+        }
       }
+    },
+
+    //重新连接
+    again_connect(){
+        this.$store.state.user.websocketConnection.close();//先关闭
+        this.webSocket_init();
     },
 
     // 消息列表逻辑
@@ -241,17 +306,17 @@ export default {
     },
 
     create_shop (data) {
-      const obj = {
-        type: 'shop',
-        p_class: data.p_class,
-        p_id: data.p_id,
-        p_image: data.p_image,
-        p_name: data.p_name,
-        p_price_sell: data.p_price_sell,
-        p_title: '测试',
-        content: ''
-      }
-      return obj
+        const obj = {
+            type: 'shop',
+            p_class: data.p_class,
+            p_id: data.p_id,
+            p_image: data.p_image,
+            p_name: data.p_name,
+            p_price_sell: data.p_price_sell,
+            p_title: '测试',
+            content: ''
+        }
+        return obj
     },
 
     chat_logic (res) {
@@ -274,7 +339,11 @@ export default {
           // 如果是text类型，要重置content类型
           if (chat_data.type === 'text') {
               chat_data.content = emojiAnalysis([chat_data.content])
+              console.log(chat_data.content);
           } else if (chat_data.type === 'img') {
+              if(chat_data.content.indexOf('wxfile') > -1 || chat_data.content.indexOf('blob:http') > -1){
+                  chat_data.content = chat_content.original;
+              }
               chat_data.original = chat_content.original
               this.$store.commit('chat/PUSH_img_list', {
                   src: chat_content.original
@@ -290,16 +359,16 @@ export default {
     webSocket_error(){
         const that = this;
         this.$store.state.user.websocketConnection.onerror = (e)=>{
-            this.$store.state.user.websocketConnection.close();//先关闭
-            that.webSocket_init();
+            that.again_connect();
         }
     },
 
-      //关闭socket
-      socket_close(){
-
-      },
-
+    webSocket_close(){
+          const that = this;
+          this.$store.state.user.websocketConnection.onclose = (e)=>{
+              that.webSocket_init();
+          }
+    },
       //心跳
     send_heartbeat () {
       if(this.heartbeat === null){
@@ -307,7 +376,9 @@ export default {
               const req = {
                   cmd: 'HeartBeat'
               }
-              this.$store.state.user.websocketConnection.send(JSON.stringify(req));
+              if(this.$store.state.user.websocketConnection != null){
+                  this.$store.state.user.websocketConnection.send(JSON.stringify(req));
+              }
               console.log('发送心跳')
               clearTimeout(this.heartbeat);//清除这次的定时器
               this.heartbeat = null;//重置开关

@@ -57,7 +57,7 @@ export default {
       clientList: false, // 客户列表是否显示
       checkedCustomer: [], // 选中的客户列表
       customer: [], // 全部的客户列表
-      checkedId: [] // 编辑厨师的客户列表id
+      checkedId: [] // 编辑厨师的客户列表id,
     }
   },
   methods: {
@@ -103,6 +103,9 @@ export default {
         .then(res => {
           this.tagName = res.data.tag_name
           this.checkedCustomer = res.data.customer
+          this.checkedCustomer.forEach(element => {
+            element.uid = element.id
+          })
           this.checkedId = res.data.customer_id
         })
     },
@@ -116,10 +119,15 @@ export default {
         // name: this.tagName,
         tag_id: this.tag_id
       }
-      updateCustomerTag(data)
-        .then(res => {
-          this.$router.back(-1)
-        })
+      if (id === '') {
+        this.checkedCustomer = []
+        alert('请选择标签成员！')
+      } else {
+        updateCustomerTag(data)
+          .then(res => {
+            this.$router.back(-1)
+          })
+      }
     }
   },
   mounted () {

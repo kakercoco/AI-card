@@ -92,7 +92,7 @@ export function followIndex (data) {
 export function setBirthdayAdd (data) {
   // 同步客户生日
   return request({
-    url: '/api/Customer/setBirthdayAdd',
+    url: '/api/Calendar/setBirthdayAdd',
     method: 'post',
     data: data
   })
@@ -101,7 +101,7 @@ export function setBirthdayAdd (data) {
 export function birthdayDell (data) {
   // 删除同步客户生日
   return request({
-    url: '/api/Customer/birthdayDell',
+    url: '/api/Calendar/birthdayDell',
     method: 'post',
     data: data
   })

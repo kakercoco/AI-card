@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 15:23:26
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 09:15:29
+ * @Last Modified time: 2018-10-13 18:12:26
  */
 <template>
   <div class="self-card">
@@ -39,6 +39,19 @@ export default {
   },
   methods: {
     gotoEdit () {
+      this.$store.state.user.cardInfor = {
+        close: true,
+        phone: '',
+        tel: '',
+        wechat: '',
+        email: '',
+        company: '',
+        address: '',
+        goods_case: {
+          case: [],
+          goods: []
+        }
+      }
       this.$router.push({
         path: '/editCard'
       })
