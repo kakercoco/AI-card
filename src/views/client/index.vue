@@ -1,45 +1,47 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-07 16:25:17
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-10-09 16:02:38
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-16 20:19:08
  */
 <template>
   <div class="client">
-    <div class="card-shadow card">
-      <div class="top">
-        <img :src="clientInfor.wx_image" alt="" class="avatar">
-        <div>
-          <p><span class="name">{{clientInfor.wx_name}}</span><img src="@/assets/icon/edit.png" class="fr edit" alt="" @click="gotoInfor"></p>
+    <div style="height: 4rem;width:100%;background-color: #fff;position: fixed;top:0;z-index: 999"></div>
+    <div :class="active ===2 ? 'card2 card-shadow' : 'card card-shadow'">
+        <div class="top">
+          <img :src="clientInfor.wx_image" alt="" class="avatar">
+          <div>
+            <p><span class="name">{{clientInfor.wx_name}}</span><img src="@/assets/icon/edit.png" class="fr edit" alt="" @click="gotoInfor"></p>
             <p class="tag-list">
               <span v-for="(item, index) in clientInfor.tag" :key="index" v-if="index<2">{{item}}</span>
-              <span v-if="clientInfor.tag.length>2">···</span>
+              <span v-if="clientInfor.tag && clientInfor.tag.length>2">···</span>
               <x-icon type="ios-plus-outline" class="fr icon-insert" @click.native="gotoTag"></x-icon>
             </p>
+          </div>
         </div>
-      </div>
-      <div class="center clearfix">
-        <p class="fl">
-          <popup-picker :data="options1" v-model="option1" :show="turnoverVisibility" value-text-align="center" @on-change="customerSetTurnover" @on-show="pickerShow">
-          </popup-picker>
-          <span @click="turnoverVisibility = true">设置成交概率</span>
-        </p>
-        <p class="fr">
-          <datetime v-model="clientInfor.turnover_date" @on-confirm="customerSetTurnoverDate" :show.sync="dateVisibility"></datetime>
-          <span @click="dateVisibility = true">预设成交时间</span>
-        </p>
-      </div>
-      <div class="down">
-        <p class="fl" @click="gotoIM">
-          <span>会话</span>
-          <img src="@/assets/img/wchat.png" alt="">
-        </p>
+
+        <div class="center clearfix">
+          <p class="fl">
+            <popup-picker :data="options1" v-model="option1" :show="turnoverVisibility" value-text-align="center" @on-change="customerSetTurnover" @on-show="pickerShow">
+            </popup-picker>
+            <span @click="turnoverVisibility = true">设置成交概率</span>
+          </p>
+          <p class="fr">
+            <datetime v-model="clientInfor.turnover_date" @on-confirm="customerSetTurnoverDate" :show.sync="dateVisibility"></datetime>
+            <span @click="dateVisibility = true">预设成交时间</span>
+          </p>
+        </div>
+        <div class="down">
+          <p class="fl" @click="gotoIM">
+            <span>会话</span>
+            <img src="@/assets/img/wchat.png" alt="">
+          </p>
           <p class="fr" @click="gotoFollow">
             <span>跟进</span>
             <img src="@/assets/img/detail.png" alt="">
-        </p>
+          </p>
+        </div>
       </div>
-    </div>
     <div class="client-action" v-show="active ===0">
       <p v-if="visitList.length <= 0">没有更多数据</p>
       <scroller lock-x height="7.5rem" use-pullup :pullup-config="config" :bounce="true" ref="loadingMore" @on-pullup-loading="loadMore">
@@ -72,9 +74,6 @@
     </div>
     <div class="client-chart" v-show="active ===2">
       <div class="news-list-detail">
-        <!-- <p class="title">
-          <img src="@/assets/img/u112.png" alt="" class="avatar">
-        </p> -->
         <div class="tac">{{clientInfor.wx_name}}在7日内和你互动了{{forMeTotal}}次</div>
         <p v-for="(item, index) in forMeList" :key="index" class="graph" v-if="item.nums > 0">
           <span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{item.name}}</span>
@@ -142,11 +141,12 @@ export default {
   },
   data () {
     return {
+      likeTotal: 0, // 兴趣总数
       isPicker: false,
       typeConfig: config,
       dateVisibility: false, // 成交时间是否显示
       turnoverVisibility: false, // 成交率是否显示
-      clientInfor: {}, // 客户信息
+      clientInfor: {tag: []}, // 客户信息
       chartInfor: {}, // 客户图标信息
       forMeTotal: 0, // 图表互动总次数
       forMeList: [], // 图表互动列表
@@ -192,12 +192,12 @@ export default {
             name: '访问来源',
             type: 'pie',
             radius: '75%',
+            center: ['50%', '55%'],
             data: [
               {
                 name: '公司',
                 value: `${(
-                  (this.lookData[0] /
-                    (this.lookData[0] + this.lookData[1] + this.lookData[2])) *
+                  (this.lookData[0] / this.likeTotal) *
                   100
                 ).toFixed(1)}`,
                 label: {
@@ -209,8 +209,7 @@ export default {
               {
                 name: '产品',
                 value: `${(
-                  (this.lookData[1] /
-                    (this.lookData[0] + this.lookData[1] + this.lookData[2])) *
+                  (this.lookData[1] / this.likeTotal) *
                   100
                 ).toFixed(1)}`,
                 label: {
@@ -222,8 +221,7 @@ export default {
               {
                 name: '个人',
                 value: `${(
-                  (this.lookData[2] /
-                    (this.lookData[0] + this.lookData[1] + this.lookData[2])) *
+                  (this.lookData[2] / this.likeTotal) *
                   100
                 ).toFixed(1)}`,
                 label: {
@@ -416,6 +414,10 @@ export default {
           this.lookData[2] = obj[key]
         }
       }
+      this.likeTotal = this.lookData[0] + this.lookData[1] + this.lookData[2]
+      if (this.likeTotal === 0) {
+        this.likeTotal = 1
+      }
     },
     getActiveData (arr) {
       for (const key in arr) {
@@ -440,24 +442,24 @@ export default {
       })
     },
     gotoIM () {
-        //进入新的回话前，先清除老的
-        this.$store.commit('chat/Clear_char_list');
-        this.$store.commit('chat/Clear_img_list');
-        if(this.clientInfor.message_id){
-            this.$router.push({
-                path: '/messageIM',
-                query: {
-                    id: this.clientInfor.message_id,
-                    wx_image: this.clientInfor.wx_image
-                }
-            })
-            this.$store.dispatch('chat/GetChat',this.clientInfor.message_id);
-            this.$store.dispatch('chat/chat_record',{
-                id:this.clientInfor.message_id,
-                vm:this,
-            });
-        }
-
+      // 进入新的回话前，先清除老的
+      this.$store.commit('chat/Clear_char_list')
+      this.$store.commit('chat/Clear_img_list')
+      if (this.clientInfor.message_id) {
+        this.$router.push({
+          path: '/messageIM',
+          query: {
+            id: this.clientInfor.message_id,
+            wx_image: this.clientInfor.wx_image,
+            uid: this.$route.query.uid
+          }
+        })
+        this.$store.dispatch('chat/GetChat', this.clientInfor.message_id)
+        this.$store.dispatch('chat/chat_record', {
+          id: this.clientInfor.message_id,
+          vm: this
+        })
+      }
     },
     gotoTag () {
       this.$router.push({
@@ -503,10 +505,111 @@ export default {
   padding-bottom: 45px;
   overflow: auto;
   height: 100%;
+  width: 100%;
   -webkit-overflow-scrolling: touch;
+  .card2{
+    height: 3.8rem;
+    padding: 0.3rem 0.25rem 0.3rem 0.25rem;
+    position: fixed;
+    top:0.5rem;
+    z-index: 1000;
+    width: 92%;
+    background-color: #fff;
+    .top {
+      height: 1.6rem;
+      .avatar {
+        float: left;
+        width: 1.6rem;
+        height: 100%;
+        border-radius: 0.1rem;
+      }
+      & > div {
+        width: 4.5rem;
+        float: right;
+        height: 100%;
+        p {
+          height: 50%;
+          line-height: 0.8rem;
+          .name {
+            font-size: 0.3rem;
+          }
+          .edit {
+            width: 0.4rem;
+            margin-top: 0.2rem;
+          }
+        }
+        .tag-list {
+          position: relative;
+          overflow: hidden;
+          span {
+            padding: 0 0.15rem;
+            height: 0.4rem;
+            line-height: 0.4rem;
+            border: 1px solid #a561fb;
+            border-radius: 0.4rem;
+            color: #a561fb;
+            float: left;
+            font-size: 0.26rem;
+            margin-right: 0.1rem;
+            margin-top: 0.2rem;
+          }
+          .icon-insert {
+            position: absolute;
+            top: 0.15rem;
+            right: -0.06rem;
+            fill: #5977fe;
+            width: 0.5rem;
+          }
+        }
+      }
+    }
+    .center {
+      padding: 0.2rem 0;
+      border-bottom: 1px solid #ddd;
+      & /deep/ .weui-cell {
+        min-height: 0.32rem;
+        padding: 0;
+        .weui-cell__ft {
+          padding: 0;
+          text-align: center;
+          &::after {
+            display: none;
+          }
+        }
+      }
+      p {
+        text-align: center;
+        width: 2.5rem;
+        height: 0.7rem;
+        span {
+          color: #717171;
+        }
+        & /deep/ .vux-datetime-value {
+          color: #717171;
+          min-height: 0.32rem;
+        }
+      }
+    }
+    .down {
+      p {
+        width: 2.5rem;
+        height: 0.7rem;
+        font-size: 0.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+          width: 0.28rem;
+          margin-left: 0.2rem;
+        }
+      }
+    }
+  }
   .card {
     height: 3.8rem;
     padding: 0.3rem 0.25rem;
+    position: relative;
+    z-index: 999;
     .top {
       height: 1.6rem;
       .avatar {
@@ -643,7 +746,7 @@ export default {
       margin-top: 0.4rem;
     }
     li {
-      height: 2.2rem;
+      // height: 2.2rem;
       & > p {
         margin: 0.4rem 0;
         font-size: 0.3rem;
@@ -652,7 +755,8 @@ export default {
         text-align: center;
       }
       & > div {
-        height: 1.4rem;
+        display: flex;
+        // height: 1.4rem;
         padding: 0.25rem;
         img {
           height: 100%;
@@ -664,13 +768,14 @@ export default {
           font-size: 0.3rem;
           color: #717171;
           height: 100%;
-          line-height: 0.9rem;
+          // line-height: 0.9rem;
           float: left;
         }
       }
     }
   }
   .client-chart {
+    margin-top: 4.3rem;
     .news-list-detail {
       margin-top: 0.3rem;
       .avatar {
@@ -703,7 +808,6 @@ export default {
           width: 2rem;
           padding-left: 0.3rem;
           position: relative;
-
           &::after {
             content: '';
             width: 0.1rem;
@@ -723,17 +827,17 @@ export default {
           margin-right: 0.1rem;
           max-width: 60%;
         }
-        &:nth-of-type(1) {
+        &:nth-of-type(3n+1) {
           span::after {
             background-color: #ff0000;
           }
         }
-        &:nth-of-type(2) {
+        &:nth-of-type(3n+2) {
           span::after {
             background-color: #653ffe;
           }
         }
-        &:nth-of-type(3) {
+        &:nth-of-type(3n+3) {
           span::after {
             background-color: #73a6fb;
           }

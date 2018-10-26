@@ -45,17 +45,17 @@ service.interceptors.response.use(
       return response.data
     }
     const res = response.data
-    console.log(res)
     if (res.isSuccess) {
       return response.data
     }
+    console.log(res)
     if (res.code !== 200) {
       // alert(res.msg)
       // AlertModule.show({
       //   title: '提示',
       //   content: res.msg
       // })
-      // 201:Token 过期了;0:在设置欢迎语的时候重复了
+      // 201:Token 过期了;0:必填checked校验
       if (res.code === 201) {
         AlertModule.show({
           title: '提示',

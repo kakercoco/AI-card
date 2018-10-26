@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:46:11
  * @Last Modified by: Jessica
- * @Last Modified time: 2018-09-29 16:06:51
+ * @Last Modified time: 2018-10-18 11:32:24
  */
 <template>
   <div class="message">
@@ -56,27 +56,31 @@ export default {
       const wx_image = item.wx_image
       const wx_name = item.wx_name
       const uid = item.uid
-        //进入新的回话前，先清除老的
-    this.$store.commit('chat/Clear_char_list');
-    this.$store.commit('chat/Clear_img_list');
+      // 进入新的回话前，先清除老的
+      this.$store.commit('chat/Clear_char_list')
+      this.$store.commit('chat/Clear_img_list')
 
       if (message_id) {
-          this.$store.dispatch('chat/GetChat',message_id);
-          this.$store.dispatch('chat/chat_record',{
-              id:message_id,
-              vm:this,
-          });
+        this.$store.dispatch('chat/GetChat', message_id)
+        this.$store.dispatch('chat/chat_record', {
+          id: message_id,
+          vm: this
+        })
 
         this.$router.push({
           path: `/messageIM`,
           query: {
             id: message_id,
             wx_image,
-            wx_name
+            wx_name,
+            uid
           }
         })
       } else {
-        alert('缺少message_id！')
+        this.$vux.alert.show({
+          title: '提示',
+          content: '缺少message_id！'
+        })
       }
 
       if (uid) {

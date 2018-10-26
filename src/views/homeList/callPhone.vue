@@ -1,19 +1,13 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-01 14:07:51
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-01 15:37:00
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-17 20:23:57
  */
 <template>
   <div class="see-card" style="height: 100%;">
 
-    <scroller
-            height="100%"
-            lock-x
-            :use-pullup="true"
-            :pullup-config="pullup_config"
-            @on-pullup-loading="loadMore"
-            ref="scrollerBottom">
+    <scroller height="100%" lock-x :use-pullup="true" :pullup-config="pullup_config" @on-pullup-loading="loadMore" ref="scrollerBottom">
       <div>
         <div class="title">
           <h5>{{time_slot === '' ? '7日内' : time_slot}}被查看的行为统计</h5>
@@ -60,9 +54,9 @@
 </template>
 
 <script>
-import { XDialog, XButton, Group, Cell, Datetime,Scroller } from 'vux'
-import {init_list} from '@/api/footprint'
-import {dateFtt,config} from '@/utils/base';
+import { XDialog, XButton, Group, Cell, Datetime, Scroller } from 'vux'
+import { init_list } from '@/api/footprint'
+import { dateFtt, config } from '@/utils/base'
 
 export default {
   name: 'callPhone',
@@ -81,26 +75,27 @@ export default {
       endTime: '',
       datePickerDialog: false,
       pullup_config: {
-          content: '加载中...',
-          pullUpHeight: 60,
-          height: 40,
-          autoRefresh: false,
-          downContent: '加载中...',
-          upContent: '加载中...',
-          loadingContent: '加载中...'
+        content: '加载中...',
+        pullUpHeight: 60,
+        height: 40,
+        autoRefresh: false,
+        downContent: '加载中...',
+        upContent: '加载中...',
+        loadingContent: '加载中...'
       },
-      list:[],
-      scroller_config:{
-          page:1,
-          pagesize:10,
-          max_page:0,
-          isAjax:true,
-          total:0,
-      },
+      list: [],
+      scroller_config: {
+        page: 1,
+        pagesize: 10,
+        max_page: 0,
+        isAjax: true,
+        total: 0
+      }
     }
   },
   methods: {
-    changeStartTime () {
+    changeStartTime (val) {
+      console.log(val)
     },
 
     showDateChoose () {
@@ -108,139 +103,144 @@ export default {
     },
 
     sureTime () {
-      this.datePickerDialog = false;
-      this.time_slot = `${this.startTIme}到${this.endTime}`;
+      this.datePickerDialog = false
+      this.time_slot = `${this.startTIme}到${this.endTime}`
       this.$vux.loading.show({
-          text: '加载中...'
-      });
-      if(this.scroller_config.isAjax){
-          this.$refs.scrollerBottom.disablePullup();
-          this.list = [];
-          this.scroller_config.page = 1;
-          this.scroller_config.total = 0;
-          this.scroller_config.max_page = 0;
-          this.init(this.startTIme,this.endTime,true);
+        text: '加载中...'
+      })
+      if (this.scroller_config.isAjax) {
+        this.$refs.scrollerBottom.disablePullup()
+        this.list = []
+        this.scroller_config.page = 1
+        this.scroller_config.total = 0
+        this.scroller_config.max_page = 0
+        this.init(this.startTIme, this.endTime, true)
       }
-
     },
 
-    init(start_time,end_time,isTop){
-        this.scroller_config.isAjax = false;
-        init_list({
-            type:'typeGroup',
-            type_id:this.$route.query.type,
-            start_time,
-            end_time
-        }).then((e)=>{
-            this.scroller_config.isAjax = true;
-            this.$vux.loading.hide();
-            if(e.code === 200 && e.data && e.data.rows instanceof Array){
-                let list = e.data.rows;
-                list.map((val,i)=>{
-                    val.ele = config[val.type] ? val.wx_name + config[val.type] : '';
-                    val.time = dateFtt("yyyy-MM-dd hh:mm:ss", new Date(val.create_time*1000));
-                });
+    init (start_time, end_time, isTop) {
+      this.scroller_config.isAjax = false
+      init_list({
+        type: 'typeGroup',
+        type_id: this.$route.query.type,
+        start_time,
+        end_time
+      }).then(e => {
+        this.scroller_config.isAjax = true
+        this.$vux.loading.hide()
+        if (e.code === 200 && e.data && e.data.rows instanceof Array) {
+          let list = e.data.rows
+          list.map((val, i) => {
+            val.ele = config[val.type] ? val.wx_name + config[val.type] : ''
+            val.time = dateFtt(
+              'yyyy-MM-dd hh:mm:ss',
+              new Date(val.create_time * 1000)
+            )
+          })
 
-                this.list = this.list.concat(list);
-                this.scroller_config.total = e.data.total;
-                this.scroller_config.max_page = Math.ceil(e.data.total / 10);
-                this.$nextTick(() => {
-                    this.$refs.scrollerBottom.donePullup();//上啦完成
+          this.list = this.list.concat(list)
+          this.scroller_config.total = e.data.total
+          this.scroller_config.max_page = Math.ceil(e.data.total / 10)
+          this.$nextTick(() => {
+            this.$refs.scrollerBottom.donePullup() // 上啦完成
 
-                    if(isTop){
-                        this.$refs.scrollerBottom.reset({top:0});
-                    }
-                    else{
-                        this.$refs.scrollerBottom.reset();
-                    }
-
-                    if(this.scroller_config.max_page <= 1){
-                        this.$refs.scrollerBottom.disablePullup();//禁止上啦
-                    }
-                    else{
-                        this.$refs.scrollerBottom.enablePullup();//恢复上啦
-                    }
-
-                });
-
-
+            if (isTop) {
+              this.$refs.scrollerBottom.reset({ top: 0 })
+            } else {
+              this.$refs.scrollerBottom.reset()
             }
-        })
-    },
 
-    to_details(item){
-        this.$router.push({
-            path: '/client',
-            query:{
-                uid:item.uid
+            if (this.scroller_config.max_page <= 1) {
+              this.$refs.scrollerBottom.disablePullup() // 禁止上啦
+            } else {
+              this.$refs.scrollerBottom.enablePullup() // 恢复上啦
             }
-        })
+          })
+        }
+      })
     },
 
-    loadMore(){
-        if (this.scroller_config.isAjax && this.scroller_config.page < this.scroller_config.max_page) {
-            this.scroller_config.page ++;
-            this.init();
+    to_details (item) {
+      this.$router.push({
+        path: '/client',
+        query: {
+          uid: item.uid
         }
-        else if(this.scroller_config.page >= this.scroller_config.max_page){
-            this.$refs.scrollerBottom.disablePullup() // 禁用上拉
-        }
+      })
+    },
 
+    loadMore () {
+      if (
+        this.scroller_config.isAjax &&
+        this.scroller_config.page < this.scroller_config.max_page
+      ) {
+        this.scroller_config.page++
+        this.init(this.startTIme, this.endTime, true)
+      } else if (this.scroller_config.page >= this.scroller_config.max_page) {
+        this.$refs.scrollerBottom.disablePullup() // 禁用上拉
+      }
     }
   },
+  created () {
+    console.log(this.$route.query)
+    var arr = this.$route.query.time.split('到')
+    this.startTIme = arr[0]
+    this.endTime = arr[1]
+    console.log(arr)
+  },
   mounted () {
-      this.init();
+    this.init(this.startTIme, this.endTime, true)
   }
 }
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
 $color: #717171;
-.see-card{
-  .title{
+.see-card {
+  .title {
     position: relative;
     height: 2.2rem;
     padding: 0.5rem 0.3rem;
-    h5{
+    h5 {
       text-align: center;
       color: $color;
       font-size: 0.28rem;
       font-weight: normal;
     }
-    img{
+    img {
       position: absolute;
       top: 0.5rem;
       right: 0.3rem;
       width: 0.35rem;
     }
-    p{
+    p {
       font-size: 0.4rem;
       color: #f79700;
       text-align: center;
       margin-top: 0.3rem;
     }
   }
-  .list{
-    li{
+  .list {
+    li {
       height: 2.5rem;
       padding: 0.2rem 0.3rem;
       padding-bottom: 0.5rem;
       border-top: 1px solid #eee;
       border-bottom: 1px solid #eee;
       border-radius: 5px;
-      p{
+      p {
         text-align: center;
         font-size: 0.22rem;
         color: $color;
         margin-bottom: 0.2rem;
       }
-      img{
+      img {
         width: 1.2rem;
         height: 1.2rem;
         border-radius: 0.1rem;
         float: left;
       }
-      div{
+      div {
         width: 65%;
         float: left;
         height: 1.2rem;
@@ -249,11 +249,11 @@ $color: #717171;
         padding: 0.1rem 0;
         overflow: hidden;
         font-size: 0.28rem;
-        i{
+        i {
           color: #f79700;
         }
       }
-      .icon-right{
+      .icon-right {
         float: right;
         height: 1.2rem;
         fill: #717171;
@@ -261,18 +261,18 @@ $color: #717171;
     }
   }
 }
-.dialog-datepicker{
-  h5{
+.dialog-datepicker {
+  h5 {
     height: 0.9rem;
     line-height: 0.9rem;
     font-size: 0.32rem;
     color: $color;
   }
-  .title-icon{
+  .title-icon {
     width: 0.4rem;
     margin-right: 0.2rem;
   }
-  .btn{
+  .btn {
     padding: 1rem;
   }
 }

@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 11:50:00
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 13:59:01
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-18 11:32:18
  */
 <template>
   <div class="client-tag">
@@ -26,10 +26,10 @@
           <group>
             <x-input v-model="value" name="tag" :is-type="checkText" placeholder="4个字以内"></x-input>
           </group>
-          <p class="btn">
+          <div class="btn">
             <button class="btn-cancle" @click="closeDialog">取消</button>
             <button class="btn-primary" @click="insert">确定</button>
-          </p>
+          </div>
         </div>
       </x-dialog>
     </p>
@@ -61,7 +61,7 @@ export default {
     checkText: function (value) {
       return {
         valid: value.length <= 4 || value.length === 0,
-        msg: '自定义标签不可超过4个'
+        msg: '自定义标签长度为1-4'
       }
     },
     getCustomerTag () {
@@ -97,11 +97,18 @@ export default {
         uid: this.uid,
         name: this.value
       }
-      insertCustomerTag(data)
-        .then(res => {
-          this.getCustomerTag()
-          this.closeDialog()
+      if (this.value.length > 0 && this.value.length < 5) {
+        insertCustomerTag(data)
+          .then(res => {
+            this.getCustomerTag()
+            this.closeDialog()
+          })
+      } else {
+        this.$vux.alert.show({
+          title: '提示',
+          content: '自定义标签长度为1-4'
         })
+      }
     },
     openDialog () {
       this.insertTagDialog = true

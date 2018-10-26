@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-04 16:38:43
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-18 20:28:23
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-18 11:57:29
  */
 <template>
   <div class="publish">
@@ -48,20 +48,26 @@ export default {
     }
   },
   methods: {
-      del_pic(index){
-          this.fileList.splice(index,1);
-      },
+    del_pic (index) {
+      this.fileList.splice(index, 1)
+    },
     changeFile (e) {
       var obj = e.target.files[0]// 获取图片对象
       if (!obj) {
         return
       }
       if (obj.type !== 'image/jpeg' && obj.type !== 'image/png') {
-        alert('只支持jpg、png!')
+        this.$vux.alert.show({
+          title: '提示',
+          content: '只支持jpg、png!'
+        })
         return
       }
       if (obj.size > 5000000) {
-        alert('照片大小不能超过5MB')
+        this.$vux.alert.show({
+          title: '提示',
+          content: '照片大小不能超过5MB'
+        })
         return
       }
       this.uploadFile_p(obj)
@@ -87,27 +93,44 @@ export default {
 
     Release () {
       if (this.value === '') {
-        alert('内容不能为空！')
+        this.$vux.alert.show({
+          title: '提示',
+          content: '内容不能为空！'
+        })
         return
       }
 
-      if(this.fileList.length == 0){
-          alert('图片不能为空！')
-          return
+      if (this.fileList.length === 0) {
+        this.$vux.alert.show({
+          title: '提示',
+          content: '图片不能为空！'
+        })
+        return
       }
 
       const content = this.fileList.join(',')
+
+      this.$vux.loading.show({
+          text: 'Loading'
+      })
 
       to_release({
         type: 1,
         title: this.value,
         content
       }).then((e) => {
+          this.$vux.loading.hide();
         if (e.code === 200) {
           this.$router.push({
             path: '/main/news'
           })
         }
+        else{
+            alert('发送失败')
+        }
+      }).catch(()=>{
+          this.$vux.loading.hide();
+          alert('发送失败')
       })
     }
   },

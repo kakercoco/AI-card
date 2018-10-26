@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 17:01:37
  * @Last Modified by: Jessica
- * @Last Modified time: 2018-10-13 17:37:24
+ * @Last Modified time: 2018-10-16 19:55:30
  */
 <template>
   <div class="report-chart">
@@ -66,7 +66,7 @@
         <li>对我感兴趣</li>
       </ul>
     </div>
-    <h3>与我互动</h3>
+    <h3>客户与我互动</h3>
     <div class="action">
       <p v-for="(item, index) in downChartInfor.for_me" :key="index" class="graph" v-if="item.num.num>0">
         <span>{{item.name}}</span>
@@ -162,6 +162,9 @@ export default {
           this.downChartInfor.like_company.num +
           this.downChartInfor.like_me.num +
           this.downChartInfor.like_product.num
+        if (this.likeTotal === 0) {
+          this.likeTotal = 1
+        }
         this.drawCare()
         this.drawDynamic()
       })
@@ -361,16 +364,32 @@ export default {
   }
   .funnel {
     #main {
-      width: 60%;
       height: 6rem;
-      background: url('~@/assets/img/chart.png') no-repeat center;
-      background-size: contain;
-      margin: 0 auto;
-      padding-top: 1.2rem;
-      p {
+      width: 100%;
+      padding-top: 1.3rem;
+      p{
         text-align: center;
-        margin-bottom: 0.7rem;
+        height: 0.76rem;
+        line-height: 0.76rem;
+        margin-bottom: 0.35rem;
         color: #fff;
+      }
+      p:nth-child(1) {
+        background: url('~@/assets/img/chart1.png') no-repeat center;
+        background-size: contain;
+      }
+      p:nth-child(2) {
+        background: url('~@/assets/img/chart2.png') no-repeat center;
+        background-size: contain;
+      }
+      p:nth-child(3) {
+        background: url('~@/assets/img/chart3.png') no-repeat center;
+        background-size: contain;
+      }
+      p:nth-child(4) {
+        background: url('~@/assets/img/chart4.png') no-repeat center;
+        background-size: contain;
+        line-height: 0.6rem;
       }
     }
     & > p {
@@ -384,6 +403,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-bottom: 0.4rem;
     }
     li {
       // float: left;
@@ -392,7 +412,6 @@ export default {
       text-align: center;
       line-height: 0.5rem;
       color: #adbaff;
-      margin-bottom: 0.4rem;
       position: relative;
       display: inline-flex;
       justify-content: left;
@@ -404,9 +423,9 @@ export default {
         top: 50%;
         transform: translateY(-60%);
         left: 0;
-        width: 0.22rem;
-        height: 0.22rem;
-        border-radius: 0.22rem;
+        width: 0.2rem;
+        height: 0.2rem;
+        border-radius: 0.2rem;
       }
       &:nth-child(1)::after {
         background-color: #3ec4d2;
@@ -446,9 +465,9 @@ export default {
         position: absolute;
         top: 0.14rem;
         left: 0;
-        width: 0.22rem;
-        height: 0.22rem;
-        border-radius: 0.22rem;
+        width: 0.2rem;
+        height: 0.2rem;
+        border-radius: 0.2rem;
       }
       &:nth-child(1)::after {
         background-color: #ff0000;
@@ -466,43 +485,48 @@ export default {
     .graph {
       height: 0.7rem;
       line-height: 0.7rem;
-      padding: 0 0.3rem;
+      padding: 0 0.15rem;
       display: flex;
       align-items: center;
       span {
+        display: inline-block;
         width: 2rem;
         padding-left: 0.3rem;
         position: relative;
+        // top: 0.24rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         &::after {
           content: '';
           width: 0.2rem;
           height: 0.2rem;
           border-radius: 50%;
           position: absolute;
-          top: 50%;
           left: 0;
-          transform: translateY(-60%);
+          top: 0.24rem;
         }
       }
       i {
+        max-width: 50%;
         display: inline-block;
         height: 0.2rem;
         border-radius: 0.1rem;
-        margin-left: 0.5rem;
-        max-width: 55%;
-        margin-right: 0.1rem;
+        margin-left: 0.3rem;
+        position: relative;
+        margin-right: 0.2rem;
       }
-      &:nth-child(1) {
+      &:nth-child(3n + 1) {
         span::after {
           background-color: #ff0000;
         }
       }
-      &:nth-child(2) {
+      &:nth-child(3n + 2) {
         span::after {
           background-color: #653ffe;
         }
       }
-      &:nth-child(3) {
+      &:nth-child(3n + 3) {
         span::after {
           background-color: #73a6fb;
         }

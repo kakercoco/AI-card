@@ -60,9 +60,8 @@
 <script>
 import { PopupPicker, Scroller } from 'vux'
 import { employcaseIndex, employcaseSave, employcaseDetele, webClient } from '@/api/card'
-
 export default {
-  name: 'produce',
+  name: 'case',
   components: {
     PopupPicker,
     Scroller
@@ -333,7 +332,7 @@ export default {
         h5 {
           color: #717171;
           font-size: 0.28rem;
-          height: 1.5rem;
+          height: 1.6rem;
           overflow : hidden;
           text-overflow: ellipsis;
           display: -webkit-box;

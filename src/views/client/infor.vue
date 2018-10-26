@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-08 18:18:43
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-30 10:04:14
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-17 16:27:39
  */
 <template>
   <div class="client-infor">
@@ -16,13 +16,13 @@
       <x-input placeholder="未填写" title="公司名称" v-model="inforForm.company"></x-input>
       <x-input placeholder="未填写" title="详细地址" v-model="inforForm.address"></x-input>
       <div class="my-birthday">
-        <datetime v-model="inforForm.birthday" >
+        <datetime v-model="inforForm.birthday" @on-confirm='choseBirth'>
           <p slot="title" class="my-label">生日时间</p>
         </datetime>
         <p class="update"><check-icon :value.sync="is_calendar" @click.native="updateCalendar"></check-icon>同步到销售日历 </p>
       </div>
       <x-switch title="屏蔽他的消息推送" v-model="inforForm.is_shield_employ" :value-map="[0,1]"></x-switch>
-      <x-textarea title="备注" v-model="inforForm.desc" autosize placeholder="请输入备注"></x-textarea>
+      <x-textarea title="备注" v-model="inforForm.desc" autosize style='font-size:0.3rem'></x-textarea>
     </group>
     <p class="btn">
       <x-button type="primary" @click.native="save">保存</x-button>
@@ -107,7 +107,14 @@ export default {
         birthdayDell(data)
       }
     },
+    choseBirth (newVal) {
+      console.log(newVal)
+      this.is_calendar = false
+      this.inforForm.is_calendar = 0
+      this.updateCalendar()
+    },
     save () {
+      console.log(this.is_calendar)
       if (this.is_calendar) {
         this.inforForm.is_calendar = 1
       } else {

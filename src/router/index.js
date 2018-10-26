@@ -262,6 +262,12 @@ export default new Router({
       name: 'error',
       meta: { title: 'error' },
       component: () => import('@/error')
+    },
+    {
+      path: '/warning',
+      name: 'warning',
+      meta: { title: '温馨提示' },
+      component: () => import('@/warning')
     }
   ]
 })

@@ -126,3 +126,11 @@ export function webClient (data) {
     data: data
   })
 }
+// 上传录音
+export function uploadMedia (data) {
+  // 推荐产品
+  return request({
+    url: '/api/upload/uploadAudio?media_id=' + data,
+    method: 'get'
+  })
+}

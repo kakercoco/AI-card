@@ -16,10 +16,10 @@
 import { setToken } from '@/utils/auth'
 import { get_user_info } from '@/api/user_info'
 import { dateFtt, config, all_srcollBtoom } from '@/utils/base'
-import { get_users } from '@/api/message'
+import { get_users, look} from '@/api/message'
 import { not_online } from '@/api/chart'
 import { emojiAnalysis, __emojiObjs } from '@/utils/emoj'
-import axios from 'axios';
+import axios from 'axios'
 if (process.env.NODE_ENV === 'development') {
   var my_config = require('../config/index')
 }
@@ -35,24 +35,25 @@ export default {
         time: '',
         heartbeat: null
       },
-        heartbeat:null,
-        v_console_num:0
+      heartbeat: null,
+      v_console_num: 0,
+      parentNode:null,
+      is_loadMore:true
     }
   },
   created () {
     if (process.env.NODE_ENV === 'development') {
       setToken(my_config.dev.token)
     }
-
   },
   methods: {
-    v_console_click(){
-        this.v_console_num ++;
-        if(this.v_console_num >= 4){
-            document.querySelector('#__vconsole').style.display = 'block';
-            this.v_console_num = 0;
-            alert('1.8');
-        }
+    v_console_click () {
+      this.v_console_num++
+      if (this.v_console_num >= 4 && document.querySelector('#__vconsole')) {
+        document.querySelector('#__vconsole').style.display = 'block'
+        this.v_console_num = 0
+        alert('10-26-1.0')
+      }
     },
     get_user_info () {
       get_user_info().then(res => {
@@ -62,22 +63,27 @@ export default {
         }
       })
     },
-
     webSocket_init () {
-      console.log('聊天开始连接');
+      // 判断是否连接，已连接就杀灭掉
+      if (this.$store.state.user.websocketConnection != null) {
+        this.$store.state.user.websocketConnection.close()// 先关闭
+        console.log('重新连接websocket，但是之前没断开，所以此处先断开')
+      }
+
+      console.log('聊天开始连接')
       const Socket_data = new WebSocket(this.$store.state.user.chat_ws)
       this.$store.commit('user/SET_websocket', Socket_data)
 
       this.$store.state.user.websocketConnection.onopen = () => {
-        console.log('聊天连接成功');
-        this.webSocket_login();//登陆
-        this.webSocket_error();//错误
-        this.webSocket_close();//关闭
-        this.send_heartbeat();//心跳
+        console.log('聊天连接成功')
+        this.webSocket_login()// 登陆
+        this.webSocket_error()// 错误
+        this.webSocket_close()// 关闭
+        this.send_heartbeat()// 心跳
       }
     },
 
-    //登录
+    // 登录
     webSocket_login () {
       const loginDto = {
         userName: this.$store.state.user.info.message_name, // 用户名
@@ -99,45 +105,43 @@ export default {
       this.chat_watch()
     },
 
-    GetChat(id){
-        if(id && this.$store.state.user.websocketConnection != null){
-            const req = {
-                "cmd": "GetChat",
-                "content": id//对方的id
-            };
-            this.$store.state.user.websocketConnection.send(JSON.stringify(req));
-            this.chat_record();
+    GetChat (id) {
+      if (id && this.$store.state.user.websocketConnection != null) {
+        const req = {
+          'cmd': 'GetChat',
+          'content': id// 对方的id
         }
-
+        this.$store.state.user.websocketConnection.send(JSON.stringify(req))
+        this.chat_record()
+      }
     },
 
-      //监听
+    // 监听
     chat_watch () {
-        const that = this;
+      const that = this
       this.$store.state.user.websocketConnection.onmessage = res => {
         const data = JSON.parse(res.data)
         // 如果返回是登录信息
         if (data.cmd === 'LoginSuccess' && data.content) {
-            const my = JSON.parse(data.content)
-            this.$store.commit('user/SET_my_chat_token', my.token)
+          const my = JSON.parse(data.content)
+          this.$store.commit('user/SET_my_chat_token', my.token)
 
-            console.log('LoginSuccess返回员工message_id：', my.id);
-            console.log('card/read返回员工message_id：',this.$store.state.user.info.message_id);
-            // 判断员工信息中是否包含message_id
-            if (!this.$store.state.user.info.message_id) {
-                this.$store.commit('user/SET_my_message_id', my.id)
-            }
+          console.log('LoginSuccess返回员工message_id：', my.id)
+          console.log('card/read返回员工message_id：', this.$store.state.user.info.message_id)
+          // 判断员工信息中是否包含message_id
+          if (!this.$store.state.user.info.message_id) {
+            this.$store.commit('user/SET_my_message_id', my.id)
+          }
 
-            //GetChat 和 聊天记录
-            //如果在聊天页面，则GetChat，不然就不GetChat
-            if(this.$route.path === '/messageIM' && this.$route.query.id){
-                this.$store.dispatch('chat/GetChat',this.$route.query.id);
-                this.$store.dispatch('chat/chat_record',{
-                    id:this.$route.query.id,
-                    vm:this,
-                });
-            }
-
+          // GetChat 和 聊天记录
+          // 如果在聊天页面，则GetChat，不然就不GetChat
+          if (this.$route.path === '/messageIM' && this.$route.query.id) {
+            this.$store.dispatch('chat/GetChat', this.$route.query.id)
+            this.$store.dispatch('chat/chat_record', {
+              id: this.$route.query.id,
+              vm: this
+            })
+          }
         } else if (data.cmd === 'GetChat' && data.content) {
           this.$store.commit('chat/SET_my_chat_room_id', data.content)
           console.log('GetChat成功！,房间号：', data.content)
@@ -163,7 +167,7 @@ export default {
               : ''
             this.dialog.is_show = true
             this.dialog.is_ready = false
-            this.dialog.time = dateFtt('hh:mm', new Date(user.create_time*1000))
+            this.dialog.time = dateFtt('hh:mm', new Date(user.create_time * 1000))
             this.dialog.timer = setTimeout(() => {
               this.dialog.is_show = false
               this.dialog.timer = null
@@ -199,33 +203,33 @@ export default {
           }).then(e => {})
         }
 
-        //异常断开，需要重新连接
-        else if(data.cmd === 'Disconnect'){
-            that.again_connect();
+        // 异常断开，需要重新连接
+        else if (data.cmd === 'Disconnect') {
+          that.again_connect()
         }
 
-        //在其它地方登陆
-        else if(data.cmd === 'OtherLogin'){
-            console.log('您在其它地方登陆，是否重新连接');
-            this.$vux.confirm.show({
-                title: '提示',
-                content: '您在其它地方登陆，是否重新连接',
-                onCancel () {
-                    console.log('没有重连');
-                },
-                onConfirm () {
-                    console.log('点击重连');
-                    that.again_connect();
-                }
-            })
+        // 在其它地方登陆
+        else if (data.cmd === 'OtherLogin') {
+          console.log('您在其它地方登录，是否重新连接')
+          this.$vux.confirm.show({
+            title: '提示',
+            content: '您在其它地方登录，是否重新连接',
+            onCancel () {
+              console.log('没有重连')
+            },
+            onConfirm () {
+              console.log('点击重连')
+              that.again_connect()
+            }
+          })
         }
       }
     },
 
-    //重新连接
-    again_connect(){
-        this.$store.state.user.websocketConnection.close();//先关闭
-        this.webSocket_init();
+    // 重新连接
+    again_connect () {
+      this.$store.state.user.websocketConnection.close()// 先关闭
+      this.webSocket_init()
     },
 
     // 消息列表逻辑
@@ -306,91 +310,220 @@ export default {
     },
 
     create_shop (data) {
-        const obj = {
-            type: 'shop',
-            p_class: data.p_class,
-            p_id: data.p_id,
-            p_image: data.p_image,
-            p_name: data.p_name,
-            p_price_sell: data.p_price_sell,
-            p_title: '测试',
-            content: ''
-        }
-        return obj
+      const obj = {
+        type: 'shop',
+        p_class: data.p_class,
+        p_id: data.p_id,
+        p_image: data.p_image,
+        p_name: data.p_name,
+        p_price_sell: data.p_price_sell,
+        p_title: '测试',
+        content: ''
+      }
+      return obj
     },
 
     chat_logic (res) {
-      var Customer_id = this.$route.query.id;
-      if(!Customer_id){
-          alert('聊天对象id不能为空');
+      var Customer_id = this.$route.query.id
+      const uid = this.$route.query.uid
+      if (!Customer_id) {
+        this.$vux.alert.show({
+          title: '提示',
+          content: '聊天对象id不能为空！'
+        })
       }
       const data = JSON.parse(res.data)
       var chat_data = {}
       let obj = JSON.parse(data.content)
-      if(Customer_id == obj.speakerId){
-          let chat_content = JSON.parse(obj.content)
-          chat_data = {
-              time: dateFtt('yyyy-MM-dd hh:mm:ss', new Date(obj.createTime)),
-              type: chat_content.type,
-              content: chat_content.content,
-              fead_src: '',
-              from: 'others'
-          }
-          // 如果是text类型，要重置content类型
-          if (chat_data.type === 'text') {
-              chat_data.content = emojiAnalysis([chat_data.content])
-              console.log(chat_data.content);
-          } else if (chat_data.type === 'img') {
-              if(chat_data.content.indexOf('wxfile') > -1 || chat_data.content.indexOf('blob:http') > -1){
-                  chat_data.content = chat_content.original;
-              }
-              chat_data.original = chat_content.original
-              this.$store.commit('chat/PUSH_img_list', {
-                  src: chat_content.original
-              })
-          } else if (chat_data.type === 'shop') {
-              Object.assign(chat_data, this.create_shop(chat_content))
-          }
-          this.$store.commit('chat/PUSH_char_list', chat_data)
-          all_srcollBtoom(this)
-      }
-    },
-
-    webSocket_error(){
-        const that = this;
-        this.$store.state.user.websocketConnection.onerror = (e)=>{
-            that.again_connect();
+      // 正在聊天的对象
+      if (Customer_id == obj.speakerId) {
+        let chat_content = JSON.parse(obj.content)
+        chat_data = {
+          time: dateFtt('yyyy-MM-dd hh:mm:ss', new Date(obj.createTime)),
+          type: chat_content.type,
+          content: chat_content.content,
+          fead_src: '',
+          from: 'others'
         }
-    },
-
-    webSocket_close(){
-          const that = this;
-          this.$store.state.user.websocketConnection.onclose = (e)=>{
-              that.webSocket_init();
+        // 如果是text类型，要重置content类型
+        if (chat_data.type === 'text') {
+          chat_data.content = emojiAnalysis([chat_data.content])
+          console.log(chat_data.content)
+        } else if (chat_data.type === 'img') {
+          if (chat_data.content.indexOf('wxfile') > -1 || chat_data.content.indexOf('blob:http') > -1) {
+            chat_data.content = chat_content.original
           }
-    },
-      //心跳
-    send_heartbeat () {
-      if(this.heartbeat === null){
-          this.heartbeat = setTimeout(()=>{
-              const req = {
-                  cmd: 'HeartBeat'
-              }
-              if(this.$store.state.user.websocketConnection != null){
-                  this.$store.state.user.websocketConnection.send(JSON.stringify(req));
-              }
-              console.log('发送心跳')
-              clearTimeout(this.heartbeat);//清除这次的定时器
-              this.heartbeat = null;//重置开关
-              this.send_heartbeat();
-          },300000)
+          chat_data.original = chat_content.original
+          this.$store.commit('chat/PUSH_img_list', {
+            src: chat_content.original
+          })
+        } else if (chat_data.type === 'shop') {
+          Object.assign(chat_data, this.create_shop(chat_content))
+        }
+        this.$store.commit('chat/PUSH_char_list', chat_data)
+        all_srcollBtoom(this)
+
+        // 把未读消息清零
+        if (uid) {
+          look({
+            uid
+          }).then((res) => {})
+        }
       }
+    },
+
+    webSocket_error () {
+      const that = this
+      this.$store.state.user.websocketConnection.onerror = (e) => {
+        console.log('聊天异常错误-onerror，将重新连接')// 1
+        that.again_connect()
+      }
+    },
+
+    webSocket_close () {
+      const that = this
+      this.$store.state.user.websocketConnection.onclose = (e) => {
+        console.log('聊天异常关闭-onclose，将重新连接')
+        that.webSocket_init()
+      }
+    },
+    // 心跳
+    send_heartbeat () {
+      if (this.heartbeat === null) {
+        this.heartbeat = setTimeout(() => {
+          const req = {
+            cmd: 'HeartBeat'
+          }
+          if (this.$store.state.user.websocketConnection != null) {
+            this.$store.state.user.websocketConnection.send(JSON.stringify(req))
+          }
+          console.log('发送心跳')
+          clearTimeout(this.heartbeat)// 清除这次的定时器
+          this.heartbeat = null// 重置开关
+          this.send_heartbeat()
+        }, 300000)
+      }
+    },
+
+    //鼠标滚动
+    Mouse_scrolling(){
+        window.addEventListener('DOMMouseScroll',this.scrolling, false);
+        window.onmousewheel = document.onmousewheel = this.scrolling;
+    },
+
+      scrolling(e){
+          e = e || window.event;
+          if (e.wheelDelta) {
+              if (e.wheelDelta > 0) {
+                  //console.log('滑轮向上滚动');
+                  this.scrolling_Calculation(1)
+
+              }
+              if (e.wheelDelta < 0) {
+                  //console.log('滑轮向下滚动');
+                  this.scrolling_Calculation(-1)
+              }
+          }
+          else if (e.detail) {
+              if (e.detail > 0) {
+                  //滑轮向上滚动");
+                  this.scrolling_Calculation(1)
+              }
+              if (e.detail < 0) {
+                  //alert("滑轮向下滚动");
+                  this.scrolling_Calculation(-1)
+              }
+          }
+      },
+      scrolling_Calculation(direction){
+          let ele = document.querySelector('.xs-container');
+          let load_ele = document.querySelector('.xs-plugin-pullup-container');
+
+          //存在滚动视图，则滚动
+        if(ele){
+            const ele_height = ele.clientHeight;
+            var parentNode = ele.parentNode;
+            let parent_height = parentNode.clientHeight;
+
+            //如果内容小于容器
+            if(ele_height < parent_height){
+                return;
+            }
+
+            const max_scroll = (ele_height - parent_height + 50) *-1;
+            const transform_str = ele.style.transform;
+            let res = transform_str.match(/translateY\((.*?)\)/)
+
+            let Y = 0;
+            if(res && res.length >= 2){
+                Y = parseFloat(res[1])
+            }
+            let end_Y = Y + direction*25;
+
+            if(end_Y > 0){
+                end_Y = 0
+            }
+            else if(end_Y <= max_scroll){
+
+                end_Y = max_scroll;
+                //触发函数
+                if(this.is_loadMore){
+                    console.log('触底');
+                    this.is_loadMore = false;
+                    this.find_loadMore(this);
+                }
+            }
+            else{
+                this.is_loadMore = true;
+
+            }
+            ele.style.transform = `translateY(${end_Y}px)`;
+
+        }
 
 
-    }
+        if(load_ele){
+          if(load_ele.innerHTML == 'undefined'){
+              load_ele.innerHTML = '加载中...'
+          }
+        }
+
+      },
+
+      find_loadMore(obj){
+          //存在loadMore，且当前组件就是当前页面
+          if(obj.loadMore && this.$route.name === obj.$options.name && this.$route.name != 'index'){
+              //找到上啦加载，则停止递归
+              obj.loadMore();
+              return
+          }
+          //首页有两种上拉方法，做特殊处理
+          if( this.$route.name === 'index' && this.$route.name === obj.$options.name ){
+              if(obj.tabIndex === 0 && obj.timeLoadMore){
+                  obj.timeLoadMore();
+                  return
+              }
+              if(obj.tabIndex === 2 && obj.Interaction_loadMore){
+                  obj.Interaction_loadMore();
+                  return
+              }
+          }
+
+          for(let i = 0;i<obj.$children.length;i++){
+              this.find_loadMore(obj.$children[i]);
+          }
+
+      },
+
+
+
   },
   mounted () {
     this.get_user_info()
+    this.Mouse_scrolling();
+
+
+
   }
 }
 </script>
@@ -406,11 +539,11 @@ export default {
     height: 1.2rem;
     background: #fff;
     position: fixed;
-    top: -1.3rem;
+    top: -1.4rem;
     left: 0;
     transition: all 0.2s;
     z-index: 999;
-    box-shadow: 0 3px 10px #d6e1fb;
+    /*box-shadow: 0 3px 10px #d6e1fb;*/
     .content {
       width: 65%;
       float: left;

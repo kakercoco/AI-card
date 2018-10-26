@@ -16,19 +16,23 @@ import {
   ToastPlugin,
   LoadingPlugin,
   WechatPlugin,
-  ConfirmPlugin
+  ConfirmPlugin,
+  AlertPlugin
 } from 'vux'
 
 import {
   wxConfig
 } from '@/api/card'
 import Vconsole from 'vconsole'
-let vConsole = new Vconsole()
-
+if (process.env.NODE_ENV != 'development') {
+  var vConsole = new Vconsole()
+}
+//var vConsole = new Vconsole()
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
 Vue.use(WechatPlugin)
 Vue.use(ConfirmPlugin)
+Vue.use(AlertPlugin)
 
 wxConfig(location.href.split('#')[0])
   .then(res => {

@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-04 09:31:33
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-30 11:18:25
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-17 21:45:36
  */
 <template>
   <div class="insert-tag">
@@ -15,7 +15,7 @@
       <a @click="clientList = true">添加成员 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></a>
     </p>
     <ul>
-      <li  v-for="(item, index) in checkedCustomer " :key="index">
+      <li v-for="(item, index) in checkedCustomer " :key="index">
         <img :src="item.wx_image" alt="">
         <span>{{item.wx_name}}</span>
       </li>
@@ -41,7 +41,7 @@
 <script>
 import { Group, XInput, XButton, CheckIcon } from 'vux'
 import { insertCustomerTag, customerList } from '@/api/contact'
-
+import { setCookie } from '@/utils/auth'
 export default {
   name: 'insertTag',
   components: {
@@ -64,15 +64,14 @@ export default {
         page: 1,
         pagesize: 1000
       }
-      customerList(data)
-        .then(res => {
-          let customerAll = res.data.rows
-          for (let i = 0; i < customerAll.length; i++) {
-            const element = customerAll[i]
-            element.status = false
-          }
-          this.customer = customerAll
-        })
+      customerList(data).then(res => {
+        let customerAll = res.data.rows
+        for (let i = 0; i < customerAll.length; i++) {
+          const element = customerAll[i]
+          element.status = false
+        }
+        this.customer = customerAll
+      })
     },
     chooseCustomer () {
       this.clientList = false
@@ -92,67 +91,68 @@ export default {
         uid: id,
         name: this.tagName
       }
-      insertCustomerTag(data)
-        .then(res => {
-          this.$router.back(-1)
-        })
+      insertCustomerTag(data).then(res => {
+        this.$router.back(-1)
+      })
     }
   },
   mounted () {
+    setCookie('editTag', 'true')
     this.getCustomerList()
   }
 }
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.insert-tag{
-  &>P{
+.insert-tag {
+  & > p {
     border-bottom: 1px solid #eee;
     height: 1rem;
     line-height: 1rem;
-    span{
+    span {
       width: 2.5rem;
       display: inline-block;
       text-align: center;
       font-size: 0.32rem;
       font-weight: bold;
     }
-    input{
+    input {
       height: 0.9rem;
       width: calc(100% - 2.8rem);
       border: none;
       outline: none;
+      font-size: 0.3rem;
     }
-    a{
+    a {
       color: #5977fe;
-      .insert-icon{
+      .insert-icon {
         fill: #5977fe;
       }
     }
   }
-  .btn{
+  .btn {
     padding: 0 1rem;
     margin-top: 1rem;
   }
-  li{
+  li {
     height: 1rem;
     line-height: 0.8rem;
     border-bottom: 1px solid #eee;
     padding: 0.1rem 0.3rem;
-    img{
+    img {
       height: 100%;
       width: 0.8rem;
       float: left;
       margin-right: 0.4rem;
     }
-    span{
+    span {
       float: left;
       height: 100%;
       color: #717171;
     }
   }
 }
-.insert-client{
+.insert-client {
   position: fixed;
   background: #fff;
   top: 0;
@@ -160,26 +160,32 @@ export default {
   height: 100%;
   overflow: auto;
   width: 100%;
-  li{
+  li {
     height: 1rem;
     line-height: 0.8rem;
     border-bottom: 1px solid #eee;
     padding: 0.1rem 0.3rem;
-    img{
+    img {
       height: 100%;
       width: 0.8rem;
       float: left;
       margin-right: 0.4rem;
     }
-    span{
+    span {
       float: left;
       height: 100%;
       color: #717171;
     }
   }
-  .btn{
+  .btn {
+    // padding: 0 1rem;
+    // margin-top: 1rem;
     padding: 0 1rem;
     margin-top: 1rem;
+    position: fixed;
+    width: 100%;
+    padding: 0.35rem 1rem;
+    bottom: 0;
   }
 }
 </style>

@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 16:09:14
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2018-09-29 12:54:07
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-18 11:57:25
  */
 <template>
   <div class="talk-detail">
@@ -18,18 +18,32 @@
       <button class="btn-cancle" @click="deleteTalk">删除</button>
       <button class="btn-primary" @click="gotoEdit()">编辑</button>
     </p>
+    <x-dialog v-model="delTalk" :hide-on-blur="true">
+      <div class="del-dialog">
+        <h4>是否删除当前话术？</h4>
+        <p class="btn">
+          <button class="btn-cancle" @click="delTalk=false">取消</button>
+          <button class="btn-primary" @click="sureConform">确定</button>
+        </p>
+      </div>
+    </x-dialog>
   </div>
 </template>
 
 <script>
 import { talkDelete, talkEdit } from '@/api/talk'
+import { XDialog } from 'vux'
 export default {
   name: 'talkDetail',
+  components: {
+    XDialog
+  },
   data () {
     return {
       infor: {},
       keyWord: [],
-      id: this.$route.query.id
+      id: this.$route.query.id,
+      delTalk: false
     }
   },
   methods: {
@@ -51,14 +65,29 @@ export default {
         query: this.$route.query
       })
     },
-    deleteTalk (id) {
+    deleteTalk () {
+      this.delTalk = true
+    },
+    sureConform () {
       const data = {
         id: this.$route.query.id
       }
       talkDelete(data).then(res => {
-        this.$router.push({
-          path: '/talkManage'
-        })
+        this.delTalk = false
+        if (res.code === 200) {
+          this.$vux.alert.show({
+            title: '提示',
+            content: res.msg
+          })
+          this.$router.push({
+            path: '/talkManage'
+          })
+        } else {
+          this.$vux.alert.show({
+            title: '提示',
+            content: res.msg
+          })
+        }
       })
     }
   },
@@ -95,6 +124,21 @@ export default {
       }
       &:last-child {
         font-size: 0.28rem;
+      }
+    }
+  }
+  .del-dialog {
+    padding-bottom: 0.3rem;
+    h4 {
+      font-size: 0.3rem;
+      color: #717171;
+      margin-top: 0.3rem;
+      font-weight: normal;
+    }
+    .btn {
+      margin-top: 0.5rem;
+      button {
+        width: 2.4rem;
       }
     }
   }

@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 14:08:03
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-17 15:37:55
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-17 22:48:33
  */
 <template>
   <div class="calendar-detail">
@@ -79,7 +79,7 @@ export default {
       }
       calendarDelete(data)
         .then(res => {
-          this.$router.push({
+          this.$router.replace({
             path: '/calendar'
           })
         })

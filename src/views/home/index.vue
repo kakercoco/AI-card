@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-08-27 18:30:51
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-30 18:14:59
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-18 11:32:13
  */
 <template>
   <div class="index footprint">
@@ -137,7 +137,7 @@
           <x-button type="primary" @click.native="sureTime">确定</x-button>
         </p>
       </x-dialog>
-      <div class="Unread_dialog" v-if="$store.state.app.Unread != 0 && tabIndex === 0" @click="Refresh">未读消息:{{$store.state.app.Unread}}</div>
+      <div class="Unread_dialog" v-if="$store.state.app.Unread != 0 && tabIndex === 0" @click="Refresh">未读足迹:{{$store.state.app.Unread}}</div>
   </div>
 </template>
 
@@ -216,13 +216,14 @@ export default {
       }
     }
   },
-    watch:{
-        tabIndex(val){
-            if(val == 1){
-                this.behavior_init();
-            }
-        }
-    },
+  watch: {
+    tabIndex (val) {
+      if (val == 1) {
+        this.behavior_init()
+      }
+
+    }
+  },
   methods: {
     onItemClick (index) {
       this.tabIndex = index
@@ -264,11 +265,17 @@ export default {
 
     sureTime () {
       if (this.startTIme === '') {
-        alert('开始时间不能为空！')
+        this.$vux.alert.show({
+          title: '提示',
+          content: '开始时间不能为空！'
+        })
         return
       }
       if (this.endTime === '') {
-        alert('结束时间不能为空！')
+        this.$vux.alert.show({
+          title: '提示',
+          content: '结束时间不能为空！'
+        })
         return
       }
       this.datePickerDialog = false
@@ -616,10 +623,12 @@ $color:#717171;
   .action-card{
     padding: 0.25rem;
     margin-top: 0.2rem;
+    // background: #f7f7f7;
     & > p{
       font-size: 0.3rem;
       color: $color;
       height: 0.4rem;
+      // padding: 0.1rem 0.15rem;
       img{
         width: 0.4rem;
       }
@@ -645,8 +654,9 @@ $color:#717171;
         font-size: 0.22rem;
       }
       h5{
-        color: #999;
+        color: #2c3e50;
         font-size: 0.26rem;
+        font-weight: normal;
       }
     }
   }
@@ -869,6 +879,7 @@ $color:#717171;
 }
   .Interaction_header{
     height: 0.8rem;
+    margin-top: 0.3rem;
     span{
       float: left;
       margin-left: 0.3rem;

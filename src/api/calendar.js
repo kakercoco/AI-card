@@ -17,7 +17,13 @@ export function calendarList (data) {
     params: data
   })
 }
-
+export function getDays (time) {
+  // 当月有日程日期数组集合
+  return request({
+    url: '/api/calendar/getCalendarDays?month=' + time,
+    method: 'get'
+  })
+}
 export function calendarType () {
   // 日程列表类型
   return request({

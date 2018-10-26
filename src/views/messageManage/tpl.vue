@@ -15,16 +15,16 @@
 </template>
 
 <script>
-    export default {
-        name: "tpl",
-        props:{
-            content:{
-                type:Array,
-                default:[],
-            },
-        }
-
+export default {
+  name: 'tpl',
+  props: {
+    content: {
+      type: Array,
+      default: []
     }
+  }
+
+}
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
@@ -39,10 +39,10 @@
 
             .text{
                 font-size:16px;
-                line-height:29px;
+                line-height:20px;
                 word-wrap: break-word;
                 word-break: break-all;
-                display: inline-block;
+                display: inline;
                 whitewhite-space:pre-wrap; /* css-3 */
                 whitewhite-space:-moz-pre-wrap; /* Mozilla, since 1999 */
                 whitewhite-space:-pre-wrap; /* Opera 4-6 */
@@ -53,6 +53,5 @@
         }
 
     }
-
 
 </style>

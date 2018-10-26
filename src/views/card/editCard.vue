@@ -1,16 +1,21 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-10-13 18:13:32
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-18 11:57:02
  */
 <template>
   <div class="edit-card">
     <div class="my-card" id="card">
-      <img src="@/assets/card/1.png" alt="" class="card-bg">
+      <img v-if="templateId !== 24 && templateId !== 25 && templateId !== 26 && templateId !== 27 && templateId !== 28" src="@/assets/card/1.png" alt="" class="card-bg">
+      <img v-if="templateId === 24" src="@/assets/card/4.png" alt="" class="card-bg">
+      <img v-if="templateId === 25" src="@/assets/card/5.png" alt="" class="card-bg">
+      <img v-if="templateId === 26" src="@/assets/card/6.png" alt="" class="card-bg">
+      <img v-if="templateId === 27" src="@/assets/card/7.png" alt="" class="card-bg">
+      <img v-if="templateId === 28" src="@/assets/card/8.png" alt="" class="card-bg">
       <div class="card-infor " :class="selectedClass">
         <p class="mark" v-if="templateId === 1 || templateId === 4 || templateId === 7 || templateId === 10 || templateId === 13 || templateId === 17 || templateId === 20 || templateId === 23 ">T云商务</p>
-        <p class="mark" v-if="templateId === 2 || templateId === 5 || templateId === 8 || templateId === 11 || templateId === 14 || templateId === 18 || templateId === 21 || templateId === 24">T云客服</p>
+        <p class="mark" v-if="templateId === 2 || templateId === 5 || templateId === 8 || templateId === 11 || templateId === 14 || templateId === 18 || templateId === 21">T云客服</p>
         <p class="trueland">
           <img src="@/assets/img/trueland.png" alt="">
           <span v-if="templateId === 0 || templateId === 1 || templateId === 2">珍岛股份·上海</span>
@@ -21,6 +26,7 @@
           <span v-if="templateId === 15 || templateId === 16 || templateId === 17">珍岛股份·深圳</span>
           <span v-if="templateId === 18 || templateId === 19 || templateId === 20">珍岛股份·成都</span>
           <span v-if="templateId === 21 || templateId === 22 || templateId === 23">珍岛股份·杭州</span>
+          <span v-if="templateId === 24 || templateId === 25 || templateId === 26|| templateId === 27 || templateId === 28 || templateId === 29">{{cardInfor.company}}</span>
         </p>
         <!-- <p class="company">{{cardInfor.company}}</p> -->
         <p class="bio">
@@ -30,7 +36,8 @@
         </p>
         <p class="phone">
           <!-- <img src="@/assets/nav/phone2.png" alt=""> -->
-          <img src="@/assets/nav/phone.png" alt="">
+          <img v-if="templateId !== 24 " src="@/assets/nav/phone.png" alt="">
+          <img v-if="templateId === 24" src="@/assets/nav/cellphone1.png" alt="">
           {{cardInfor.phone}}
         </p>
         <p class="email">
@@ -40,7 +47,8 @@
         </p>
         <p class="address">
           <!-- <img src="@/assets/nav/map2.png" alt="" > -->
-          <img src="@/assets/nav/map.png" alt="">
+          <img v-if="templateId !== 24 " src="@/assets/nav/map.png" alt="">
+          <img v-if="templateId === 24" src="@/assets/nav/address1.png" alt="">
           {{cardInfor.address}}
         </p>
         <p class="tip">中国领先的SaaS级智能营销云平台</p>
@@ -49,7 +57,8 @@
     <h5>名片样式</h5>
     <scroller ref="scrollerEvent" lock-y :scrollbar-x='false' style="margin-top: 0.2rem;">
       <div class="template-list">
-        <img src="@/assets/card/1.png" alt="" :class="{active: index === templateId}" v-for="(item, index) in 24" :key="index" @click="changeTemplate(item, index)">
+        <img src="@/assets/card/1.png" alt="" :class="{active: index === templateId}" v-for="(item, index) in 24" :key="index" @click="changeTemplate(item, index)" v-if="haDate&&other_card_style==1">
+        <img :src="item" alt="" :class="{active: index + 24 === templateId}" v-for="(item, index) in companyBgCard" :key="index + 24" @click="changeTemplate(item, index + 24)"  v-if="haDate&&other_card_style==0">
       </div>
     </scroller>
     <h5>名片头像</h5>
@@ -75,31 +84,31 @@
       <p>
         <i>*</i>
         <span>手机：</span>
-        <input type="text" placeholder="手机号" v-model="cardInfor.phone" >
+        <input type="text" placeholder="手机号" v-model="cardInfor.phone">
       </p>
       <p>
         <span>座机：</span>
-        <input type="text" placeholder="座机号" v-model="cardInfor.tel" >
+        <input type="text" placeholder="座机号" v-model="cardInfor.tel">
       </p>
       <p>
         <span>微信：</span>
-        <input type="text" placeholder="微信号" v-model="cardInfor.weixin" >
+        <input type="text" placeholder="微信号" v-model="cardInfor.weixin">
       </p>
       <p>
         <i>*</i>
         <span>邮箱：</span>
-        <input type="text" placeholder="邮箱" v-model="cardInfor.email" >
+        <input type="text" placeholder="邮箱" v-model="cardInfor.email">
       </p>
       <p class="address_">
         <i>*</i>
         <span>地址：</span>
-        <textarea placeholder="地址" v-model="cardInfor.address" ></textarea>
+        <textarea placeholder="地址" v-model="cardInfor.address"></textarea>
       </p>
     </div>
     <h5>个人简介</h5>
     <div class="self-bio">
       <group>
-        <x-textarea placeholder="请输入文字" v-model="cardInfor.content" autosize></x-textarea>
+        <x-textarea placeholder="请输入文字" v-model="cardInfor.content" autosize ref='selfBio'></x-textarea>
       </group>
     </div>
     <h5>推荐产品 <span class="fr" @click="gotoProduce">产品管理</span></h5>
@@ -124,9 +133,9 @@
     </div>
     <h5>录制语音</h5>
     <div class="self-audio">
-      <p @click="audioDialog = true">暂无声音录制，请点击录制 <x-icon type="ios-plus-outline"></x-icon>
+      <p @click="audioDialog = true">请点击录制新的语音 <x-icon type="ios-plus-outline"></x-icon>
       </p>
-      <audio src="@/assets/audio/audio.ogg" controls="controls"></audio>
+      <audio :src="cardInfor.audio" controls="controls"></audio>
     </div>
     <h5>我的图片</h5>
     <div class="self-img clearfix">
@@ -187,11 +196,12 @@
         <div style='display: flex;align-items: center;justify-content: center;padding-top: 0.5rem;' @click="openAudio">
           <img :src="cardInfor.image" alt="" style='width: 1rem;height: 1rem;border-radius: 0.1rem;'>
           <img :src="show_audio" alt="" style='width: 3.2rem;'>
-          <span>{{percent}}"</span>
+          <!-- <span>{{endTime - startTime}}"</span> -->
+          <span>{{showTime}}"</span>
         </div>
         <p class="btn">
           <button class="btn-cancle" @click="resetAudio">重录</button>
-          <button class="btn-primary" @click="insertTag">上传</button>
+          <button class="btn-primary" @click="uploadAudio">上传</button>
         </p>
       </div>
     </x-dialog>
@@ -211,7 +221,13 @@ import {
   AlertModule
 } from 'vux'
 import html2canvas from 'html2canvas'
-import { updateCard, cardRead, cardTagDelete, cardTagInsert } from '@/api/card'
+import {
+  updateCard,
+  cardRead,
+  cardTagDelete,
+  cardTagInsert,
+  uploadMedia
+} from '@/api/card'
 import { upload_img } from '@/api/upload_file'
 import VueCropper from 'vue-cropperjs'
 import { setInterval, clearInterval } from 'timers'
@@ -247,6 +263,9 @@ export default {
       //     goods: []
       //   }
       // },
+      haDate:false,
+      other_card_style:0,
+      t_width:10,
       albumList: [],
       templateId: 0, // 选中的模板id
       tagKeyword: '', // 新增的标签内容
@@ -262,12 +281,20 @@ export default {
         require('@/assets/card/1.png'),
         require('@/assets/card/1.png')
       ],
+      companyBgCard: [
+        require('@/assets/card/4.png'),
+        require('@/assets/card/5.png'),
+        require('@/assets/card/6.png'),
+        require('@/assets/card/7.png'),
+        require('@/assets/card/8.png')
+      ],
       recording: false,
+      first_listen: 0,
       localId: '', // 录音id
       recordTime: 0,
-      recordTimer: 0, // 录音延时
-      startTime: 0, // 录音开始时间
-      endTime: 0 // 录音结束时间
+      showTime: 0
+      // startTime: 0, // 录音开始时间
+      // endTime: 0 // 录音结束时间
     }
   },
   methods: {
@@ -333,20 +360,28 @@ export default {
       this.tagKeyword = ''
     },
     insertTag () {
-      this.$vux.loading.show({
-        text: 'Loading'
-      })
-      const data = {
-        tag: this.tagKeyword
-      }
-      this.closeTagDialog()
-      cardTagInsert(data).then(res => {
-        this.$vux.loading.hide()
-        this.cardInfor.tag.push({
-          tag_name: this.tagKeyword,
-          id: res.data.card_tag_id
+      console.log(this.tagKeyword)
+      if (this.tagKeyword !== '') {
+        this.$vux.loading.show({
+          text: 'Loading'
         })
-      })
+        const data = {
+          tag: this.tagKeyword
+        }
+        this.closeTagDialog()
+        cardTagInsert(data).then(res => {
+          this.$vux.loading.hide()
+          this.cardInfor.tag.push({
+            tag_name: this.tagKeyword,
+            id: res.data.card_tag_id
+          })
+        })
+      } else {
+        AlertModule.show({
+          title: '提示',
+          content: '标签不能为空！'
+        })
+      }
     },
     removeTag (index, id) {
       const data = {
@@ -360,6 +395,8 @@ export default {
       if (this.$store.state.user.cardInfor.close) {
         cardRead().then(res => {
           const cardImg = res.data.card_image
+          this.other_card_style = res.data.is_zhendao
+          this.haDate = true
           this.$store.state.user.cardInfor = res.data
           this.$store.state.user.cardInfor.close = false
           // this.cardInfor = res.data
@@ -374,6 +411,16 @@ export default {
           }
           if (cardImg === undefined || cardImg === '') {
             this.save(false)
+          }
+          this.$nextTick(function () {
+            this.$refs.selfBio.updateAutosize()
+          })
+            var el=document.querySelector('.template-list')
+          if(res.data.is_zhendao==='1'){
+            el.setAttribute('style', 'width: 43.2rem')
+          }else{
+            console.log('其他公司')
+            el.setAttribute('style', 'width: 9rem')
           }
         })
       }
@@ -412,12 +459,18 @@ export default {
           return
         }
         if (obj[i].type !== 'image/jpeg' && obj[i].type !== 'image/png') {
-          alert('只支持jpg、png!')
+          AlertModule.show({
+            title: '提示',
+            content: '只支持jpg、png!'
+          })
           this.$vux.loading.hide()
           return
         }
         if (obj[i].size > 2000000) {
-          alert('照片大小不能超过2MB')
+          AlertModule.show({
+            title: '提示',
+            content: '照片大小不能超过2MB'
+          })
           this.$vux.loading.hide()
           return
         }
@@ -436,6 +489,7 @@ export default {
       this.albumList.splice(index, 1)
     },
     touchstart () {
+      console.log(localStorage.rainAllowRecord)
       if (
         !localStorage.rainAllowRecord ||
         localStorage.rainAllowRecord !== 'true'
@@ -447,61 +501,72 @@ export default {
             that.$wechat.stopRecord()
           },
           cancel: function () {
-            alert('用户拒绝授权录音')
+            AlertModule.show({
+              title: '提示',
+              content: '用户拒绝授权录音'
+            })
           }
         })
       } else {
         console.log('start')
         event.preventDefault()
         let that = this
-        that.$wechat.startRecord({
+        this.$wechat.startRecord({
           success: function () {
-            that.startTime = new Date().getTime()
+            that.first_listen = 0
+            // that.startTime = parseInt(new Date().getTime() / 1000)
             that.recording = true
             that.recordTime = 0
-            that.audiotime()
             that.$wechat.onVoiceRecordEnd({
               // 录音时间超过一分钟没有停止的时候会执行 complete 回调
               complete: function (res) {
                 console.log(res)
-                alert('最多只能录制60s')
+                AlertModule.show({
+                  title: '提示',
+                  content: '最多只能录制60s'
+                })
                 that.audioDialog = false
                 that.showAudio = true
                 that.percent = 100
+                that.showTime = 60
                 that.localId = res.localId
-                clearInterval(that.audiotime)
-                // 上传录音
-                that.uploadAudio(that.localId, 60000)
+                that.recording = false
+                that.audiotime = ''
+                // that.endTime = that.startTime + 60
               }
             })
           },
           cancel: function () {
-            alert('用户拒绝授权录音')
+            AlertModule.show({
+              title: '提示',
+              content: '用户拒绝授权录音'
+            })
             return false
           }
         })
-        // this.recordTimer = setTimeout(function () {
-
-        // }, 300)
       }
     },
     touchend () {
       console.log('end')
       this.recording = false
-      this.endTime = new Date().getTime()
+      this.endTime = parseInt(new Date().getTime() / 1000)
       // 录音时间
-      var luyintime = this.endTime - this.startTime
-      if (luyintime < 2000) {
-        this.endTime = 0
-        this.startTime = 0
+      // var luyintime = this.endTime - this.startTime
+      if (this.recordTime < 2000) {
+        // this.endTime = 0
+        // this.startTime = 0
         this.$wechat.stopRecord({})
-        clearTimeout(this.recordTimer)
+        // clearTimeout(this.audiotime)
         this.audiotime = ''
         this.recordTime = 0
         this.percent = 0
-        alert('录音时间不能少于2秒')
+        AlertModule.show({
+          title: '提示',
+          content: '录音时间不能少于2秒'
+        })
+
         return false
-        // 小于300ms，不录音
+        // 小于2s，不录音
       } else {
         this.audioDialog = false
         this.showAudio = true
@@ -509,13 +574,8 @@ export default {
         this.$wechat.stopRecord({
           success: function (res) {
             console.log(res)
-            // that.percent = parseInt((that.endTime - that.startTime) / 60000)
             that.localId = res.localId
-            clearInterval(that.audiotime)
             that.audiotime = ''
-            // this.audioDialog = false
-            // this.showAudio = true
-            that.uploadAudio(that.localId, luyintime)
           },
           fail: function (res) {
             console.log(JSON.stringify(res))
@@ -524,51 +584,73 @@ export default {
       }
     },
     openAudio () {
-      this.$wechat.playVoice({
-        localId: this.localId // 需要播放的音频的本地ID，由stopRecord接口获得
-      })
+      console.log('播放语音')
+      console.log(this.first_listen)
+      if (this.first_listen === 0) {
+        this.$wechat.playVoice({
+          localId: this.localId // 需要播放的音频的本地ID，由stopRecord接口获得
+        })
+        this.first_listen = 1
+      } else {
+        this.$wechat.stopVoice({
+          localId: this.localId // 需要停止的音频的本地ID，由stopRecord接口获得
+        })
+        this.first_listen = 0
+      }
     },
     resetAudio () {
+      if (this.first_listen === 1) {
+        this.$wechat.stopVoice({
+          localId: this.localId // 需要停止的音频的本地ID，由stopRecord接口获得
+        })
+        this.first_listen = 0
+      }
       this.audioDialog = true
       this.showAudio = false
       this.recordTime = 0
       this.percent = 0
-      this.luyintime = 0
-      this.endTime = 0
-      this.startTime = 0
     },
-    uploadAudio (localId, luyintime) {
+    uploadAudio () {
+      console.log('调用上传接口')
+      if (this.first_listen === 1) {
+        this.$wechat.stopVoice({
+          localId: this.localId // 需要停止的音频的本地ID，由stopRecord接口获得
+        })
+        this.first_listen = 0
+      }
       var that = this
       this.$wechat.uploadVoice({
-        localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
-        isShowProgressTips: 1, // 默认为1，显示进度提示
+        localId: that.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+        isShowProgressTips: 0, // 默认为1，显示进度提示
         success: function (res) {
-          console.log('上传' + res)
+          console.log('上传' + res.serverId)
           var serverId = res.serverId // 返回音频的服务器端ID
           console.log(serverId)
           that.localId = ''
-          that.downLoadAudio(serverId)
-          // $.post('/home/xishanluyin/scyuyin', {
-          //   'serverId': serverId,
-          //   'luyintime': luyintime
-          // },
-          // function (data) {
-          //   if (data.success == 1) {
-          //     alert('录音成功')
-          //   } else {
-          //     alert(data.msg)
-          //   }
-          // }, 'json')
-        }
-      })
-    },
-    downLoadAudio (data) {
-      this.$wechat.downloadVoice({
-        serverId: data, // 需要下载的音频的服务器端ID，由uploadVoice接口获得
-        isShowProgressTips: 1, // 默认为1，显示进度提示
-        success: function (res) {
-          console.log(res)
-          // var localId = res.localId // 返回音频的本地ID
+          that.$vux.loading.show({
+            text: 'Loading'
+          })
+          uploadMedia(serverId).then(res => {
+            console.log(res)
+            that.$vux.loading.hide()
+            if (res.code === 200) {
+              that.cardInfor.audio = res.data.url
+              AlertModule.show({
+                title: '提示',
+                content: '上传成功!'
+              })
+              that.audioDialog = false
+              that.showAudio = false
+              that.recordTime = 0
+              that.percent = 0
+              // that.recording = true
+            } else {
+              AlertModule.show({
+                title: '提示',
+                content: res.data.msg
+              })
+            }
+          })
         }
       })
     },
@@ -632,46 +714,53 @@ export default {
       })
     },
     save (isJump) {
-      var phoneReg = /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/
-      var mailReg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
-      var telReg = /^\d{3}-\d{8}|\d{4}-\d{7}$/
-      var phone = this.cardInfor.phone
-      var email = this.cardInfor.email
-      var tel = this.cardInfor.tel
-      if (!phoneReg.test(phone)) {
-        AlertModule.show({
-          title: '提示',
-          content: '请输入有效的手机号码！'
-        })
-        return false
-      }
-      if (!mailReg.test(email)) {
-        AlertModule.show({
-          title: '提示',
-          content: '请输入有效的邮箱！'
-        })
-        return false
-      }
-      if (this.cardInfor.address === '') {
-        AlertModule.show({
-          title: '提示',
-          content: '请输入地址！'
-        })
-        return false
-      }
-      if (tel !== '') {
-        if (!telReg.test(tel)) {
+      if (isJump) {
+        var phoneReg = /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/
+        var mailReg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+        var telReg = /^\d{3}-\d{8}|\d{4}-\d{7}$/
+        var tel1Reg = /^\d{3}\d{8}|\d{4}\d{7}$/
+        var phone = this.cardInfor.phone
+        var email = this.cardInfor.email
+        var tel = this.cardInfor.tel
+        if (!phoneReg.test(phone)) {
           AlertModule.show({
             title: '提示',
-            content: '请输入有效的座机号！'
+            content: '请输入有效的手机号码！'
           })
           return false
         }
+        if (!mailReg.test(email)) {
+          AlertModule.show({
+            title: '提示',
+            content: '请输入有效的邮箱！'
+          })
+          return false
+        }
+        if (this.cardInfor.address === '') {
+          AlertModule.show({
+            title: '提示',
+            content: '请输入地址！'
+          })
+          return false
+        }
+        if (tel !== '') {
+          console.log(!telReg.test(tel))
+          console.log(!tel1Reg.test(tel))
+          if (!telReg.test(tel) && !tel1Reg.test(tel)) {
+            AlertModule.show({
+              title: '提示',
+              content: '请输入有效的座机号！'
+            })
+            return false
+          }
+        }
+        this.$vux.loading.show({
+          text: 'Loading'
+        })
+        this.switchImg(isJump)
+      } else {
+        this.switchImg(isJump)
       }
-      this.$vux.loading.show({
-        text: 'Loading'
-      })
-      this.switchImg(isJump)
     }
   },
   computed: {
@@ -679,20 +768,24 @@ export default {
       get () {
         return this.$store.state.user.cardInfor
       },
-      set () {
-
-      }
+      set () {}
     }
   },
   mounted () {
     this.getCard()
+    var that = this
     this.$wechat.ready(() => {
       console.log('ready')
+      that.$wechat.onVoicePlayEnd({
+        success: function (res) {
+          that.first_listen = 0
+        }
+      })
     })
-    var that = this
     this.audiotime = setInterval(function () {
       if (that.recording) {
         that.recordTime += 100
+        that.showTime = parseInt(that.recordTime / 1000)
         that.percent = parseInt(that.recordTime / 600)
       }
     }, 100)
@@ -734,7 +827,7 @@ export default {
         height: 0.32rem;
       }
       .address {
-        height: 0.72rem; //调整高度
+        height: 0.75rem; //调整高度,从0.72到0.75
         overflow: hidden;
       }
     }
@@ -753,7 +846,7 @@ export default {
   }
   .template-list {
     height: 1rem;
-    width: 43.2rem;
+    width: 52.2rem;
     img {
       width: 1.4rem;
       height: 1rem;
@@ -806,7 +899,8 @@ export default {
     }
     p {
       position: relative;
-      height: 0.9rem;
+      // height: 0.9rem;
+      min-height: 0.9rem;
       padding: 0.2rem 0.3rem;
       i {
         position: absolute;
@@ -817,7 +911,7 @@ export default {
       span {
         font-size: 0.32rem;
         color: #717171;
-        width: 1rem;
+        width: 1.5rem;
         float: left;
       }
       .vux-x-textarea.weui-cell {
@@ -825,7 +919,7 @@ export default {
         float: left;
         border: none;
         outline: none;
-        width: calc(100% - 1rem);
+        width: calc(100% - 1.5rem);
         font-size: 0.34rem;
         color: #777;
         overflow: hidden;
@@ -834,7 +928,7 @@ export default {
       }
       input {
         float: left;
-        width: calc(100% - 1rem);
+        width: calc(100% - 1.5rem);
         height: 0.5rem;
         border: none;
         outline: none;
@@ -846,10 +940,10 @@ export default {
       textarea {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         float: left;
-        width: calc(100% - 1rem);
+        width: calc(100% - 1.5rem);
         border: none;
         outline: none;
-        height: 45px;
+        height: 0.94rem;
         overflow: auto;
         font-size: 0.34rem;
         color: #777;
@@ -859,6 +953,13 @@ export default {
   }
   .self-bio {
     & /deep/ .weui-cells {
+      .weui-cell {
+        padding: 0 15px;
+        textarea {
+          color: #777;
+          font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        }
+      }
       &::after {
         display: none;
       }
@@ -1057,11 +1158,11 @@ export default {
     }
     p {
       font-size: 0.22rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.5rem;
     }
     & > div {
-      width: 2rem;
-      height: 2rem;
+      width: 3rem;
+      height: 3rem;
       margin: 0 auto;
     }
   }

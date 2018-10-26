@@ -1,13 +1,13 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-08 17:56:28
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-28 21:00:17
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-17 16:26:32
  */
 <template>
   <div class="follow">
     <group>
-      <popup-radio title="选择跟进常用语" :options="options" @on-hide="hide" v-model="option">
+      <popup-radio title="选择跟进常用语" :options="options" @on-hide="hide" v-model="option" v-if="Renderer">
       </popup-radio>
     </group>
     <group title="跟进描述">
@@ -36,30 +36,32 @@ export default {
       option: '',
       value: '',
       id: this.$route.query.id,
-      options: ['标记一下，可以有合作意向']
+      options: ['标记一下，可以有合作意向'],
+      Renderer: true
     }
   },
   methods: {
     hide () {
-      if (this.option !== '') {
-        this.value = this.value + this.option
-      }
+      this.value = this.value + this.option
+      this.Renderer = false
+      this.option = ''
+      this.$nextTick(() => {
+        this.Renderer = true
+      })
     },
     getFollowCreate () {
-      followCreate()
-        .then(res => {
-          this.options = res.data
-        })
+      followCreate().then(res => {
+        this.options = res.data
+      })
     },
     save () {
       const data = {
         customer_id: this.id,
         content: this.value
       }
-      followSave(data)
-        .then(res => {
-          this.$router.back(-1)
-        })
+      followSave(data).then(res => {
+        this.$router.back(-1)
+      })
     }
   },
   mounted () {
@@ -69,28 +71,30 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.follow{
+.follow {
   overflow: auto;
   height: 100%;
   -webkit-overflow-scrolling: touch;
-  & /deep/ .weui-cells{
-    &::before{
+  & /deep/ .weui-cells {
+    margin-top: 0 !important;
+    padding: 10px 15px !important;
+    &::before {
       border: none;
     }
-    .vux-label{
+    .vux-label {
       font-size: 0.32rem;
       color: #5977fe;
       font-weight: normal;
     }
-    .vux-cell-value{
+    .vux-cell-value {
       display: none;
     }
-    .weui-textarea{
+    .weui-textarea {
       font-size: 0.28rem;
       color: #717171;
     }
   }
-  .btn{
+  .btn {
     margin-top: 1rem;
     padding: 0 1rem;
   }

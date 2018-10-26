@@ -1,12 +1,12 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:22:54
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 17:45:43
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-17 19:00:57
  */
 <template>
   <div class="my-footer">
-    <tabbar >
+    <tabbar>
       <tabbar-item link="/main/index" :selected="$route.path === '/main/index'">
         <img slot="icon" src="@/assets/icon/index.png">
         <img slot="icon-active" src="@/assets/icon/index2.png">
@@ -38,8 +38,8 @@
 
 <script>
 import { Tabbar, TabbarItem } from 'vux'
-import {get_list, look} from '@/api/message'
-import {dateFtt} from '@/utils/base'
+import { get_list, look } from '@/api/message'
+import { dateFtt } from '@/utils/base'
 export default {
   name: 'myFooter',
   components: {
@@ -49,47 +49,49 @@ export default {
   data () {
     return {
       red: '#fff000',
-      num:'0',
+      num: '0'
     }
   },
   methods: {
-      get_message_list () {
-          this.$vux.loading.show({
-              text: '加载中...'
-          })
-          get_list().then((res) => {
-              this.$vux.loading.hide()
-              if (res.code === 200 && res.data && res.data instanceof Array) {
-                  let list = res.data
-                  list.map((val, i) => {
-                      val.time = dateFtt('yyyy-MM-dd', new Date(val.update_time * 1000))
-                      try {
-                          val.last_content = val.last ? JSON.parse(val.last) : ''
-                      } catch (err) {
-                          val.last_content = val.last
-                      }
-                  })
-                  this.$store.commit('message/SET_messageList', list)
+    get_message_list () {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
+      get_list()
+        .then(res => {
+          this.$vux.loading.hide()
+          if (res.code === 200 && res.data && res.data instanceof Array) {
+            let list = res.data
+            list.map((val, i) => {
+              val.time = dateFtt('yyyy-MM-dd', new Date(val.update_time * 1000))
+              try {
+                val.last_content = val.last ? JSON.parse(val.last) : ''
+              } catch (err) {
+                val.last_content = val.last
               }
-          }).catch((err) => {
-              this.$vux.loading.hide()
-          })
-      },
+            })
+            this.$store.commit('message/SET_messageList', list)
+          }
+        })
+        .catch(err => {
+          this.$vux.loading.hide()
+        })
+    }
   },
-    watch:{
-      '$store.state.message.messageList':{
-          handler:function (val, oldVal) {
-              let num = 0;
-              val.map((data,i)=>{
-                  num = num + data.num
-              })
+  watch: {
+    '$store.state.message.messageList': {
+      handler: function (val, oldVal) {
+        let num = 0
+        val.map((data, i) => {
+          num = num + data.num
+        })
 
-              this.num = num.toString();
-          },
+        this.num = num.toString()
+      },
 
-          deep: true
-      }
-    },
+      deep: true
+    }
+  },
   // computed: {
   //   num () {
   //     const list = this.$store.state.message.messageList
@@ -101,11 +103,22 @@ export default {
   //   }
   // },
   mounted () {
-      this.get_message_list();
+    this.get_message_list()
   }
 }
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-
+.weui-tabbar__item {
+  padding: 0.14rem 0 0.09rem 0;
+  & /deep/.weui-tabbar__icon {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+  & /deep/.weui-tabbar__label {
+    padding-top: 0.14rem;
+    font-size: 0.26rem !important;
+    line-height: 1 !important;
+  }
+}
 </style>

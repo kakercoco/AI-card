@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-05 09:18:27
  * @Last Modified by: Jessica
- * @Last Modified time: 2018-09-29 17:59:11
+ * @Last Modified time: 2018-10-17 21:02:29
  */
 <template>
   <div class="self-news">
@@ -14,7 +14,7 @@
             <span class="time">{{Global.parseTime(e.create_time,'{h}:{i}')}}</span>
             <div class="img-wrap">
               <!-- <img :src="e.user_image" alt="" v-for="item in e.cover" :key="item" :class="{'img-one':e.cover.length ===1,'img-list':e.cover.length>1}"> -->
-              <img :src="e.cover[0]" alt="" class="img-one">
+              <img :src="e.cover[0]" alt="" class="img-one" v-if="e.cover[0]">
             </div>
             <p class="content">{{e.title}}</p>
             <p class="comment">
@@ -23,6 +23,7 @@
             </p>
           </li>
         </ul>
+        <div class="nodata" v-if="no_data">暂无数据!</div>
       </div>
     </scroller>
   </div>
@@ -56,7 +57,8 @@ export default {
         type: 2
       },
       dynamicList: [],
-      isFlag: false // 是否已经关闭下拉
+      isFlag: false, // 是否已经关闭下拉
+      no_data: false
     }
   },
   methods: {
@@ -68,12 +70,17 @@ export default {
     },
     pulldown () {
       this.pageForm.page = 1
+      this.no_data = false
       init_list(this.pageForm)
         .then(res => {
           this.dynamicList = res.data.rows
           this.$refs.scrollerBottom.donePulldown()
           if (this.isFlag) {
             this.$refs.scrollerBottom.enablePullup()
+          }
+          if (res.data.rows.length == 0) {
+            this.$refs.scrollerBottom.disablePullup()
+            this.no_data = true
           }
         })
     },
@@ -95,7 +102,13 @@ export default {
     getDynamicList () {
       init_list(this.pageForm)
         .then(res => {
-          this.dynamicList = res.data.rows
+          if (res.data && res.data.rows instanceof Array) {
+            this.dynamicList = res.data.rows
+            if (res.data.rows.length == 0) {
+              this.$refs.scrollerBottom.disablePullup()
+              this.no_data = true
+            }
+          }
         })
     },
     gotoDetail () {
@@ -103,13 +116,13 @@ export default {
         path: '/newsDetail'
       })
     },
-    newsSelf(item){
-        this.$router.push({
-            path: '/newsDetail',
-            query: {
-                id: item.id
-            }
-        })
+    newsSelf (item) {
+      this.$router.push({
+        path: '/newsDetail',
+        query: {
+          id: item.id
+        }
+      })
     }
   },
   mounted () {
@@ -171,7 +184,7 @@ export default {
         margin-left: 0.2rem;
       }
       img{
-        width: 0.4rem;
+        width: 0.32rem;
         float: left;
         margin-right: 0.2rem;
       }

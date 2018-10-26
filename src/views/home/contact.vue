@@ -1,27 +1,27 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:26:07
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-30 14:24:33
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-17 20:11:13
  */
 <template>
   <div class="contact">
     <router-view></router-view>
     <div style="height: 44px;">
-      <search  v-model="customerForm.keyword" auto-fixed  ref="search" @on-change="searchCustomerList"></search>
+      <search v-model="customerForm.keyword" auto-fixed ref="search" @on-change="searchCustomerList"></search>
     </div>
     <tab :line-width="2" v-model="tabIndex">
       <tab-item>所有客户</tab-item>
       <tab-item>客户标签</tab-item>
     </tab>
     <div v-show="tabIndex === 0" class="contact-first">
-      <p >客户人数共{{customerTotal}}人
+      <p>客户人数共{{customerTotal}}人
         <span class="fr">
           <!-- <x-icon type="ios-arrow-down" size="20" class="fr ml-20"></x-icon> -->
           <popup-radio :options="options" v-model="option" class="fr"></popup-radio>
         </span>
       </p>
-      <scroller lock-x use-pullup  @on-pullup-loading="loadMore" ref="scrollerBottom" :pullup-config="config"  v-model="scrollerStatus" :bounce="true" height="-250" >
+      <scroller lock-x use-pullup @on-pullup-loading="loadMore" ref="scrollerBottom" :pullup-config="config" v-model="scrollerStatus" :bounce="true" height="-250">
         <div class="contact-list-wrap" id="contact-list-wrap">
           <ul>
             <li class="card-shadow" v-for="(item, index) in customerAll " :key="index" @click="gotoClient(item.uid)">
@@ -46,7 +46,7 @@
     <div v-show="tabIndex === 1" class="contact-tag">
       <ul>
         <li class="card-shadow" v-for="(item, index) in tagList" :key="index">
-          <p class="nav" >
+          <p class="nav">
             <span>{{item.tag_name}}({{item.count}})</span>
             <x-icon type="ios-arrow-down" size="20" v-if="!item.status" class="fr" style="fill: #717171;" @click.native="showDetail(index)"></x-icon>
             <span class="fr" v-else @click="gotoUpdateTag(item.id)">添加用户 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></span>
@@ -62,15 +62,18 @@
               <p>跟进时间</p>
               <p>{{element.date}}</p>
             </div>
-           <!-- <span>
+            <!-- <span>
               <i>跟进时间</i>
               <i>{{element.date}}</i>
             </span>-->
           </div>
-          <p class="tar arrow-up" @click="showDetail(index)" v-if="item.status"><x-icon type="ios-arrow-up" size="20" ></x-icon></p>
+          <p class="tar arrow-up" @click="showDetail(index)" v-if="item.status">
+            <x-icon type="ios-arrow-up" size="20"></x-icon>
+          </p>
         </li>
       </ul>
-      <p class="tac insert-tag" @click="gotoInsertTag">添加新标签 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></p>
+      <p class="tac insert-tag" @click="gotoInsertTag">添加新标签 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon>
+      </p>
     </div>
   </div>
 </template>
@@ -78,7 +81,7 @@
 <script>
 import { Tab, TabItem, Search, PopupRadio, Scroller, LoadMore } from 'vux'
 import { customerList, customerTagList, deleteCustomerTag } from '@/api/contact'
-
+import { getCookie, removeCookie } from '@/utils/auth'
 export default {
   name: 'contact',
   components: {
@@ -135,42 +138,40 @@ export default {
       }
     },
     getCustomerList () {
-      customerList(this.customerForm)
-        .then(res => {
-          this.customerAll = res.data.rows
-          this.customerTotal = res.data.total
-        })
+      customerList(this.customerForm).then(res => {
+        this.customerAll = res.data.rows
+        this.customerTotal = res.data.total
+      })
     },
     getCustomerTagList () {
-      customerTagList()
-        .then(res => {
-          const list = res.data
-          const tagList = []
-          list.forEach(e => {
-            e.forEach(i => {
-              tagList.push(i)
-            })
+      customerTagList().then(res => {
+        const list = res.data
+        const tagList = []
+        list.forEach(e => {
+          e.forEach(i => {
+            tagList.push(i)
           })
-          tagList.forEach(e => {
-            e.status = false
-          })
-          this.tagList = tagList
         })
+        tagList.forEach(e => {
+          e.status = false
+        })
+        this.tagList = tagList
+      })
     },
     deleteCustomerTag (tagId, uid, index, i) {
       const data = {
         tag_id: tagId,
         uid: uid
       }
-      deleteCustomerTag(data)
-        .then(res => {
-          this.tagList[index].customer.splice(i, 1)
-          this.tagList[index].count--
-        })
+      deleteCustomerTag(data).then(res => {
+        this.tagList[index].customer.splice(i, 1)
+        this.tagList[index].count--
+      })
     },
     searchCustomerList () {
       this.getSearchType()
-      document.getElementsByClassName('xs-container')[0].style.transform = 'translateX(0px) translateY(0px) translateZ(0px) scale(1, 1)'
+      document.getElementsByClassName('xs-container')[0].style.transform =
+        'translateX(0px) translateY(0px) translateZ(0px) scale(1, 1)'
       this.onFetching = false
       this.customerForm.page = 1
       this.customerForm.pagesize = 10
@@ -211,26 +212,31 @@ export default {
       } else {
         this.onFetching = true
         this.customerForm.page += 1
-        customerList(this.customerForm)
-          .then(res => {
-            if (res.data.rows.length === 0) {
-              this.isFlag = true
-              this.$refs.scrollerBottom.disablePullup() // 禁用上拉
-              return false
-            }
-            this.customerAll = this.customerAll.concat(res.data.rows)
-            this.$nextTick(() => {
-              this.$refs.scrollerBottom.donePullup()
-              this.$refs.scrollerBottom.reset()
-            })
-            this.onFetching = false
+        customerList(this.customerForm).then(res => {
+          if (res.data.rows.length === 0) {
+            this.isFlag = true
+            this.$refs.scrollerBottom.disablePullup() // 禁用上拉
+            return false
+          }
+          this.customerAll = this.customerAll.concat(res.data.rows)
+          this.$nextTick(() => {
+            this.$refs.scrollerBottom.donePullup()
+            this.$refs.scrollerBottom.reset()
           })
+          this.onFetching = false
+        })
       }
     }
   },
   watch: {
     option (val) {
       this.searchCustomerList()
+    }
+  },
+  created () {
+    if (getCookie('editTag') === 'true') {
+      this.tabIndex = 1
+      removeCookie('editTag')
     }
   },
   mounted () {
@@ -241,70 +247,71 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.contact{
+.contact {
   height: 100%;
   overflow: auto;
-  & /deep/ .weui-search-bar__label{
-    .weui-icon-search{
+  & /deep/ .weui-search-bar__label {
+    .weui-icon-search {
       margin-top: 5px;
-      & + span{
+      & + span {
         margin-top: 5px;
       }
     }
   }
-  .contact-first{
-    &>p{
+  .contact-first {
+    & > p {
       padding: 0.3rem;
-      margin: 0.3rem 0;
+      // margin: 0.3rem 0;
       font-size: 0.26rem;
       color: #717171;
-      .vux-x-icon{
+      .vux-x-icon {
         fill: #717171;
       }
-      & /deep/ .weui-cell{
+      & /deep/ .weui-cell {
         padding: 0;
         height: 0.4rem;
-        .vux-cell-value{
+        .vux-cell-value {
           margin-right: 0.2rem;
         }
-        .weui-cell__ft::after{
+        .weui-cell__ft::after {
           // display: none;
           transform: rotate(135deg);
           margin-left: 15px;
           width: 0.16rem;
           height: 0.16rem;
+          margin-top: -0.14rem;
         }
       }
     }
-    ul{
+    ul {
       padding: 0 0.3rem;
-      li{
+      li {
         height: 1.5rem;
         padding: 0.25rem;
-        img{
+        img {
           height: 100%;
           width: 1rem;
           border-radius: 0.1rem;
           float: left;
         }
-        div{
+        div {
           float: right;
           height: 100%;
           margin-left: 0.2rem;
           line-height: 0.5rem;
           overflow: hidden;
-          p{
+          p {
             color: #717171;
-            &:first-child{
+            &:first-child {
               font-size: 0.3rem;
               min-height: 0.5rem;
             }
           }
         }
-        div:nth-child(2){
+        div:nth-child(2) {
           float: left;
         }
-        &>span{
+        & > span {
           float: right;
           height: 100%;
           text-align: right;
@@ -316,33 +323,34 @@ export default {
       }
     }
   }
-  .contact-tag{
-    .insert-icon{
+  .contact-tag {
+    .insert-icon {
       fill: #5977fe;
     }
-    .insert-tag{
+    .insert-tag {
       margin-top: 0.5rem;
     }
-    ul{
+    ul {
       padding: 0 0.3rem;
-      li{
+      li {
         margin-top: 0.3rem;
         padding: 0.3rem;
-        .nav{
+        .nav {
           position: relative;
-          &::after{
+          &::after {
             content: '';
             width: 0.16rem;
             height: 0.16rem;
             border-radius: 0.16rem;
             background-color: #7e65fd;
             position: absolute;
-            top: .2rem;
+            top: 50%;
             left: -0.1rem;
+            transform: translateY(-50%);
           }
-          span{
-            &:first-child{
-              font-weight: bold;
+          span {
+            &:first-child {
+              // font-weight: bold;
               font-size: 0.34rem;
               margin-left: 0.2rem;
             }
@@ -350,27 +358,27 @@ export default {
         }
       }
     }
-    .client-list{
+    .client-list {
       height: 1.4rem;
       padding: 0.2rem 0;
       border-bottom: 1px solid #eee;
       position: relative;
-      .delete-icon{
+      .delete-icon {
         position: absolute;
         top: 0.1rem;
         left: 0.9rem;
         fill: #f47810;
       }
-      &:last-of-type{
+      &:last-of-type {
         border: none;
       }
-      img{
+      img {
         width: 1rem;
         height: 1rem;
         border-radius: 0.05rem;
         float: left;
       }
-      div{
+      div {
         float: right;
         height: 100%;
         margin-left: 0.2rem;
@@ -378,16 +386,16 @@ export default {
         max-width: calc(100% - 2.4rem);
         overflow: hidden;
         color: #717171;
-        p{
-          &:first-child{
+        p {
+          &:first-child {
             font-size: 0.3rem;
           }
         }
       }
-      div:nth-child(2){
+      div:nth-child(2) {
         float: left;
       }
-      span{
+      span {
         float: right;
         height: 100%;
         text-align: right;
@@ -397,9 +405,9 @@ export default {
         line-height: 0.5rem;
       }
     }
-    .arrow-up{
+    .arrow-up {
       margin-bottom: -0.3rem;
-      .vux-x-icon{
+      .vux-x-icon {
         fill: #717171;
       }
     }

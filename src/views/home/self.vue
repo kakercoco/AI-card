@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:27:30
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-30 14:30:26
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-17 16:32:21
  */
 <template>
   <div class="self">
@@ -19,40 +19,40 @@
           <span>扫码名片</span>
           <img src="@/assets/img/code.png" alt="" class="code-icon">
         </div>
-        </div>
       </div>
-      <div>
-        <group>
-          <cell is-link link="/newsSelf">
-            <img src="@/assets/nav/news.png" alt="" slot="icon" class="title-icon">
-            <span slot="title" class="nav-title">我的动态</span>
-          </cell>
-          <cell is-link link="/calendar">
-            <img src="@/assets/nav/calendar.png" alt="" slot="icon" class="title-icon">
-            <span slot="title" class="nav-title">销售日历</span>
-          </cell>
-          <cell is-link link="/reportChart">
-            <img src="@/assets/nav/report.png" alt="" slot="icon" class="title-icon">
-            <span slot="title" class="nav-title">我的报表</span>
-          </cell>
-          <cell is-link link="/talkManage">
-            <img src="@/assets/nav/manage.png" alt="" slot="icon" class="title-icon">
-            <span slot="title" class="nav-title">话术管理</span>
-          </cell>
-        </group>
-        <p style="margin-top: 0.5rem"></p>
-        <group>
-          <!-- <cell is-link>
+    </div>
+    <div>
+      <group>
+        <cell is-link link="/newsSelf">
+          <img src="@/assets/nav/news.png" alt="" slot="icon" class="title-icon">
+          <span slot="title" class="nav-title">我的动态</span>
+        </cell>
+        <cell is-link link="/calendar">
+          <img src="@/assets/nav/calendar.png" alt="" slot="icon" class="title-icon">
+          <span slot="title" class="nav-title">销售日历</span>
+        </cell>
+        <cell is-link link="/reportChart">
+          <img src="@/assets/nav/report.png" alt="" slot="icon" class="title-icon">
+          <span slot="title" class="nav-title">我的报表</span>
+        </cell>
+        <cell is-link link="/talkManage">
+          <img src="@/assets/nav/manage.png" alt="" slot="icon" class="title-icon">
+          <span slot="title" class="nav-title">话术管理</span>
+        </cell>
+      </group>
+      <!-- <p style="margin-top: 0.5rem"></p> -->
+      <group>
+        <!-- <cell is-link>
           <img src="@/assets/nav/step.png" alt="" slot="icon" class="title-icon">
           <span slot="title" class="nav-title">使用教程</span>
         </cell> -->
-          <cell is-link link="/setting">
-            <img src="@/assets/nav/setting.png" alt="" slot="icon" class="title-icon">
-            <span slot="title" class="nav-title">设置</span>
-          </cell>
-        </group>
-      </div>
+        <cell is-link link="/setting">
+          <img src="@/assets/nav/setting.png" alt="" slot="icon" class="title-icon">
+          <span slot="title" class="nav-title">设置</span>
+        </cell>
+      </group>
     </div>
+  </div>
 </template>
 
 <script>

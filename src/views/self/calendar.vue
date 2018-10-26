@@ -1,16 +1,19 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:53:27
- * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-09-29 22:58:30
+ * @Last Modified by: Jessica
+ * @Last Modified time: 2018-10-17 22:47:29
  */
 <template>
   <div class="calendar">
-    <inline-calendar @on-change="change" :render-function="buildSlotFn" v-model="time"></inline-calendar>
+    <inline-calendar @on-change="change" :render-function="buildSlotFn" v-model="time" @on-select-single-date='choseDay' :show-last-month="false" :show-next-month="false" @on-view-change='useCustomFn'></inline-calendar>
     <div class="tac insert-btn">
       <p class="fr">
-        <img src="@/assets/img/sort.png" alt="" class="fr sort-icon">
-        <popup-picker :data="list" v-model="value"  @on-change="chooseChange" class="fr">
+        <popup-picker :data="list" v-model="value" @on-change="chooseChange" class="fr" style='width: 1.3rem;'>
+          <template slot="title" slot-scope="props">
+            <!-- use scope="props" when vue < 2.5.0 -->
+            <img src="@/assets/img/sort.png" alt="" class="fr sort-icon">
+          </template>
         </popup-picker>
       </p>
       <span @click="gotoInsertCalendar">添加日程<x-icon type="ios-plus-outline" size="13"></x-icon></span>
@@ -28,7 +31,7 @@
           <x-icon type="ios-arrow-right" class="icon-right"></x-icon>
           <div>
             <h5>{{item.title}}</h5>
-            <p>备注：{{item.reference}}</p>
+            <p v-if="item.reference !==''">备注：{{item.reference}}</p>
           </div>
 
         </li>
@@ -39,12 +42,12 @@
 
 <script>
 import { InlineCalendar, PopupPicker } from 'vux'
-import { calendarList } from '@/api/calendar'
-
+import { calendarList, getDays } from '@/api/calendar'
 export default {
   name: 'calendar',
   components: {
-    InlineCalendar, PopupPicker
+    InlineCalendar,
+    PopupPicker
   },
   data () {
     return {
@@ -52,25 +55,58 @@ export default {
       value: ['筛选'],
       list: [['全部', '日常', '预约', '会议', '拜访', '生日']],
       calendar: [],
-      time: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? `0${new Date().getMonth() + 1}` : new Date().getMonth() + 1}-${new Date().getDate()}`,
-      type: 99
+      time: `${new Date().getFullYear()}-${
+        new Date().getMonth() + 1 < 10
+          ? `0${new Date().getMonth() + 1}`
+          : new Date().getMonth() + 1
+      }-${new Date().getDate()}`,
+      type: 99,
+      chose_one: false,
+      range: 7,
+      dayList: []
     }
   },
   methods: {
     change (val) {
+      this.type = 99
+      this.value = ['筛选']
       this.time = val
-      this.getCalendarList()
+      var arr = val.split('-')
+      this.chose_day = arr[arr.length - 1]
+    },
+    choseDay () {
+      this.chose_one = true
     },
     chooseChange (val) {
       console.log(val)
     },
     useCustomFn (val) {
-      this.buildSlotFn =
-         (line, index, data) => {
-           return /8/.test(data.date)
-             ? '<div style="font-size:12px;text-align:center;"><span style="display:inline-block;width:20px;height:2px;background-color:red;"></span></div>'
-             : '<div style="height:14px;"></div>'
-         }
+      console.log(val)
+      var that = this
+      var time
+      if (val !== undefined) {
+        if (val.month < 10) {
+          val.month = '0' + val.month
+        }
+        time = val.year + '' + val.month
+      } else {
+        var arr = this.time.split('-')
+        time = arr[0] + arr[1]
+      }
+      getDays(time).then(res => {
+        if (res.code === 200) {
+          that.dayList = res.data
+          let arr = []
+          that.dayList.forEach(r => {
+            arr.push(parseInt(r.days))
+          })
+          that.buildSlotFn = (line, index, data) => {
+            return arr.includes(data.date)
+              ? '<div style="font-size:12px;text-align:center;"><span style="display:inline-block;width:20px;height:2px;background-color:#5977fe;"></span></div>'
+              : '<div style="height:14px;"></div>'
+          }
+        }
+      })
     },
     gotoInsertCalendar () {
       this.$router.push({
@@ -104,14 +140,17 @@ export default {
       }
     },
     getCalendarList () {
+      if (this.chose_one) {
+        this.range = 1
+      }
       const data = {
         time: this.time,
-        type: this.type
+        type: this.type,
+        days: this.range
       }
-      calendarList(data)
-        .then(res => {
-          this.calendar = res.data
-        })
+      calendarList(data).then(res => {
+        this.calendar = res.data
+      })
     }
   },
   watch: {
@@ -120,11 +159,10 @@ export default {
       this.getCalendarList()
     }
   },
-  computed: {
-  },
+  computed: {},
   mounted () {
     this.getCalendarList()
-    // this.useCustomFn()
+    this.useCustomFn()
   }
 }
 </script>
@@ -134,71 +172,69 @@ export default {
   height: 100%;
   overflow: auto;
   padding: 0.3rem;
-  & /deep/ .inline-calendar{
-    .vux-prev-icon{
+  & /deep/ .inline-calendar {
+    .vux-prev-icon {
       border-color: #5977fe;
     }
-    .vux-next-icon{
+    .vux-next-icon {
       border-color: #5977fe;
     }
-    td.is-today{
+    td.is-today {
       color: #5977fe;
     }
-    td.current > span.vux-calendar-each-date{
+    td.current > span.vux-calendar-each-date {
       background-color: #5977fe;
     }
-    .calendar-title:active{
+    .calendar-title:active {
       background-color: #5977fe;
     }
   }
-  .sort-icon{
+  .sort-icon {
     width: 0.4rem;
     margin-left: 0.2rem;
   }
-  .insert-btn{
-    margin-top: 0.5rem;
-    &>span{
+  .insert-btn {
+    & > span {
       color: #5977fe;
       display: block;
       width: 1.8rem;
-      margin: 0 auto;
+      margin: 0.5rem auto 0 auto;
       text-decoration: underline;
-      .vux-x-icon{
+      .vux-x-icon {
         fill: #5977fe;
-        width: 0.3rem;
-        height: 0.3rem;
+        width: 0.4rem;
+        height: 0.4rem;
         float: right;
-        margin-top: 0.05rem;
       }
     }
-    .vux-cell-box{
-      &::before{
+    .vux-cell-box {
+      &::before {
         border: none;
       }
     }
-    & /deep/ .weui-cell{
+    & /deep/ .weui-cell {
       padding: 0;
-      .weui-cell__ft{
+      .weui-cell__ft {
         padding-right: 0;
-        &::after{
+        &::after {
           display: none;
         }
       }
     }
   }
-  .insert-content{
+  .insert-content {
     margin-top: 0.8rem;
-    .no-message{
+    .no-message {
       text-align: center;
       font-size: 0.28rem;
       color: #717171;
     }
-    li{
+    li {
       // height: 1.7rem;
       min-height: 1.7rem;
       padding: 0.25rem 0;
       position: relative;
-      &::after{
+      &::after {
         content: '';
         width: 0.2rem;
         height: 0.2rem;
@@ -208,37 +244,39 @@ export default {
         top: 0.3rem;
         left: 0;
       }
-      &>span{
+      & > span {
         float: left;
         color: #717171;
-        font-size: 0.22rem;
+        font-size: 0.3rem;
         margin: 0 0.3rem;
         margin-left: 0.5rem;
       }
-      .icon-tag{
+      .icon-tag {
         width: 0.35rem;
         float: left;
         margin-right: 0.3rem;
       }
-      &>div{
+      & > div {
         height: 100%;
         color: #717171;
         max-width: 3.5rem;
         overflow: hidden;
-        h5{
+        margin-top: -0.03rem;
+        h5 {
           font-size: 0.3rem;
           // line-height: 0.3rem;
           // height: 0.3rem;
           overflow: hidden;
+          font-weight: normal;
         }
-        p{
+        p {
           // height: 0.3rem;
           overflow: hidden;
           font-size: 0.26rem;
           margin-top: 0.2rem;
         }
       }
-      .icon-right{
+      .icon-right {
         float: right;
         width: 0.4rem;
         fill: #717171;
