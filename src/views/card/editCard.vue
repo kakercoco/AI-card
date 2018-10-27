@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
- * @Last Modified by: Jessica
- * @Last Modified time: 2018-10-18 11:57:02
+ * @Last Modified by: kaker.xutianxing
+ * @Last Modified time: 2018-10-27 14:54:27
  */
 <template>
   <div class="edit-card">
@@ -35,20 +35,28 @@
           <span class="job">{{cardInfor.job}}</span>
         </p>
         <p class="phone">
-          <!-- <img src="@/assets/nav/phone2.png" alt=""> -->
-          <img v-if="templateId !== 24 " src="@/assets/nav/phone.png" alt="">
-          <img v-if="templateId === 24" src="@/assets/nav/cellphone1.png" alt="">
+          <!-- 白色 -->
+          <img v-if="templateId === 26 " src="@/assets/nav/phone2.png" alt="">
+          <!-- 黄色 -->
+          <img v-else-if="templateId === 24 || templateId === 25" src="@/assets/nav/cellphone1.png" alt="">
+          <!-- 黑色 -->
+          <img v-else src="@/assets/nav/phone.png" alt="">
           {{cardInfor.phone}}
         </p>
         <p class="email">
-          <!-- <img src="@/assets/nav/email2.png" alt="" > -->
-          <img src="@/assets/nav/email.png" alt="">
+          <!-- 白色 -->
+          <img v-if="templateId === 26 " src="@/assets/nav/email2.png" alt="" >
+          <!-- 黑色 -->
+          <img v-else src="@/assets/nav/email.png" alt="">
           {{cardInfor.email}}
         </p>
         <p class="address">
-          <!-- <img src="@/assets/nav/map2.png" alt="" > -->
-          <img v-if="templateId !== 24 " src="@/assets/nav/map.png" alt="">
-          <img v-if="templateId === 24" src="@/assets/nav/address1.png" alt="">
+          <!-- 白色 -->
+          <img v-if="templateId === 26" src="@/assets/nav/map2.png" alt="" >
+          <!-- 黄色 -->
+          <img v-else-if="templateId === 24 || templateId === 25" src="@/assets/nav/address1.png" alt="">
+          <!-- 黑色 -->
+          <img v-else src="@/assets/nav/map.png" alt="">
           {{cardInfor.address}}
         </p>
         <p class="tip">中国领先的SaaS级智能营销云平台</p>
@@ -135,7 +143,7 @@
     <div class="self-audio">
       <p @click="audioDialog = true">请点击录制新的语音 <x-icon type="ios-plus-outline"></x-icon>
       </p>
-      <audio :src="cardInfor.audio" controls="controls"></audio>
+      <audio :src="cardInfor.audio" controls="controls" v-if="cardInfor.audio!=''"></audio>
     </div>
     <h5>我的图片</h5>
     <div class="self-img clearfix">
@@ -230,7 +238,7 @@ import {
 } from '@/api/card'
 import { upload_img } from '@/api/upload_file'
 import VueCropper from 'vue-cropperjs'
-import { setInterval, clearInterval } from 'timers'
+import { setInterval } from 'timers'
 
 export default {
   name: 'editCard',
@@ -263,11 +271,11 @@ export default {
       //     goods: []
       //   }
       // },
-      haDate:false,
-      other_card_style:0,
-      t_width:10,
+      haDate: false,
+      other_card_style: 0,
+      t_width: 10,
       albumList: [],
-      templateId: 0, // 选中的模板id
+      templateId: null, // 选中的模板id
       tagKeyword: '', // 新增的标签内容
       insertTagDialog: false,
       audioDialog: false,
@@ -415,12 +423,16 @@ export default {
           this.$nextTick(function () {
             this.$refs.selfBio.updateAutosize()
           })
-            var el=document.querySelector('.template-list')
-          if(res.data.is_zhendao==='1'){
+          var el = document.querySelector('.template-list')
+          if (res.data.is_zhendao === '1') {
             el.setAttribute('style', 'width: 43.2rem')
-          }else{
+          } else {
             console.log('其他公司')
             el.setAttribute('style', 'width: 9rem')
+            if (this.templateId === 0) {
+              this.templateId = 24
+              this.selectedClass = `card-template-${this.templateId + 1}`
+            }
           }
         })
       }

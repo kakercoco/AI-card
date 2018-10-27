@@ -12,9 +12,9 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/index.php': {
-        target: 'http://jiatui.api.com/index.php', // ����
+        // target: 'http://jiatui.api.com/index.php', // ����
         // target: 'https://tyunzhentui.71360.com', // ��ʽ
-        // target: 'https://zhentuityun.71360.com', // ����
+        target: 'https://zhentuityun.71360.com', // ����
         changeOrigin: true,
         pathRewrite: {
           '^/index.php': ''
@@ -22,7 +22,7 @@ module.exports = {
       }
     },
     // token: '%21%A5%B9%C1%2FAt%BC%A0%2F%85yq%E05%ABi%BB%AFG%F6%0F%B6%9D%DD%FC%9E%86-Y%96%3A%25%0E%F6%D8%A5%3E%0Bj%8F%D2j%F4%F2%B3%A0B%86t%03GNI%F7+%F5%88%09q%DDs%E8.%C3HR%3E%85%D9%AC%B0',
-    token: 'amV4czZGWElqNzM1MGU4MXk0YVYyN1QzaTRjVUQrN0RzWmNJWEVPMDhOYzc5N3A5L0lpK0VSSit2V1loamxzL0hvVDViMDVWNkRTOCs2QVQ2MzJUb2FZQ1pYY2ZkRHk0',
+    token: 'TnlIQ2JuMExmb0dMSVFnRytGVmRuR203cjBmMkQ3YWQzZnllaGkxWmxqclM0bC9SK1UyNDVvL1NhdlR5czZCQ1ZhM2FnWTNFelFjdWNVZEh5UlpHVGc9PQ%3D%3D',
 
     // Various Dev Server settings
     host: '0.0.0.0', // can be overwritten by process.env.HOST
