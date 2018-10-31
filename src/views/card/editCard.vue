@@ -2,11 +2,11 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-10 16:09:36
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-10-27 14:54:27
+ * @Last Modified time: 2018-10-29 22:43:48
  */
 <template>
   <div class="edit-card">
-    <div class="my-card" id="card">
+    <div class="my-card" id="card" v-show="templateId !== null">
       <img v-if="templateId !== 24 && templateId !== 25 && templateId !== 26 && templateId !== 27 && templateId !== 28" src="@/assets/card/1.png" alt="" class="card-bg">
       <img v-if="templateId === 24" src="@/assets/card/4.png" alt="" class="card-bg">
       <img v-if="templateId === 25" src="@/assets/card/5.png" alt="" class="card-bg">
@@ -409,8 +409,6 @@ export default {
           this.$store.state.user.cardInfor.close = false
           // this.cardInfor = res.data
           // this.seletedTemplate = require(`@/assets/card/${this.cardInfor.style_id + 1}.png`)
-          this.selectedClass = `card-template-${this.cardInfor.style_id + 1}`
-          this.templateId = this.cardInfor.style_id
           if (this.cardInfor.album != null) {
             this.albumList = this.cardInfor.album.split(',')
           }
@@ -418,20 +416,28 @@ export default {
             this.cardInfor.image = require('@/assets/card/comm.jpg')
           }
           if (cardImg === undefined || cardImg === '') {
-            this.save(false)
+            setTimeout(() => {
+              this.save(false)
+            }, 2000)
           }
           this.$nextTick(function () {
             this.$refs.selfBio.updateAutosize()
           })
           var el = document.querySelector('.template-list')
+          console.log(this)
           if (res.data.is_zhendao === '1') {
             el.setAttribute('style', 'width: 43.2rem')
+            this.selectedClass = `card-template-${this.cardInfor.style_id + 1}`
+            this.templateId = this.cardInfor.style_id
           } else {
             console.log('其他公司')
             el.setAttribute('style', 'width: 9rem')
-            if (this.templateId === 0) {
+            if (this.cardInfor.style_id === 0) {
               this.templateId = 24
               this.selectedClass = `card-template-${this.templateId + 1}`
+            } else {
+              this.selectedClass = `card-template-${this.cardInfor.style_id + 1}`
+              this.templateId = this.cardInfor.style_id
             }
           }
         })
@@ -673,11 +679,13 @@ export default {
       this.selectedClass = `card-template-${index + 1}`
     },
     gotoProduce () {
+      this.$store.state.user.cardInfor.close = true
       this.$router.push({
         path: '/produce'
       })
     },
     gotoCase () {
+      this.$store.state.user.cardInfor.close = true
       this.$router.push({
         path: '/case'
       })

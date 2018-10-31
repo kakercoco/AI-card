@@ -54,8 +54,8 @@ export function calendarDelete (data) {
   // 删除日程
   return request({
     url: '/api/calendar/delete',
-    method: 'get',
-    params: data
+    method: 'post',
+    data: data
   })
 }
 

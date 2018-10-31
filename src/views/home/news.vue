@@ -1,8 +1,8 @@
 /*
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:27:30
- * @Last Modified by: Jessica
- * @Last Modified time: 2018-10-18 11:33:29
+ * @Last Modified by: kaker.xutianxing
+ * @Last Modified time: 2018-10-29 22:57:52
  * 动态
  */
 <template>
@@ -95,23 +95,20 @@
       </confirm>
     </div>
 
-
-
     <div class="comment_dialog comment_layer" v-if="comment_layer" @touchstart="popover_hidden"></div>
-
 
   </div>
 </template>
 
 <script>
 import { get_user_info } from '@/api/user_info'
-import { Previewer, TransferDom, Popover, XDialog,Confirm } from 'vux'
+import { Previewer, TransferDom, Popover, XDialog, Confirm } from 'vux'
 import { Scroller } from 'vux'
 
 import { init_list, click_good, to_comment } from '@/api/dynamic'
 import { dateFtt } from '@/utils/base'
 
-const Head_portrait = require('@/assets/card/comm.jpg');
+const Head_portrait = require('@/assets/card/comm.jpg')
 export default {
   name: 'news',
   directives: {
@@ -167,9 +164,9 @@ export default {
       comment_obj: null, // 品论的中专对象
       comment_content: '',
       comment_index: null,
-      comment_layer:false,
-        popover_Rendering:true,
-        Head_portrait:Head_portrait
+      comment_layer: false,
+      popover_Rendering: true,
+      Head_portrait: Head_portrait
 
     }
   },
@@ -195,7 +192,7 @@ export default {
       })
     },
     my_test () {
-      alert('1.7')
+      alert('2.3')
     },
     logIndexChange (arg) {
       console.log(arg)
@@ -352,15 +349,15 @@ export default {
     // 评论发送
     comment_send (comment_content) {
       if (this.comment_obj === null || this.comment_index === null) {
-          this.$vux.alert.show({
-              title: '提示',
-              content: '评论发生错误，请重新操作！'
-          })
+        this.$vux.alert.show({
+          title: '提示',
+          content: '评论发生错误，请重新操作！'
+        })
         this.commentDialog = false
         return
       }
       if (comment_content === '') {
-        alert('评论内容不能为空！');
+        alert('评论内容不能为空！')
         return
       }
 
@@ -370,24 +367,24 @@ export default {
         dynamic_id,
         content
       }).then(e => {
-          if (e.code === 200) {
-            const obj = {
-              user_image: this.$store.state.user.info.image,
-              user_name: this.$store.state.user.info.username,
-              content
-            }
-            this.data_list[this.comment_index].comment.rows.push(obj)
-            this.commentDialog = false
-            this.dialog_hide()
-          } else {
-            this.$vux.alert.show({
-              title: '提示',
-              content: '评论发生错误，请重新操作！'
-            })
-            this.commentDialog = false
-            this.dialog_hide()
+        if (e.code === 200) {
+          const obj = {
+            user_image: this.$store.state.user.info.image,
+            user_name: this.$store.state.user.info.username,
+            content
           }
-        })
+          this.data_list[this.comment_index].comment.rows.push(obj)
+          this.commentDialog = false
+          this.dialog_hide()
+        } else {
+          this.$vux.alert.show({
+            title: '提示',
+            content: '评论发生错误，请重新操作！'
+          })
+          this.commentDialog = false
+          this.dialog_hide()
+        }
+      })
         .catch(() => {
           this.$vux.alert.show({
             title: '提示',
@@ -413,9 +410,9 @@ export default {
       })
     },
 
-      comment_onCancel(){
-          this.dialog_hide()
-      },
+    comment_onCancel () {
+      this.dialog_hide()
+    }
   },
   mounted () {
     this.get_list()

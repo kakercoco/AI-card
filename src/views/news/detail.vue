@@ -74,7 +74,7 @@
       <previewer :list="pic_list" ref="previewer" :options="options" @on-index-change="logIndexChange"></previewer>
     </div>
 
-    <div v-transfer-dom class="dialog">
+    <!--<div v-transfer-dom class="dialog">
       <x-dialog
               :show.sync="commentDialog"
               @on-hide="dialog_hide"
@@ -82,15 +82,24 @@
         <p class="dialog-comment clearfix">
           <input type="text" v-model="comment_content" autofocus></input>
           <button @click="comment_send">发送</button>
-          <!--<img src="@/assets/icon/face.png">-->
+          &lt;!&ndash;<img src="@/assets/icon/face.png">&ndash;&gt;
         </p>
       </x-dialog>
+    </div>-->
+    <div v-transfer-dom>
+      <confirm v-model="commentDialog"
+               title="评论"
+               :close-on-confirm="false"
+               show-input
+               @on-cancel="comment_onCancel"
+               @on-confirm="comment_send">
+      </confirm>
     </div>
   </div>
 </template>
 
 <script>
-import { Previewer, TransferDom, Popover, XDialog } from 'vux'
+import { Previewer, TransferDom, Popover, XDialog,Confirm } from 'vux'
 import { Scroller } from 'vux'
 import { init_list, click_good, to_comment, to_companyDetails} from '@/api/dynamic'
 import {dateFtt} from '@/utils/base'
@@ -103,7 +112,8 @@ export default {
     Previewer,
     Popover,
     XDialog,
-    Scroller
+    Scroller,
+    Confirm
   },
   data () {
     return {
@@ -290,7 +300,7 @@ export default {
     },
 
     // 评论发送
-    comment_send () {
+    comment_send (comment_content) {
       if (this.comment_obj === null || this.comment_index === null) {
         this.$vux.alert.show({
           title: '提示',
@@ -299,16 +309,13 @@ export default {
         this.commentDialog = false
         return
       }
-      if (this.comment_content === '') {
-        this.$vux.alert.show({
-          title: '提示',
-          content: '评论内容不能为空!'
-        })
+      if (comment_content === '') {
+        alert('评论内容不能为空！');
         return
       }
 
       const dynamic_id = this.comment_obj.id
-      const content = this.comment_content
+      const content = comment_content
       to_comment({
         dynamic_id,
         content
@@ -405,7 +412,11 @@ export default {
         console.log(err)
         this.isAjax = true
       })
-    }
+    },
+
+      comment_onCancel(){
+          this.dialog_hide()
+      },
 
   },
   mounted () {

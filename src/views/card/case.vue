@@ -333,10 +333,11 @@ export default {
           color: #717171;
           font-size: 0.28rem;
           height: 1.6rem;
+          line-height: 0.4rem;
           overflow : hidden;
           text-overflow: ellipsis;
           display: -webkit-box;
-          -webkit-line-clamp: 3;
+          -webkit-line-clamp: 4;
           -webkit-box-orient: vertical;
         }
         p {

@@ -50,8 +50,8 @@ export function cardTagDelete (data) {
   // 删除名片上的标签
   return request({
     url: '/api/card/employ_tag_del',
-    method: 'get',
-    params: data
+    method: 'post',
+    data: data
   })
 }
 
@@ -86,8 +86,8 @@ export function employgoodsDetele (data) {
   // 取消推荐产品
   return request({
     url: '/api/employgoods/delete',
-    method: 'get',
-    params: data
+    method: 'post',
+    data: data
   })
 }
 
@@ -113,8 +113,8 @@ export function employcaseDetele (data) {
   // 取消推荐案例
   return request({
     url: '/api/employcase/delete',
-    method: 'get',
-    params: data
+    method: 'post',
+    data: data
   })
 }
 

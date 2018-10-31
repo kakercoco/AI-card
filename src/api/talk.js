@@ -31,8 +31,8 @@ export function talkDelete (data) {
   // 删除话术
   return request({
     url: '/api/Verbal/delete',
-    method: 'get',
-    params: data
+    method: 'post',
+    data: data
   })
 }
 

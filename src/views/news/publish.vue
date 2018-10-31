@@ -63,10 +63,10 @@ export default {
         })
         return
       }
-      if (obj.size > 5000000) {
+      if (obj.size > 2000000) {
         this.$vux.alert.show({
           title: '提示',
-          content: '照片大小不能超过5MB'
+          content: '照片大小不能超过2MB'
         })
         return
       }

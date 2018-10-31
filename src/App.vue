@@ -37,8 +37,8 @@ export default {
       },
       heartbeat: null,
       v_console_num: 0,
-      parentNode:null,
-      is_loadMore:true
+      parentNode: null,
+      is_loadMore: true
     }
   },
   created () {
@@ -52,7 +52,7 @@ export default {
       if (this.v_console_num >= 4 && document.querySelector('#__vconsole')) {
         document.querySelector('#__vconsole').style.display = 'block'
         this.v_console_num = 0
-        alert('10-26-1.0')
+        alert('10-29-1.1')
       }
     },
     get_user_info () {
@@ -405,123 +405,122 @@ export default {
       }
     },
 
-    //鼠标滚动
-    Mouse_scrolling(){
-        window.addEventListener('DOMMouseScroll',this.scrolling, false);
-        window.onmousewheel = document.onmousewheel = this.scrolling;
+    // 鼠标滚动
+    Mouse_scrolling () {
+      window.addEventListener('DOMMouseScroll', this.scrolling, false)
+      window.onmousewheel = document.onmousewheel = this.scrolling
     },
 
-      scrolling(e){
-          e = e || window.event;
-          if (e.wheelDelta) {
-              if (e.wheelDelta > 0) {
-                  //console.log('滑轮向上滚动');
-                  this.scrolling_Calculation(1)
+    scrolling (e) {
+      e = e || window.event
+      if (e.wheelDelta) {
+        if (e.wheelDelta > 0) {
+          // console.log('滑轮向上滚动');
+          this.scrolling_Calculation(1)
+        }
+        if (e.wheelDelta < 0) {
+          // console.log('滑轮向下滚动');
+          this.scrolling_Calculation(-1)
+        }
+      } else if (e.detail) {
+        if (e.detail > 0) {
+          // 滑轮向上滚动");
+          this.scrolling_Calculation(1)
+        }
+        if (e.detail < 0) {
+          // alert("滑轮向下滚动");
+          this.scrolling_Calculation(-1)
+        }
+      }
+    },
+    scrolling_Calculation (direction) {
+      let ele = document.querySelector('.xs-container')
+      let load_ele = document.querySelector('.xs-plugin-pullup-container')
 
-              }
-              if (e.wheelDelta < 0) {
-                  //console.log('滑轮向下滚动');
-                  this.scrolling_Calculation(-1)
-              }
-          }
-          else if (e.detail) {
-              if (e.detail > 0) {
-                  //滑轮向上滚动");
-                  this.scrolling_Calculation(1)
-              }
-              if (e.detail < 0) {
-                  //alert("滑轮向下滚动");
-                  this.scrolling_Calculation(-1)
-              }
-          }
-      },
-      scrolling_Calculation(direction){
-          let ele = document.querySelector('.xs-container');
-          let load_ele = document.querySelector('.xs-plugin-pullup-container');
+      // 存在滚动视图，则滚动
+      if (ele) {
+        const ele_height = ele.clientHeight
+        var parentNode = ele.parentNode
+        let parent_height = parentNode.clientHeight
 
-          //存在滚动视图，则滚动
-        if(ele){
-            const ele_height = ele.clientHeight;
-            var parentNode = ele.parentNode;
-            let parent_height = parentNode.clientHeight;
-
-            //如果内容小于容器
-            if(ele_height < parent_height){
-                return;
-            }
-
-            const max_scroll = (ele_height - parent_height + 50) *-1;
-            const transform_str = ele.style.transform;
-            let res = transform_str.match(/translateY\((.*?)\)/)
-
-            let Y = 0;
-            if(res && res.length >= 2){
-                Y = parseFloat(res[1])
-            }
-            let end_Y = Y + direction*25;
-
-            if(end_Y > 0){
-                end_Y = 0
-            }
-            else if(end_Y <= max_scroll){
-
-                end_Y = max_scroll;
-                //触发函数
-                if(this.is_loadMore){
-                    console.log('触底');
-                    this.is_loadMore = false;
-                    this.find_loadMore(this);
-                }
-            }
-            else{
-                this.is_loadMore = true;
-
-            }
-            ele.style.transform = `translateY(${end_Y}px)`;
-
+        // 如果内容小于容器
+        if (ele_height < parent_height) {
+          return
         }
 
+        const max_scroll = (ele_height - parent_height + 50) * -1
+        const transform_str = ele.style.transform
+        let res = transform_str.match(/translateY\((.*?)\)/)
 
-        if(load_ele){
-          if(load_ele.innerHTML == 'undefined'){
-              load_ele.innerHTML = '加载中...'
-          }
+        let Y = 0
+        if (res && res.length >= 2) {
+          Y = parseFloat(res[1])
         }
+        let end_Y = Y + direction * 25
 
-      },
-
-      find_loadMore(obj){
-          //存在loadMore，且当前组件就是当前页面
-          if(obj.loadMore && this.$route.name === obj.$options.name && this.$route.name != 'index'){
-              //找到上啦加载，则停止递归
-              obj.loadMore();
-              return
+        if (end_Y > 0) {
+          end_Y = 0
+        } else if (end_Y <= max_scroll) {
+          end_Y = max_scroll
+          // 触发函数
+          if (this.is_loadMore) {
+            console.log('触底')
+            this.is_loadMore = false
+            this.find_loadMore(this)
           }
-          //首页有两种上拉方法，做特殊处理
-          if( this.$route.name === 'index' && this.$route.name === obj.$options.name ){
-              if(obj.tabIndex === 0 && obj.timeLoadMore){
-                  obj.timeLoadMore();
-                  return
-              }
-              if(obj.tabIndex === 2 && obj.Interaction_loadMore){
-                  obj.Interaction_loadMore();
-                  return
-              }
-          }
+        } else {
+          this.is_loadMore = true
+        }
+        ele.style.transform = `translateY(${end_Y}px)`
+      }
 
-          for(let i = 0;i<obj.$children.length;i++){
-              this.find_loadMore(obj.$children[i]);
-          }
+      if (load_ele) {
+        if (load_ele.innerHTML == 'undefined') {
+          load_ele.innerHTML = '加载中...'
+        }
+      }
+    },
 
-      },
+    find_loadMore (obj) {
+      // 存在loadMore，且当前组件就是当前页面
+      if (obj.loadMore && this.$route.name === obj.$options.name && this.$route.name != 'index') {
+        // 找到上啦加载，则停止递归
+        obj.loadMore()
+        return
+      }
+      // 首页有两种上拉方法，做特殊处理
+      if (this.$route.name === 'index' && this.$route.name === obj.$options.name) {
+        if (obj.tabIndex === 0 && obj.timeLoadMore) {
+          obj.timeLoadMore()
+          return
+        }
+        if (obj.tabIndex === 2 && obj.Interaction_loadMore) {
+          obj.Interaction_loadMore()
+          return
+        }
+      }
 
-
+      for (let i = 0; i < obj.$children.length; i++) {
+        this.find_loadMore(obj.$children[i])
+      }
+    }
 
   },
   mounted () {
+      const that = this;
     this.get_user_info()
-    this.Mouse_scrolling();
+    this.Mouse_scrolling()
 
+    document.addEventListener('WeixinJSBridgeReady', function onBridgeReady () {
+      WeixinJSBridge.call('hideOptionMenu')
+    })
+
+
+      this.$wechat.ready(function(){
+          that.$wechat.hideMenuItems({
+              menuList: ['menuItem:share:appMessage',"menuItem:share:timeline"]
+          });
+      })
 
 
   }
