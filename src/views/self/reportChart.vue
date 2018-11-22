@@ -82,7 +82,10 @@
 </template>
 
 <script>
-import echarts from 'echarts'
+//import echarts from 'echarts'
+const echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/pie');
+require('echarts/lib/chart/line');
 import { Tab, TabItem } from 'vux'
 import { getMyNums, getMyChart } from '@/api/chart'
 export default {

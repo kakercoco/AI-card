@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-05 17:36:16
  * @Last Modified by: Jessica
- * @Last Modified time: 2018-10-17 21:42:36
+ * @Last Modified time: 2018-10-31 17:51:59
  */
 <template>
   <div class="insert-calendar">
@@ -26,7 +26,7 @@
     </group>
     <div class="insert-client clearfix">
       <p>添加客户：</p>
-      <span v-for="(item, index) in customerCheckList" :key="index">
+      <span v-for="(item, index) in infor.add_user_img" :key="index">
         <img :src="item.wx_image" alt="">
         <x-icon type="ios-minus" class="delete-icon" @click="deleteCustomer(index,item.id)"></x-icon>
       </span>
@@ -98,7 +98,6 @@ export default {
       time: '',
       calendarType: 0,
       customer: [], // 所有客户列表
-      customerCheckList: [], // 选中的客户列表
       customerForm: {
         page: 1,
         pagesize: 1000,
@@ -123,7 +122,6 @@ export default {
       } else {
         url = `/static/calendar/calendar${i + 1}.png`
       }
-
       return url
     },
     getCalendarTypeList () {
@@ -175,15 +173,16 @@ export default {
         this.customerForm.type = 5
       }
     },
+    // 获取所有客户列表
     getCustomerList () {
       customerList(this.customerForm).then(res => {
         let customerAll = res.data.rows
         for (let i = 0; i < customerAll.length; i++) {
           const element = customerAll[i]
           element.status = false
-          for (let j = 0; j < this.customerCheckList.length; j++) {
-            const e = this.customerCheckList[j]
-            if (e.uid === element.uid) {
+          for (let j = 0; j < this.infor.add_user_img.length; j++) {
+            const e = this.infor.add_user_img[j]
+            if (e.id === element.uid) {
               element.status = true
               break
             } else {
@@ -194,6 +193,7 @@ export default {
         this.customer = customerAll
       })
     },
+    // 获取日程详情
     getCalendarRead () {
       const data = {
         id: this.id
@@ -205,76 +205,49 @@ export default {
         this.notes = infor.reference
         this.date = infor.ymd_time
         this.time = infor.his_time
+        // 显示日程类型
         this.setCalendarType(infor.type)
-        this.customerCheckList = []
-        this.customer.forEach(e => {
-          infor.add_user.forEach(item => {
-            if (item === e.uid.toString()) {
-              this.customerCheckList.push(e)
-            }
-          })
-        })
+        // 获取客户列表
+        this.getCustomerList()
       })
     },
+    // 选择客户
     chooseCustomer () {
+      this.infor.add_user_img = []
       this.isInsert = false
       this.customer.forEach(e => {
         // e 代表选中的那个
         if (e.status) {
-          let isHave = true // 默认为外边数组已存在
-
-          this.customerCheckList.forEach(element => {
-            if (e.uid === element.uid) {
-              isHave = false
-            }
-          })
-
-          if (isHave) {
-            // 添加
-            this.customerCheckList.push(JSON.parse(JSON.stringify(e)))
-          }
-        } else {
-          let isHaves = false
-
-          this.customerCheckList.forEach(element => {
-            if (e.uid === element.uid) {
-              isHaves = true
-            }
-          })
-
-          if (isHaves) {
-            const index = this.customerCheckList.findIndex(item => {
-              return e.uid === item.uid
-            })
-            this.customerCheckList.splice(index, 1)
-          }
+          this.infor.add_user_img.push({ id: e.uid, wx_image: e.wx_image })
         }
       })
     },
     deleteCustomer (index, id) {
       this.customer.forEach(element => {
-        if (id === element.id) {
+        if (id === element.uid) {
           element.status = false
         }
       })
-      this.customerCheckList.splice(index, 1)
+      this.infor.add_user_img.splice(index, 1)
     },
     save () {
-      var uid = ''
-      this.customer.forEach(element => {
-        if (element.status) {
-          uid += `${element.uid},`
-        }
+      var uid = []
+      this.infor.add_user_img.forEach(element => {
+        uid.push(element.id)
       })
       const data = {
         id: this.id,
         title: this.title,
         time: `${this.date} ${this.time}`,
-        add_user: uid,
+        add_user: uid.join(','),
         reference: this.notes,
         type: this.calendarType
       }
       calendarUpdate(data).then(res => {
+        // this.$router.replace({
+        //   path: '/calendarDetail',
+        //   query: {id: this.id}
+        // })
         this.$router.back(-1)
       })
     }
@@ -282,27 +255,15 @@ export default {
   watch: {
     selectdRecord () {
       this.getSearchType()
-      this.getCustomerList()
+      // this.getCustomerList()
     },
     option () {
       this.getCalendarType()
-    },
-    infor (val) {
-      this.customerCheckList = []
-      this.customer.forEach(e => {
-        val.add_user.forEach(item => {
-          if (item === e.uid.toString()) {
-            this.customerCheckList.push(e)
-            this.getCustomerList()
-          }
-        })
-      })
     }
   },
   mounted () {
-    this.getCustomerList()
-    this.getCalendarTypeList()
-    this.getCalendarRead()
+    this.getCalendarRead() // 获取日程详情
+    this.getCalendarTypeList() // 获取日程类型
   }
 }
 </script>
@@ -453,6 +414,10 @@ export default {
     }
     .vux-cell-value {
       margin-right: 0.2rem;
+      font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+        Microsoft YaHei, Arial, sans-serif;
+      color: #333;
+      font-size: 0.28rem;
     }
   }
   li {

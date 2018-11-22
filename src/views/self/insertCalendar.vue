@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-05 17:36:16
  * @Last Modified by: Jessica
- * @Last Modified time: 2018-10-17 21:42:59
+ * @Last Modified time: 2018-10-31 16:58:39
  */
 <template>
   <div class="insert-calendar">
@@ -92,6 +92,7 @@ export default {
   data () {
     return {
       date: this.$route.query.date,
+      month: this.$route.query.month,
       title: '',
       notes: '',
       time: '',
@@ -244,10 +245,27 @@ export default {
         reference: this.notes,
         type: this.calendarType
       }
+      // var arr = this.date.split('-')
+      // var choseTime = arr[0] + arr[1] + ''
+      // var monthArr = this.month.split('-')
+      // var monthTime = monthArr[0] + monthArr[1] + ''
+      // var selectTime = ''
+
+      // if (parseInt(choseTime) < parseInt(monthTime)) {
+      //   selectTime = this.month + '-' + '01'
+      // } else {
+      //   selectTime = this.date
+      // }
+      // console.log(choseTime)
+      // console.log(monthTime)
       calendarSave(data).then(res => {
-        this.$router.push({
-          path: '/calendar'
-        })
+        this.$router.back(-1)
+        // this.$router.replace({
+        //   path: '/calendar',
+        //   query: {
+        //     choseTime: this.date
+        //   }
+        // })
       })
     }
   },

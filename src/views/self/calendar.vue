@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 10:53:27
  * @Last Modified by: Jessica
- * @Last Modified time: 2018-10-17 22:47:29
+ * @Last Modified time: 2018-11-01 09:55:45
  */
 <template>
   <div class="calendar">
@@ -43,6 +43,7 @@
 <script>
 import { InlineCalendar, PopupPicker } from 'vux'
 import { calendarList, getDays } from '@/api/calendar'
+import { setCookie, getCookie, removeCookie } from '@/utils/auth'
 export default {
   name: 'calendar',
   components: {
@@ -55,14 +56,15 @@ export default {
       value: ['筛选'],
       list: [['全部', '日常', '预约', '会议', '拜访', '生日']],
       calendar: [],
+      month: '',
       time: `${new Date().getFullYear()}-${
         new Date().getMonth() + 1 < 10
           ? `0${new Date().getMonth() + 1}`
           : new Date().getMonth() + 1
-      }-${new Date().getDate()}`,
+      }-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
       type: 99,
       chose_one: false,
-      range: 7,
+      range: 1,
       dayList: []
     }
   },
@@ -74,14 +76,18 @@ export default {
       var arr = val.split('-')
       this.chose_day = arr[arr.length - 1]
     },
-    choseDay () {
+    choseDay (val) {
+      this.time = val
       this.chose_one = true
+      setCookie('chose_time', val)
+      this.getSearchType()
+      this.getCalendarList()
     },
     chooseChange (val) {
-      console.log(val)
+      this.getSearchType()
+      this.getCalendarList()
     },
-    useCustomFn (val) {
-      console.log(val)
+    useCustomFn (val, index) {
       var that = this
       var time
       if (val !== undefined) {
@@ -89,9 +95,11 @@ export default {
           val.month = '0' + val.month
         }
         time = val.year + '' + val.month
+        this.month = val.year + '-' + val.month
       } else {
         var arr = this.time.split('-')
         time = arr[0] + arr[1]
+        this.month = time
       }
       getDays(time).then(res => {
         if (res.code === 200) {
@@ -112,7 +120,8 @@ export default {
       this.$router.push({
         path: '/insertCalendar',
         query: {
-          date: this.time
+          date: this.time,
+          month: this.month
         }
       })
     },
@@ -120,7 +129,8 @@ export default {
       this.$router.push({
         path: '/calendarDetail',
         query: {
-          id
+          id: id,
+          date: this.time
         }
       })
     },
@@ -153,16 +163,25 @@ export default {
       })
     }
   },
-  watch: {
-    value () {
-      this.getSearchType()
-      this.getCalendarList()
+  // watch: {
+  //   value () {
+  //     this.getSearchType()
+  //     this.getCalendarList()
+  //   }
+  // },
+  created () {
+    console.log(getCookie('chose_time'))
+    if (getCookie('chose_time') !== undefined) {
+      this.time = getCookie('chose_time')
+      removeCookie('chose_time')
+    } else {
+      console.log(this.time)
     }
   },
   computed: {},
   mounted () {
     this.getCalendarList()
-    this.useCustomFn()
+    // this.useCustomFn()
   }
 }
 </script>

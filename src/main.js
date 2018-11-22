@@ -27,6 +27,7 @@ import Vconsole from 'vconsole'
 if (process.env.NODE_ENV != 'development') {
   var vConsole = new Vconsole()
 }
+
 //var vConsole = new Vconsole()
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)

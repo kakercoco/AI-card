@@ -239,7 +239,7 @@ export default new Router({
       meta: { title: '案例列表' },
       component: () => import('@/views/card/case')
     },
-    {
+    /*{
       path: '/boss',
       name: 'boss',
       meta: { title: 'BOSS天眼' },
@@ -250,7 +250,7 @@ export default new Router({
       name: 'bossCard',
       meta: { title: 'BOSS天眼' },
       component: () => import('@/views/boss/card')
-    },
+    },*/
     {
       path: '/qrcode',
       name: 'qrcode',

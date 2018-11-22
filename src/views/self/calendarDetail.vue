@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-09-06 14:08:03
  * @Last Modified by: Jessica
- * @Last Modified time: 2018-10-17 22:48:33
+ * @Last Modified time: 2018-10-31 16:51:44
  */
 <template>
   <div class="calendar-detail">
@@ -52,6 +52,7 @@ export default {
   data () {
     return {
       id: this.$route.query.id,
+      date: this.$route.query.date,
       infor: {}
     }
   },
@@ -68,21 +69,23 @@ export default {
       const data = {
         id: this.id
       }
-      calendarRead(data)
-        .then(res => {
-          this.infor = res.data
-        })
+      calendarRead(data).then(res => {
+        this.infor = res.data
+      })
     },
     deleteCalendar () {
       const data = {
         id: this.id
       }
-      calendarDelete(data)
-        .then(res => {
-          this.$router.replace({
-            path: '/calendar'
-          })
-        })
+      calendarDelete(data).then(res => {
+        this.$router.back(-1)
+        // this.$router.replace({
+        //   path: '/calendar',
+        //   query: {
+        //     choseTime: this.date
+        //   }
+        // })
+      })
     }
   },
   mounted () {
@@ -92,25 +95,25 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.calendar-detail{
+.calendar-detail {
   overflow: auto;
   height: 100%;
-  li{
+  li {
     padding: 0.3rem;
     border-bottom: 1px solid #ddd;
-    font-size: .32rem;
+    font-size: 0.32rem;
     color: #717171;
-    &:last-child{
+    &:last-child {
       border: none;
     }
-    .icon{
+    .icon {
       width: 0.4rem;
       float: left;
       margin-right: 0.2rem;
     }
-    .client-avatar{
+    .client-avatar {
       padding-left: 0.2rem;
-      img{
+      img {
         width: 1.2rem;
         height: 1.2rem;
         margin-right: 0.4rem;
@@ -119,7 +122,7 @@ export default {
       }
     }
   }
-  .btn{
+  .btn {
     margin-top: 2rem;
   }
 }

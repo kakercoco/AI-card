@@ -116,7 +116,9 @@ import {
   TabItem,
   Scroller
 } from 'vux'
-import echarts from 'echarts'
+//import echarts from 'echarts'
+const echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/pie');
 import {
   customerRead,
   customerSetTurnover,
