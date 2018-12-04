@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 初始化获取列表
 export function init_list (data) {
   return request({
-    url: '/api/Dynamic/index',
+    url: '/ai/Dynamic/index',
     method: 'get',
     params: data
   })
@@ -12,7 +12,7 @@ export function init_list (data) {
 // 点赞
 export function click_good (data) {
   return request({
-    url: '/api/dynamic/praise',
+    url: '/ai/dynamic/praise',
     method: 'get',
     params: data
   })
@@ -20,7 +20,7 @@ export function click_good (data) {
 
 export function to_comment (data) {
   return request({
-    url: '/api/comment/save',
+    url: '/ai/comment/save',
     method: 'post',
     data: data
   })
@@ -29,7 +29,7 @@ export function to_comment (data) {
 // 发布
 export function to_release (data) {
   return request({
-    url: '/api/dynamic/save',
+    url: '/ai/dynamic/save',
     method: 'post',
     data: data
   })
@@ -38,7 +38,7 @@ export function to_release (data) {
 //公司详情
 export function to_companyDetails (data) {
     return request({
-        url: '/api/Dynamic/read',
+        url: '/ai/Dynamic/read',
         method: 'get',
         params: data
     })
@@ -47,7 +47,7 @@ export function to_companyDetails (data) {
 //动态详情
 export function dynamic_details (data) {
     return request({
-        url: '/api/Dynamic/read',
+        url: '/ai/Dynamic/read',
         method: 'get',
         params: data
     })

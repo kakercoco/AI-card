@@ -22,11 +22,18 @@
         <img slot="icon-active" src="@/assets/icon/contact2.png">
         <span slot="label">通讯录</span>
       </tabbar-item>
-      <tabbar-item link="/main/news" :selected="$route.path === '/main/news'">
+      <!-- <tabbar-item link="/main/news" :selected="$route.path === '/main/news'">
         <img slot="icon" src="@/assets/icon/news.png">
         <img slot="icon-active" src="@/assets/icon/news2.png">
         <span slot="label">动态</span>
+      </tabbar-item> -->
+
+      <tabbar-item link="/main/work" :selected="$route.path === '/main/work'">
+        <img slot="icon" src="@/assets/icon/news.png">
+        <img slot="icon-active" src="@/assets/icon/news2.png">
+        <span slot="label">工作</span>
       </tabbar-item>
+
       <tabbar-item link="/main/self" :selected="$route.path === '/main/self'">
         <img slot="icon" src="@/assets/icon/self.png">
         <img slot="icon-active" src="@/assets/icon/self2.png">

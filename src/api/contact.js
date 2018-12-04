@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export function customerList (data) {
   // 客户列表
   return request({
-    url: '/api/Customer/index',
+    url: '/ai/Customer/index',
     method: 'get',
     params: data
   })
@@ -12,7 +12,7 @@ export function customerList (data) {
 export function customerTagList () {
   // 客户标签列表
   return request({
-    url: '/api/Customertag/tagList',
+    url: '/ai/Customertag/tagList',
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function customerTagList () {
 export function insertCustomerTag (data) {
   // 新增客户标签
   return request({
-    url: '/api/Customertag/save',
+    url: '/ai/Customertag/save',
     method: 'post',
     data: data
   })
@@ -29,7 +29,7 @@ export function insertCustomerTag (data) {
 export function getCustomerTagEdit (data) {
   // 查看客户标签详情
   return request({
-    url: '/api/Customertag/edit',
+    url: '/ai/Customertag/edit',
     method: 'get',
     params: data
   })
@@ -38,7 +38,7 @@ export function getCustomerTagEdit (data) {
 export function updateCustomerTag (data) {
   // 更新客户标签详情
   return request({
-    url: '/api/Customertag/update',
+    url: '/ai/Customertag/update',
     method: 'POST',
     data: data
   })
@@ -47,7 +47,7 @@ export function updateCustomerTag (data) {
 export function deleteCustomerTag (data) {
   // 标签删除客户
   return request({
-    url: '/api/Customertag/delete',
+    url: '/ai/Customertag/delete',
     method: 'POST',
     data: data
   })

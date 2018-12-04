@@ -6,7 +6,7 @@ export function wxConfig (url) {
   }
   // 企业微信配置
   return request({
-    url: '/api/weworkapi/getConfigData',
+    url: '/ai/weworkapi/getConfigData',
     method: 'post',
     data
   })
@@ -15,7 +15,7 @@ export function wxConfig (url) {
 export function cardRead () {
   // 我的名片详情
   return request({
-    url: '/api/card/read',
+    url: '/ai/card/read',
     method: 'get'
   })
 }
@@ -23,7 +23,7 @@ export function cardRead () {
 export function updateCard (data) {
   // 编辑名片详情
   return request({
-    url: '/api/card/update',
+    url: '/ai/card/update',
     method: 'post',
     data: data
   })
@@ -32,7 +32,7 @@ export function updateCard (data) {
 export function produceList (data) {
   // 编辑名片详情
   return request({
-    url: '/api/Scratch/webClient',
+    url: '/ai/Scratch/webClient',
     method: 'post',
     data: data
   })
@@ -41,7 +41,7 @@ export function produceList (data) {
 export function getPosterImg () {
   // 名片海报
   return request({
-    url: '/api/employSet/getPosterImg',
+    url: '/ai/employSet/getPosterImg',
     method: 'get'
   })
 }
@@ -49,7 +49,7 @@ export function getPosterImg () {
 export function cardTagDelete (data) {
   // 删除名片上的标签
   return request({
-    url: '/api/card/employ_tag_del',
+    url: '/ai/card/employ_tag_del',
     method: 'post',
     data: data
   })
@@ -58,7 +58,7 @@ export function cardTagDelete (data) {
 export function cardTagInsert (data) {
   // 增加名片上的标签
   return request({
-    url: '/api/card/set_employ_tag',
+    url: '/ai/card/set_employ_tag',
     method: 'post',
     data: data
   })
@@ -67,7 +67,7 @@ export function cardTagInsert (data) {
 export function employgoodsIndex (data) {
   // 产品列表
   return request({
-    url: '/api/employgoods/index',
+    url: '/ai/employgoods/index',
     method: 'get',
     params: data
   })
@@ -76,7 +76,7 @@ export function employgoodsIndex (data) {
 export function employgoodsSave (data) {
   // 推荐产品
   return request({
-    url: '/api/employgoods/save',
+    url: '/ai/employgoods/save',
     method: 'post',
     data: data
   })
@@ -85,7 +85,7 @@ export function employgoodsSave (data) {
 export function employgoodsDetele (data) {
   // 取消推荐产品
   return request({
-    url: '/api/employgoods/delete',
+    url: '/ai/employgoods/delete',
     method: 'post',
     data: data
   })
@@ -94,7 +94,7 @@ export function employgoodsDetele (data) {
 export function employcaseIndex (data) {
   // 案例列表
   return request({
-    url: '/api/employcase/index',
+    url: '/ai/employcase/index',
     method: 'get',
     params: data
   })
@@ -103,7 +103,7 @@ export function employcaseIndex (data) {
 export function employcaseSave (data) {
   // 推荐案例
   return request({
-    url: '/api/employcase/save',
+    url: '/ai/employcase/save',
     method: 'post',
     data: data
   })
@@ -112,7 +112,7 @@ export function employcaseSave (data) {
 export function employcaseDetele (data) {
   // 取消推荐案例
   return request({
-    url: '/api/employcase/delete',
+    url: '/ai/employcase/delete',
     method: 'post',
     data: data
   })
@@ -121,7 +121,7 @@ export function employcaseDetele (data) {
 export function webClient (data) {
   // 产品分类
   return request({
-    url: '/api/Scratch/webClient',
+    url: '/ai/Scratch/webClient',
     method: 'post',
     data: data
   })
@@ -130,7 +130,7 @@ export function webClient (data) {
 export function uploadMedia (data) {
   // 推荐产品
   return request({
-    url: '/api/upload/uploadAudio?media_id=' + data,
+    url: '/ai/upload/uploadAudio?media_id=' + data,
     method: 'get'
   })
 }

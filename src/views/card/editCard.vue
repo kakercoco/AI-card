@@ -6,6 +6,7 @@
  */
 <template>
   <div class="edit-card">
+    <card-viewer ref="cardViewer"></card-viewer>
     <div class="my-card" id="card" v-show="templateId !== null">
       <img v-if="templateId !== 24 && templateId !== 25 && templateId !== 26 && templateId !== 27 && templateId !== 28" src="@/assets/card/1.png" alt="" class="card-bg">
       <img v-if="templateId === 24" src="@/assets/card/4.png" alt="" class="card-bg">
@@ -240,6 +241,8 @@ import { upload_img } from '@/api/upload_file'
 import VueCropper from 'vue-cropperjs'
 import { setInterval } from 'timers'
 
+import cardViewer from '@/components/cardViewer/index'
+
 export default {
   name: 'editCard',
   components: {
@@ -252,7 +255,8 @@ export default {
     XDialog,
     XCircle,
     AlertModule,
-    VueCropper
+    VueCropper,
+    cardViewer
   },
   data () {
     return {
@@ -440,6 +444,10 @@ export default {
               this.templateId = this.cardInfor.style_id
             }
           }
+          
+			var json ='{"w":500,"h":250,"item":[{"id":"bg","type":"img","round":false,"lock":true,"x":0,"y":0,"w":500,"h":250,"url":"http://img4.imgtn.bdimg.com/it/u=2735571713,1090379801&fm=26&gp=0.jpg","img":{"loadover":true},"visible":true},{"id":"face","type":"img","round":false,"lock":false,"x":10,"y":30,"w":150,"h":150,"url":"/static/img/p1.e765f44.png","img":{"loadover":true},"visible":true},{"id":"name","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":30,"w":200,"h":20,"fs":16,"color":"#00F","txt":"Name","align":"left","space":0},{"id":"career","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":50,"w":200,"h":20,"fs":16,"color":"#00F","txt":"Career","align":"left","space":0},{"id":"companyName","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":10,"y":10,"w":200,"h":20,"fs":16,"color":"#00F","txt":"companyName","align":"left","space":0},{"id":"address","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":10,"y":200,"w":200,"h":20,"fs":16,"color":"#00F","txt":"address","align":"left","space":0},{"id":"mail","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":70,"w":200,"h":20,"fs":16,"color":"#00F","txt":"mail","align":"left","space":0},{"id":"phone","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":90,"w":200,"h":20,"fs":16,"color":"#00F","txt":"phone","align":"left","space":0},{"id":"mobile","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":110,"w":200,"h":20,"fs":16,"color":"#00F","txt":"mobile","align":"left","space":0},{"id":"weixin","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":130,"w":200,"h":20,"fs":16,"color":"#00F","txt":"weixin","align":"left","space":0},{"id":1,"type":"img","round":false,"lock":false,"add":true,"txt":"新增图片1","x":341,"y":33,"w":50,"h":50,"url":"https://p2.music.126.net/Te-J_mQiEY6pB-U1jfvJrA==/109951163523347959.jpg?param=50y50","img":{"loadover":true},"visible":true},{"id":2,"font":"微软雅黑","visible":true,"type":"txt","lock":false,"add":true,"x":317,"y":94,"w":200,"h":20,"fs":16,"color":"#00F","txt":"新增文本2","align":"left","space":0}],"itemId":2}';
+			this.$refs.cardViewer.loadData(json, this.cardInfor);
+          
         })
       }
     },

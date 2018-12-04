@@ -102,6 +102,7 @@
       <div class="talk-group">
         <a class="active" :class="Speech.select_class_id == '' ? 'select_class' : ''" @click="speech_list_init">最近使用</a>
         <a v-for="(item,i) in Speech.class_list" :key="i" :class="Speech.select_class_id == item.id ? 'select_class' : ''" @click="sele_class(item,i)">{{item.label}}</a>
+        <a></a>
       </div>
       <div class="talk-infor">
         <div class="loading" v-if="Speech.is_loading">
@@ -139,6 +140,7 @@ import { Previewer, TransferDom } from 'vux'
 import UPNG from 'upng-js'
 import { upload_img } from '@/api/upload_file'
 import { talkGroup, talkList } from '@/api/talk'
+import { one_chat } from '@/api/chart'
 export default {
   name: 'messageIM',
   components: {
@@ -287,7 +289,7 @@ export default {
           title: '提示',
           content: '聊天发生错误，请重新进入！'
         })
-        this.$router.replace({path:'/main/message'})
+        this.$router.replace({path: '/main/message'})
         return
       }
       const that = this
@@ -344,11 +346,25 @@ export default {
 
       this.$store.commit('chat/PUSH_char_list', obj)
 
+      this.to_php({
+        type: 'text',
+        content: this.value
+      })
+
       this.value = ''
       this.frame_Reset()
       all_srcollBtoom(this)
       this.$nextTick(() => {
         this.$refs.textarea.updateAutosize()
+      })
+
+      // debugger
+    },
+    to_php (data) {
+      const uid = this.$route.query.uid
+      one_chat({
+        uid,
+        content: JSON.stringify(data)
       })
     },
 
@@ -478,6 +494,10 @@ export default {
 
           if (this.$store.state.user.websocketConnection != null) {
             this.$store.state.user.websocketConnection.send(JSON.stringify(req))
+            this.to_php({
+              type: 'img',
+              content: this.value
+            })
           } else {
             console.log('发送失败,websocketConnection为null')
             this.$vux.alert.show({
@@ -608,30 +628,30 @@ export default {
     onFocus () {
       var timer = setTimeout(() => {
         document.body.scrollTop = document.body.scrollHeight
-        this.onChange();
+        this.onChange()
         clearTimeout(timer)
       }, 300)
     },
 
     onChange () {
-      if(document.querySelector('.chat_foot')){
-          var height = document.querySelector('.chat_foot').clientHeight
-          var screen_height =
+      if (document.querySelector('.chat_foot')) {
+        var height = document.querySelector('.chat_foot').clientHeight
+        var screen_height =
               document.documentElement.clientHeight || document.body.clientHeight
-          document.querySelector('#im').style.height = screen_height - height + 'px'
-          const ele = document.getElementById('im')
-          if (ele) {
-              ele.scrollTop = ele.scrollHeight
-          }
+        document.querySelector('#im').style.height = screen_height - height + 'px'
+        const ele = document.getElementById('im')
+        if (ele) {
+          ele.scrollTop = ele.scrollHeight
+        }
       }
     },
 
-    onBlur(){
-        var timer = setTimeout(() => {
-            window.scrollTo(0,0);
-            this.onChange();
-            clearTimeout(timer)
-        }, 700)
+    onBlur () {
+      var timer = setTimeout(() => {
+        window.scrollTo(0, 0)
+        this.onChange()
+        clearTimeout(timer)
+      }, 700)
     },
 
     // 初始化防抖函数
@@ -645,27 +665,24 @@ export default {
       // this.value = val;
     },
 
-    onresize(){
-        const that = this;
+    onresize () {
+      const that = this
 
-        window.onresize = function () {
-            if (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA") {
-                setTimeout(function () {
-                    var top = document.activeElement.getBoundingClientRect().top;
-                    console.log(top);
-                    window.scrollTo(0,top);
-                    that.onChange();
-
-                }, 0);
-            }
+      window.onresize = function () {
+        if (document.activeElement.tagName == 'INPUT' || document.activeElement.tagName == 'TEXTAREA') {
+          setTimeout(function () {
+            var top = document.activeElement.getBoundingClientRect().top
+            console.log(top)
+            window.scrollTo(0, top)
+            that.onChange()
+          }, 0)
         }
+      }
     }
   },
   created () {
     // this.chat_init();
   },
-
-
 
   mounted () {
     this.canvas_init()
@@ -678,12 +695,11 @@ export default {
       all_srcollBtoom(this)
     })
 
-      var ua = navigator.userAgent;
-      var isAndroid = /android/i.test(ua);
-      if(isAndroid){
-          this.onresize();
-      }
-
+    var ua = navigator.userAgent
+    var isAndroid = /android/i.test(ua)
+    if (isAndroid) {
+      this.onresize()
+    }
 
     // this.img_select();
   }

@@ -30,6 +30,11 @@ export default new Router({
         meta: { title: '动态圈' },
         component: () => import('@/views/home/news')
       }, {
+        path: 'work',
+        name: 'work',
+        meta: { title: '工作首页' },
+        component: () => import('@/views/work/index')
+      }, {
         path: 'contact',
         name: 'contact',
         meta: { title: '通讯录' },
@@ -239,18 +244,18 @@ export default new Router({
       meta: { title: '案例列表' },
       component: () => import('@/views/card/case')
     },
-    /*{
-      path: '/boss',
-      name: 'boss',
-      meta: { title: 'BOSS天眼' },
-      component: () => import('@/views/boss/index')
-    },
-    {
-      path: '/bossCard',
-      name: 'bossCard',
-      meta: { title: 'BOSS天眼' },
-      component: () => import('@/views/boss/card')
-    },*/
+    // {
+    //   path: '/boss',
+    //   name: 'boss',
+    //   meta: { title: 'BOSS天眼' },
+    //   component: () => import('@/views/boss/index')
+    // },
+    // {
+    //   path: '/bossCard',
+    //   name: 'bossCard',
+    //   meta: { title: 'BOSS天眼' },
+    //   component: () => import('@/views/boss/card')
+    // },
     {
       path: '/qrcode',
       name: 'qrcode',
@@ -268,6 +273,48 @@ export default new Router({
       name: 'warning',
       meta: { title: '温馨提示' },
       component: () => import('@/warning')
+    },
+    {
+      path: '/taskList',
+      name: 'taskList',
+      meta: { title: '任务列表' },
+      component: () => import('@/views/task/taskList')
+    },
+    {
+      path: '/taskCalendar',
+      name: 'taskCalendar',
+      meta: { title: '任务日历' },
+      component: () => import('@/views/task/taskCalendar')
+    },
+    {
+      path: '/addTask',
+      name: 'addTask',
+      meta: { title: '新增任务' },
+      component: () => import('@/views/task/addTask')
+    },
+    {
+      path: '/taskDetail',
+      name: 'taskDetail',
+      meta: { title: '任务详情' },
+      component: () => import('@/views/task/taskDetail')
+    },
+    {
+      path: '/formList',
+      name: 'formList',
+      meta: { title: '表单列表' },
+      component: () => import('@/views/form/formList')
+    },
+    {
+      path: '/formData',
+      name: 'formData',
+      meta: { title: '表单数据' },
+      component: () => import('@/views/form/formData')
+    },
+    {
+      path: '/formDetail',
+      name: 'formDetail',
+      meta: { title: '表单详情' },
+      component: () => import('@/views/form/formDetail')
     }
   ]
 })
