@@ -16,3 +16,31 @@
     font-weight: normal;
   }
 }
+/*日历组件增加年月日时分*/
+.dp-content{
+  [data-role='year']{
+    .scroller-item:after{
+      content: '年';
+    }
+  }
+  [data-role='month']{
+    .scroller-item:after{
+      content: '月';
+    }
+  }
+  [data-role='day']{
+    .scroller-item:after{
+      content: '日';
+    }
+  }
+  [data-role='hour']{
+    .scroller-item:after{
+      content: '时';
+    }
+  }
+  [data-role='minute']{
+    .scroller-item:after{
+      content: '分';
+    }
+  }
+}

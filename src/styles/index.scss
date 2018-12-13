@@ -43,8 +43,8 @@ li,ol{
   padding-bottom: 55px;
 }
 .card-shadow{
-  box-shadow: 0 2px 10px #e2e4e6;
   border-radius: 0.1rem;
+  border-bottom: 1px #e2e2e2 solid;
 }
 .btn-primary{
   height: 0.8rem;
@@ -66,4 +66,24 @@ li,ol{
   outline: none;
   color: #fff;
   font-size: 0.36rem;
+}
+.contact .vux-tab-ink-bar{
+  background: transparent;
+}
+.contact .vux-tab-ink-bar::after{
+  content: '';
+  display: block;
+  height: 2px;
+  background: #3e84ff;
+  width: 1.25rem;
+  margin: 0 auto;
+}
+.contact .vux-tab .vux-tab-item.vux-tab-selected{
+  color:#3e84ff;
+}
+.contact .vux-tab .vux-tab-item{
+  background: transparent;
+}
+.blue{
+color: #4672b3;
 }

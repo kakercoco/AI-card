@@ -6,7 +6,10 @@
  */
 <template>
   <div class="qrcode">
-    <img :src="img" alt="" class="card">
+      <div class="img_frame">
+          <img :src="img" alt="" class="card">
+      </div>
+
   </div>
 </template>
 
@@ -39,9 +42,25 @@ export default {
   height: 100%;
   padding: 0.3rem;
   background-color: #eaeaea;
-  .card{
-    width: 100%;
-    border-radius: 0.1rem;
-  }
+
+    .img_frame{
+        width: 100%;
+        height: 100%;
+        position: relative;
+
+        .card{
+            width: 100%;
+            border-radius: 0.1rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin:auto;
+            box-shadow: 3px 3px 10px 3px #e3e3e3;
+
+        }
+    }
+
 }
 </style>

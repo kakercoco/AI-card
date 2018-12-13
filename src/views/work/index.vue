@@ -1,97 +1,217 @@
 <template>
   <div class="work_index">
       <div class="gradient"></div>
-
       <div class="header">
-        <p>昨日关键数据</p>
-        <span>（11月07日）</span>
-        <i>
-            <img src="@/assets/icon/w_s.jpg">
-        </i>
+          <p>昨日关键数据</p>
+          <!--<span>（11月07日）</span>-->
+          <i @click="open_set">
+              <img src="@/assets/icon/w_s.jpg">
+          </i>
       </div>
+      <scroller height="100%" lock-x ref="scrollerBottom">
+          <div class="frame">
+              <div class="four">
 
-      <div class="four">
-        <ul>
-            <li>
-                <p>活跃客户</p>
-                <span>222</span>
-            </li>
-            <li>
-                <p>新增客户</p>
-                <span>222</span>
-            </li>
-            <li>
-                <p>名片浏览</p>
-                <span>222</span>
-            </li>
-            <li>
-                <p>被转发次数</p>
-                <span>222</span>
-            </li>
-        </ul>
-        <div class="dea_btn">
-            <p>详细数据</p>
-            <x-icon type="ios-arrow-right" class="icon-red" size="20"></x-icon>
-        </div>
+                  <ul>
+                      <li v-for="(val,i) in list" :key="i">
+                          <p>{{val.title}}</p>
+                          <span>{{val.count}}</span>
+                      </li>
+                  </ul>
+                  <div class="dea_btn">
+                      <router-link to="/reportChart">
+                          <p>详细数据</p>
+                          <x-icon type="ios-arrow-right" class="icon-red" size="20"></x-icon>
+                      </router-link>
+                  </div>
 
-      </div>
+              </div>
 
-      <div class="body_title">我的应用</div>
+              <div class="body_title">我的应用</div>
 
-      <div class="my_body">
-          <ul>
-              <li>
-                  <img src="@/assets/icon/w1.jpg">
-                  <p>任务列表</p>
-              </li>
-              <li>
-                  <img src="@/assets/icon/w3.jpg">
-                  <p>动态</p>
-              </li>
-              <li>
-                  <img src="@/assets/icon/w4.jpg">
-                  <p>客户表单</p>
-              </li>
-              <!-- <li>
-                  <img src="@/assets/icon/w2.jpg">
-                  <p>AI报表</p>
-              </li>
-              <li>
-                  <img src="@/assets/icon/w5.jpg">
-                  <p>销售排行</p>
-              </li>
-              <li>
-                  <img src="@/assets/icon/w6.jpg">
-                  <p>名片日报</p>
-              </li> -->
-          </ul>
+              <div class="my_body">
+                  <ul>
+                      <li>
+                          <router-link to="/taskList">
+                              <img src="@/assets/icon/w1.jpg">
+                              <p>任务列表</p>
+                          </router-link>
+                      </li>
+                      <li>
+                          <router-link to="/news">
+                              <img src="@/assets/icon/w3.jpg">
+                              <p>动态</p>
+                          </router-link>
+                      </li>
+                      <li>
+                          <router-link to="/reportChart">
+                              <img src="@/assets/icon/w2.jpg">
+                              <p>AI报表</p>
+                          </router-link>
+                      </li>
+                      <li>
+                        <router-link to="/formList">
+                          <img src="@/assets/icon/w4.jpg">
+                          <p>客户表单</p>
+                        </router-link>
+                      </li>
 
+                      <!-- <li>
+                          <img src="@/assets/icon/w5.jpg">
+                          <p>销售排行</p>
+                      </li>
+                      <li>
+                          <img src="@/assets/icon/w6.jpg">
+                          <p>名片日报</p>
+                      </li> -->
+                  </ul>
+
+              </div>
+          </div>
+
+
+
+      </scroller>
+
+      <!-- 蒙层 -->
+      <div v-transfer-dom>
+          <popup v-model="set_isShow">
+
+              <popup-header
+                      left-text="取消"
+                      right-text="完成"
+                      title="设置"
+                      :show-bottom-border="false"
+                      @on-click-left="choose_cancel"
+                      @on-click-right="choose_save"></popup-header>
+              <group gutter="0">
+                  <div class="work_index_Mongolia">
+                      <div class="work_index_click_layer" @click="choose_cancel"></div>
+                      <div class="body">
+
+                          <div class="one">
+                              <x-switch :title="val.title" v-model="val.select" v-for="(val,i) in tpList" :key="i"></x-switch>
+                          </div>
+
+                      </div>
+                  </div>
+
+
+              </group>
+          </popup>
       </div>
 
   </div>
 </template>
 
 <script>
-
+import { XSwitch,PopupHeader, Popup,TransferDom ,Group,Scroller} from 'vux'
+import { get_list,save} from '@/api/work'
 export default {
   name: 'work_index',
+    directives: {
+        TransferDom
+    },
   components: {
-
+      Group,
+      PopupHeader,
+      Popup,
+    XSwitch,
+      Scroller
   },
   data () {
     return {
+        set_isShow:false,
+        tpList:[],
+        list:[],
 
     }
   },
   methods: {
+      open_set(){
+          this.set_isShow = true
+      },
+      close_set(){
+          this.set_isShow = false
+      },
+      choose_save(){
+          let c_list = [];
+          if(this.tpList instanceof Array){
+              this.tpList.map((e)=>{
+                  if(e.select){
+                      c_list.push(e.val)
+                  }
+              })
+          }
+          if(c_list.length == 0){
+              this.$vux.alert.show({
+                  title: '温馨提示',
+                  content: '数据类型设置不能为空！',
+              })
+              return
+          }
 
+          const end = c_list.join(',');
+
+          save({
+              type:end
+          }).then((e)=>{
+
+              if(e.code == 200 && e.msg === '保存成功!'){
+                  this.set_isShow = false;
+                  this.list_init()
+              }
+              else{
+                  this.$vux.alert.show({
+                      title: '温馨提示',
+                      content: '保存失败！',
+                  })
+
+              }
+          }).catch((err)=>{
+              this.$vux.alert.show({
+                  title: '温馨提示',
+                  content: '保存失败！',
+
+              })
+          })
+
+
+      },
+      choose_cancel(){
+          this.set_isShow = false;
+          this.list_init();
+      },
+      list_init(){
+          get_list().then((e)=>{
+              if(e.code == 200){
+                  if(e.data && e.data.tpList){
+                      this.tpList = e.data.tpList;
+                  }
+                  if(e.data && e.data.list){
+                      this.list = e.data.list;
+                  }
+              }
+              else{
+                  this.$vux.alert.show({
+                      title: '温馨提示',
+                      content: '数据返回错误！',
+                  })
+              }
+          }).catch((err)=>{
+              this.$vux.alert.show({
+                  title: '温馨提示',
+                  content: '数据返回错误！',
+              })
+          })
+      }
   },
   watch: {
 
   },
 
   mounted () {
-
+    this.list_init();
   }
 }
 </script>
@@ -99,7 +219,12 @@ export default {
 <style lang='scss' rel='stylesheet/scss' scoped>
 .work_index{
     height: 100%;
-    padding: 0 0.4rem;
+
+    overflow-y: auto;
+    .frame{
+        padding: 0 0.4rem;
+        min-height: 10rem;
+    }
     .gradient{
         background: -webkit-linear-gradient(#4183ff, #fff);
         background: -moz-linear-gradient(#4183ff, #fff);
@@ -115,6 +240,7 @@ export default {
         height:1rem;
         line-height: 1rem;
         overflow: hidden;
+        padding: 0 0.4rem;
         p{
             float: left;
             color: #fff;
@@ -129,7 +255,7 @@ export default {
         }
         i{
             float: right;
-            width: 0.6rem;
+            width: 0.8rem;
             line-height: 1rem;
             vertical-align: middle;
             text-align: right;
@@ -145,9 +271,17 @@ export default {
         width: 100%;
         border-radius: 6px;
         box-shadow:2px 2px 18px 3px #ccc;
+        .no_data{
+            line-height: 1.5rem;
+            text-align: center;
+            font-family: '黑体';
+            font-size: 0.3rem;
+            color: #999;
+        }
         ul{
             width: 100%;
             overflow: hidden;
+            min-height: 1.5rem;
             li{
                 width: 50%;
                 float: left;
@@ -176,6 +310,11 @@ export default {
             line-height: 0.7rem;
             padding: 0 0.3rem;
             overflow: hidden;
+            a{
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
             p{
                 float: left;
                 font-size: 0.24rem;
@@ -227,6 +366,47 @@ export default {
 
     }
 
-}
 
+}
+.work_index_Mongolia{
+    .body{
+        width: 100%;
+        background: #fff;
+        z-index: 999;
+        .title{
+            height: 0.9rem;
+            background: #efefef;
+            width: 100%;
+            text-align: center;
+            line-height:0.9rem;
+            font-size: 0.36rem;
+            font-family: '黑体';
+            color: #353535;
+            p{
+                line-height:0.9rem;
+                font-size: 0.28rem;
+                font-family: '黑体';
+                float: left;
+                width: 1.2rem;
+                text-align: center;
+                color:#3b63c4;
+            }
+            i{
+                line-height:0.9rem;
+                font-size: 0.28rem;
+                font-family: '黑体';
+                float: right;
+                width: 1.2rem;
+                text-align: center;
+                color:#3b63c4;
+            }
+
+
+        }
+
+
+    }
+
+
+}
 </style>

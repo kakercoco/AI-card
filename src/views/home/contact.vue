@@ -8,7 +8,7 @@
   <div class="contact">
     <router-view></router-view>
     <div style="height: 44px;">
-      <search v-model="customerForm.keyword" auto-fixed ref="search" @on-change="searchCustomerList"></search>
+      <search v-model="customerForm.keyword" auto-fixed ref="search" @on-change="searchCustomerList" @on-focus="tab_change"></search>
     </div>
     <tab :line-width="2" v-model="tabIndex">
       <tab-item>所有客户</tab-item>
@@ -21,18 +21,21 @@
           <popup-radio :options="options" v-model="option" class="fr"></popup-radio>
         </span>
       </p>
-      <scroller lock-x use-pullup @on-pullup-loading="loadMore" ref="scrollerBottom" :pullup-config="config" v-model="scrollerStatus" :bounce="true" height="-250">
+      <scroller lock-x use-pullup @on-pullup-loading="loadMore" ref="scrollerBottom" :pullup-config="config" v-model="scrollerStatus" :bounce="true" height="-190">
         <div class="contact-list-wrap" id="contact-list-wrap">
           <ul>
             <li class="card-shadow" v-for="(item, index) in customerAll " :key="index" @click="gotoClient(item.uid)">
               <img :src="item.wx_image" alt="">
               <div>
                 <p>{{item.wx_name}}</p>
-                <p>{{item.describe}}</p>
+                <p v-if="customerForm.type == 2">{{item.describe}}</p>
+                <p v-if="customerForm.type == 1">成交率：{{item.turnover ? item.turnover : 0}}%</p>
+                <p v-if="customerForm.type == 5">客户来源：转发</p>
+                <p v-if="customerForm.type == 4">客户来源：扫码</p>
               </div>
-              <div>
-                <p>跟进时间</p>
-                <p>{{item.date}}</p>
+              <div class="new_genjin">
+                <p v-if="customerForm.type == 2">{{item.date ? item.date + '跟进' : '未跟进'}}</p>
+                <x-icon type="ios-arrow-forward" size="14"></x-icon>
               </div>
               <!--<span>
                 <i>跟进时间</i>
@@ -44,36 +47,31 @@
       </scroller>
     </div>
     <div v-show="tabIndex === 1" class="contact-tag">
-      <ul>
-        <li class="card-shadow" v-for="(item, index) in tagList" :key="index">
-          <p class="nav">
-            <span>{{item.tag_name}}({{item.count}})</span>
-            <x-icon type="ios-arrow-down" size="20" v-if="!item.status" class="fr" style="fill: #717171;" @click.native="showDetail(index)"></x-icon>
-            <span class="fr" v-else @click="gotoUpdateTag(item.id)">添加用户 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></span>
-          </p>
-          <div v-if="item.status" class="client-list " v-for="(element, i) in item.customer" :key="i" @click="gotoClient(element.id)">
-            <img :src="element.wx_image" alt="">
-            <div>
-              <x-icon type="ios-minus" size="14" class="delete-icon" @click.native.stop="deleteCustomerTag(element.tag_id, element.id, index, i)"></x-icon>
-              <p>{{element.wx_name}}</p>
-              <p>{{element.describe}}</p>
+      <div class="list">
+
+        <scroller height="-140" lock-x ref="scrollerBottom_two">
+          <div>
+            <div class="header">
+              <span>小提示：标签名称无法编辑</span>
+              <p class="tac insert-tag" @click="gotoInsertTag">
+                <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon>
+                添加新标签
+              </p>
             </div>
-            <div>
-              <p>跟进时间</p>
-              <p>{{element.date}}</p>
-            </div>
-            <!-- <span>
-              <i>跟进时间</i>
-              <i>{{element.date}}</i>
-            </span>-->
+            <ul>
+
+
+            <li class="class_one" v-for="(item, index) in tagList" :key="index" :class="'class'+item.type" v-if="item.rows && item.rows.length > 0">
+              <p class="title">{{item.title}}</p>
+              <div class="one" v-for="(child,i) in item.rows" :key="i" v-if="child.count > 0" @click="gotoUpdateTag(child.id)">{{child.tag_name}} {{child.count}}</div>
+
+            </li>
+            </ul>
           </div>
-          <p class="tar arrow-up" @click="showDetail(index)" v-if="item.status">
-            <x-icon type="ios-arrow-up" size="20"></x-icon>
-          </p>
-        </li>
-      </ul>
-      <p class="tac insert-tag" @click="gotoInsertTag">添加新标签 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon>
-      </p>
+
+        </scroller>
+      </div>
+
     </div>
   </div>
 </template>
@@ -82,6 +80,7 @@
 import { Tab, TabItem, Search, PopupRadio, Scroller, LoadMore } from 'vux'
 import { customerList, customerTagList, deleteCustomerTag } from '@/api/contact'
 import { getCookie, removeCookie } from '@/utils/auth'
+import { err_Tips } from '@/utils/base'
 export default {
   name: 'contact',
   components: {
@@ -139,23 +138,28 @@ export default {
     },
     getCustomerList () {
       customerList(this.customerForm).then(res => {
-        this.customerAll = res.data.rows
-        this.customerTotal = res.data.total
+          if(res.code === 200 && res.data && res.data.rows && res.data.rows instanceof Array){
+              this.customerAll = res.data.rows
+              this.customerTotal = res.data.total
+          }
+          else{
+              err_Tips('非常抱歉，数据错误！',this)
+          }
+
+      }).catch((err)=>{
+          err_Tips('非常抱歉，数据错误！',this)
       })
     },
     getCustomerTagList () {
       customerTagList().then(res => {
-        const list = res.data
-        const tagList = []
-        list.forEach(e => {
-          e.forEach(i => {
-            tagList.push(i)
-          })
-        })
-        tagList.forEach(e => {
-          e.status = false
-        })
-        this.tagList = tagList
+        if(res && res.code == 200 && res.data && res.data instanceof Array){
+            this.tagList = res.data;
+            this.$nextTick(()=>{
+                this.$refs.scrollerBottom_two.reset()
+            })
+
+        }
+
       })
     },
     deleteCustomerTag (tagId, uid, index, i) {
@@ -226,6 +230,9 @@ export default {
           this.onFetching = false
         })
       }
+    },
+    tab_change(){
+        this.tabIndex = 0;
     }
   },
   watch: {
@@ -250,6 +257,9 @@ export default {
 .contact {
   height: 100%;
   overflow: auto;
+  .card-shadow:first-child{
+    border-top: 1px #e2e2e2 solid;
+  }
   & /deep/ .weui-search-bar__label {
     .weui-icon-search {
       margin-top: 5px;
@@ -262,8 +272,8 @@ export default {
     & > p {
       padding: 0.3rem;
       // margin: 0.3rem 0;
-      font-size: 0.26rem;
-      color: #717171;
+      font-size: 0.24rem;
+      color: #999999;
       .vux-x-icon {
         fill: #717171;
       }
@@ -287,7 +297,7 @@ export default {
       padding: 0 0.3rem;
       li {
         height: 1.5rem;
-        padding: 0.25rem;
+        padding: 0.25rem 0;
         img {
           height: 100%;
           width: 1rem;
@@ -301,10 +311,14 @@ export default {
           line-height: 0.5rem;
           overflow: hidden;
           p {
-            color: #717171;
+            color: #3e84ff;
+            font-size: 0.24rem;
+            font-family: '黑体';
             &:first-child {
-              font-size: 0.3rem;
+              font-size: 0.33rem;
               min-height: 0.5rem;
+              font-family: '黑体';
+              color: #353535;
             }
           }
         }
@@ -330,8 +344,8 @@ export default {
     .insert-tag {
       margin-top: 0.5rem;
     }
-    ul {
-      padding: 0 0.3rem;
+    .list {
+      padding: 0 !important;
       li {
         margin-top: 0.3rem;
         padding: 0.3rem;

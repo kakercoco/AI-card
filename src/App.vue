@@ -210,7 +210,8 @@ export default {
 
         // 在其它地方登陆
         else if (data.cmd === 'OtherLogin') {
-          console.log('您在其它地方登录，是否重新连接')
+          this.clear_socket()
+          console.log('被挤掉，关闭连接123')
           this.$vux.confirm.show({
             title: '提示',
             content: '您在其它地方登录，是否重新连接',
@@ -228,7 +229,8 @@ export default {
 
     // 重新连接
     again_connect () {
-      this.$store.state.user.websocketConnection.close()// 先关闭
+      // this.$store.state.user.websocketConnection.close()// 先关闭
+      this.clear_socket()
       this.webSocket_init()
     },
 
@@ -396,12 +398,23 @@ export default {
           }
           if (this.$store.state.user.websocketConnection != null) {
             this.$store.state.user.websocketConnection.send(JSON.stringify(req))
+            console.log('发送心跳')
           }
-          console.log('发送心跳')
+
           clearTimeout(this.heartbeat)// 清除这次的定时器
-          this.heartbeat = null// 重置开关
+          this.heartbeat = null// 重置开关300000
           this.send_heartbeat()
         }, 300000)
+      }
+    },
+
+    // 清除聊天连接
+    clear_socket () {
+      if (this.$store.state.user.websocketConnection != null) {
+        this.$store.state.user.websocketConnection.onerror = null// 监听滞空
+        this.$store.state.user.websocketConnection.onclose = null// 监听滞空
+        this.$store.state.user.websocketConnection.close()
+        this.$store.state.user.websocketConnection = null// 聊天对象滞空
       }
     },
 
@@ -507,7 +520,8 @@ export default {
 
   },
   mounted () {
-      const that = this;
+    console.log('12月4日11:44分打包')
+    const that = this
     this.get_user_info()
     this.Mouse_scrolling()
 
@@ -515,14 +529,11 @@ export default {
       WeixinJSBridge.call('hideOptionMenu')
     })
 
-
-      this.$wechat.ready(function(){
-          that.$wechat.hideMenuItems({
-              menuList: ['menuItem:share:appMessage',"menuItem:share:timeline"]
-          });
+    this.$wechat.ready(function () {
+      that.$wechat.hideMenuItems({
+        menuList: ['menuItem:share:appMessage', 'menuItem:share:timeline']
       })
-
-
+    })
   }
 }
 </script>
@@ -542,7 +553,7 @@ export default {
     left: 0;
     transition: all 0.2s;
     z-index: 999;
-    /*box-shadow: 0 3px 10px #d6e1fb;*/
+    box-shadow: 0 3px 10px #d6e1fb;
     .content {
       width: 65%;
       float: left;

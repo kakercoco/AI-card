@@ -1,4 +1,3 @@
-
 .companyDetails .contentFrame img{
     width:100%;
 }
@@ -9,7 +8,7 @@
 
 
 .see-card .list li i{
-    color: #f79700;
+    color: #3e80f4;
 }
 #__vconsole{
     display: none;
@@ -30,4 +29,913 @@
 }
 .follow .weui-cell .weui-cell__ft .weui-icon-checked{
     display: none !important;
+}
+
+.work_index_Mongolia .one .vux-x-switch{
+    height: 1rem;
+    padding: 0;
+}
+.work_index_Mongolia .one .vux-x-switch .weui-cell__bd{
+    float: left;
+    line-height:1rem;
+}
+.work_index_Mongolia .one .vux-x-switch .weui-cell__bd label{
+    font-size:0.30rem;
+    font-family: '黑体';
+    font-weight: normal;
+    color: #353535;
+    margin-left: 0.4rem;
+}
+.work_index_Mongolia .one .vux-x-switch .weui-switch:checked{
+    border-color: #3b83ff;
+    background-color: #3b83ff;
+}
+.work_index_Mongolia .one .vux-x-switch .weui-cell__ft{
+    float: right;
+    margin-right: 0.4rem;
+}
+.work_index_Mongolia .one .vux-x-switch .weui-cell__ft input{
+    transform: scale(0.9);
+}
+
+.contact .contact-tag .list{
+    height: 10.46rem;
+    overflow-y: auto;
+    padding-bottom: 0.2rem !important;
+}
+.contact .contact-tag .list .class_one{
+    overflow: hidden;
+    margin-top: 0.2rem;
+    padding:0.1rem 0.05rem;
+}
+.contact .contact-tag .list .class_one .title{
+    font-family: '黑体';
+    font-size: 0.3rem;
+    color: #353535;
+    float: left;
+    width: 100%;
+}
+
+.contact .contact-tag .list .class_one .title::before{
+     content: '';
+     float: left;
+     width: 0.16rem;
+     height: 0.16rem;
+     border-radius: 100px;
+     background: #3b63c2;
+     margin-top: 0.1rem;
+     margin-right: 0.1rem;
+ }
+.contact .contact-tag .list .class_one .one{
+    margin-top:0.15rem;
+    padding: 0 0.28rem;
+    background: #ebf1ff;
+    float: left;
+    font-family: '黑体';
+    font-size: 0.28rem;
+    color: #3b63c2;
+    margin-right:0.2rem ;
+    height: 0.68rem;
+    line-height: 0.68rem;
+
+}
+.contact .contact-tag .list .header{
+    height: 0.85rem;
+    width: 100%;
+    border-top:1px #e2e2e2 solid;
+    border-bottom:1px #e2e2e2 solid;
+    padding: 0 0.3rem;
+}
+.contact .contact-tag .list .header span{
+    float: left;
+    line-height: 0.85rem;
+    font-family: '黑体';
+    font-size: 0.24rem;
+    color: #3e84ff;
+}
+.contact .contact-tag .list .header p{
+    float: right;
+    margin-top: 0;
+    font-family: '黑体';
+    font-size: 0.3rem;
+    color: #3e84ff;
+    line-height: 0.85rem;
+}
+/*.insert-tag{*/
+    /*padding: 0 0.4rem;*/
+
+/*}*/
+/*.insert-tag .name span{*/
+    /*font-family: '黑体';*/
+    /*font-size: 0.24rem;*/
+    /*color: #b0b0b0;*/
+/*}*/
+.contact  .contact-tag .list .class1 .title::before{
+    background: #3b63c2;
+}
+.contact  .contact-tag .list .class1 .one{
+    background: #ebf1ff;
+    color: #3b63c2;
+}
+
+.contact  .contact-tag .list .class2 .title::before{
+    background: #fca76f;
+}
+.contact  .contact-tag .list .class2 .one{
+    background: #fff2ea;
+    color: #ff9362;
+}
+
+
+.contact  .contact-tag .list .class3 .title::before{
+    background: #6dc7f1;
+}
+.contact  .contact-tag .list .class3 .one{
+    background: #e9f8ff;
+    color: #30aae3;
+}
+
+
+.contact  .contact-tag .list .class4 .title::before{
+    background: #84d184;
+}
+.contact  .contact-tag .list .class4 .one{
+    background: #ecffec;
+    color: #249624;
+}
+
+
+.contact  .contact-tag .list .class5 .title::before{
+    background: #c6c6c6;
+}
+.contact  .contact-tag .list .class5 .one{
+    background: #efefef;
+    color: #666666;
+}
+.tag_list{
+    padding: 0.25rem 0.4rem;
+}
+.tag_list .name{
+    border-bottom: 1px #e5e5e5 solid;
+}
+.tag_list .name span{
+    font-family: '黑体';
+    font-size: 0.24rem;
+    color: #b0b0b0;
+    display: block;
+}
+
+.tag_list .name  input{
+    line-height: 0.7rem;
+    font-family: '黑体';
+    font-size: 0.3rem;
+    color: #353535;
+    background: #fff;
+    border: none;
+}
+.tag_list .name  input:focus {
+    outline: none !important;
+}
+.tag_list .add_member{
+    line-height: 1rem;
+    height: 1rem;
+}
+.tag_list .add_member a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    font-family: '黑体';
+    font-size: 0.33rem;
+    color: #353535;
+}
+.tag_list .customer_list li span{
+    font-family: '黑体';
+    font-size: 0.34rem;
+    color: #353535 !important;
+}
+.my_insert-client{
+    position: static !important;
+}
+.my_insert-client .weui_icon_success:before{
+    color: #3e84ff !important;
+}
+.my_insert-client ul{
+    height: 10rem;
+    overflow-y: auto;
+}
+.my_insert-client ul li span{
+    font-family: '黑体';
+    font-size: 0.34rem;
+    color: #353535;
+}
+.tag_list .new_btn{
+    position: fixed;
+    z-index:10;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 0.3rem 0.4rem;
+    background: #fff;
+}
+.tag_list .new_btn button{
+    border-radius:3px;
+    background: #3c7df0;
+    font-family: '黑体';
+    font-size: 0.33rem;
+    color: #fff;
+    height: 0.87rem;
+    line-height: 0.87rem;
+}
+.tag_list .index_list{
+    padding-bottom: 1.2rem;
+}
+.v-transfer-dom .vux-popup-header{
+    height: 0.9rem;
+    background: #efefef;
+    width: 100%;
+    text-align: center;
+    line-height: 0.9rem;
+    font-size: 0.36rem;
+    color: #353535;
+}
+.v-transfer-dom .vux-popup-header .vux-popup-header-left{
+    line-height: 0.9rem;
+    font-size: 0.28rem;
+    font-family: '黑体';
+    float: left;
+    width: 1.2rem;
+    text-align: center;
+    color: #3b63c4;
+}
+.v-transfer-dom .vux-popup-header .vux-popup-header-right{
+    line-height: 0.9rem;
+    font-size: 0.28rem;
+    font-family: '黑体';
+    float: left;
+    width: 1.2rem;
+    text-align: center;
+    color: #3b63c4;
+}
+.v-transfer-dom .vux-popup-header .vux-popup-header-title{
+    height: 0.9rem;
+    text-align: center;
+    line-height: 0.9rem;
+    font-size: 0.36rem;
+    color: #353535;
+    font-family: '黑体';
+}
+
+.message .new_list{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.im .right-message .emojiTpl .text_frame .text{
+    font-size: 0.33rem;
+    font-family: '黑体';
+    color: #fff;
+}
+.im .left-message .emojiTpl .text_frame .text{
+    font-size: 0.33rem;
+    font-family: '黑体';
+    color: #353535;
+}
+#im .chat-list li > p{
+    text-decoration:none;
+}
+
+#im .two_btn{
+    float: left;
+    margin-left: 0.2rem;
+}
+.new_genjin p{
+    float: left;
+    font-size: 0.24rem !important;
+    font-family: '黑体' !important;
+    color: #999999 !important;
+    margin-top: 0.2rem;
+}
+.new_genjin svg{
+    margin-top: 0.3rem;
+    float: left;
+    fill: #999999;
+}
+#news .heart-outline{
+    float: left;
+    width: 0.5rem;
+    height: 0.5rem;
+    text-align: center;
+    line-height:0.5rem;
+
+}
+#news .heart-outline svg{
+    margin-top: 0.03rem;
+    fill:#50659a;
+
+}
+
+
+.new_yyf_to_details{
+    width:100%;
+    height:1.10rem;
+    padding:0.1rem;
+    background:#f5f5f5;
+    margin-top:0.23rem;
+
+}
+.new_yyf_to_details img{
+    height:0.9rem;
+    width:0.9rem;
+    float:left;
+    margin-right:0.2rem
+}
+.new_yyf_to_details p{
+    float:left;
+    width:4.1rem;
+    height:0.9rem;
+    line-height:0.9rem;
+    font-size:0.3rem;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    color:#666;
+
+}
+.publish .weui-cells__title{
+    font-size: 0.3rem;
+    font-family:'黑体';
+    color: #b0b0b0;
+    margin: 0;
+}
+.publish .weui-cells{
+}
+.publish .vux-x-textarea{
+    padding: 0;
+    margin-top: 0.1rem;
+}
+
+.publish .text{
+    border-bottom: 1px #e5e5e5 solid;
+    padding: 0.3rem 0.3rem 0.1rem 0.3rem;
+}
+
+.publish .add_img{
+    padding: 0.3rem 0rem 0.1rem 0.3rem;
+}
+.publish .yyf_new_one_img{
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid #cacaca;
+    margin-right: 0.18rem;
+    margin-bottom: 0.2rem;
+}
+
+.publish .yyf_new_one_img img{
+    object-fit: cover;
+    width: 100% !important;
+    height: 100% !important;
+}
+.publish .btn button{
+    border-radius: 3px;
+    background: #3c7df0;
+    font-family: '黑体';
+    font-size: 0.33rem;
+    color: #fff;
+    height: 0.87rem;
+    line-height: 0.87rem;
+}
+.yyf_new_one_comment_p{
+    word-wrap:break-word;
+}
+.yyf_new_one_comment_p span{
+    float: left;
+}
+.self .weui-cell{
+    padding: 0.3rem 0.4rem;
+}
+.self .weui-cell:last-child{
+    border: none;
+}
+.insert-talk .weui-cells__title{
+    padding: 0 0.4rem;
+    margin-top: 0 !important;
+}
+
+.my_insert-talk .weui-cells{
+    margin-top: 0 !important;
+    padding: 0.2rem;
+}
+.my_insert-talk .weui-cells .vux-x-input{
+    border:1px #dadada solid;
+    height: 0.66rem;
+    border-radius: 3px;
+}
+
+.yyf_new_btn{
+    position: fixed;
+    z-index:10;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 0.3rem 0.4rem;
+    background: #fff;
+}
+.yyf_new_btn button{
+    border-radius:3px;
+    background: #3c7df0;
+    font-family: '黑体';
+    font-size: 0.33rem;
+    color: #fff;
+    height: 0.87rem;
+    line-height: 0.87rem;
+}
+.yyf_demo_list .new_title{
+    font-family: '黑体';
+    font-size: 0.28rem;
+    color: #666666;
+    display: block;
+    margin-bottom: 0.2rem !important;
+}
+.yyf_demo_list ul{
+    border: 1px #e6e5e5 solid;
+    border-bottom: none;
+}
+.yyf_demo_list ul li{
+    overflow: hidden;
+}
+.yyf_demo_list ul li span{
+    float: left;
+    width: 1rem;
+    text-align: center;
+}
+.yyf_demo_list ul li span img{
+    display: inline-block;
+    max-height: 0.4rem;
+    float: none;
+}
+.say-setting .first_cen{
+    background: #f8f8f8;
+    padding: 0 !important;
+}
+.say-setting .weui-cells{
+    margin-top:0 !important;
+}
+.say-setting .first_cen .new_btn{
+    width: 100%;
+    padding: 0.3rem 0.4rem !important;
+    margin-top: 0 !important;
+}
+.say-setting .first_cen .new_btn button{
+    border-radius:3px;
+    background: #3c7df0;
+    font-family: '黑体';
+    font-size: 0.33rem;
+    color: #fff;
+    height: 0.87rem;
+    line-height: 0.87rem;
+}
+
+.edit-card .card-avatar #myFrom{
+    position: relative;
+    background: #f2f2f2;
+    border: 1px #cacaca solid;
+    border-radius: 3px;
+}
+.edit-card .card-avatar #myFrom svg{
+    position: absolute;
+    top:0.5rem;
+    left:0.45rem;
+    fill:#999999 ;
+}
+
+.edit-card .card_small_img{
+    margin-top: 0 !important;
+    padding-bottom:0.4rem;
+    background: #fff;
+}
+.edit-card #cardImg{
+    background:#fff;
+}
+.edit-card .address_ .vux-x-textarea{
+    padding: 0 !important;
+    height: auto !important;
+    width: 100%;
+}
+.edit-card .address_ .vux-x-textarea textarea{
+    border: none !important;
+    margin-top: 0.06rem;
+    font-family: '微软雅黑';
+    float: left;
+    width:100%;
+    border: none;
+    outline: none;
+    overflow: auto;
+    font-size: 0.28rem;
+    color: #353535;
+    word-wrap: break-word;
+    height: 0.5rem;
+}
+
+.edit-card .address_ .vux-x-textarea:before{
+    display: none !important;
+}
+.edit-card .self-bio .vux-no-group-title{
+    margin-top: 0 !important;
+}
+.edit-card .have_line{
+    border-bottom: 1px #e5e5e5 solid;
+}
+.edit-card .self-bio .vux-x-textarea{
+    margin-top: 0.2rem;
+}
+.edit-card .self-bio .vux-x-textarea textarea{
+    font-family: '微软雅黑';
+    font-size: 0.28rem;
+    color: #b0b0b0;
+    line-height: 0.45rem;
+}
+.edit-card .self-img span{
+    background: #f2f2f2;
+}
+.edit-card .self-tag .add{
+    width: 1.4rem;
+    height: 0.7rem;
+    border-radius:2px !important;
+    background: #efefef !important;
+}
+.edit-card .self-tag .add svg{
+    fill:#999999;
+}
+
+.edit-card .self-tag ul{
+    padding: 0 0.3rem;
+    padding-bottom: 0.2rem;
+}
+.edit-card .pro_title{
+    font-size: 0.3rem !important;
+}
+
+.edit-card .pro_title .fr svg{
+    float: right;
+    fill:#5977fe;
+    margin-top: 0.03rem;
+
+}
+
+.edit-card .pro_title span{
+    font-size: 0.24rem !important;
+    font-family: '微软雅黑';
+}
+.edit-card .one_pro {
+    background: #fff;
+    padding-bottom: 0.3rem;
+    margin-bottom: 0.1rem;
+}
+.edit-card .one_pro ul{
+    overflow: hidden;
+}
+.edit-card .one_pro ul li{
+    position:relative;
+    width:3.4rem;
+    margin-top:0.2rem;
+    border:1px #ececec solid;
+    border-radius:5px;
+    float:left;
+    margin-left:0.2rem;
+    box-shadow:2px 2px 10px 2px #f5f5f5;
+    overflow:hidden;
+}
+
+.edit-card .one_pro ul li img{
+    width:100%;
+    height:3.14rem;
+
+}
+.edit-card .one_pro ul li span{
+    font-family:'微软雅黑';
+    display:block;
+    height:0.8rem;
+    padding:0 0.2rem;
+    color:#353535;
+    font-size:0.28rem;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    text-align:center;
+    line-height:0.8rem;
+    background:#fff;
+
+}
+.yyf_new_case_pro_one{
+    background: #fff;
+}
+.yyf_new_case_pro_one li{
+    padding:0.3rem;
+    overflow: hidden;
+    border-bottom: 1px #e5e5e5 solid;
+}
+.yyf_new_case_pro_one li .left{
+    float: left;
+    width: 1.13rem;
+    height: 1.13rem;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-right: 0.12rem;
+    border:1px #e3e3e3 solid;
+}
+.yyf_new_case_pro_one li .left img{
+    width: 100%;
+    height: 100%;
+
+
+}
+.yyf_new_case_pro_one li .right{
+    position: relative;
+    float: right;
+    width: 5.55rem;
+    overflow: hidden;
+}
+.yyf_new_case_pro_one li .right h4{
+     font-family: '黑体';
+     font-size: 0.33rem;
+     color: #353535;
+     float: left;
+     width: 3.75rem;
+     overflow:hidden;
+     white-space:nowrap;
+     text-overflow:ellipsis;
+     font-weight: normal;
+ }
+.yyf_new_case_pro_one li .right h5{
+    font-family: '黑体';
+    font-size: 0.28rem;
+    color: #999999;
+    float: left;
+    width: 3.75rem;
+    height: 0.68rem;
+    line-height: 0.35rem;
+    margin-top:0.1rem;
+    font-weight: normal;
+    overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.yyf_new_case_pro_one li .right p{
+    position: absolute;
+    font-family: '黑体';
+    font-size: 0.24rem;
+    color: #999999;
+    line-height: 0.35rem;
+    overflow: hidden;
+    right: 0;
+    top: 0;
+}
+.yyf_new_case_pro_one li .right .noe_btn .Recommend{
+    position: absolute;
+    right: 0;
+    bottom: 0.1rem;
+    width: 1.3rem;
+    height: 0.55rem;
+    background: #5b96fe;
+    border-radius: 3px;
+    text-align: center;
+    line-height:0.55rem;
+    color: #fff;
+    font-size: 0.24rem;
+    font-family: '黑体';
+    border: 1px #5b96fe solid;
+}
+.yyf_new_case_pro_one li .right .noe_btn .can{
+    position: absolute;
+    right: 0;
+    bottom: 0.1rem;
+    width: 1.3rem;
+    height: 0.55rem;
+    background: #f8f8f8;
+    border-radius: 3px;
+    text-align: center;
+    line-height:0.55rem;
+    color: #666666;
+    font-size: 0.24rem;
+    font-family: '黑体';
+    border: 1px #cacaca solid;
+}
+.edit-card #cardImg{
+    position: absolute;
+    top: -1000px;
+}
+
+
+.client-tag .class1 .title::before{
+    background: #3b63c2;
+}
+.client-tag .class1 .one{
+    background: #ebf1ff;
+    color: #3b63c2;
+}
+
+.client-tag .class2 .title::before{
+    background: #fca76f;
+}
+.client-tag .class2 .one{
+    background: #fff2ea;
+    color: #ff9362;
+}
+
+
+.client-tag .class3 .title::before{
+    background: #6dc7f1;
+}
+.client-tag .class3 .one{
+    background: #e9f8ff;
+    color: #30aae3;
+}
+
+
+.client-tag .class4 .title::before{
+    background: #84d184;
+}
+.client-tag .class4 .one{
+    background: #ecffec;
+    color: #249624;
+}
+
+
+.client-tag .class5 .title::before{
+    background: #c6c6c6;
+}
+.client-tag .class5 .one{
+    background: #efefef;
+    color: #666666;
+}
+.client-tag .add_btn{
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    height: 0.68rem;
+}
+.client-tag .add_btn svg{
+    margin-top: 0.1rem;
+}
+.client-infor .weui-textarea{
+    color: #353535;
+    font-family: '黑体';
+    font-size: 0.28rem;
+}
+.client-infor .Masking_message  .weui-switch:checked{
+    border-color: #3b83ff;
+    background-color: #3b83ff;
+
+}
+.client-infor .Masking_message .weui-cell__ft{
+    float: right;
+    margin-top: 0.05rem;
+}
+.client-infor .Masking_message  .weui-switch{
+    transform: scale(0.9);
+
+}
+.client-infor .my-birthday{
+    height: 0.88rem;
+}
+
+.edit-card .audio_title span{
+    float: left;
+    margin-left: 2.2rem;
+    margin-right: 0.1rem;
+}
+.edit-card .audio_title svg{
+    float: left;
+    margin-top: 0.22rem;
+
+}
+.follow .header .vux-label{
+
+    color: #5271bc;
+    font-family: '微软雅黑';
+    font-size: 0.28rem !important;
+}
+.follow .body .weui-cells__title{
+    margin-top: 0;
+    color: #666666;
+    font-family: '微软雅黑';
+    font-size: 0.28rem;
+}
+.follow .body textarea{
+    color: #999999;
+    font-family: '微软雅黑';
+    font-size: 0.28rem;
+}
+.follow .body .weui-textarea-counter{
+    color: #999999;
+    font-family: '微软雅黑';
+    font-size: 0.28rem;
+}
+
+.my-footer .weui-tabbar__item:nth-of-type(1) .weui-tabbar__icon{
+    width: 0.57rem;
+}
+.my-footer .weui-tabbar__item:nth-of-type(2) .weui-tabbar__icon{
+    width: 0.58rem;
+}
+.my-footer .weui-tabbar__item:nth-of-type(3) .weui-tabbar__icon{
+    width: 0.62rem;
+}
+.my-footer .weui-tabbar__item:nth-of-type(4) .weui-tabbar__icon{
+    width: 0.58rem;
+}
+.my-footer .weui-tabbar__item:nth-of-type(5) .weui-tabbar__icon{
+    width: 0.43rem;
+}
+.client-tag .Other h4::before{
+    background-color: #3b63c2 !important;
+}
+.client-tag .Other .one{
+
+}
+.edit-card{
+    width: 100%;
+    overflow-x: hidden;
+}
+.edit-card .card_style_Choice{
+    background: #fff;
+    width: 100%;
+    overflow-x: hidden;
+}
+.edit-card .card_small_img{
+    width:6.90rem;
+    margin-left: 0.3rem;
+    overflow-x: auto;
+}
+.say-setting .new_list{
+    margin-top: 0.2rem;
+}
+.say-setting .new_list span{
+    width: 2rem;
+    text-align: left;
+}
+.say-setting .new_list img{
+    float: right !important;
+    margin-right: 0 !important;
+}
+
+.weui-dialog .start-time .vux-cell-value,.weui-dialog .end-time .vux-cell-value{
+    font-size: 0.24rem !important;
+}
+
+
+.client-infor .my_btn{
+    margin-top: 0.2rem;
+    padding: 0.3rem 0.4rem;
+}
+.client-infor .my_btn button{
+    border-radius:3px;
+    background: #3c7df0;
+    font-family: '黑体';
+    font-size: 0.33rem;
+    color: #fff;
+    height: 0.87rem;
+    line-height: 0.87rem;
+}
+.work_index_click_layer{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.client .vux-timeline-item-content{
+}
+.client .vux-timeline-item-content .time{
+    padding-top: 0rem !important;
+    height: 0.5rem;
+    float: left;
+    width: 100%;
+}
+.client .vux-timeline-item:nth-of-type(1) .time{
+    margin-top: 0.05rem;
+}
+.say-setting .set_top li span{
+    height: 0.4rem;
+    width:0.6rem !important;
+    margin-right: 0.2rem;
+    margin-top:0.02rem ;
+}
+
+.say-setting .set_top li img{
+    margin: 0 auto;
+    height: 0.4rem;
+}
+.say-setting .set_top li:nth-of-type(1) img{
+    width:0.6rem ;
+}
+.say-setting .set_top li:nth-of-type(2) img{
+    width:0.48rem ;
+}
+.say-setting .set_top li:nth-of-type(3) img{
+    width:0.4rem ;
+}
+.say-setting .set_top li:nth-of-type(4) img{
+    width:0.4rem ;
 }

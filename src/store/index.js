@@ -5,6 +5,8 @@ import user from './modules/user'
 import err from './modules/err'
 import chat from './modules/chat'
 import message from './modules/message'
+import work from './modules/work'
+import tab from './modules/tab'
 
 Vue.use(Vuex)
 
@@ -14,7 +16,9 @@ const store = new Vuex.Store({
     user,
     err,
     chat,
-    message
+    message,
+    work,
+    tab
   }
 })
 

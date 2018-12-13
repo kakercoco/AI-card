@@ -22,7 +22,7 @@
       <li>
         <p>备注</p>
       </li>
-      <li>
+      <li style="height: auto;padding-bottom: 0.3rem;">
         <p>{{ taskInfo.reference }}</p>
       </li>
     </ul>
@@ -30,13 +30,15 @@
       <p class="client_title">关联客户</p>
       <ul v-for="(item,index) in taskInfo.users" :index="index">
         <li>
-          <img :src="item.wx_image">
+          <div class="client_image">
+            <img :src="item.wx_image !== '' && item.wx_image !== undefined ? item.wx_image: '../../assets/img/u112.png'">
+          </div>
           <div>
-            <p class="send_message">发消息</p>
+            <p class="send_message" @click="gotoIM(item)">发消息</p>
           </div>
           <div>
             <p>{{ item.wx_name }}</p>
-            <p >{{ taskInfo.his_time }}</p>
+            <p><span style="padding-right: 0.1rem">最近活跃</span>{{ item.visit_time }} </p>
           </div>
         </li>
       </ul>
@@ -55,6 +57,7 @@ import {
   AlertModule
 } from 'vux'
 import { getTaskDetail, deleteTask } from '@/api/task'
+import { formatatTime } from '@/utils/base'
 
 export default {
   name: 'taskDetail',
@@ -110,13 +113,22 @@ export default {
       })
     },
     getTaskInfo () {
+      this.$vux.loading.show({
+        text: 'Loading'
+      })
       getTaskDetail(this.id).then(res => {
         if (res.code === 200) {
+          this.$vux.loading.hide()// 隐藏
+          if (res.data.users) {
+            res.data.users.forEach(item => {
+              if (item.visit_time === '0') {
+                item.visit_time = '刚刚'
+              } else {
+                item.visit_time = formatatTime(item.visit_time, '{y}-{m}-{d} {h}:{i}:{s}')
+              }
+            })
+          }
           this.taskInfo = res.data
-          /* AlertModule.show({
-            title: '提示',
-            content: res.msg
-          }) */
           // this.$router.back(-1)
         } else {
           AlertModule.show({
@@ -125,7 +137,39 @@ export default {
           })
         }
       })
-    }
+    },
+      gotoIM (item) {
+          const message_id = item.message_id
+          const wx_image = item.wx_image
+          const wx_name = item.wx_name
+          const uid = item.uid
+          // 进入新的回话前，先清除老的
+          this.$store.commit('chat/Clear_char_list')
+          this.$store.commit('chat/Clear_img_list')
+
+          if (message_id) {
+              this.$store.dispatch('chat/GetChat', message_id)
+              this.$store.dispatch('chat/chat_record', {
+                  id: message_id,
+                  vm: this
+              })
+
+              this.$router.push({
+                  path: `/messageIM`,
+                  query: {
+                      id: message_id,
+                      wx_image,
+                      wx_name,
+                      uid
+                  }
+              })
+          } else {
+              this.$vux.alert.show({
+                  title: '提示',
+                  content: '缺少message_id！'
+              })
+          }
+    },
   },
   watch: {
   },
@@ -175,11 +219,15 @@ export default {
         li{
           padding: 0.2rem 0;
           border-bottom: 1px solid #f0f0f0;
-          img{
-            height: 100%;
-            width: 1rem;
+          .client_image{
+            border: 1px solid #f3f3f3;
             border-radius: 0.1rem;
-            float: left;
+            img{
+              height: 1rem;
+              width: 1rem;
+              border-radius: 0.1rem;
+              float: left;
+            }
           }
           div{
             height: 100%;

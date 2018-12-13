@@ -8,35 +8,30 @@
   <div class="my-footer">
     <tabbar>
       <tabbar-item link="/main/index" :selected="$route.path === '/main/index'">
-        <img slot="icon" src="@/assets/icon/index.png">
-        <img slot="icon-active" src="@/assets/icon/index2.png">
-        <span slot="label">足迹</span>
+        <img slot="icon" src="@/assets/icon/none_icon_08.png">
+        <img slot="icon-active" src="@/assets/icon/select_icon_08.png">
+        <span slot="label">天眼</span>
       </tabbar-item>
       <tabbar-item :badge="num != '0' ? num : ''" link="/main/message" :selected="$route.path === '/main/message'">
-        <img slot="icon" src="@/assets/icon/message.png">
-        <img slot="icon-active" src="@/assets/icon/message2.png">
+        <img slot="icon" src="@/assets/icon/none_icon_14.png">
+        <img slot="icon-active" src="@/assets/icon/select_icon_14.png">
         <span slot="label">消息</span>
       </tabbar-item>
       <tabbar-item link="/main/contact" :selected="$route.path === '/main/contact'">
-        <img slot="icon" src="@/assets/icon/contact.png">
-        <img slot="icon-active" src="@/assets/icon/contact2.png">
+        <img slot="icon" src="@/assets/icon/none_icon_03.png">
+        <img slot="icon-active" src="@/assets/icon/select_icon_03.png">
         <span slot="label">通讯录</span>
       </tabbar-item>
-      <!-- <tabbar-item link="/main/news" :selected="$route.path === '/main/news'">
-        <img slot="icon" src="@/assets/icon/news.png">
-        <img slot="icon-active" src="@/assets/icon/news2.png">
-        <span slot="label">动态</span>
-      </tabbar-item> -->
 
       <tabbar-item link="/main/work" :selected="$route.path === '/main/work'">
-        <img slot="icon" src="@/assets/icon/news.png">
-        <img slot="icon-active" src="@/assets/icon/news2.png">
+        <img slot="icon" src="@/assets/icon/none_icon_11.png">
+        <img slot="icon-active" src="@/assets/icon/select_icon_11.png">
         <span slot="label">工作</span>
       </tabbar-item>
 
       <tabbar-item link="/main/self" :selected="$route.path === '/main/self'">
-        <img slot="icon" src="@/assets/icon/self.png">
-        <img slot="icon-active" src="@/assets/icon/self2.png">
+        <img slot="icon" src="@/assets/icon/none_icon_05.png">
+        <img slot="icon-active" src="@/assets/icon/select_icon_05.png">
         <span slot="label">我的</span>
       </tabbar-item>
     </tabbar>
@@ -119,9 +114,11 @@ export default {
 .weui-tabbar__item {
   padding: 0.14rem 0 0.09rem 0;
   & /deep/.weui-tabbar__icon {
-    width: 0.5rem;
+
     height: 0.5rem;
+
   }
+
   & /deep/.weui-tabbar__label {
     padding-top: 0.14rem;
     font-size: 0.26rem !important;

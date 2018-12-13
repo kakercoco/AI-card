@@ -19,30 +19,37 @@
       <div v-show="tabIndex === 0">
         <ul class="task_list">
           <li v-for="(item, index) in overdueTask" :key="index">
-            <img v-if="item.star === 0" src="../../assets/task/unmark.png" class="star_icon" @click="signStar(item)">
-            <img v-if="item.star === 1" src="../../assets/task/mark.png" class="star_icon" @click="signStar(item)">
-            <div class="task_left">
+            <div class="task_left2">
+              <img v-if="item.star === 0" src="../../assets/task/unmark.png" class="star_icon" @click="signStar(item)">
+              <img v-if="item.star === 1" src="../../assets/task/mark.png" class="star_icon" @click="signStar(item)">
+            </div>
+            <div class="task_left" @click="taskDetail(item)">
               <p class="task_title"> {{ item.title }}</p>
               <p> {{ item.his_time }}     <span v-if="item.expire === 1">已过期</span></p>
             </div>
             <div class="task_right">
               <p @click="signFinishTask(item)">完成</p>
-              <x-icon type="ios-arrow-right" class="icon-right" @click="taskDetail(item)"></x-icon>
+              <!--<x-icon type="ios-arrow-right" class="icon-right" @click="signFinishTask(item)"></x-icon>-->
             </div>
           </li>
         </ul>
         <div class="completed_task_list">
-          <p class="completed_task_title" @click="clickTask">显示已完成任务</p>
-          <x-icon type="ios-arrow-down" class="icon-down"></x-icon>
+          <div :class="completedTask.length > 0 && isShow ? 'min-height': ''">
+            <p class="completed_task_title" @click="clickCompletedTask(0)" v-if="completedTask.length > 0">{{ displayName1 }}</p>
+            <x-icon type="ios-arrow-down" class="icon-down" v-if="completedTask.length > 0 && !isShow" @click="clickCompletedTask(0)"></x-icon>
+            <x-icon type="ios-arrow-up" class="icon-down" v-if="completedTask.length > 0 && isShow" @click="clickCompletedTask(0)"></x-icon>
+          </div>
           <ul class="task_list" v-show="isShow">
             <li v-for="(item, index) in completedTask" :key="index">
-              <img v-if="item.status === 0" src="../../assets/task/unselected.png" class="star_icon" @click="signFinishTask(item)">
-              <img v-if="item.status === 1" src="../../assets/task/selected.png" class="star_icon" @click="signFinishTask(item)">
-              <div class="task_left">
+              <div class="task_left2">
+                <img v-if="item.status === 0" src="../../assets/task/unselected.png" class="star_icon" @click="signFinishTask(item)">
+                <img v-if="item.status === 1" src="../../assets/task/selected.png" class="star_icon" @click="signFinishTask(item)">
+              </div>
+              <div class="task_left" @click="taskDetail(item)">
                 <p class="task_title"> {{ item.title }}</p>
                 <p> {{ item.his_time }}</p>
               </div>
-              <div class="task_right">
+              <div class="task_right" @click="taskDetail(item)">
                 <!--<p>完成</p>-->
                 <x-icon type="ios-arrow-right" class="icon-right" @click="taskDetail(item)"></x-icon>
               </div>
@@ -56,37 +63,45 @@
       <div v-show="tabIndex === 1">
         <ul class="task_list">
           <li v-for="(item, index) in overdueTask" :key="index">
-            <img v-if="item.star === 0" src="../../assets/task/unmark.png" class="star_icon" @click="signStar(item)">
-            <img v-if="item.star === 1" src="../../assets/task/mark.png" class="star_icon" @click="signStar(item)">
-            <div class="task_left">
+            <div class="task_left2">
+              <img v-if="item.star === 0" src="../../assets/task/unmark.png" class="star_icon" @click="signStar(item)">
+              <img v-if="item.star === 1" src="../../assets/task/mark.png" class="star_icon" @click="signStar(item)">
+            </div>
+            <div class="task_left" @click="taskDetail(item)">
               <p class="task_title"> {{ item.title }}</p>
               <p> {{ item.his_time }}     <span v-if="item.expire === 1">已过期</span></p>
             </div>
             <div class="task_right">
               <p @click="signFinishTask(item)">完成</p>
-              <x-icon type="ios-arrow-right" class="icon-right" @click="taskDetail(item)"></x-icon>
+              <!--<x-icon type="ios-arrow-right" class="icon-right" @click="signFinishTask(item)"></x-icon>-->
             </div>
           </li>
         </ul>
         <div class="completed_task_list">
-          <p class="completed_task_title" @click="isShow2 = !isShow2">显示已完成任务</p>
-          <x-icon type="ios-arrow-down" class="icon-down"></x-icon>
+         <div :class="completedTask.length > 0 && isShow2 ? 'min-height': ''">
+           <p class="completed_task_title" @click="clickCompletedTask(1)" v-if="completedTask.length > 0">{{ displayName2 }}</p>
+           <x-icon type="ios-arrow-down" class="icon-down" v-if="completedTask.length > 0 && !isShow2" @click="clickCompletedTask(1)"></x-icon>
+           <x-icon type="ios-arrow-up" class="icon-down" v-if="completedTask.length > 0 && isShow2" @click="clickCompletedTask(1)"></x-icon>
+         </div>
           <ul class="task_list" v-show="isShow2">
             <li v-for="(item, index) in completedTask" :key="index">
-              <img v-if="item.status === 0" src="../../assets/task/unselected.png" class="star_icon" @click="signFinishTask(item)">
-              <img v-if="item.status === 1" src="../../assets/task/selected.png" class="star_icon" @click="signFinishTask(item)">
-              <div class="task_left">
+              <div class="task_left2">
+                <img v-if="item.status === 0" src="../../assets/task/unselected.png" class="star_icon" @click="signFinishTask(item)">
+                <img v-if="item.status === 1" src="../../assets/task/selected.png" class="star_icon" @click="signFinishTask(item)">
+              </div>
+              <div class="task_left" @click="taskDetail(item)">
                 <p class="task_title"> {{ item.title }}</p>
                 <p> {{ item.his_time }}</p>
               </div>
-              <div class="task_right">
+              <div class="task_right" @click="taskDetail(item)">
                 <!--<p>完成</p>-->
                 <x-icon type="ios-arrow-right" class="icon-right" @click="taskDetail(item)"></x-icon>
               </div>
             </li>
           </ul>
         </div>
-        <div class="task_footer">
+        <div style="height: 1.5rem;"></div>
+        <div class="yyf_new_btn" style="border-top: 1px #e3e3e3 solid">
           <x-button type="primary" class="task_button" @click.native="addTask">新建任务</x-button>
         </div>
       </div>
@@ -113,23 +128,40 @@ export default {
   },
   data () {
     return {
-      tabIndex: 1,
+      tabIndex: this.$route.query.tabIndex !== undefined && this.$route.query.tabIndex !== '' ? this.$route.query.tabIndex : 1,
       currentTime: dateFtt('yyyy-MM-dd', new Date()),
       taskLists: [],
       overdueTask: [],
       completedTask: [],
       listQuery: {
-        start_time: '',
-        end_time: '',
+        start_time: this.$route.query.time !== undefined ? this.$route.query.time : '',
+        end_time: this.$route.query.time !== undefined ? this.$route.query.time : '',
         type: 5
 
       },
-      isShow: false,
-      isShow2: false
+      isShow: true,
+      isShow2: true,
+      displayName1: '隐藏已完成任务',
+      displayName2: '隐藏已完成任务'
     }
   },
   methods: {
-    clickTask () {
+    clickCompletedTask (type) {
+      if (type === 0) {
+        this.isShow = !this.isShow
+        if (this.isShow) {
+          this.displayName1 = '隐藏已完成任务'
+        } else {
+          this.displayName1 = '显示已完成任务'
+        }
+      } else {
+        this.isShow2 = !this.isShow2
+        if (this.isShow2) {
+          this.displayName2 = '隐藏已完成任务'
+        } else {
+          this.displayName2 = '显示已完成任务'
+        }
+      }
     },
     signFinishTask (item) {
       let status = 0
@@ -139,7 +171,7 @@ export default {
         content = '此任务确定完成了吗？'
       } else {
         status = 0 // 取消
-        content = '此任务确定取消了吗？'
+        content = '此任务确认取消完成？'
       }
       let this_ = this
       this.$vux.confirm.show({
@@ -261,6 +293,7 @@ export default {
 <style lang='scss' rel='stylesheet/scss' scoped>
 .task {
   height: 100%;
+
   & /deep/ .vux-tab-item{
     font-size: 16px;
   }
@@ -271,8 +304,11 @@ export default {
     color: #3b63c4;
     border-bottom: 3px solid #3b63c4;
   }
+  .min-height{
+    height: 1.1rem;
+  }
   .task_header{
-    height: 0.44rem;
+    border-bottom: 1px solid #e5e5e5;
     padding: 0 10%;
     font-family: Microsoft YaHei, 'Avenir', Helvetica, Arial, sans-serif;
     .task_tab{
@@ -280,22 +316,21 @@ export default {
       margin: 0 auto;
     }
     .task_img{
-      height: 0.43rem;
-      width: 0.4rem;
+      height: 0.35rem;
+      width: 0.39rem;
       position: absolute;
-      top: 0.22rem;
-      right: 0.3rem;
+      top: 0.29rem;
+      right: 0.4rem;
     }
   }
   .task_list_swarp{
-    margin-top:0.44rem;
+    // margin-top:0.44rem;
     height: 100%;
-    border-top: 1px solid #e5e5e5;
     .task_list{
       padding: 0 0.4rem;
       li{
-        height: 1.4rem;
-        padding: 0.2rem 0;
+        height: 1.2rem;
+        padding: 0.1rem 0 0.1rem 0;
         border-bottom: 1px solid #eee;
         font-family: SimHei, Microsoft YaHei, 'Avenir', Helvetica, Arial, sans-serif;
         font-weight: 500;
@@ -311,15 +346,22 @@ export default {
           width: 0.4rem;
           height: 0.4rem;
           position: relative;
-          top: 0.16rem;
+          top: 0.2rem;
+        }
+        .task_left2{
+          width: 8%;
+          float: left;
+          height: 100%;
+          line-height: 0.5rem;
+          overflow: hidden;
         }
         .task_left{
-          width: 78%;
+          width: 70%;
           float: left;
           height: 100%;
           line-height: 0.5rem;
           margin-left: 0.2rem;
-          padding: 0.1rem 0;
+          padding: 0.2rem 0;
           overflow: hidden;
           i{
             color: #f69600;
@@ -349,12 +391,12 @@ export default {
             color: #3b63c4;
             font-size: 0.3rem;
             position: relative;
-            top: 23px;
-            left: -12px;
+            top: 0.24rem;
+            left: -0.01rem;
           }
           .icon-right {
             position: relative;
-            top: 0.05rem;
+            top: 0.25rem;
             right: -22px;
             width: 0.5rem;
             fill: #a9a9a9;
@@ -367,7 +409,7 @@ export default {
       font-family: SimHei, Microsoft YaHei, 'Avenir', Helvetica, Arial, sans-serif;
       font-weight: 500;
       .completed_task_title{
-        height: 1.1rem;
+        height: 100%;
         background-color: #f4f4f4;
         font-size: 0.24rem;
         color: #4e70c7;
@@ -376,11 +418,12 @@ export default {
       }
       .icon-down {
         position: relative;
-        top: -0.78rem;
-        left: 229px;
+        top: -0.8rem;
+        left: 4.58rem;
         width: 0.3rem;
         fill: #4e70c7;
         display: inline-block;
+        float: left;
       }
     }
     .task_footer{

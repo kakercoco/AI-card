@@ -6,101 +6,158 @@
  */
 <template>
   <div class="client">
-    <div style="height: 4rem;width:100%;background-color: #fff;position: fixed;top:0;z-index: 999"></div>
-    <div :class="active ===2 ? 'card2 card-shadow' : 'card card-shadow'">
+    <div style="height: 3rem;width:100%;background-color: #fff;position: fixed;top:0;z-index: -1;background: -webkit-gradient(linear, left top, left bottom, from(#b4ceff), to(#fff));
+    background: linear-gradient(#b4ceff, #fff);"></div>
+      <div class="card card-shadow">
         <div class="top">
           <img :src="clientInfor.wx_image" alt="" class="avatar">
           <div>
-            <p><span class="name">{{clientInfor.wx_name}}</span><img src="@/assets/icon/edit.png" class="fr edit" alt="" @click="gotoInfor"></p>
-            <p class="tag-list">
-              <span v-for="(item, index) in clientInfor.tag" :key="index" v-if="index<2">{{item}}</span>
-              <span v-if="clientInfor.tag && clientInfor.tag.length>2">···</span>
-              <x-icon type="ios-plus-outline" class="fr icon-insert" @click.native="gotoTag"></x-icon>
+            <p><span class="name">{{clientInfor.wx_name}}</span></p>
+            <p class="tag-list" v-if="clientInfor && clientInfor.tag.length > 0">
+              <span v-if="clientInfor.tag.length === 1" class="tag-item2" @click="gotoTag">添加标签</span>
+              <span v-if="clientInfor.tag.length === 1" class="tag-item2" @click="gotoTag">添加标签</span>
+              <span v-if="clientInfor.tag.length === 2" class="tag-item2" @click="gotoTag">添加标签</span>
+              <span class="tag-item1" v-for="(item, index) in clientInfor.tag" :key="index" v-if="index<3" @click="gotoTag">{{item}}</span>
+              <span v-if="clientInfor.tag.length > 3" class="tag-item1" @click="gotoTag">...</span>
+            </p>
+            <p v-if="!clientInfor.tag|| clientInfor.tag.length <= 0" class="tag-list">
+              <span class="tag-item2" @click="gotoTag">添加标签</span>
+              <span class="tag-item2" @click="gotoTag">添加标签</span>
+              <span class="tag-item2" @click="gotoTag">添加标签</span>
             </p>
           </div>
         </div>
 
         <div class="center clearfix">
-          <p class="fl">
+          <p class="fr" @click="turnoverVisibility = true">
             <popup-picker :data="options1" v-model="option1" :show="turnoverVisibility" value-text-align="center" @on-change="customerSetTurnover" @on-show="pickerShow">
             </popup-picker>
-            <span @click="turnoverVisibility = true">设置成交概率</span>
+            <span @click="turnoverVisibility = true">AI成交率</span>
+            <img @click="turnoverVisibility = true" src="../../assets/img/set.png"/>
           </p>
-          <p class="fr">
-            <datetime v-model="clientInfor.turnover_date" @on-confirm="customerSetTurnoverDate" :show.sync="dateVisibility"></datetime>
-            <span @click="dateVisibility = true">预设成交时间</span>
-          </p>
-        </div>
-        <div class="down">
-          <p class="fl" @click="gotoIM">
-            <span>会话</span>
-            <img src="@/assets/img/wchat.png" alt="">
-          </p>
-          <p class="fr" @click="gotoFollow">
-            <span>跟进</span>
-            <img src="@/assets/img/detail.png" alt="">
+          <p class="fl" @click="dateVisibility = true">
+            <datetime v-model="clientInfor.turnover_date" :start-date="currentTime"  @on-confirm="customerSetTurnoverDate" :show.sync="dateVisibility"></datetime>
+            <span @click="dateVisibility = true">预计成交日期</span>
+            <img @click="dateVisibility = true" src="../../assets/img/set.png"/>
           </p>
         </div>
       </div>
-    <div class="client-action" v-show="active ===0">
-      <p v-if="visitList.length <= 0">没有更多数据</p>
-      <scroller lock-x height="7.5rem" use-pullup :pullup-config="config" :bounce="true" ref="loadingMore" @on-pullup-loading="loadMore">
-        <div>
-          <ul>
-            <li v-for="(item, index) in visitList" :key="index">
-              <p class="time">{{Global.parseTime(item.create_time, '{y}-{m}-{d}')}}</p>
-              <div class="card-shadow">
-                <img :src="item.wx_image" alt="">
-                <p>{{item.wx_name}}在7日内和你互动了{{item.num}}次</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </scroller>
+    <div class="tab">
+      <tab :line-width="2" v-model="$store.state.tab.active">
+        <tab-item>互动</tab-item>
+        <!--<tab-item>资料</tab-item>-->
+        <tab-item>相关</tab-item>
+        <tab-item>AI分析</tab-item>
+        <tab-item>跟进记录</tab-item>
+      </tab>
     </div>
-    <div class="time-line" v-show="active === 1">
-      <scroller lock-x height="7.5rem" use-pullup :pullup-config="config" :bounce="true" ref="loadingMoreFollow" @on-pullup-loading="loadMoreFollow">
+    <div class="time-line" v-show="$store.state.tab.active ===0">
+      <p v-if="visitList.length <= 0" style="text-align: center;">没有更多数据</p>
+      <scroller lock-x height="-270" use-pullup :pullup-config="config" :bounce="true" ref="loadingMore" @on-pullup-loading="loadMore">
         <div>
           <timeline>
-            <timeline-item v-for="(item, index) in followList" :key="index">
+            <timeline-item v-for="(item, index) in visitList" :key="index">
+              <p class="time">{{Global.parseTime(item.create_time, '{y}-{m}-{d}')}}</p>
               <div class="timeline-wrap">
-                <h4>{{item.content}}</h4>
-                <p>{{Global.parseTime(item.create_time)}}</p>
+                <p><i>{{item.wx_name}}</i>在7日内和你互动了<i>{{item.num}}</i>次</p>
               </div>
             </timeline-item>
           </timeline>
         </div>
       </scroller>
     </div>
-    <div class="client-chart" v-show="active ===2">
-      <div class="news-list-detail">
-        <div class="tac">{{clientInfor.wx_name}}在7日内和你互动了{{forMeTotal}}次</div>
-        <p v-for="(item, index) in forMeList" :key="index" class="graph" v-if="item.nums > 0">
-          <span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{item.name}}</span>
-          <i :style="{width: item.nums/forMeTotal*80 + '%'}"></i>
-          <b>{{item.nums}}</b>
-        </p>
-        <p class="tar"></p>
+    <div class="relevant" v-show="$store.state.tab.active === 1">
+      <div class="task" @click="viewTaskList(1, '')">
+        <div class="item-left">
+          <img src="../../assets/img/task.png">
+        </div>
+        <div class="item-right">
+          <p>任务</p>
+          <p><span>{{taskTotal}}</span>个</p>
+        </div>
       </div>
-      <div class="care clearfix">
-        <h5 class="tac">客户兴趣</h5>
-        <div id="care"></div>
-        <ul>
-          <li>对公司感兴趣</li>
-          <li>对产品感兴趣</li>
-          <li>对我感兴趣</li>
-        </ul>
+      <div class="task" @click="clickForm">
+        <div class="item-left">
+          <img src="../../assets/img/form.png">
+        </div>
+        <div class="item-right">
+          <p>表单</p>
+          <p><span>0</span>个</p>
+        </div>
       </div>
-      <div class="dynamic">
-        <h5 class="tac">近15日客户活跃度</h5>
-        <div id="dynamic"></div>
-      </div>
+
     </div>
-    <tab v-model="active" class="client-tab" :line-width="0">
-      <tab-item><span>互动</span></tab-item>
-      <tab-item><span>跟进记录</span></tab-item>
-      <tab-item><span>分析</span></tab-item>
-    </tab>
+    <div class="client-chart" v-show="$store.state.tab.active ===2">
+      <scroller lock-x height="-230" :bounce="true" ref="client-chart">
+        <div>
+          <div class="care clearfix">
+            <div class="title">客户兴趣占比</div>
+            <div id="care"></div>
+            <ul>
+              <li>对公司感兴趣</li>
+              <li>对产品感兴趣</li>
+              <li>对我感兴趣</li>
+            </ul>
+          </div>
+          <div class="dynamic">
+            <div class="title">近15日客户活跃度</div>
+            <div id="dynamic"></div>
+          </div>
+          <div class="news-list-detail">
+            <div class="title">客户与我互动</div>
+            <p v-for="(item, index) in forMeList" :key="index" class="graph" v-if="item.nums > 0">
+              <span>{{item.name}}</span>
+              <strong>
+                <i :style="{width: item.nums/forMeTotal*80 + '%'}"></i>
+                <b>{{item.nums}}</b>
+              </strong>
+            </p>
+            <!--<p v-for="(item, index) in forMeList" :key="index" class="graph" v-if="item.nums > 0">
+              <span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{item.name}}</span>
+              <i :style="{width: item.nums/forMeTotal*80 + '%'}"></i>
+              <b>{{item.nums}}</b>
+            </p>-->
+            <p class="tar"></p>
+          </div>
+        </div>
+      </scroller>
+
+    </div>
+    <div class="time-line" v-show="$store.state.tab.active ===3">
+      <scroller lock-x height="-270" use-pullup :pullup-config="config" :bounce="true" ref="loadingMoreFollow" @on-pullup-loading="loadMoreFollow">
+        <div>
+          <timeline>
+            <timeline-item v-for="(item, index) in followList" :key="index">
+              <p class="time">{{Global.parseTime(item.create_time, '{y}-{m}-{d}')}}</p>
+              <div class="timeline-wrap">
+                <p>{{item.content}}</p>
+              </div>
+            </timeline-item>
+          </timeline>
+        </div>
+      </scroller>
+
+    </div>
+    <div class="client-tab" >
+      <ul class="footer">
+        <li @click="gotoInfor">
+          <img src="../../assets/img/edit-icon.png" @click="gotoInfor">
+          <p @click="gotoInfor">编辑资料</p>
+        </li>
+        <li @click="addTask">
+          <img src="../../assets/img/task-icon.png" @click="addTask">
+          <p @click="addTask">创建任务</p>
+        </li>
+        <li @click="gotoFollow">
+          <img src="../../assets/img/follow-icon.png" @click="gotoFollow">
+          <p @click="gotoFollow">添加跟进</p>
+        </li>
+        <li @click="gotoIM">
+          <img src="../../assets/img/message-icon.png" @click="gotoIM">
+          <p @click="gotoIM">发送消息</p>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -116,17 +173,19 @@ import {
   TabItem,
   Scroller
 } from 'vux'
-//import echarts from 'echarts'
-const echarts = require('echarts/lib/echarts')
-require('echarts/lib/chart/pie');
 import {
   customerRead,
   customerSetTurnover,
   customerSetTurnoverDate,
   visitIndex,
-  followIndex
+  followIndex,
+  AlertModule
 } from '@/api/customer'
 import { config } from '@/utils/base'
+import { getTaskList } from '@/api/task'
+import echarts from 'echarts'
+/* const echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/pie') */
 
 export default {
   name: 'client',
@@ -139,10 +198,23 @@ export default {
     Tab,
     TabItem,
     Scroller,
-    Datetime
+    Datetime,
+    AlertModule
   },
   data () {
     return {
+      listQuery: {
+        start_time: '',
+        end_time: '',
+        type: 5
+      },
+      taskTotal: 0,
+      tabIndex: 0,
+      currentTime: `${new Date().getFullYear()}-${
+        new Date().getMonth() + 1 < 10
+          ? `0${new Date().getMonth() + 1}`
+          : new Date().getMonth() + 1
+      }-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
       likeTotal: 0, // 兴趣总数
       isPicker: false,
       typeConfig: config,
@@ -180,6 +252,47 @@ export default {
     }
   },
   methods: {
+    clickForm () {
+      this.$vux.alert.show({
+        title: '温馨提示',
+        content: '敬请期待！',
+        onShow () {
+        },
+        onHide () {
+        }
+      })
+    },
+    viewTaskList (tabIndex, time) {
+      this.$router.push({
+        path: '/taskList',
+        query: {
+          tabIndex: tabIndex,
+          time: time
+        }
+      })
+    },
+    getTaskLists () {
+      getTaskList(this.listQuery).then(res => {
+        if (res.code === 200) {
+          this.taskTotal = res.data.length
+        } else {
+          AlertModule.show({
+            title: '提示',
+            content: res.msg
+          })
+        }
+      })
+    },
+    addTask () {
+      this.$router.push({
+        path: '/addTask'
+      })
+    },
+    sendMessage () {
+      this.$router.push({
+        path: '/messageIM'
+      })
+    },
     drawChart (option, dom) {
       var myChart = echarts.init(document.getElementById(dom))
       // 绘制图表
@@ -285,6 +398,9 @@ export default {
         id: this.uid
       }
       customerRead(data).then(res => {
+        if (res.data.info.turnover_date === '' || res.data.info.turnover_date === undefined) {
+          res.data.info.turnover_date = '未设置'
+        }
         this.clientInfor = res.data.info
         this.chartInfor = res.data.analyze
         this.getForMeTotal(this.chartInfor.count.for_me)
@@ -339,6 +455,9 @@ export default {
       }
       visitIndex(data).then(res => {
         this.visitList = res.data.rows
+        /* this.$nextTick(()=>{
+            this.$refs.loadingMore.reset()
+        }) */
       })
     },
     loadMore () {
@@ -357,6 +476,9 @@ export default {
         } else {
           this.visitList = this.visitList.concat(res.data.rows)
           this.$refs.loadingMore.donePullup()
+            /*this.$nextTick(()=>{
+                this.$refs.loadingMore.reset()
+            })*/
         }
       })
     },
@@ -484,11 +606,11 @@ export default {
     }
   },
   watch: {
-    active (val) {
+    '$store.state.tab.active' (val) {
       if (val === 2) {
         this.$nextTick(() => {
-          this.drawCare()
           this.drawDynamic()
+          this.drawCare()
         })
       }
     }
@@ -497,32 +619,35 @@ export default {
     this.getCustomer()
     this.getVisitIndex()
     this.getFollowIndex()
+    this.getTaskLists()
   }
 }
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
 .client {
-  padding: 0.5rem 0.3rem;
-  padding-bottom: 45px;
-  overflow: auto;
+  overflow: hidden;
   height: 100%;
   width: 100%;
   -webkit-overflow-scrolling: touch;
   .card2{
-    height: 3.8rem;
-    padding: 0.3rem 0.25rem 0.3rem 0.25rem;
+    height: 3rem;
+    margin: 0.27rem 0.4rem;
     position: fixed;
-    top:0.5rem;
+    width: 89.5%;
     z-index: 1000;
-    width: 92%;
     background-color: #fff;
+    webkit-box-shadow: 2px 2px 18px 3px #ccc;
+    -webkit-box-shadow: 2px 2px 18px 3px #ccc;
+    box-shadow: 2px 2px 18px 3px #ccc;
     .top {
-      height: 1.6rem;
+      padding: 0.3rem 0.3rem 0 0.3rem;
+      height: 1.78rem;
+      border-bottom: 1px solid #e5e5e5;
       .avatar {
         float: left;
-        width: 1.6rem;
-        height: 100%;
+        width: 1.15rem;
+        height: 1.15rem;
         border-radius: 0.1rem;
       }
       & > div {
@@ -531,9 +656,13 @@ export default {
         height: 100%;
         p {
           height: 50%;
-          line-height: 0.8rem;
+          /*line-height: 0.8rem;*/
           .name {
-            font-size: 0.3rem;
+            font-size: 0.36rem;
+            line-height: 0.5rem;
+            color: #353535;
+            font-family: '黑体',serif;
+            font-weight: bold;
           }
           .edit {
             width: 0.4rem;
@@ -543,13 +672,26 @@ export default {
         .tag-list {
           position: relative;
           overflow: hidden;
-          span {
+          top: -0.2rem;
+          .tag-item1 {
             padding: 0 0.15rem;
             height: 0.4rem;
             line-height: 0.4rem;
-            border: 1px solid #a561fb;
+            border: 1px solid #ff6600;
             border-radius: 0.4rem;
-            color: #a561fb;
+            color: #ff6600;
+            float: left;
+            font-size: 0.26rem;
+            margin-right: 0.1rem;
+            margin-top: 0.2rem;
+          }
+          .tag-item2 {
+            padding: 0 0.15rem;
+            height: 0.4rem;
+            line-height: 0.4rem;
+            border: 1px solid #d7d7d7;
+            border-radius: 0.4rem;
+            color: #999999;
             float: left;
             font-size: 0.26rem;
             margin-right: 0.1rem;
@@ -566,8 +708,7 @@ export default {
       }
     }
     .center {
-      padding: 0.2rem 0;
-      border-bottom: 1px solid #ddd;
+      height: 1.2rem;
       & /deep/ .weui-cell {
         min-height: 0.32rem;
         padding: 0;
@@ -580,55 +721,102 @@ export default {
         }
       }
       p {
+        padding-top: 0.2rem;
         text-align: center;
-        width: 2.5rem;
-        height: 0.7rem;
+        width: 50%;
+        height: 1.2rem;
         span {
-          color: #717171;
+          color: #999999;
+          font-size: 0.24rem;
+          line-height: 0.5rem;
+          font-family: '\9ED1\4F53',serif;
+          padding-left: 0.1rem;
+          position: relative;
+          top: -0.1rem;
+        }
+        img{
+          height: 0.33rem;
+          width: 0.33rem;
+          position: relative;
+          top: -0.02rem;
+          left: 0.4rem;
         }
         & /deep/ .vux-datetime-value {
-          color: #717171;
-          min-height: 0.32rem;
+          text-align: center;
+          font-size: 0.33rem;
+          line-height: 0.5rem;
+          font-family: 'Arial Regular',serif;
+          color: #353535;
         }
+        & /deep/ .vux-cell-value{
+          text-align: center;
+          font-size: 0.33rem;
+          line-height: 0.5rem;
+          font-family: '黑体',serif;
+          color: #353535;
+        }
+      }
+      p:first-child{
+        border-left: 1px solid #e5e5e5;
+        padding-left: 0.4rem;
       }
     }
     .down {
+      height: 1.2rem;
       p {
-        width: 2.5rem;
-        height: 0.7rem;
+        width: 50%;
+        height: 1.2rem;
         font-size: 0.3rem;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
         align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
         justify-content: center;
         img {
           width: 0.28rem;
           margin-left: 0.2rem;
         }
+      }
+      p:first-child{
+        border-right: 1px solid #e5e5e5;
       }
     }
   }
   .card {
-    height: 3.8rem;
-    padding: 0.3rem 0.25rem;
+    margin: 0.27rem 0.4rem;
+    height: 3rem;
     position: relative;
-    z-index: 999;
+    z-index: 5;
+    background-color: #fff;
+    webkit-box-shadow: 2px 2px 18px 3px #ccc;
+    box-shadow: 2px 2px 18px 3px #ccc;
     .top {
-      height: 1.6rem;
+      padding: 0.3rem 0.3rem 0 0.3rem;
+      height: 1.78rem;
+      border-bottom: 1px solid #e5e5e5;
       .avatar {
         float: left;
-        width: 1.6rem;
-        height: 100%;
+        width: 1.15rem;
+        height: 1.15rem;
         border-radius: 0.1rem;
       }
       & > div {
-        width: 4.5rem;
+        width: 4.8rem;
         float: right;
         height: 100%;
         p {
           height: 50%;
-          line-height: 0.8rem;
+          /*line-height: 0.8rem;*/
           .name {
-            font-size: 0.3rem;
+            font-size: 0.36rem;
+            line-height: 0.5rem;
+            color: #353535;
+            font-family: '黑体',serif;
+            font-weight: bold;
           }
           .edit {
             width: 0.4rem;
@@ -638,13 +826,27 @@ export default {
         .tag-list {
           position: relative;
           overflow: hidden;
-          span {
+          top: -0.2rem;
+          .tag-item1 {
             padding: 0 0.15rem;
             height: 0.4rem;
             line-height: 0.4rem;
-            border: 1px solid #a561fb;
+            border: 1px solid #ff6600;
             border-radius: 0.4rem;
-            color: #a561fb;
+            color: #ff6600;
+            float: left;
+            font-size: 0.26rem;
+            margin-right: 0.1rem;
+            margin-top: 0.2rem;
+            font-family: '黑体',serif;
+          }
+          .tag-item2 {
+            padding: 0 0.15rem;
+            height: 0.4rem;
+            line-height: 0.4rem;
+            border: 1px solid #d7d7d7;
+            border-radius: 0.4rem;
+            color: #999999;
             float: left;
             font-size: 0.26rem;
             margin-right: 0.1rem;
@@ -661,8 +863,7 @@ export default {
       }
     }
     .center {
-      padding: 0.2rem 0;
-      border-bottom: 1px solid #ddd;
+      height: 1.2rem;
       & /deep/ .weui-cell {
         min-height: 0.32rem;
         padding: 0;
@@ -675,50 +876,165 @@ export default {
         }
       }
       p {
+        a{
+          -webkit-tap-highlight-color: rgba(0,0,0,0);
+        }
+        padding-top: 0.2rem;
         text-align: center;
-        width: 2.5rem;
-        height: 0.7rem;
+        width: 50%;
+        height: 1.2rem;
         span {
-          color: #717171;
+          color: #999999;
+          font-size: 0.24rem;
+          line-height: 0.5rem;
+          font-family: '\9ED1\4F53',serif;
+          padding-left: 0.1rem;
+          position: relative;
+          top: -0.1rem;
+        }
+        img{
+          height: 0.33rem;
+          width: 0.33rem;
+          position: relative;
+          top: -0.02rem;
+          left: 0.4rem;
         }
         & /deep/ .vux-datetime-value {
-          color: #717171;
-          min-height: 0.32rem;
+          text-align: center;
+          font-size: 0.33rem;
+          line-height: 0.5rem;
+          font-family: '黑体',serif;
+          color: #353535;
+          background-color: #fff;
         }
+        & /deep/ .vux-popup-picker-select {
+          width: 100%;
+          position: relative;
+          background-color: #fff;
+        }
+        & /deep/ .vux-cell-value{
+          text-align: center;
+          font-size: 0.33rem;
+          line-height: 0.5rem;
+          font-family: '黑体',serif;
+          color: #353535;
+          background-color: #fff;
+        }
+      }
+      p:first-child{
+        border-left: 1px solid #e5e5e5;
+        padding-left: 0.4rem;
       }
     }
     .down {
+      height: 1.2rem;
       p {
-        width: 2.5rem;
-        height: 0.7rem;
+        width: 50%;
+        height: 1.2rem;
         font-size: 0.3rem;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
         align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
         justify-content: center;
         img {
           width: 0.28rem;
           margin-left: 0.2rem;
         }
       }
+      p:first-child{
+        border-right: 1px solid #e5e5e5;
+      }
     }
   }
+  .tab{
+    margin-top: 0.44rem;
+    border-top: 1px solid #e5e5e5;
+  }
   .time-line {
-    padding: 0;
     & /deep/ .vux-timeline {
       padding: 0.2rem;
       .vux-timeline-item-content {
         padding: 0 0 0.3rem 0.3rem;
       }
     }
+    & /deep/ .vux-timeline-item-tail {
+      background-color: #3f82ff;
+    }
+    & /deep/ .vux-timeline-item-color {
+      background-color: #3f82ff;
+    }
+    .time{
+      padding-left: 0.46rem;
+      height: 0.8rem;
+      font-size: 0.24rem;
+      line-height: 0.5rem;
+      font-family: 'Arial Regular',serif;
+      color: #999999;
+      padding-top: 0.3rem;
+    }
     .timeline-wrap {
-      padding-left: 0.35rem;
-      color: #717171;
+      padding-left: 0.46rem;
       p {
-        margin-top: 0.1rem;
+        font-size: 0.28rem;
+        line-height: 0.5rem;
+        color: #353535;
+        font-family: '黑体',serif;
+        i{
+          color: #3e80f4;
+        }
       }
-      h4{
-        font-weight: normal;
+    }
+  }
+  .relevant{
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0.24rem;
+    .task{
+      width: 3.2rem;
+      height: 1.83rem;
+      border: 1px solid #e6e5e5;
+      border-radius: 0.1rem;
+      padding-top: 0.51rem;
+      padding-left: 0.41rem;
+      .item-left{
+        float: left;
+        width: 35%;
+        img{
+          width: 0.52rem;
+          height: 0.66rem;
+        }
       }
+      .item-right{
+        float: right;
+        width: 65%;
+        p:nth-child(1){
+          font-size: 0.33rem;
+          height: 0.5rem;
+          color: #353535;
+          font-family: '黑体',serif;
+        }
+        p:nth-child(2){
+          font-size: 0.24rem;
+          height: 0.5rem;
+          color: #999999;
+          font-family: '黑体',serif;
+          span{
+            color: #3d83ff;
+            font-family: 'Arial',serif;
+          }
+        }
+      }
+    }
+    .form{
+      width: 3.17rem;
+      height: 1.83rem;
+      border: 1px solid #e6e5e5;
+      border-radius: 0.1rem;
     }
   }
   .client-tab {
@@ -727,18 +1043,28 @@ export default {
     width: 100%;
     bottom: 0;
     left: 0;
-    .vux-tab-item {
-      span {
+    .footer{
+      background-color: #f8f8f8;
+      height: 1.08rem;
+      padding: 0.2rem;
+      li{
+        width: 25%;
+        float: left;
         display: inline-block;
-        border-radius: 28px;
-        height: 28px;
-        line-height: 28px;
-        padding: 0 0.2rem;
-      }
-    }
-    .vux-tab-selected {
-      span {
-        border: 1px solid #5977fe;
+        padding: 0 0.3rem;
+        p {
+          height: 0.22rem;
+          line-height: 0.5rem;
+          font-size: 0.22rem;
+          color: #666666;
+          font-family: '\9ED1\4F53',serif;
+        }
+        img{
+          width: 0.36rem;
+          height: 0.35rem;
+          position: relative;
+          left: 0.3rem;
+        }
       }
     }
   }
@@ -777,113 +1103,105 @@ export default {
     }
   }
   .client-chart {
-    margin-top: 4.3rem;
     .news-list-detail {
-      margin-top: 0.3rem;
-      .avatar {
-        display: block;
-        margin: 0 auto;
-        width: 1.5rem;
-        height: 1.5rem;
+      padding-bottom: 1.5rem;
+      .title{
+        height: 0.8rem;
+        line-height: 0.8rem;
+        text-align: left;
+        font-size: 0.3rem;
+        color: #353535;
+        font-family: '黑体',serif;
+        border-bottom: 1px solid #e5e5e5;
+        padding-left: 0.25rem;
       }
-      // p{
-      //   &:nth-of-type(2){
-      //     margin: 0.4rem 0;
-      //     font-size: 0.22rem;
-      //     color: #717171;
-      //   }
-      //   &:last-child{
-      //     height: 1rem;
-      //     padding: 0 0.15rem;
-      //   }
-      //   .icon{
-      //     fill: #999;
-      //   }
-      // }
-      .graph {
+      .graph{
         height: 0.7rem;
         line-height: 0.7rem;
-        padding: 0 0.3rem;
-        display: flex;
-        align-items: center;
-        span {
-          width: 2rem;
-          padding-left: 0.3rem;
+        padding: 0.46rem 0.4rem 0 0.8rem;
+        span{
+          float: left;
+          width: 1.5rem;
           position: relative;
-          &::after {
-            content: '';
-            width: 0.1rem;
-            height: 0.1rem;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-60%);
-            left: 0;
+          text-align: left;
+          font-size: 0.24rem;
+          line-height: 0.36rem;
+          color: #666666;
+          font-family: '黑体',serif;
+        }
+        strong{
+          float: left;
+          width: 4.2rem;
+          height: 0.7rem;
+          position: relative;
+          top: -0.17rem;
+          margin-left: 0.3rem;
+          color: #717171;
+          i{
+            display: inline-block;
+            height: 0.2rem;
+            border-radius: 0.1rem;
+            margin-right: 5px;
+            min-width: 1px !important;
+
           }
         }
-        i {
-          display: inline-block;
-          height: 0.2rem;
-          border-radius: 0.1rem;
-          margin-left: 0.5rem;
-          margin-right: 0.1rem;
-          max-width: 60%;
-        }
-        &:nth-of-type(3n+1) {
-          span::after {
-            background-color: #ff0000;
+        &:nth-child(7n+1){
+          i{
+            background: linear-gradient(left, #5a55d3, #5a55d3);
+            background: -webkit-linear-gradient(left, #5a55d3, #5a55d3);
           }
         }
-        &:nth-of-type(3n+2) {
-          span::after {
-            background-color: #653ffe;
+        &:nth-child(7n+2){
+          i{
+            background: linear-gradient(left, #3e84ff, #3e84ff);
+            background: -webkit-linear-gradient(left, #3e84ff, #3e84ff);
           }
         }
-        &:nth-of-type(3n+3) {
-          span::after {
-            background-color: #73a6fb;
+        &:nth-child(7n+3){
+          i{
+            background: linear-gradient(left, #0eae2c, #0eae2c);
+            background: -webkit-linear-gradient(left, #0eae2c, #0eae2c);
           }
         }
-        &:nth-of-type(5n + 1) {
-          i {
-            background: linear-gradient(left, #cc00ff, #b1181a);
-            background: -webkit-linear-gradient(left, #cc00ff, #b1181a);
+        &:nth-child(7n+4){
+          i{
+            background: linear-gradient(left, #8fc31f, #8fc31f);
+            background: -webkit-linear-gradient(left, #8fc31f, #8fc31f);
           }
         }
-        &:nth-of-type(5n + 2) {
-          i {
-            background: linear-gradient(left, #cc00ff, #5747fe);
-            background: -webkit-linear-gradient(left, #cc00ff, #5747fe);
+        &:nth-child(7n+5){
+          i{
+            background: linear-gradient(left, #00acc1, #00acc1);
+            background: -webkit-linear-gradient(left, #00acc1, #00acc1);
           }
         }
-        &:nth-of-type(5n + 3) {
-          i {
-            background: linear-gradient(left, #cc00ff, #6eaffb);
-            background: -webkit-linear-gradient(left, #cc00ff, #6eaffb);
+        &:nth-child(7n+6){
+          i{
+            background: linear-gradient(left, #fb9505, #fb9505);
+            background: -webkit-linear-gradient(left, #fb9505, #fb9505);
           }
         }
-        &:nth-of-type(5n + 4) {
-          i {
-            background: linear-gradient(left, #cd01fd, #fd5b66);
-            background: -webkit-linear-gradient(left, #cd01fd, #fd5b66);
-          }
-        }
-        &:nth-of-type(5n + 5) {
-          i {
-            background: linear-gradient(left, #c781f9, #0fba40);
-            background: -webkit-linear-gradient(left, #c781f9, #0fba40);
+        &:nth-child(7n+7){
+          i{
+            background: linear-gradient(left, #ff2854, #ff2854);
+            background: -webkit-linear-gradient(left, #ff2854, #ff2854);
           }
         }
       }
     }
     .care {
-      border-bottom: 1px solid #eee;
-      border-top: 1px solid #eee;
-      h5 {
-        margin: 0.4rem 0 0rem;
+      border-top: 1px solid #f8f8f8;
+      border-bottom: 0.1rem solid #f8f8f8;
+      .title{
+        height: 0.8rem;
+        line-height: 0.8rem;
+        text-align: left;
         font-size: 0.3rem;
-        color: #717171;
-        font-weight: normal;
+        color: #353535;
+        font-family: '黑体',serif;
+        border-bottom: 1px solid #e5e5e5;
+        padding-left: 0.25rem;
       }
       #care {
         width: 100%;
@@ -896,11 +1214,13 @@ export default {
         width: 33.33%;
         float: left;
         height: 0.5rem;
+        font-size: 0.3rem;
         line-height: 0.5rem;
         text-align: center;
-        color: #717171;
+        color: #666666;
         position: relative;
         margin-bottom: 0.4rem;
+        font-family: '黑体',serif;
         &::after {
           content: '';
           position: absolute;
@@ -922,11 +1242,16 @@ export default {
       }
     }
     .dynamic {
-      h5 {
-        margin: 0.4rem 0 0rem;
+      border-bottom: 0.1rem solid #f8f8f8;
+      .title{
+        height: 0.8rem;
+        line-height: 0.8rem;
+        text-align: left;
         font-size: 0.3rem;
-        color: #717171;
-        font-weight: normal;
+        color: #353535;
+        font-family: '黑体',serif;
+        border-bottom: 1px solid #e5e5e5;
+        padding-left: 0.25rem;
       }
       #dynamic {
         width: 100%;

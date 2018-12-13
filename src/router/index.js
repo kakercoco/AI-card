@@ -8,7 +8,7 @@ export default new Router({
     {
       path: '/',
       redirect: '/main/index',
-      meta: { title: 'AI天眼' }
+      meta: { title: '天眼' }
     },
     {
       path: '/main',
@@ -25,14 +25,9 @@ export default new Router({
         meta: { title: '消息' },
         component: () => import('@/views/home/message')
       }, {
-        path: 'news',
-        name: 'news',
-        meta: { title: '动态圈' },
-        component: () => import('@/views/home/news')
-      }, {
         path: 'work',
         name: 'work',
-        meta: { title: '工作首页' },
+        meta: { title: '工作' },
         component: () => import('@/views/work/index')
       }, {
         path: 'contact',
@@ -42,9 +37,15 @@ export default new Router({
       }, {
         path: 'self',
         name: 'self',
-        meta: { title: 'AI天眼' },
+        meta: { title: '我的' },
         component: () => import('@/views/home/self')
       }]
+    },
+    {
+        path: '/news',
+        name: 'news',
+        meta: { title: '动态圈' },
+        component: () => import('@/views/home/news')
     },
     {
       path: '/seeCard',

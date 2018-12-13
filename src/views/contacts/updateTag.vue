@@ -5,26 +5,56 @@
  * @Last Modified time: 2018-10-18 11:31:20
  */
 <template>
-  <div class="insert-tag">
-    <p>
+  <div class="insert-tag tag_list">
+    <div class="name">
       <span>标签名字</span>
       <input type="text" v-model="tagName" placeholder="未填写" maxlength="10" disabled>
+    </div>
+    <p class="add_member">
+      <a @click="insert">
+        <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon>
+        添加成员
+      </a>
     </p>
-    <p>
-      <span>标签成员</span>
-      <a @click="insert">添加成员 <x-icon type="ios-plus-outline" class="insert-icon" size="13"></x-icon></a>
-    </p>
-    <ul>
+    <ul class="customer_list index_list">
       <li v-for="(item, index) in checkedCustomer " :key="index">
         <img :src="item.wx_image" alt="">
         <span>{{item.wx_name}}</span>
       </li>
     </ul>
-    <div class="btn">
+    <div class="btn new_btn">
       <x-button type="primary" @click.native="save">确定</x-button>
     </div>
-    <div class="insert-client" v-if="clientList">
-      <ul>
+
+    <!--客户选择-->
+    <div v-transfer-dom>
+      <popup v-model="clientList">
+
+        <popup-header
+                left-text="取消"
+                right-text="完成"
+                title="选择客户"
+                :show-bottom-border="false"
+                @on-click-left="clientList=false"
+                @on-click-right="chooseCustomer"></popup-header>
+        <group gutter="0">
+          <div class="insert-client my_insert-client">
+            <ul class="customer_list">
+              <li v-for="(item, index) in customer" :key="index">
+                <img :src="item.wx_image" alt="">
+                <span>{{item.wx_name}}</span>
+                <check-icon :value.sync="item.status" class="fr"></check-icon>
+              </li>
+            </ul>
+
+          </div>
+
+        </group>
+      </popup>
+    </div>
+
+    <!--<div class="insert-client" v-if="clientList">
+      <ul class="customer_list">
         <li v-for="(item, index) in customer" :key="index">
           <img :src="item.wx_image" alt="">
           <span>{{item.wx_name}}</span>
@@ -34,12 +64,13 @@
       <div class="btn">
         <x-button type="primary" @click.native="chooseCustomer">确定</x-button>
       </div>
-    </div>
+    </div>-->
+
   </div>
 </template>
 
 <script>
-import { Group, XInput, XButton, CheckIcon } from 'vux'
+import { Group, XInput, XButton, CheckIcon,PopupHeader, Popup,TransferDom} from 'vux'
 import { setCookie } from '@/utils/auth'
 import {
   customerList,
@@ -49,7 +80,12 @@ import {
 
 export default {
   name: 'insertTag',
+    directives: {
+        TransferDom
+    },
   components: {
+      PopupHeader,
+      Popup,
     Group,
     XInput,
     CheckIcon,
@@ -171,20 +207,18 @@ export default {
       }
     }
   }
-  .btn {
-    padding: 0 1rem;
-    margin-top: 1rem;
-  }
+
   li {
-    height: 1rem;
+    height: 1.2rem;
     line-height: 0.8rem;
     border-bottom: 1px solid #eee;
-    padding: 0.1rem 0.3rem;
+    padding: 0.2rem 0;
     img {
       height: 100%;
       width: 0.8rem;
       float: left;
       margin-right: 0.4rem;
+      border-radius: 3px;
     }
     span {
       float: left;
@@ -202,10 +236,10 @@ export default {
   overflow: auto;
   width: 100%;
   li {
-    height: 1rem;
+    height: 1.2rem;
     line-height: 0.8rem;
     border-bottom: 1px solid #eee;
-    padding: 0.1rem 0.3rem;
+    padding: 0.2rem 0.3rem;
     img {
       height: 100%;
       width: 0.8rem;
@@ -217,16 +251,6 @@ export default {
       height: 100%;
       color: #717171;
     }
-  }
-  .btn {
-    // padding: 0 1rem;
-    // margin-top: 1rem;
-    padding: 0 1rem;
-    margin-top: 1rem;
-    position: fixed;
-    width: 100%;
-    padding: 0.35rem 1rem;
-    bottom: 0;
   }
 }
 </style>

@@ -18,7 +18,7 @@
 
           <div class="title">
             <p>
-              <span class="name">{{item.user_name}}</span>
+              <span class="name">{{item.username}}</span>
               <span class="tag">{{item.type == 0 ? '公司' : '个人'}}</span>
               <span class="time"></span>
             </p>
@@ -42,7 +42,7 @@
                 </span>
                   <span @click="open_commentDialog(item,i)"><img src="@/assets/img/comment2.png" alt="">评论</span>
                 </div>
-                <img src="@/assets/img/comment.png" alt="" class="fr comment-icon">
+                <img src="@/assets/icon/PingLun.jpg" alt="" class="fr comment-icon">
               </popover>
               <span>{{item.time}}</span>
             </div>
@@ -50,17 +50,15 @@
               <!--<div style="height: 0.15rem" v-if="item.parise && item.parise.rows.length > 0 && item.comment && item.comment.rows.length > 0"></div>-->
               <div class="comment-zan" v-if="item.parise && item.parise.rows.length > 0">
                 <img src="@/assets/img/heart-blue.png" alt="" class="heart">
-                <span v-for="(p_item,i) in item.parise.rows" :key="i" class="one_zan">
-                  <img :src="p_item.user_image" alt="">
-                  <i>{{p_item.user_name}}</i>
-                </span>
+                <div v-for="(p_item,i) in item.parise.rows" :key="i" class="one_zan">
+                  <i>{{p_item.user_name}}{{i == item.parise.rows.length -1 ? '' : ','}}</i>
+                </div>
               </div>
 
-              <ul>
+              <ul v-if="item.comment.rows && item.comment.rows.length > 0">
 
                 <li class="clearfix" v-for="(comment,comment_i) in item.comment.rows" :key="comment_i">
-                  <img :src="comment.user_image ? comment.user_image : '@/assets/img/comment.png'" class="fl">
-                  <p><span class="name">{{comment.user_name}}:</span>{{comment.content}}</p>
+                  <p class="yyf_new_one_comment_p"><span class="name">{{comment.user_name}}:</span>{{comment.content}}</p>
                 </li>
 
               </ul>
@@ -427,7 +425,7 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-  .news{
+  /*.news{
     height: 100%;
     overflow: auto;
     .scroller_frame{
@@ -658,6 +656,291 @@ export default {
   }
   .dialog{
     & /deep/ .weui-dialog{
+      width: 100%;
+      max-width: 100%;
+    }
+  }*/
+  .news {
+    height: 100%;
+    overflow: auto;
+    .comment_dialog {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: transparent;
+      z-index: 499;
+    }
+    .scroller_frame {
+      padding-bottom: 0.3rem;
+    }
+    .header {
+      height: 3rem;
+      background: url('~@/assets/img/tabbar.png') no-repeat top;
+      background-size: contain;
+      position: relative;
+      img {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        width: 1.6rem;
+        height: 1.6rem;
+      }
+      p {
+        text-align: center;
+        font-size: 0.36rem;
+        color: #717171;
+        position: absolute;
+        bottom: 0.5rem;
+        width: 100%;
+      }
+      & > i {
+        position: absolute;
+        right: 0.3rem;
+        bottom: 0.5rem;
+        border-radius: 0.7rem;
+        height: 0.7rem;
+        width: 0.7rem;
+        border: 1px solid #5977fe;
+        text-align: center;
+        line-height: 1rem;
+        .vux-x-icon {
+          width: 0.5rem;
+          fill: #5977fe;
+          height: 0.5rem;
+        }
+      }
+    }
+    .news-list {
+      position: relative;
+      padding-left: 1.5rem;
+      padding-right: 0.3rem;
+      margin-top: 0.4rem;
+      border-bottom:1px #ececec solid;
+      padding-bottom: 0.3rem;
+      & > .emotion {
+        position: absolute;
+        top: 0;
+        left: 0.25rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 0.1rem;
+      }
+      .title {
+        .name {
+          font-size: 0.34rem;
+          font-weight:bolder;
+          font-family:'黑体';;
+          color:#50659a;
+
+        }
+        .tag {
+          width:0.8rem;
+          height:0.36rem;
+          line-height:0.36rem;
+          overflow:hidden;
+          white-space:nowrap;
+          text-overflow:ellipsis;
+          font-size:0.24rem;
+          color:#989898;
+          border:1px #e7e7e7 solid;
+          text-align:center;
+          border-radius:3px;
+          margin-left:0.26rem ;
+
+        }
+        .time {
+          font-size: 0.24rem;
+          color: #717171;
+          float: right;
+          text-decoration: underline;
+        }
+      }
+      .content {
+        & > p {
+          width:100%;
+          min-height:0.5rem;
+          line-height:0.4rem;
+          font-size:0.34rem;
+          color:#000;
+          margin-top:0.15rem;
+          margin-bottom:0.18rem;
+          font-family:'黑体';
+
+        }
+        .img-wrap {
+          float: left;
+          width: 1.7rem;
+          height: 1.7rem;
+          overflow: hidden;
+          text-align: center;
+          margin-right:0.04rem;
+          margin-bottom:0.04rem;
+          background-color: #fff;
+          img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+          }
+        }
+        .img-one {
+          width: 4rem;
+          display: inline-block;
+          img {
+            width: 100%;
+            margin-top: 0.2rem;
+          }
+        }
+      }
+      .comment {
+        .icon-time {
+          height: 0.6rem;
+          line-height: 0.6rem;
+          span{
+            float:left;
+            color:#acacac;
+            font-size:0.26rem;
+            line-height:0.6rem;
+            font-family:'黑体';
+
+
+          }
+          .comment-icon {
+            width: 0.4rem;
+            margin-top: 0.1rem;
+          }
+        }
+        .comment-content {
+          background-color: #f3f3f5;
+          border-radius: 0.1rem;
+          margin-top: 0.2rem;
+          ul{
+            padding:0.1rem 0;
+
+          }
+        }
+        .comment-zan {
+          padding-top: 3px;
+          padding-bottom: 3px;
+          overflow: hidden;
+          border-bottom: 1px solid #ececec;
+          .heart {
+            width: 0.35rem;
+            // margin-left: 0.2rem;
+            margin: 0.1rem 0.1rem 0 0.1rem;
+            // margin-top: 0.1rem;
+            float: left;
+          }
+          .one_zan {
+            float: left;
+            height: 0.5rem;
+            margin-right:0.06rem;
+            display: inline-flex;
+            i {
+              font-size:0.3rem;
+              color:#40558a;
+              font-weight:bolder;
+              font-family:'黑体';
+              line-height:0.5rem;
+            }
+          }
+        }
+        .line {
+          border-bottom: 1px solid #ececec;
+          padding-left: 0.1rem;
+        }
+        li {
+          padding: 0 0.2rem;
+          position: relative;
+          width:100%;
+          font-size:0.24rem;
+          color:#919191;
+
+          .name{
+            font-size:0.3rem;
+            line-height:0.45rem;
+            font-weight:bold;
+            color:#50659a;
+            font-family:'黑体';
+            margin: 0;
+          }
+          &:last-child {
+            border: none;
+          }
+          img {
+            position: absolute;
+            top: 0.25rem;
+            left: 0.25rem;
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 0.1rem;
+          }
+          p {
+            font-family:'黑体';
+            line-height:0.45rem;
+            font-size: 0.3rem;
+            color:#000;
+          }
+        }
+      }
+    }
+  }
+  .popover-content {
+    padding: 0.15rem 0;
+    height: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    span {
+      float: left;
+      width: 1.6rem;
+      padding-left: 0.2rem;
+      font-family: '黑体';
+      font-size:0.3rem;
+      &:first-child {
+        border-right: 1px solid #fff;
+        margin-top: 1px;
+        font-family: '黑体';
+        font-size:0.3rem;
+      }
+    }
+    img {
+      width: 0.4rem;
+      float: left;
+      margin-right: 0.2rem;
+    }
+  }
+  .dialog-comment {
+    padding: 0.2rem;
+    input {
+      outline: none;
+      border: none;
+      height: 0.6rem;
+      float: left;
+      width: calc(100% - 1.6rem);
+      border-bottom: 1px solid #ddd;
+    }
+    img {
+      width: 0.4rem;
+      height: 0.4rem;
+      float: right;
+      margin-top: 0.1rem;
+      margin-right: 0.2rem;
+    }
+    button {
+      float: right;
+      outline: none;
+      border: none;
+      height: 0.6rem;
+      background-color: #fff;
+      border: 1px solid #5977fe;
+      width: 0.8rem;
+      border-radius: 0.1rem;
+      color: #717171;
+    }
+  }
+  .dialog {
+    & /deep/ .weui-dialog {
       width: 100%;
       max-width: 100%;
     }

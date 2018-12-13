@@ -7,13 +7,13 @@
 <template>
   <div class="insert-calendar">
     <group>
-      <x-textarea title="任务标题:" v-model="taskInfo.title" :show-counter="true" :max="10" :rows="2" class="line-flex"></x-textarea>
+      <x-textarea title="任务标题" v-model="taskInfo.title" :show-counter="true" :max="10" :rows="2" class="line-flex"></x-textarea>
     </group>
     <group>
-      <datetime :min-year="currentYear" title="任务时间：" v-model="taskInfo.his_time" format="YYYY-MM-DD HH:mm" style="height: 1.3rem;font-family: SimHei, Microsoft YaHei, 'Avenir', Helvetica, Arial, sans-serif;" required></datetime>
+      <datetime :start-date="currentTime" title="任务时间" v-model="taskInfo.his_time" format="YYYY-MM-DD HH:mm" style="height: 1.3rem;font-family: SimHei, Microsoft YaHei, 'Avenir', Helvetica, Arial, sans-serif;" required></datetime>
     </group>
     <group>
-      <x-textarea title="备注：" v-model="taskInfo.reference" placeholder="" autosize style="min-height: 2.56rem" :show-counter="true" :max="100"></x-textarea>
+      <x-textarea title="备注" v-model="taskInfo.reference" placeholder="" :show-counter="true" :max="100" :height="150"></x-textarea>
     </group>
     <div class="insert-client clearfix">
       <p>添加客户：</p>
@@ -26,28 +26,50 @@
       </span>
     </div>
     <p class="insert-btn">
-      <x-button type="primary" @click.native="save" class="button_1">保存</x-button>
+      <x-button type="primary" @click.native="save" :disabled="isDisabled" :class="isDisabled ? 'button_2' : 'button_1' ">保存</x-button>
       <!--<x-button type="primary" @click.native="save" class="button_2">保存</x-button>-->
     </p>
-    <div class="client-wrap" v-if="isInsert">
-      <div class="client-header">
-        <p @click="cancelSelected">取消</p>
-        <p>选择客户</p>
-        <p @click="chooseCustomer">完成</p>
-      </div>
-      <p class="client-search">
-        <search v-model="customerForm.keyword" ref="search" @on-change="getCustomerList"></search>
-      </p>
-      <ul>
-        <li v-for="(item, index) in customer" :key="index">
-          <check-icon :value.sync="item.status" class="fl"></check-icon>
-          <img :src="item.wx_image" alt="">
-          <span class="name">{{item.wx_name}}</span>
-          <!--<span class="time">{{item.date}}</span>-->
-        </li>
-      </ul>
-      <div class="nodata" v-if="no_data">暂无数据!</div>
+
+
+
+
+    <div v-transfer-dom>
+      <popup v-model="isInsert">
+
+        <popup-header
+                left-text="取消"
+                right-text="完成"
+                title="选择客户"
+                :show-bottom-border="false"
+                @on-click-left="cancelSelected"
+                @on-click-right="chooseCustomer"></popup-header>
+        <group gutter="0">
+          <div class="client-wrap">
+            <!--<div class="client-header">
+              <p @click="cancelSelected">取消</p>
+              <p>选择客户</p>
+              <p @click="chooseCustomer">完成</p>
+            </div>-->
+            <p class="client-search">
+              <search v-model="customerForm.keyword" ref="search" @on-change="getCustomerList"></search>
+            </p>
+            <ul>
+              <li v-for="(item, index) in customer" :key="index">
+                <check-icon :value.sync="item.status" class="fl"></check-icon>
+                <img :src="item.wx_image" alt="">
+                <span class="name">{{item.wx_name}}</span>
+                <!--<span class="time">{{item.date}}</span>-->
+              </li>
+            </ul>
+            <div class="nodata" v-if="no_data">暂无数据!</div>
+          </div>
+
+
+        </group>
+      </popup>
     </div>
+
+
   </div>
 </template>
 
@@ -61,13 +83,16 @@ import {
   XButton,
   Search,
   CheckIcon,
-  AlertModule
+  AlertModule,PopupHeader, Popup,TransferDom
 } from 'vux'
 import { customerList } from '@/api/contact'
 import { addOrEditTask, getTaskDetail } from '@/api/task'
 
 export default {
   name: 'addTask',
+    directives: {
+        TransferDom
+    },
   components: {
     Group,
     PopupRadio,
@@ -77,11 +102,21 @@ export default {
     Search,
     CheckIcon,
     Datetime,
-    AlertModule
+    AlertModule,
+      PopupHeader,
+      Popup,
   },
   data () {
     return {
-      currentYear: parseInt(`${new Date().getFullYear()}`),
+      isDisabled: false,
+      currentMinutes: parseInt(`${new Date().getMinutes()}`),
+      minList: [],
+      currentHour: parseInt(`${new Date().getHours()}`),
+      currentTime: `${new Date().getFullYear()}-${
+        new Date().getMonth() + 1 < 10
+          ? `0${new Date().getMonth() + 1}`
+          : new Date().getMonth() + 1
+      }-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
       month: this.$route.query.month,
       calendarType: 0,
       customer: [], // 所有客户列表
@@ -110,7 +145,20 @@ export default {
       id: this.$route.query.id
     }
   },
+  computed: {},
   methods: {
+    /*    clickTime () {
+      this.$nextTick(function () {
+        this.getMinutes()
+      })
+    }, */
+    getMinutes () {
+      let minList = []
+      for (let i = this.currentMinutes; i < 61; i++) {
+        minList.push(i.toString())
+      }
+      this.minList = minList
+    },
     openChooseCustomer () {
       this.isInsert = true
     },
@@ -145,12 +193,13 @@ export default {
       }) */
     },
     save () {
+      this.$vux.loading.show({
+          text: 'Loading'
+      })
       let userIdList = []
       let userIds = ''
-      this.customer.forEach(element => {
-        if (element.status) {
-          userIdList.push(`${element.id}`)
-        }
+      this.customerCheckList.forEach(element => {
+        userIdList.push(`${element.id}`)
       })
       if (userIdList.length > 0) {
         userIds = userIdList.join(',')
@@ -158,7 +207,7 @@ export default {
       this.taskInfo.add_user = userIds
       let data = {
         id: this.id === undefined ? '' : this.id,
-        title: this.taskInfo.title,
+        title: this.taskInfo.title.replace(/(^\s*)|(\s*$)/g, ''),
         type: 5,
         time: this.taskInfo.his_time,
         add_user: userIds,
@@ -169,6 +218,7 @@ export default {
           title: '提示',
           content: '标题不能为空'
         })
+        this.$vux.loading.hide()
         return
       }
       if (data.time === '' || data.time === 0) {
@@ -176,6 +226,7 @@ export default {
           title: '提示',
           content: '时间不能为空'
         })
+        this.$vux.loading.hide()
         return
       }
       if (data.add_user === '') {
@@ -183,11 +234,14 @@ export default {
           title: '提示',
           content: '关联客户不能为空'
         })
+        this.$vux.loading.hide()
         return
       }
       // 新增或编辑任务
       addOrEditTask(data).then(res => {
+        this.$vux.loading.hide()
         if (res.code === 200) {
+          this.isDisabled = false
           this.$router.back(-1)
           /* AlertModule.show({
             title: '提示',
@@ -195,11 +249,14 @@ export default {
           }) */
           // this.$router.back(-1)
         } else {
+          this.isDisabled = false
           AlertModule.show({
             title: '提示',
             content: res.msg
           })
         }
+      }).catch((err)=>{
+          this.$vux.loading.hide()
       })
     },
     getCustomerList () { //  获取客户列表
@@ -279,6 +336,7 @@ export default {
   watch: {
   },
   mounted () {
+    this.getMinutes()
     this.getCustomerList() // 获取客户列表
     if (this.id !== undefined && this.id !== '') {
       this.getTaskInfo()
@@ -299,6 +357,9 @@ export default {
     .show-icon {
       margin-right: 0.2rem;
       width: 0.32rem;
+    }
+    & /deep/ .vux-check-icon > .weui-icon-success:before, .vux-check-icon > .weui-icon-success-circle:before {
+      color: #3c7df0;
     }
     .line-flex {
       align-items: center;
@@ -382,6 +443,7 @@ export default {
         .vux-cell-value {
           color: #5e5e5e;
           font-size: 0.33rem;
+          padding-left: 0.25rem;
         }
       }
       textarea {
@@ -432,17 +494,23 @@ export default {
     height: auto;
   }
   .client-wrap {
-    position: absolute;
-    top: 0;
-    left: 0;
     background-color: #fff;
-    height: 100%;
+    height:10rem;
     overflow: auto;
     width: 100%;
     padding-bottom: 1.5rem;
     font-family: SimHei, Microsoft YaHei, 'Avenir', Helvetica, Arial, sans-serif;
     .client-search{
       height: 1rem;
+      .vux-search-fixed {
+        position: fixed;
+        left: 0;
+        top: 42px !important;
+        z-index: 5;
+        background: #ffffff;
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+      }
       & /deep/ .weui-search-bar__label span{
         display: inline-block;
         font-size: 14px;

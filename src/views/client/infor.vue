@@ -19,12 +19,12 @@
         <datetime v-model="inforForm.birthday" @on-confirm='choseBirth'>
           <p slot="title" class="my-label">生日时间</p>
         </datetime>
-        <p class="update"><check-icon :value.sync="is_calendar" @click.native="updateCalendar"></check-icon>同步到销售日历 </p>
+        <!--<p class="update"><check-icon :value.sync="is_calendar" @click.native="updateCalendar"></check-icon>同步到销售日历 </p>-->
       </div>
-      <x-switch title="屏蔽他的消息推送" v-model="inforForm.is_shield_employ" :value-map="[0,1]"></x-switch>
+      <x-switch title="屏蔽消息推送" v-model="inforForm.is_shield_employ" :value-map="[0,1]" class="Masking_message"></x-switch>
       <x-textarea title="备注" v-model="inforForm.desc" autosize style='font-size:0.3rem'></x-textarea>
     </group>
-    <p class="btn">
+    <p class="my_btn">
       <x-button type="primary" @click.native="save">保存</x-button>
     </p>
   </div>
@@ -154,10 +154,11 @@ export default {
   }
   & /deep/ .weui-cells{
     .weui-label{
-      font-size: 0.3rem;
-      color: #717171;
+      font-size: 0.28rem;
+      color: #999999;
       font-weight: normal;
-      width: 3rem !important;
+      width: 2rem !important;
+      font-family: '黑体';
     }
     .vux-x-textarea{
       .weui-label{
@@ -165,6 +166,8 @@ export default {
       }
     }
     .weui-input{
+      color: #353535;
+      font-family: '黑体';
       font-size: 0.28rem;
     }
     .my-birthday{
@@ -172,8 +175,11 @@ export default {
       .my-label{
         color: #717171;
         font-weight: normal;
-        font-size: 0.3rem;
+        font-size: 0.28rem;
         float: left;
+        font-family: '黑体';
+        width: 2rem;
+        color: #999;
       }
       .vux-datetime-value{
         font-size: 0.28rem;
@@ -184,6 +190,8 @@ export default {
       .vux-datetime{
         width: 60%;
         display: inline-block;
+        float: left;
+        margin-top: 0.04rem;
       }
       .update{
         float: right;
@@ -196,10 +204,11 @@ export default {
     .vux-cell-bd{
       flex: 0;
       .vux-label{
-        font-size: 0.3rem;
-        color: #717171;
+        font-size: 0.28rem;
+        color: #999;
+        font-family: '黑体';
         font-weight: normal;
-        width: 3rem !important;
+        width: 2rem !important;
       }
     }
     .weui-cell__ft{
@@ -208,7 +217,10 @@ export default {
       }
       font-size: 0.28rem;
       .vux-cell-value{
-        color: #333;
+        color: #353535;
+        float: left;
+        font-family: '黑体';
+        font-size: 0.28rem;
       }
       &:after{
         display: none;
@@ -219,5 +231,7 @@ export default {
     margin-top: 1rem;
     padding: 0 1rem;
   }
+
+
 }
 </style>

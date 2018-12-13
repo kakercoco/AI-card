@@ -30,11 +30,19 @@
           </div>
           <div class="content clearfix">
 
-            <p>{{item.title}}</p>
-            <span v-for="(img_item, img_index) in item.cover" :key="img_index" :class="{'img-one': pic_list.length === 1}" class="img-wrap">
-              <img :src="img_item.src" class="previewer-demo-img" @click="show(img_item)" v-if="item.type == 1">
-              <img :src="img_item.src" class="previewer-demo-img" @click="to_details(item)" v-if="item.type == 0">
-            </span>
+            <p v-if="item.type == 1">{{item.title}}</p>
+            <div v-for="(img_item, img_index) in item.cover" :key="img_index">
+              <span :class="{'img-one': pic_list.length === 1}" class="img-wrap" v-if="item.type == 1">
+                <img :src="img_item.src" class="previewer-demo-img" @click="show(img_item)">
+              </span>
+
+              <div class="new_yyf_to_details" @click="to_details(item)" v-if="item.type == 0">
+                <img :src="img_item.src" class="previewer-demo-img">
+                <p>{{item.title}}</p>
+              </div>
+
+            </div>
+
           </div>
           <div class="comment ">
             <div class="icon-time">
@@ -46,23 +54,28 @@
                   </span>
                   <span @click="open_commentDialog(item,i)"><img src="@/assets/img/comment2.png" alt="">评论</span>
                 </div>
-                <img src="@/assets/img/comment.png" alt="" class="fr comment-icon">
+                <img src="@/assets/icon/PingLun.jpg" alt="" class="fr comment-icon">
               </popover>
               <span>{{item.time}}</span>
             </div>
             <div class="comment-content">
               <!--<div style="height:10px" v-if="item.praise && item.praise.rows.length > 0 && item.comment && item.comment.rows.length > 0"></div>-->
-              <div :class="item.comment.rows.length > 0?'comment-zan line':'comment-zan'" v-if="item.praise && item.praise.rows.length > 0">
+              <div class="comment-zan line" v-if="item.praise && item.praise.rows.length > 0">
                 <img src="@/assets/img/heart-blue.png" alt="" class="heart">
+                <!--<span class="heart-outline">-->
+                  <!--<x-icon type="ios-heart-outline" size="18"></x-icon>-->
+                <!--</span>-->
+
                 <div v-for="(p_item,i) in item.praise.rows" :key="i" class="one_zan">
-                  <img :src="p_item.user_image" alt="">
-                  <i>{{p_item.user_name}}</i>
+                  <i>{{p_item.user_name}}{{i == item.praise.rows.length -1 ? '' : ','}}</i>
                 </div>
               </div>
-              <ul>
-                <li class="clearfix" v-for="(comment,comment_i) in item.comment.rows" :key="comment_i">
-                  <img :src="comment.user_image ? comment.user_image : Head_portrait" class="fl">
-                  <p><span class="name">{{comment.user_name}}:</span>{{comment.content}}</p>
+              <ul v-if="item.comment.rows && item.comment.rows.length > 0">
+                <li class="clearfix new_one_comment" v-for="(comment,comment_i) in item.comment.rows" :key="comment_i">
+                  <p class="yyf_new_one_comment_p">
+                    <span class="name">{{comment.user_name}}:</span>
+                    {{comment.content}}
+                  </p>
                 </li>
 
               </ul>
@@ -166,7 +179,8 @@ export default {
       comment_index: null,
       comment_layer: false,
       popover_Rendering: true,
-      Head_portrait: Head_portrait
+      Head_portrait: Head_portrait,
+        is_send:false
 
     }
   },
@@ -348,6 +362,11 @@ export default {
 
     // 评论发送
     comment_send (comment_content) {
+        if(this.is_send){
+            return
+        }
+        this.is_send = true;
+
       if (this.comment_obj === null || this.comment_index === null) {
         this.$vux.alert.show({
           title: '提示',
@@ -367,6 +386,7 @@ export default {
         dynamic_id,
         content
       }).then(e => {
+          this.is_send = false;
         if (e.code === 200) {
           const obj = {
             user_image: this.$store.state.user.info.image,
@@ -386,6 +406,7 @@ export default {
         }
       })
         .catch(() => {
+            this.is_send = false;
           this.$vux.alert.show({
             title: '提示',
             content: '评论发生错误，请重新操作！'
@@ -479,29 +500,38 @@ export default {
     padding-left: 1.5rem;
     padding-right: 0.3rem;
     margin-top: 0.4rem;
+    border-bottom:1px #ececec solid;
+    padding-bottom: 0.3rem;
     & > .emotion {
       position: absolute;
       top: 0;
-      left: 0.3rem;
+      left: 0.25rem;
       width: 1rem;
       height: 1rem;
       border-radius: 0.1rem;
     }
     .title {
       .name {
-        font-size: 0.32rem;
-        font-weight: bold;
+        font-size: 0.34rem;
+        font-weight:bolder;
+        font-family:'黑体';;
+        color:#50659a;
+
       }
       .tag {
-        border: 1px solid #5977fe;
-        color: #5977fe;
-        font-size: 0.22rem;
-        height: 0.35rem;
-        line-height: 0.36rem;
-        border-radius: 0.35rem;
-        padding: 0 0.2rem;
-        display: inline-block;
-        margin-left: 0.5rem;
+        width:0.8rem;
+        height:0.36rem;
+        line-height:0.36rem;
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        font-size:0.24rem;
+        color:#989898;
+        border:1px #e7e7e7 solid;
+        text-align:center;
+        border-radius:3px;
+        margin-left:0.26rem ;
+
       }
       .time {
         font-size: 0.24rem;
@@ -512,18 +542,24 @@ export default {
     }
     .content {
       & > p {
-        font-size: 0.28rem;
-        color: #717171;
-        margin: 0.2rem 0;
+        width:100%;
+        min-height:0.5rem;
+        line-height:0.4rem;
+        font-size:0.34rem;
+        color:#000;
+        margin-top:0.15rem;
+        margin-bottom:0.18rem;
+        font-family:'黑体';
+
       }
       .img-wrap {
-        width: 33%;
         float: left;
-        height: 1.5rem;
+        width: 1.7rem;
+        height: 1.7rem;
         overflow: hidden;
         text-align: center;
-        padding-right: 0.05rem;
-        padding-bottom: 0.05rem;
+        margin-right:0.04rem;
+        margin-bottom:0.04rem;
         background-color: #fff;
         img {
           object-fit: cover;
@@ -542,63 +578,75 @@ export default {
     }
     .comment {
       .icon-time {
-        margin-top: 0.5rem;
         height: 0.6rem;
         line-height: 0.6rem;
+        span{
+          float:left;
+          color:#acacac;
+          font-size:0.26rem;
+          line-height:0.6rem;
+          font-family:'黑体';
+
+
+        }
         .comment-icon {
           width: 0.4rem;
           margin-top: 0.1rem;
         }
       }
       .comment-content {
-        background-color: #f5f5f5;
+        background-color: #f3f3f5;
         border-radius: 0.1rem;
         margin-top: 0.2rem;
+        ul{
+          padding:0.1rem 0;
+
+        }
       }
       .comment-zan {
-        padding-top: 7px;
+        padding-top: 3px;
+        padding-bottom: 3px;
         overflow: hidden;
         .heart {
-          width: 0.4rem;
+          width: 0.35rem;
           // margin-left: 0.2rem;
-          margin: 0.1rem 0.2rem 0 0.2rem;
+          margin: 0.1rem 0.1rem 0 0rem;
           // margin-top: 0.1rem;
           float: left;
         }
         .one_zan {
           float: left;
           height: 0.5rem;
-          // margin-left: 0.2rem;
-          // margin-bottom:7px;
-          margin: 0 0.1rem 0.125rem 0.1rem;
+          margin-right:0.06rem;
           display: inline-flex;
-          align-items: center;
-          img {
-            width: 0.5rem;
-            height: 0.5rem;
-            border-radius: 0.1rem;
-          }
           i {
-            float: right;
-            // margin-top: 0.15rem;
-            margin-left: 0.1rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            height: 20px;
-            max-width: 50px;
+            font-size:0.3rem;
+            color:#40558a;
+            font-weight:bolder;
+            font-family:'黑体';
+            line-height:0.5rem;
           }
         }
       }
       .line {
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #ececec;
+        padding-left: 0.2rem;
       }
       li {
-        border-bottom: 1px solid #ddd;
-        padding: 0.25rem;
-        min-height: 1.1rem;
+        padding: 0 0.2rem;
         position: relative;
-        padding-left: 1rem;
+        width:100%;
+        font-size:0.24rem;
+        color:#919191;
+
+        .name{
+          font-size:0.3rem;
+          line-height:0.45rem;
+          font-weight:bold;
+          color:#50659a;
+          font-family:'黑体';
+          margin: 0;
+        }
         &:last-child {
           border: none;
         }
@@ -611,14 +659,10 @@ export default {
           border-radius: 0.1rem;
         }
         p {
-          padding-top: 0.1rem;
-          span {
-            font-size: 0.24rem;
-            color: #717171;
-            margin-right: 0.2rem;
-          }
-          font-size: 0.22rem;
-          color: #717171;
+          font-family:'黑体';
+          line-height:0.45rem;
+          font-size: 0.3rem;
+          color:#000;
         }
       }
     }
@@ -633,9 +677,13 @@ export default {
     float: left;
     width: 1.6rem;
     padding-left: 0.2rem;
+    font-family: '黑体';
+    font-size:0.3rem;
     &:first-child {
       border-right: 1px solid #fff;
       margin-top: 1px;
+      font-family: '黑体';
+      font-size:0.3rem;
     }
   }
   img {

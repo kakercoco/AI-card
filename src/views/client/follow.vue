@@ -6,14 +6,14 @@
  */
 <template>
   <div class="follow">
-    <group>
+    <group class="header">
       <popup-radio title="选择跟进常用语" :options="options" @on-hide="hide" v-model="option" v-if="Renderer">
       </popup-radio>
     </group>
-    <group title="跟进描述">
-      <x-textarea placeholder="输入文字" v-model="value" autosize></x-textarea>
+    <group title="跟进描述" class="body">
+      <x-textarea placeholder="输入文字" v-model="value" autosize :rows="4" :max="120"></x-textarea>
     </group>
-    <p class="btn">
+    <p class="yyf_new_btn" style="background: transparent">
       <x-button type="primary" @click.native="save">确定</x-button>
     </p>
   </div>
@@ -75,9 +75,9 @@ export default {
   overflow: auto;
   height: 100%;
   -webkit-overflow-scrolling: touch;
+    background: #f8f8f8;
   & /deep/ .weui-cells {
     margin-top: 0 !important;
-    padding: 10px 15px !important;
     &::before {
       border: none;
     }
@@ -94,6 +94,16 @@ export default {
       color: #717171;
     }
   }
+    .header{
+         background:#f8f8f8;
+         .weui-cell{
+             background:#f8f8f8;
+         }
+     }
+    .body{
+        background: #fff;
+        padding-top: 0.24rem;
+    }
   .btn {
     margin-top: 1rem;
     padding: 0 1rem;

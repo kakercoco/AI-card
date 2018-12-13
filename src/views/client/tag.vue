@@ -6,20 +6,43 @@
  */
 <template>
   <div class="client-tag">
-    <div class="clearfix" v-for="(item, index) in tagList" :key="index">
-      <h4>{{item.title}}</h4>
+    <div class="clearfix yyf_new_client-tag" v-for="(item, index) in tagList" :key="index"  :class="item.rows && item.rows.length > 0 ? 'class' + item.rows[0].type : ''">
+      <h4 class="title">{{item.title}}</h4>
       <ul>
-        <li v-for="(e, i) in item.rows" :key="i" :class="{active:e.checked}" @click="swithTag(e.id, e.checked)">{{e.tag_name}}</li>
+        <li v-for="(e, i) in item.rows" :key="i" :class="{active:e.checked}" @click="swithTag(e.id, e.checked)" class="one">{{e.tag_name}}</li>
       </ul>
     </div>
-    <div class="clearfix">
+    <div class="clearfix Other yyf_new_client-tag class1">
       <h4>其他</h4>
       <ul>
-        <li v-for="(item, index) in otherTagList" :key="index" :class="{active:item.checked}" @click="swithTag(item.id, item.checked)">{{item.tag_name}}</li>
-        <li><x-icon type="ios-plus-empty" class="icon-insert" @click.native="openDialog"></x-icon></li>
+        <li v-for="(item, index) in otherTagList" :key="index" :class="{active:item.checked}" @click="swithTag(item.id, item.checked)" class="one">{{item.tag_name}}</li>
+        <li class="add_btn"><x-icon type="ios-plus-empty" class="icon-insert" @click.native="openDialog"></x-icon></li>
       </ul>
     </div>
-    <p>
+
+    <div v-transfer-dom>
+      <popup v-model="insertTagDialog">
+
+        <popup-header
+                left-text="取消"
+                right-text="完成"
+                title="添加自定义标签"
+                :show-bottom-border="false"
+                @on-click-left="closeDialog"
+                @on-click-right="insert"></popup-header>
+        <group gutter="0">
+          <div class="my_insert-talk">
+            <group>
+              <x-input v-model="value" name="tag" :is-type="checkText" placeholder="4个字以内"></x-input>
+            </group>
+          </div>
+        </group>
+      </popup>
+    </div>
+
+
+
+    <!--<p>
       <x-dialog v-model="insertTagDialog" :hide-on-blur="true">
         <div class="insert-dialog">
           <h4>添加自定义标签</h4>
@@ -32,21 +55,26 @@
           </div>
         </div>
       </x-dialog>
-    </p>
+    </p>-->
   </div>
 </template>
 
 <script>
-import { XDialog, XInput, Group } from 'vux'
+import { XDialog, XInput, Group,Popup,TransferDom,PopupHeader} from 'vux'
 import { customerTag } from '@/api/customer'
 import { updateCustomerTag, deleteCustomerTag, insertCustomerTag } from '@/api/contact'
 
 export default {
   name: 'clientTag',
+    directives: {
+        TransferDom
+    },
   components: {
     XDialog,
     Group,
-    XInput
+    XInput,
+      PopupHeader,
+      Popup,
   },
   data () {
     return {
@@ -131,38 +159,36 @@ export default {
   -webkit-overflow-scrolling: touch;
   &>div{
     padding: 0.4rem 0.3rem;
+    padding-right:0 ;
     border-bottom: 1px solid #eee;
     h4{
       font-size: 0.3rem;
-      padding-left: 0.4rem;
+      padding-left: 0.3rem;
       position: relative;
       &::before{
         content: '';
-        width: 0.22rem;
-        height: 0.22rem;
+        width: 0.16rem;
+        height: 0.16rem;
         background-color: #72c1ff;
-        border-radius: 50%;
+        border-radius: 100%;
         position: absolute;
-        top: 0.1rem;
+        top: 0.12rem;
         left: 0;
       }
     }
     li{
-      margin-top: 0.4rem;
-      height: 0.5rem;
-      border-radius: 0.5rem;
-      line-height: 0.535rem;
-      width: 1.4rem;
+      margin-top: 0.15rem;
       text-align: center;
       background-color: #f4f4f4;
       float: left;
-      margin-right: 0.4rem;
+      margin-right: 0.15rem;
       color: #717171;
-      &:nth-of-type(4n){
-        margin-right: 0;
-      }
+      padding: 0.18rem 0.25rem;
+      font-family: '黑体';
+      font-size: 0.28rem;
+
       &.active{
-        background-color: #72c1ff;
+        background-color: #3c7df1;
         color: #fff;
       }
       .icon-insert{

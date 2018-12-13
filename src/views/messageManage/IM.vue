@@ -11,7 +11,7 @@
     <canvas id="myCanvas"></canvas>
     <ul class="chat-list" id="chatList" @click="close_bottom">
 
-      <li class="clearfix" v-for="(item,i) in $store.state.chat.char_list" :key="i" :data-index="i">
+      <li class="clearfix" v-for="(item,i) in $store.state.chat.char_list" :key="i" :data-index="i" :class="'my_type_' + item.type">
         <p class="tac">{{item.time}}</p>
         <div :class="item.from === 'me' ? 'right-message' : 'left-message'">
           <img :src="item.fead_src ? item.fead_src : '@/assets/img/moren.jpg'" v-if="item.from === 'me'">
@@ -43,7 +43,7 @@
 
     </ul>
     <div class="footer chat_foot">
-      <span @click="open_seech">话术库</span>
+      <span @click="open_seech" class="Speech_storehouse">话术库</span>
       <p class="my-textarea">
         <group>
           <x-textarea
@@ -56,10 +56,10 @@
                 @on-focus="onFocus"></x-textarea>
         </group>
       </p>
-      <div class="fr">
+      <div class="fr two_btn">
         <!--<img src="@/assets/icon/face.png" alt="" v-if="!isEmotion" @click="close_bottom">-->
-        <img src="@/assets/icon/face.png" alt="" @click="Emotio_open">
-        <img src="@/assets/icon/add.png" alt="" v-if="value.length <= 0" @click="pic_open">
+        <img src="@/assets/icon/xiao.png" alt="" @click="Emotio_open">
+        <img src="@/assets/icon/jia.png" alt="" v-if="value.length <= 0" @click="pic_open">
         <button v-else class="fr send" @click="formSubmit">发送</button>
       </div>
 
@@ -96,26 +96,36 @@
       </div>
     </div>
 
-    <div class="layer" v-if="slideDownTalk" @click="slideDownTalk = false"></div>
-    <div class="talk-list" v-if="slideDownTalk">
-      <h4>选择话术</h4>
-      <div class="talk-group">
-        <a class="active" :class="Speech.select_class_id == '' ? 'select_class' : ''" @click="speech_list_init">最近使用</a>
-        <a v-for="(item,i) in Speech.class_list" :key="i" :class="Speech.select_class_id == item.id ? 'select_class' : ''" @click="sele_class(item,i)">{{item.label}}</a>
-        <a></a>
-      </div>
-      <div class="talk-infor">
-        <div class="loading" v-if="Speech.is_loading">
-          <img src="@/assets/img/l.gif">
+    <!--<div class="layer" v-if="slideDownTalk" @click="slideDownTalk = false"></div>-->
+
+    <popup v-model="slideDownTalk">
+
+      <popup-header
+              title="选择话术"
+              :show-bottom-border="false"></popup-header>
+      <group gutter="0">
+        <div class="talk-list">
+          <div class="talk-group">
+            <a class="active" :class="Speech.select_class_id == '' ? 'select_class' : ''" @click="speech_list_init">最近使用</a>
+            <a v-for="(item,i) in Speech.class_list" :key="i" :class="Speech.select_class_id == item.id ? 'select_class' : ''" @click="sele_class(item,i)">{{item.label}}</a>
+            <a></a>
+          </div>
+          <div class="talk-infor">
+            <div class="loading" v-if="Speech.is_loading">
+              <img src="@/assets/img/l.gif">
+            </div>
+            <ul>
+              <li @click="select_Speech(item)" v-for="(item,i) in Speech.child_list" :key="i">
+                <p class="title">{{item.content}}</p>
+                <p class="content">{{item.keyword}}</p>
+              </li>
+            </ul>
+          </div>
+
         </div>
-        <ul style="padding-bottom: 40px">
-          <li @click="select_Speech(item)" v-for="(item,i) in Speech.child_list" :key="i">
-            <p class="title">{{item.content}}</p>
-            <p class="content">{{item.keyword}}</p>
-          </li>
-        </ul>
-      </div>
-    </div>
+
+      </group>
+    </popup>
 
     <div v-transfer-dom>
       <previewer :list="$store.state.chat.img_list" ref="previewer" :options="options"></previewer>
@@ -130,7 +140,8 @@ import {
   XTextarea,
   WechatEmotion as Emotion,
   Swiper,
-  SwiperItem
+  SwiperItem,
+    PopupHeader, Popup,
 } from 'vux'
 import { emojiAnalysis, __emojiObjs } from '@/utils/emoj'
 import axios from 'axios'
@@ -150,7 +161,9 @@ export default {
     Swiper,
     SwiperItem,
     tpl,
-    Previewer
+    Previewer,
+      PopupHeader,
+      Popup,
   },
   data () {
     return {
@@ -172,7 +185,7 @@ export default {
       },
       isPicture: false,
       c: {}, // canvas对象
-      img_max_width: 50,
+      img_max_width: 100,
       test: '',
       char_list_top: false, // 是否抬起
       Speech: {
@@ -422,6 +435,7 @@ export default {
             var png = UPNG.encode([dta.buffer], end_widht, end_height, 100)
             var base64 = that.arrayBufferToBase64(png)
             end_url = `data:image/jpeg;base64,${base64}`
+              console.log(base64);
           } catch (err) {
             end_url = url
           }
@@ -708,17 +722,15 @@ export default {
 
 <style lang='scss' rel='stylesheet/scss' scoped>
 .im {
-  background-color: #f4f2f2;
+  background-color: #f4f4f4;
   overflow: auto;
   height: calc(100% - 1.06rem);
   padding-bottom: 0.4rem;
-  /*-webkit-overflow-scrolling:touch;*/
-  /*overflow-scrolling:touch;*/
   .myback {
     position: fixed;
     top: 0;
     left: 0;
-    background: #fff;
+    background: #f4f4f4;
     z-index: -1;
     width: 100%;
     height: 100%;
@@ -751,15 +763,13 @@ export default {
           float: left;
           margin-left: 0.3rem;
           max-width: 5rem;
-          // padding: 0.2rem;
           padding: 0.1rem 0.2rem;
           position: relative;
-          // margin-top: 0.2rem;
           margin-top: 0.01rem;
           border: 1px solid #dedede;
           border-radius: 5px;
           .previewer-demo-img {
-            width: 1.56rem;
+            width: 2rem;
             height: auto;
           }
           &:after {
@@ -836,7 +846,7 @@ export default {
           margin-top: 10px;
         }
         .content {
-          background-color: #5977fe;
+          background-color: #4f8fff;
           float: right;
           margin-right: 0.3rem;
           max-width: 5rem;
@@ -848,12 +858,12 @@ export default {
           border-radius: 5px;
           color: #fff;
           .previewer-demo-img {
-            width: 1.56rem;
+            width: 2rem;
             height: auto;
           }
           &:after {
             content: '';
-            background-color: #5977fe;
+            background-color: #4f8fff;
             position: absolute;
             top: 0.2rem;
             right: -0.08rem;
@@ -876,25 +886,27 @@ export default {
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: #fff;
-    padding: 0.15rem 0.3rem;
+    background-color: #f7f8fa;
+    padding: 0.15rem 0;
+    border-top:1px #dfe0e2 solid;
     span {
       float: left;
-      border: 1px solid #5977fe;
+      border: 1px solid #3e84ff;
       border-radius: 5px;
       height: 38px;
       line-height: 38px;
       width: 60px;
       text-align: center;
-      color: #5977fe;
-      font-size: 15px;
+      font-size: 0.3rem;
+      font-family: '黑体';
+      color: #3e84ff;
     }
     img {
       width: 30px;
       height: 30px;
       margin-top: 3px;
       &:last-child {
-        margin-left: 0.3rem;
+        margin-left: 0.2rem;
       }
     }
     .send {
@@ -909,8 +921,8 @@ export default {
     .my-textarea {
       float: left;
       width: calc(100% - 170px);
-      margin-left: 10px;
-      border: 1px solid #5977fe;
+      margin-left:0.1rem;
+      border: 1px solid #dadada;
       border-radius: 5px;
       font-size: 18px;
       overflow: hidden;
@@ -985,46 +997,47 @@ export default {
     background: rgba(0, 0, 0, 0.4);
   }
   .talk-list {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 70%;
+
     background-color: #fff;
-    z-index: 99;
+    height: 9.34rem;
 
     h4 {
       height: 1rem;
       line-height: 1rem;
-      border-bottom: 1px solid #2f80ed;
+      border-bottom: 1px solid #e1e1e1;
       text-align: center;
       font-size: 0.36rem;
+      font-family: '黑体';
+      color: #000000;
+      font-weight: normal;
     }
     .talk-group {
       float: left;
       width: 1.6rem;
       height: 100%;
       overflow: auto;
-      padding: 0.2rem;
-      border-right: 1px solid #2f80ed;
+      padding: 0.2rem 0;
+      border-right: 1px solid #e1e1e1;
       a {
+        font-family: '黑体';
         width: 100%;
         display: block;
-        height: 0.7rem;
-        line-height: 0.7rem;
+        height: 0.6rem;
+        line-height: 0.6rem;
         text-align: center;
-        font-size: 0.26rem;
-        color: #2d2d2d;
+        font-size: 0.3rem;
+        color: #353535;
         overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+        padding: 0 0.14rem;
+        margin-bottom: 0.3rem;
+        border-right: 2px transparent solid;
       }
       .select_class {
-        color: #010bff;
+        border-right: 2px #3c7df0 solid;
       }
     }
     .talk-infor {
-      padding: 0.3rem;
+      padding: 0.2rem;
       float: left;
       width: calc(100% - 1.6rem);
       height: 100%;
@@ -1043,21 +1056,26 @@ export default {
         }
       }
       li {
-        height: 1.2rem;
-        border-bottom: 1px solid #ddd;
+        border: 1px solid #ebebeb;
         color: #717171;
-        padding: 0.2rem 0.3rem;
+        padding: 0.18rem;
         background: #fff;
+        border-radius: 3px;
+        margin-bottom: 0.2rem;
+        box-shadow: 2px 2px 10px 2px #e3e3e3;
         .title {
-          font-size: 0.26rem;
+          font-family: '黑体';
+          font-size: 0.33rem;
           height: 0.5rem;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
-          color: #333;
+          color: #353535;
         }
         .content {
+          font-family: '黑体';
           font-size: 0.24rem;
+          color: #bdbdbd;
           height: 0.35rem;
           overflow: hidden;
           white-space: nowrap;
@@ -1065,6 +1083,21 @@ export default {
         }
       }
     }
+  }
+  .Speech_storehouse{
+    margin-left: 0.1rem;
+  }
+  .my_type_img .content{
+    padding: 0rem !important;
+    border-radius:2px;
+    overflow: hidden;
+    background: transparent !important;
+    .img{
+
+    }
+  }
+  .my_type_img .content:after{
+    display: none !important;
   }
 }
 </style>

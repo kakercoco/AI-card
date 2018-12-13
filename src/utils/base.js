@@ -59,119 +59,230 @@ export function srcollBtoom () {
   }
 }
 
-
 /**
  * 去抖函数
  */
-export function mydebounce(func, wait, options) {
-    var lastArgs,
-        lastThis,
-        maxWait,
-        result,
-        timerId,
-        lastCallTime,
-        lastInvokeTime = 0,
-        leading = false,
-        maxing = false,
-        trailing = true;
+export function mydebounce (func, wait, options) {
+  var lastArgs,
+    lastThis,
+    maxWait,
+    result,
+    timerId,
+    lastCallTime,
+    lastInvokeTime = 0,
+    leading = false,
+    maxing = false,
+    trailing = true
 
-    if (typeof func != 'function') {
-        throw new TypeError(FUNC_ERROR_TEXT);
+  if (typeof func !== 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT)
+  }
+  wait = parseInt(wait) || 0
+
+  function invokeFunc (time) {
+    var args = lastArgs,
+      thisArg = lastThis
+
+    lastArgs = lastThis = undefined
+    lastInvokeTime = time
+    result = func.apply(thisArg, args)
+    return result
+  }
+
+  function leadingEdge (time) {
+    // Reset any `maxWait` timer.
+    lastInvokeTime = time
+    // Start the timer for the trailing edge.
+    timerId = setTimeout(timerExpired, wait)
+    // Invoke the leading edge.
+    return leading ? invokeFunc(time) : result
+  }
+
+  function remainingWait (time) {
+    var timeSinceLastCall = time - lastCallTime,
+      timeSinceLastInvoke = time - lastInvokeTime,
+      timeWaiting = wait - timeSinceLastCall
+
+    return maxing
+      ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke)
+      : timeWaiting
+  }
+
+  function shouldInvoke (time) {
+    var timeSinceLastCall = time - lastCallTime,
+      timeSinceLastInvoke = time - lastInvokeTime
+
+    return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+            (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait))
+  }
+
+  function timerExpired () {
+    var time = Date.now()
+    if (shouldInvoke(time)) {
+      return trailingEdge(time)
     }
-    wait = parseInt(wait) || 0;
+    timerId = setTimeout(timerExpired, remainingWait(time))
+  }
 
-    function invokeFunc(time) {
-        var args = lastArgs,
-            thisArg = lastThis;
+  function trailingEdge (time) {
+    timerId = undefined
 
-        lastArgs = lastThis = undefined;
-        lastInvokeTime = time;
-        result = func.apply(thisArg, args);
-        return result;
+    if (trailing && lastArgs) {
+      return invokeFunc(time)
     }
+    lastArgs = lastThis = undefined
+    return result
+  }
 
-    function leadingEdge(time) {
-        // Reset any `maxWait` timer.
-        lastInvokeTime = time;
-        // Start the timer for the trailing edge.
-        timerId = setTimeout(timerExpired, wait);
-        // Invoke the leading edge.
-        return leading ? invokeFunc(time) : result;
+  function cancel () {
+    if (timerId !== undefined) {
+      clearTimeout(timerId)
     }
+    lastInvokeTime = 0
+    lastArgs = lastCallTime = lastThis = timerId = undefined
+  }
 
-    function remainingWait(time) {
-        var timeSinceLastCall = time - lastCallTime,
-            timeSinceLastInvoke = time - lastInvokeTime,
-            timeWaiting = wait - timeSinceLastCall;
+  function flush () {
+    return timerId === undefined ? result : trailingEdge(Date.now())
+  }
 
-        return maxing ?
-            nativeMin(timeWaiting, maxWait - timeSinceLastInvoke) :
-            timeWaiting;
+  function debounced () {
+    var time = Date.now(),
+      isInvoking = shouldInvoke(time)
+
+    lastArgs = arguments
+    lastThis = this
+    lastCallTime = time
+
+    if (isInvoking) {
+      if (timerId === undefined) {
+        return leadingEdge(lastCallTime)
+      }
+      if (maxing) {
+        // Handle invocations in a tight loop.
+        timerId = setTimeout(timerExpired, wait)
+        return invokeFunc(lastCallTime)
+      }
     }
-
-    function shouldInvoke(time) {
-        var timeSinceLastCall = time - lastCallTime,
-            timeSinceLastInvoke = time - lastInvokeTime;
-
-        return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
-            (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+    if (timerId === undefined) {
+      timerId = setTimeout(timerExpired, wait)
     }
-
-    function timerExpired() {
-        var time = Date.now();
-        if (shouldInvoke(time)) {
-            return trailingEdge(time);
-        }
-        timerId = setTimeout(timerExpired, remainingWait(time));
-    }
-
-    function trailingEdge(time) {
-        timerId = undefined;
-
-        if (trailing && lastArgs) {
-            return invokeFunc(time);
-        }
-        lastArgs = lastThis = undefined;
-        return result;
-    }
-
-    function cancel() {
-        if (timerId !== undefined) {
-            clearTimeout(timerId);
-        }
-        lastInvokeTime = 0;
-        lastArgs = lastCallTime = lastThis = timerId = undefined;
-    }
-
-    function flush() {
-        return timerId === undefined ? result : trailingEdge(Date.now());
-    }
-
-    function debounced() {
-        var time = Date.now(),
-            isInvoking = shouldInvoke(time);
-
-        lastArgs = arguments;
-        lastThis = this;
-        lastCallTime = time;
-
-        if (isInvoking) {
-            if (timerId === undefined) {
-                return leadingEdge(lastCallTime);
-            }
-            if (maxing) {
-                // Handle invocations in a tight loop.
-                timerId = setTimeout(timerExpired, wait);
-                return invokeFunc(lastCallTime);
-            }
-        }
-        if (timerId === undefined) {
-            timerId = setTimeout(timerExpired, wait);
-        }
-        return result;
-    }
-    debounced.cancel = cancel;
-    debounced.flush = flush;
-    return debounced;
+    return result
+  }
+  debounced.cancel = cancel
+  debounced.flush = flush
+  return debounced
 }
 
+// 字符串转换为时间戳
+export function getDateTimeStamp (dateStr) {
+  return Date.parse(dateStr.replace(/-/gi, '/'))
+}
+
+export function parseTime (time, cFormat) {
+  if (arguments.length === 0) {
+    return null
+  }
+  const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
+  let date
+  if (typeof time === 'object') {
+    date = time
+  } else {
+    if (('' + time).length === 10) time = parseInt(time) * 1000
+    date = new Date(time)
+  }
+  const formatObj = {
+    y: date.getFullYear(),
+    m: date.getMonth() + 1,
+    d: date.getDate(),
+    h: date.getHours(),
+    i: date.getMinutes(),
+    s: date.getSeconds(),
+    a: date.getDay()
+  }
+  const timeStr = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
+    let value = formatObj[key]
+    if (key === 'a') return ['一', '二', '三', '四', '五', '六', '日'][value - 1]
+    if (result.length > 0 && value < 10) {
+      value = '0' + value
+    }
+    return value || 0
+  })
+  return timeStr
+}
+
+/* 把时间戳（秒）转换为分钟前的时间格式 */
+export function formatatTime (time, option) {
+  time = +time * 1000
+  const d = new Date(time)
+  const now = Date.now()
+  const diff = (now - d) / 1000
+  if (diff < 30) {
+    return '刚刚'
+  } else if (diff < 3600) { // less 1 hour
+    return Math.ceil(diff / 60) + '分钟前'
+  } else if (diff < 3600 * 24) {
+    return Math.ceil(diff / 3600) + '小时前'
+  } else if (diff < 3600 * 24 * 2) {
+    return '1天前'
+  } else if (diff < 3600 * 24 * 4) {
+    return '3天前'
+  } else if (diff < 3600 * 24 * 8) {
+    return '1周前'
+  }
+  if (option) {
+    return parseTime(time, option)
+  } else {
+    return d.getMonth() + 1 + '月' + d.getDate() + '日' + d.getHours() + '时' + d.getMinutes() + '分'
+  }
+}
+
+/**
+ * 是否为Null
+ * @param object
+ * @returns {Boolean}
+ */
+export function isNull (object) {
+  if (object == null || typeof object === 'undefined') {
+    return true
+  }
+  return false
+}
+
+/**
+ * 根据日期字符串获取星期几
+ * @param dateString 日期字符串（如：2016-12-29），为空时为用户电脑当前日期
+ * @returns {String}
+ */
+export function getWeek (dateString) {
+  var date
+  if (isNull(dateString)) {
+    date = new Date()
+  } else {
+    var dateArray = dateString.split('-')
+    date = new Date(dateArray[0], parseInt(dateArray[1] - 1), dateArray[2])
+  }
+  return '周' + '日一二三四五六'.charAt(date.getDay())
+}
+/**
+ * 根据日期字符串转换为*月*日周*（如12月7日周五）
+ * @param strDate 日期字符串（如：2016-12-29）
+ * @returns {String}
+ */
+export function formateDate (strDate) {
+  let week = getWeek(strDate)
+  let arr = strDate.split('-')
+  let temp = ['年', '月', '日']
+  let str = ''
+  for (let i = 1; i < arr.length; i++) {
+    str = str + arr[i] + temp[i]
+  }
+  return str + ' ' + week
+}
+
+export function err_Tips (content,that) {
+    that.$vux.alert.show({
+        title: '温馨提示',
+        content
+    })
+}

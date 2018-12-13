@@ -35,7 +35,7 @@
     </div>
     <scroller lock-x :bounce="true" use-pullup :pullup-config="config" @on-pullup-loading="loadMore" ref="loadingMore" height="-60">
       <div>
-        <ul class="produce-list">
+        <ul class="produce-list yyf_new_case_pro_one">
           <li v-for="(item, index) in produceList" :key="index">
             <div class="left">
               <img :src="item.img" alt="">
@@ -45,10 +45,12 @@
               <h4>{{item.title}}</h4>
               <h5>{{item.summary}}</h5>
               <p>
-                发布日期:{{Global.parseTime(item.createtime, '{y}-{m}-{d}')}}
-                <span v-show="item.status" @click="employcaseDetele(item)">取消</span>
-                <span v-show="!item.status" @click="employcaseSave(item)">推荐</span>
+                {{Global.parseTime(item.createtime, '{m}月{d}日')}}发布
               </p>
+              <div class="noe_btn">
+                <span v-show="item.status" @click="employcaseDetele(item)" class="can">取消推荐</span>
+                <span v-show="!item.status" @click="employcaseSave(item)" class="Recommend">推荐</span>
+              </div>
             </div>
           </li>
         </ul>
@@ -218,6 +220,8 @@ export default {
         width: 100%;
         text-align: center;
         float: left;
+        font-size: 0.32rem;
+        font-family: '黑体';
       }
     }
     .tab-wrap {
@@ -274,96 +278,6 @@ export default {
             height: 0.6rem;
             float: right;
             margin-top: 0.15rem;
-          }
-        }
-      }
-    }
-  }
-  .produce-list {
-    li {
-      height: 4rem;
-      padding: 0.5rem 0.3rem;
-      .left {
-        width: 3rem;
-        height: 3rem;
-        float: left;
-        position: relative;
-        border-radius: 0.1rem;
-        overflow: hidden;
-        margin-right: 0.2rem;
-        img {
-          width: 100%;
-          height: 100%;
-        }
-        p {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          height: 0.55rem;
-          line-height: 0.55rem;
-          text-align: center;
-          background-color: rgba(255, 255, 255, 0.5);
-          span {
-            &:first-child {
-              color: #5977fe;
-            }
-            &:last-child {
-              color: #fff;
-            }
-          }
-        }
-      }
-      .right {
-        width: 3.6rem;
-        height: 100%;
-        float: left;
-        position: relative;
-        h4 {
-          color: #5977fe;
-          font-size: 0.3rem;
-          height: 0.5rem;
-          line-height: 0.5rem;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          margin-top: 0.2rem;
-        }
-        h5 {
-          color: #717171;
-          font-size: 0.28rem;
-          height: 1.6rem;
-          line-height: 0.4rem;
-          overflow : hidden;
-          text-overflow: ellipsis;
-          display: -webkit-box;
-          -webkit-line-clamp: 4;
-          -webkit-box-orient: vertical;
-        }
-        p {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          height: 0.5rem;
-          line-height: 0.5rem;
-          color: #717171;
-          span {
-            float: right;
-            width: 0.9rem;
-            height: 0.4rem;
-            line-height: 0.45rem;
-            font-size: 0.22rem;
-            text-align: center;
-            border-radius: 0.4rem;
-            &:first-child {
-              background-color: #5977fe;
-              color: #fff;
-            }
-            &:last-child {
-              background-color: #d8d8d8;
-              color: #333;
-            }
           }
         }
       }

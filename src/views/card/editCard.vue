@@ -7,74 +7,102 @@
 <template>
   <div class="edit-card">
     <card-viewer ref="cardViewer"></card-viewer>
-    <div class="my-card" id="card" v-show="templateId !== null">
-      <img v-if="templateId !== 24 && templateId !== 25 && templateId !== 26 && templateId !== 27 && templateId !== 28" src="@/assets/card/1.png" alt="" class="card-bg">
-      <img v-if="templateId === 24" src="@/assets/card/4.png" alt="" class="card-bg">
-      <img v-if="templateId === 25" src="@/assets/card/5.png" alt="" class="card-bg">
-      <img v-if="templateId === 26" src="@/assets/card/6.png" alt="" class="card-bg">
-      <img v-if="templateId === 27" src="@/assets/card/7.png" alt="" class="card-bg">
-      <img v-if="templateId === 28" src="@/assets/card/8.png" alt="" class="card-bg">
-      <div class="card-infor " :class="selectedClass">
-        <p class="mark" v-if="templateId === 1 || templateId === 4 || templateId === 7 || templateId === 10 || templateId === 13 || templateId === 17 || templateId === 20 || templateId === 23 ">T云商务</p>
-        <p class="mark" v-if="templateId === 2 || templateId === 5 || templateId === 8 || templateId === 11 || templateId === 14 || templateId === 18 || templateId === 21">T云客服</p>
-        <p class="trueland">
-          <img src="@/assets/img/trueland.png" alt="">
-          <span v-if="templateId === 0 || templateId === 1 || templateId === 2">珍岛股份·上海</span>
-          <span v-if="templateId === 3 || templateId === 4 || templateId === 5">珍岛股份·无锡</span>
-          <span v-if="templateId === 6 || templateId === 7 || templateId === 8">珍岛股份·苏州</span>
-          <span v-if="templateId === 9 || templateId === 10 || templateId === 11">珍岛股份·宁波</span>
-          <span v-if="templateId === 12 || templateId === 13 || templateId === 14">珍岛股份·温州</span>
-          <span v-if="templateId === 15 || templateId === 16 || templateId === 17">珍岛股份·深圳</span>
-          <span v-if="templateId === 18 || templateId === 19 || templateId === 20">珍岛股份·成都</span>
-          <span v-if="templateId === 21 || templateId === 22 || templateId === 23">珍岛股份·杭州</span>
-          <span v-if="templateId === 24 || templateId === 25 || templateId === 26|| templateId === 27 || templateId === 28 || templateId === 29">{{cardInfor.company}}</span>
-        </p>
-        <!-- <p class="company">{{cardInfor.company}}</p> -->
-        <p class="bio">
-          <img :src="cardInfor.image" alt="" class="avatar">
-          <span class="name">{{cardInfor.username}}</span>
-          <span class="job">{{cardInfor.job}}</span>
-        </p>
-        <p class="phone">
-          <!-- 白色 -->
-          <img v-if="templateId === 26 " src="@/assets/nav/phone2.png" alt="">
-          <!-- 黄色 -->
-          <img v-else-if="templateId === 24 || templateId === 25" src="@/assets/nav/cellphone1.png" alt="">
-          <!-- 黑色 -->
-          <img v-else src="@/assets/nav/phone.png" alt="">
-          {{cardInfor.phone}}
-        </p>
-        <p class="email">
-          <!-- 白色 -->
-          <img v-if="templateId === 26 " src="@/assets/nav/email2.png" alt="" >
-          <!-- 黑色 -->
-          <img v-else src="@/assets/nav/email.png" alt="">
-          {{cardInfor.email}}
-        </p>
-        <p class="address">
-          <!-- 白色 -->
-          <img v-if="templateId === 26" src="@/assets/nav/map2.png" alt="" >
-          <!-- 黄色 -->
-          <img v-else-if="templateId === 24 || templateId === 25" src="@/assets/nav/address1.png" alt="">
-          <!-- 黑色 -->
-          <img v-else src="@/assets/nav/map.png" alt="">
-          {{cardInfor.address}}
-        </p>
-        <p class="tip">中国领先的SaaS级智能营销云平台</p>
+    <div class="new_card_frame">
+      <img src="@/assets/img/l.gif" class="my_loading">
+      <div class="my-card" id="card" v-show="templateId !== null">
+        <img v-if="select_template.type === 'zhendao'" src="@/assets/card/1.png" alt="" class="card-bg">
+        <img v-else :src="select_template.background_img" class="card-bg">
+        <!--<img v-if="templateId === 24" src="@/assets/card/15.png" alt="" class="card-bg">
+        <img v-if="templateId === 25" src="@/assets/card/16.png" alt="" class="card-bg">
+        <img v-if="templateId === 26" src="@/assets/card/4.png" alt="" class="card-bg">
+        <img v-if="templateId === 27" src="@/assets/card/5.png" alt="" class="card-bg">
+        &lt;!&ndash;<img v-if="templateId === 28" src="@/assets/card/8.png" alt="" class="card-bg">&ndash;&gt;
+        <img v-if="templateId === 28" src="@/assets/card/6.png" alt="" class="card-bg">
+        <img v-if="templateId === 29" src="@/assets/card/7.png" alt="" class="card-bg">-->
+
+        <!--名片展示区域-->
+        <div class="card-infor " :class="'card-template-' + (select_template.templateId+1)">
+          <p class="mark" v-if="select_template.type === 'zhendao'">{{select_template.subheading}}</p>
+          <p class="trueland">
+            <img src="@/assets/img/trueland.png" alt="">
+            <span v-if="select_template.type === 'zhendao'">{{select_template.company}}</span>
+            <span v-else>{{cardInfor.company}}</span>
+          </p>
+          <p class="bio">
+            <img :src="cardInfor.image" alt="" class="avatar">
+            <span class="name">{{cardInfor.username}}</span>
+            <span class="job">{{cardInfor.job}}</span>
+          </p>
+          <p class="phone">
+            <img :src="select_template.phone_icon">
+            {{cardInfor.phone}}
+          </p>
+          <p class="email">
+            <img :src="select_template.email_icon">
+            {{cardInfor.email}}
+          </p>
+          <p class="address">
+            <img :src="select_template.address_icon">
+            {{cardInfor.address}}
+          </p>
+          <p class="tip">中国领先的SaaS级智能营销云平台</p>
+        </div>
       </div>
     </div>
+
     <h5>名片样式</h5>
-    <scroller ref="scrollerEvent" lock-y :scrollbar-x='false' style="margin-top: 0.2rem;">
+    <!--<scroller ref="scrollerEvent" lock-y :scrollbar-x='false' class="card_small_img" style="margin-top: 0.2rem;">
       <div class="template-list">
         <img src="@/assets/card/1.png" alt="" :class="{active: index === templateId}" v-for="(item, index) in 24" :key="index" @click="changeTemplate(item, index)" v-if="haDate&&other_card_style==1">
         <img :src="item" alt="" :class="{active: index + 24 === templateId}" v-for="(item, index) in companyBgCard" :key="index + 24" @click="changeTemplate(item, index + 24)"  v-if="haDate&&other_card_style==0">
+        <span></span>
       </div>
-    </scroller>
+    </scroller>-->
+      <!--<div class="card_style_Choice">
+          <div class="card_small_img">
+              <div class="template-list">
+                  <img src="@/assets/card/1.png" alt="" :class="{active: index === templateId}" v-for="(item, index) in 24" :key="index" @click="changeTemplate(item, index)" v-if="haDate&&other_card_style==1">
+                  <img :src="item" alt="" :class="{active: index + 24 === templateId}" v-for="(item, index) in companyBgCard" :key="index + 24" @click="changeTemplate(item, index + 24)"  v-if="haDate&&other_card_style==0">
+              </div>
+          </div>
+      </div>-->
+
+    <div class="card_style_Choice">
+      <div class="card_small_img">
+        <div class="template-list">
+          <!--珍岛的模板按钮-->
+          <div class="one"
+               v-for="(item, index) in template_list"
+               :key="index" @click="changeTemplate(item, index)"
+               :class="{active: select_template.templateId == item.templateId}"
+               v-if="other_card_style === '1' && item.type === 'zhendao'">
+            <img src="@/assets/card/1.png">
+            <span>{{item.local + item.subheading}}</span>
+          </div>
+
+          <!--其他的模板按钮-->
+          <div class="one"
+               v-for="(item, index) in template_list"
+               :key="index" @click="changeTemplate(item, index)"
+               :class="{active: select_template.templateId == item.templateId}"
+               v-if="other_card_style === '0' && item.type === 'other'">
+            <img :src="item.background_img">
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+
+
+
     <h5>名片头像</h5>
     <div class="card-avatar">
-      <img :src="cardInfor.image" alt="">
       <form action="" id="myFrom">
         <input type="file" accept="image/*;capture=camera" @change="setImage" name="avatar" id="avatar" />
+        <img :src="cardInfor.image">
+        <x-icon type="ios-plus-empty" size="50"></x-icon>
       </form>
       <div class="cropWrap" v-show="crop">
         <div style="width: 100%; height:300px; border: 1px solid gray; display: inline-block;">
@@ -88,7 +116,7 @@
         </p>
       </div>
     </div>
-    <h5>个人信息</h5>
+    <h5 class="have_line">个人信息</h5>
     <div class="self-message">
       <p>
         <i>*</i>
@@ -111,18 +139,25 @@
       <p class="address_">
         <i>*</i>
         <span>地址：</span>
-        <textarea placeholder="地址" v-model="cardInfor.address"></textarea>
+        <!--<textarea placeholder="地址" v-model="cardInfor.address"></textarea>-->
+        <x-textarea placeholder="地址" v-model="cardInfor.address" autosize :rows="1"></x-textarea>
       </p>
     </div>
-    <h5>个人简介</h5>
+    <h5 class="have_line">个人简介</h5>
     <div class="self-bio">
       <group>
         <x-textarea placeholder="请输入文字" v-model="cardInfor.content" autosize ref='selfBio'></x-textarea>
       </group>
     </div>
-    <h5>推荐产品 <span class="fr" @click="gotoProduce">产品管理</span></h5>
-    <div class="produce-list">
-      <!-- <p class="tac" v-if="cardInfor.goods_case.goods.length <= 0">暂无推荐商品</p> -->
+    <h5 class="pro_title">
+        推荐产品
+        <span class="fr" @click="gotoProduce">
+            产品管理
+            <x-icon type="ios-arrow-right" size="14"></x-icon>
+        </span>
+    </h5>
+
+    <div class="produce-list one_pro">
       <ul>
         <li v-for="(item, index) in cardInfor.goods_case.goods" :key="index">
           <img :src="item.product_img" alt="">
@@ -130,8 +165,16 @@
         </li>
       </ul>
     </div>
-    <h5>推荐案例 <span class="fr" @click="gotoCase">案例管理</span></h5>
-    <div class="case-list">
+
+    <h5 class="pro_title">
+        推荐案例
+        <span class="fr" @click="gotoCase">
+            案例管理
+            <x-icon type="ios-arrow-right" size="14"></x-icon>
+        </span>
+    </h5>
+
+    <div class="case-list one_pro">
       <p class="tac" v-if="cardInfor.goods_case.case.lenght <= 0">暂无推荐案例</p>
       <ul>
         <li v-for="(item, index) in cardInfor.goods_case.case" :key="index" class="card-shadow">
@@ -140,16 +183,22 @@
         </li>
       </ul>
     </div>
-    <h5>录制语音</h5>
+
+    <h5 class="have_line">录制语音</h5>
+
     <div class="self-audio">
-      <p @click="audioDialog = true">请点击录制新的语音 <x-icon type="ios-plus-outline"></x-icon>
+      <p @click="audioDialog = true" class="audio_title">
+        <span>请点击录制新的语音</span>
+        <x-icon type="ios-plus-outline"></x-icon>
       </p>
       <audio :src="cardInfor.audio" controls="controls" v-if="cardInfor.audio!=''"></audio>
     </div>
-    <h5>我的图片</h5>
+
+    <h5 class="have_line">我的图片</h5>
+
     <div class="self-img clearfix">
       <p v-for="(item, index) in albumList" :key="index" class="fl" v-if="item != ''">
-        <x-icon type="ios-close" class="icon-close" @click="removeAlbum(index)"></x-icon>
+        <x-icon type="ios-close" class="icon-close" @click="removeAlbum(index)" size="100"></x-icon>
         <img :src="item" alt="">
       </p>
       <span>
@@ -157,24 +206,46 @@
         <form action="" id="album">
           <input type="file" accept="image/*;capture=camera" @change="changeFile($event, 'album')" multiple />
         </form>
-        <x-icon type="ios-plus-empty" class="icon-insert"></x-icon>
+        <x-icon type="ios-plus-empty" size="50"></x-icon>
       </span>
     </div>
-    <h5>添加标签</h5>
+
+    <h5 class="have_line">添加标签</h5>
+
     <div class="self-tag clearfix">
       <ul>
         <li v-for="(item, index) in cardInfor.tag" :key="index">{{item.tag_name}}<x-icon type="ios-minus" class="icon-delete" @click.native="removeTag(index,item.id)"></x-icon>
         </li>
-        <li>
+        <li class="add">
           <x-icon type="ios-plus-empty" class="icon-insert" @click.native="openTagDialog"></x-icon>
         </li>
       </ul>
     </div>
+
     <p class="self-btn">
       <x-button type="primary" @click.native="save(true)">保存</x-button>
     </p>
+      <div v-transfer-dom>
+          <popup v-model="insertTagDialog">
 
-    <x-dialog v-model="insertTagDialog" :hide-on-blur="true">
+              <popup-header
+                      left-text="取消"
+                      right-text="完成"
+                      title="添加自定义标签"
+                      :show-bottom-border="false"
+                      @on-click-left="closeTagDialog"
+                      @on-click-right="insertTag"></popup-header>
+              <group gutter="0">
+                  <div class="my_insert-talk">
+                      <group>
+                          <x-input placeholder="10个字以内" :max="10" v-model="tagKeyword"></x-input>
+                      </group>
+                  </div>
+              </group>
+          </popup>
+      </div>
+
+    <!--<x-dialog v-model="insertTagDialog" :hide-on-blur="true">
       <div class="insert-dialog">
         <h4>添加自定义标签</h4>
         <group>
@@ -185,7 +256,9 @@
           <button class="btn-primary" @click="insertTag">确定</button>
         </p>
       </div>
-    </x-dialog>
+    </x-dialog>-->
+
+
     <x-dialog v-model="audioDialog" :hide-on-blur="true">
       <div class="audio-dialog">
         <h4>录制语音</h4>
@@ -227,9 +300,11 @@ import {
   XTextarea,
   XDialog,
   XCircle,
-  AlertModule
+  AlertModule,
+    Popup,TransferDom,PopupHeader
 } from 'vux'
 import html2canvas from 'html2canvas'
+import template_list from '@/utils/card_template'
 import {
   updateCard,
   cardRead,
@@ -245,6 +320,9 @@ import cardViewer from '@/components/cardViewer/index'
 
 export default {
   name: 'editCard',
+    directives: {
+        TransferDom
+    },
   components: {
     Scroller,
     XInput,
@@ -256,23 +334,38 @@ export default {
     XCircle,
     AlertModule,
     VueCropper,
-    cardViewer
+    cardViewer,
+      PopupHeader,
+      Popup,
   },
   data () {
     return {
+        template_list,
       imgSrc: '', // 选择的头像图片路径
       cropImg: '', // 裁剪过后的图片路径base64
       crop: false, // 裁剪头像弹框
       // cardInfor: {
-      //   phone: '',
-      //   tel: '',
-      //   wechat: '',
-      //   email: '',
-      //   company: '',
-      //   address: '',
       //   goods_case: {
-      //     case: [],
-      //     goods: []
+      //     case: [
+      //         {
+      //             case_img:'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=1676807226,2726748277&fm=173&app=25&f=JPEG?w=640&h=412&s=5EDDA944C6F17D9E2B37D19A0300909B',
+      //             case_name:'测试案例一'
+      //         },
+      //         {
+      //             case_img:'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=1676807226,2726748277&fm=173&app=25&f=JPEG?w=640&h=412&s=5EDDA944C6F17D9E2B37D19A0300909B',
+      //             case_name:'测试案例二'
+      //         }
+      //     ],
+      //     goods: [
+      //         {
+      //             product_img:'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=1676807226,2726748277&fm=173&app=25&f=JPEG?w=640&h=412&s=5EDDA944C6F17D9E2B37D19A0300909B',
+      //             product_name:'测试产品一'
+      //         },
+      //         {
+      //             product_img:'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=1676807226,2726748277&fm=173&app=25&f=JPEG?w=640&h=412&s=5EDDA944C6F17D9E2B37D19A0300909B',
+      //             product_name:'测试产品二'
+      //         },
+      //     ]
       //   }
       // },
       haDate: false,
@@ -294,19 +387,31 @@ export default {
         require('@/assets/card/1.png')
       ],
       companyBgCard: [
+        require('@/assets/card/15.png'),
+        require('@/assets/card/16.png'),
         require('@/assets/card/4.png'),
         require('@/assets/card/5.png'),
+        // require('@/assets/card/8.png'),
         require('@/assets/card/6.png'),
-        require('@/assets/card/7.png'),
-        require('@/assets/card/8.png')
+        require('@/assets/card/7.png')
       ],
       recording: false,
       first_listen: 0,
       localId: '', // 录音id
       recordTime: 0,
-      showTime: 0
+      showTime: 0,
       // startTime: 0, // 录音开始时间
       // endTime: 0 // 录音结束时间
+      select_template:{
+          type:'',
+          templateId:0,
+          subheading:'',//副标题
+          company:'',//公司
+          background_img:'',//背景图片
+          phone_icon:'',//电话图片
+          email_icon:'',//邮件图片
+          address_icon:'',//地址图片
+      }
     }
   },
   methods: {
@@ -408,6 +513,7 @@ export default {
         cardRead().then(res => {
           const cardImg = res.data.card_image
           this.other_card_style = res.data.is_zhendao
+          //this.other_card_style = '1'
           this.haDate = true
           this.$store.state.user.cardInfor = res.data
           this.$store.state.user.cardInfor.close = false
@@ -430,12 +536,12 @@ export default {
           var el = document.querySelector('.template-list')
           console.log(this)
           if (res.data.is_zhendao === '1') {
-            el.setAttribute('style', 'width: 43.2rem')
+            //el.setAttribute('style', 'width: 43.2rem')
             this.selectedClass = `card-template-${this.cardInfor.style_id + 1}`
-            this.templateId = this.cardInfor.style_id
+            this.select_template.templateId = this.cardInfor.style_id;//获取当前选中的模板号
           } else {
             console.log('其他公司')
-            el.setAttribute('style', 'width: 9rem')
+            //el.setAttribute('style', 'width: 9rem')
             if (this.cardInfor.style_id === 0) {
               this.templateId = 24
               this.selectedClass = `card-template-${this.templateId + 1}`
@@ -445,9 +551,11 @@ export default {
             }
           }
           
+          //用style_id 搜索template_list，把那个对象赋值给select_template
+
 			var json ='{"w":500,"h":250,"item":[{"id":"bg","type":"img","round":false,"lock":true,"x":0,"y":0,"w":500,"h":250,"url":"http://img4.imgtn.bdimg.com/it/u=2735571713,1090379801&fm=26&gp=0.jpg","img":{"loadover":true},"visible":true},{"id":"face","type":"img","round":false,"lock":false,"x":10,"y":30,"w":150,"h":150,"url":"/static/img/p1.e765f44.png","img":{"loadover":true},"visible":true},{"id":"name","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":30,"w":200,"h":20,"fs":16,"color":"#00F","txt":"Name","align":"left","space":0},{"id":"career","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":50,"w":200,"h":20,"fs":16,"color":"#00F","txt":"Career","align":"left","space":0},{"id":"companyName","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":10,"y":10,"w":200,"h":20,"fs":16,"color":"#00F","txt":"companyName","align":"left","space":0},{"id":"address","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":10,"y":200,"w":200,"h":20,"fs":16,"color":"#00F","txt":"address","align":"left","space":0},{"id":"mail","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":70,"w":200,"h":20,"fs":16,"color":"#00F","txt":"mail","align":"left","space":0},{"id":"phone","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":90,"w":200,"h":20,"fs":16,"color":"#00F","txt":"phone","align":"left","space":0},{"id":"mobile","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":110,"w":200,"h":20,"fs":16,"color":"#00F","txt":"mobile","align":"left","space":0},{"id":"weixin","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":130,"w":200,"h":20,"fs":16,"color":"#00F","txt":"weixin","align":"left","space":0},{"id":1,"type":"img","round":false,"lock":false,"add":true,"txt":"新增图片1","x":341,"y":33,"w":50,"h":50,"url":"https://p2.music.126.net/Te-J_mQiEY6pB-U1jfvJrA==/109951163523347959.jpg?param=50y50","img":{"loadover":true},"visible":true},{"id":2,"font":"微软雅黑","visible":true,"type":"txt","lock":false,"add":true,"x":317,"y":94,"w":200,"h":20,"fs":16,"color":"#00F","txt":"新增文本2","align":"left","space":0}],"itemId":2}';
 			this.$refs.cardViewer.loadData(json, this.cardInfor);
-          
+
         })
       }
     },
@@ -681,10 +789,13 @@ export default {
       })
     },
     changeTemplate (val, index) {
-      this.seletedTemplate = val
-      this.templateId = index
-      this.cardInfor.style_id = index
-      this.selectedClass = `card-template-${index + 1}`
+      //this.seletedTemplate = val
+      //this.templateId = index
+      //this.cardInfor.style_id = index
+      //this.selectedClass = `card-template-${index + 1}`
+        this.select_template = val;
+        this.cardInfor.style_id = val.templateId;//模板id保存到提交的对象中
+
     },
     gotoProduce () {
       this.$store.state.user.cardInfor.close = true
@@ -800,7 +911,7 @@ export default {
     }
   },
   mounted () {
-    this.getCard()
+      this.getCard()
     var that = this
     this.$wechat.ready(() => {
       console.log('ready')
@@ -817,6 +928,7 @@ export default {
         that.percent = parseInt(that.recordTime / 600)
       }
     }, 100)
+
   }
 }
 </script>
@@ -826,64 +938,101 @@ export default {
   overflow: auto;
   height: 100%;
   -webkit-overflow-scrolling: touch;
-  padding: 0.5rem 0.3rem;
-  .my-card {
-    border-radius: 0.1rem;
-    overflow: hidden;
+  background: #f8f8f8;
+  .new_card_frame{
+    padding: 0.3rem;
     position: relative;
-    height: 4.9rem;
-    box-shadow: 0px 0px 0.5rem #e0dada;
-    .card-bg {
-      width: 100%;
-      height: 4.9rem;
+    min-height:4.76rem;
+    .my_loading{
       position: absolute;
-      top: 0;
-      left: 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      left: 3.5rem;
+      z-index: 10;
+      top: 2.13rem;
     }
-    .card-infor {
-      padding: 0.5rem 0.7rem 0.3rem 0.7rem;
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      font-weight: bold;
-      .phone {
-        height: 0.32rem;
+    .my-card {
+      border-radius: 0.1rem;
+      overflow: hidden;
+      position: relative;
+      z-index:11;
+      height: 4.16rem;
+      box-shadow: 0px 0px 0.5rem #e0dada;
+      .card-bg {
+        width: 100%;
+        height: 4.16rem;
+        position: absolute;
+        top: 0;
+        left: 0;
       }
-      .email {
-        height: 0.32rem;
-      }
-      .address {
-        height: 0.75rem; //调整高度,从0.72到0.75
-        overflow: hidden;
+      .card-infor {
+        padding: 0.5rem 0.7rem 0.3rem 0.7rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        font-family: '微软雅黑 Regular', '微软雅黑',serif;
+        .phone {
+          height: 0.32rem;
+        }
+        .email {
+          height: 0.32rem;
+        }
+        .address {
+          height: 0.75rem; //调整高度,从0.72到0.75
+          overflow: hidden;
+        }
       }
     }
   }
+
   h5 {
-    font-size: 0.34rem;
-    color: #717171;
-    height: 1rem;
-    line-height: 1.2rem;
+    font-size: 0.33rem;
+    color: #353535;
     font-weight: normal;
-    margin-top: 0.1rem;
+    font-family: '黑体';
+    padding: 0.2rem 0.3rem;
+    background: #fff;
     span {
       color: #5977fe;
       font-size: 0.26rem;
     }
   }
   .template-list {
+    background: #fff;
+    padding: 0;
     height: 1rem;
-    width: 52.2rem;
-    img {
-      width: 1.4rem;
+    display: flex;
+    flex-wrap: nowrap;
+    span{
+      float: left;
+      flex: 0 0 1.4rem;
+    }
+
+    .one {
+      flex: 0 0 1.6rem;
+      width: 1.6rem;
       height: 1rem;
       border-radius: 0.05rem;
-      margin-left: 0.4rem;
+      margin-right: 0.2rem;
       float: left;
       border: 1px solid #e3e3e3;
-      &:first-child {
-        margin-left: 0;
+      position: relative;
+      img{
+        width:100%;
+        height: 100%;
+      }
+      span{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 0.24rem;
+        line-height: 1rem;
+        text-align: center;
+
       }
       &.active {
         border: 1px solid #5977fe;
@@ -891,20 +1040,33 @@ export default {
     }
   }
   .card-avatar {
-    margin-top: 0.2rem;
+    background: #fff;
     position: relative;
+    padding: 0 0.3rem;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.1rem;
     img {
       width: 2rem;
       height: 2rem;
       border-radius: 0.1rem;
     }
     #myFrom {
-      position: absolute;
-      top: 0;
-      left: 0;
+      position: relative;
       width: 2rem;
       height: 2rem;
+      img{
+        position:absolute;
+        z-index: 9;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+      }
       input {
+        position:absolute;
+        z-index: 10;
+        top: 0;
+        left: 0;
         opacity: 0;
         height: 100%;
         width: 100%;
@@ -912,6 +1074,10 @@ export default {
     }
   }
   .self-message {
+    background: #fff;
+    padding:0 0.3rem;
+    margin-bottom: 0.1rem;
+    padding-bottom: 0.3rem;
     & /deep/ .weui-cells {
       &::after {
         display: none;
@@ -930,17 +1096,25 @@ export default {
       // height: 0.9rem;
       min-height: 0.9rem;
       padding: 0.2rem 0.3rem;
+      border-bottom: 1px #e5e5e5 solid;
+      overflow: hidden;
+      &:last-child{
+        border-bottom: 1px #e5e5e5 solid;
+      }
       i {
         position: absolute;
         top: 0.25rem;
         left: 0.12rem;
         color: red;
+        line-height: 0.5rem;
       }
       span {
-        font-size: 0.32rem;
-        color: #717171;
-        width: 1.5rem;
+        width: 1.2rem;
         float: left;
+        font-family: '微软雅黑';
+        font-size: 0.28rem;
+        color: #999999;
+        line-height: 0.5rem;
       }
       .vux-x-textarea.weui-cell {
         height: 50px;
@@ -960,26 +1134,30 @@ export default {
         height: 0.5rem;
         border: none;
         outline: none;
-        font-size: 0.34rem;
-        color: #777;
+        font-size: 0.28rem;
+        color: #353535;
+        font-family: '微软雅黑';
       }
     }
     p.address_ {
       textarea {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        margin-top: 0.06rem;
+        font-family: '微软雅黑';
         float: left;
         width: calc(100% - 1.5rem);
         border: none;
         outline: none;
-        height: 0.94rem;
         overflow: auto;
-        font-size: 0.34rem;
-        color: #777;
+        font-size: 0.28rem;
+        color: #353535;
         word-wrap: break-word;
       }
     }
   }
   .self-bio {
+    padding-bottom: 0.2rem;
+    background: #fff;
+    margin-bottom: 0.1rem;
     & /deep/ .weui-cells {
       .weui-cell {
         padding: 0 15px;
@@ -1006,30 +1184,6 @@ export default {
       overflow: hidden;
       width: 100%;
     }
-    li {
-      width: 2.1rem;
-      margin-right: 0.3rem;
-      margin-top: 0.3rem;
-      float: left;
-      &:nth-of-type(3n) {
-        margin-right: 0;
-      }
-      img {
-        display: block;
-        width: 100%;
-        height: 2.25rem;
-        border-radius: 0.1rem;
-      }
-      span {
-        display: block;
-        text-align: center;
-        margin-top: 0.3rem;
-        height: 0.4rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
   }
   .case-list {
     & > p {
@@ -1041,36 +1195,16 @@ export default {
       overflow: hidden;
       width: 100%;
     }
-    li {
-      width: 2.2rem;
-      margin-top: 0.3rem;
-      margin-right: 0.15rem;
-      float: left;
-      &:nth-of-type(3n) {
-        margin-right: 0;
-      }
-      img {
-        width: 100%;
-        height: 2.25rem;
-        border-radius: 0.1rem;
-      }
-      p {
-        text-align: center;
-        span {
-          width: 1.5rem;
-          height: 0.45rem;
-          line-height: 0.45rem;
-          display: inline-block;
-          border-radius: 0.1rem;
-          font-size: 0.28rem;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-      }
-    }
   }
   .self-audio {
+    padding: 0 0.3rem;
+    padding-bottom: 0.3rem;
+    margin-bottom: 0.1rem;
+    .audio_title{
+      height: 0.8rem;
+      line-height: 0.8rem;
+    }
+    background: #fff;
     & > p {
       text-align: center;
       font-size: 0.24rem;
@@ -1082,35 +1216,69 @@ export default {
       }
     }
     audio {
-      margin-top: 0.3rem;
       width: 100%;
     }
   }
   .self-img {
+    padding-left:0.44rem;
+    padding-top:0.3rem;
+    padding-bottom:0.3rem;
+    background: #fff;
+    margin-bottom: 0.1rem;
     p {
       position: relative;
+      width: 2.1rem;
+      height: 2.1rem;
+      margin-right: 0.2rem;
+      margin-bottom: 0.2rem;
+      float: left;
+
+
     }
     .icon-close {
       position: absolute;
       top: -0.15rem;
-      right: 0;
+      right: -0.15rem;
       width: 0.4rem;
       height: 0.4rem;
-      fill: red;
+      fill:#333333;
+      background: #fff;
+      border-radius: 100px;
+      border:1px #333333 solid;
     }
     img {
-      width: 2rem;
-      height: 2rem;
-      margin-right: 0.2rem;
-      margin-bottom: 0.2rem;
-      float: left;
-      border-radius: 0.1rem;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius:5px;
     }
     & > span {
       position: relative;
-      width: 2rem;
-      height: 2rem;
+      width: 2.1rem;
+      height: 2.1rem;
       float: left;
+      background: #f2f2f2;
+      border: 1px #cacaca solid;
+      border-radius: 3px;
+      form{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 9;
+        input{
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+      }
+      svg{
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        fill: #999999;
+        z-index: 8;
+      }
+
       .icon-insert {
         width: 2rem;
         height: 2rem;
@@ -1133,31 +1301,46 @@ export default {
     }
   }
   .self-tag {
+    background: #fff;
+    ul{
+      overflow: hidden;
+    }
     li {
-      margin-top: 0.4rem;
+      margin-top: 0.2rem;
       height: 0.5rem;
-      border-radius: 0.5rem;
+      border-radius:2px;
       line-height: 0.5rem;
       text-align: center;
-      background-color: #f4f4f4;
+      background-color: #ebf1ff;
       float: left;
-      margin-right: 0.4rem;
-      color: #717171;
-      padding: 0 0.3rem;
+      margin-right: 0.2rem;
+      color: #3a62c4;
+      padding: 0 0.35rem;
       position: relative;
+      font-family: '黑体';
+      font-size: 0.24rem;
       .icon-delete {
         position: absolute;
         top: 0;
-        right: 0;
-        fill: red;
-        width: 0.24rem;
-        height: 0.24rem;
+        right: -0.1rem;
+        fill: #333333;
+        width: 0.26rem;
+        height: 0.26rem;
       }
     }
   }
   .self-btn {
-    margin: 1rem 0;
-    padding: 0 1rem;
+    margin:0.3rem 0;
+    padding: 0 0.4rem;
+      button{
+          border-radius:3px;
+          background: #3c7df0;
+          font-family: '黑体';
+          font-size: 0.33rem;
+          color: #fff;
+          height: 0.87rem;
+          line-height: 0.87rem;
+      }
   }
   .insert-dialog {
     padding-bottom: 0.3rem;
@@ -1205,7 +1388,7 @@ export default {
   width: 100%;
   height: 100vh;
   background-color: #fff;
-  z-index: 3;
+  z-index: 30;
   .crop-btn {
     button {
       background-color: #5977fe;

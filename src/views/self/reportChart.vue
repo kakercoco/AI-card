@@ -13,71 +13,79 @@
       <tab-item @on-item-click="tabItemClick"><span>当月</span></tab-item>
       <tab-item @on-item-click="tabItemClick"><span style="border: none;">近30天</span></tab-item>
     </tab>
-    <div class="tab-list">
-      <ul>
-        <li>
-          <span>客户总数</span>
-          <span>{{dataInfor.user_num.num}}</span>
-        </li>
-        <li>
-          <span>跟进总数</span>
-          <span>{{dataInfor.follow_num.num}}</span>
-        </li>
-        <li>
-          <span>浏览总数</span>
-          <span>{{dataInfor.look_num.num}}</span>
-        </li>
-        <li>
-          <span>被转发总数</span>
-          <span>{{dataInfor.transmit_num.num}}</span>
-        </li>
-        <li>
-          <span>被保存总数</span>
-          <span>{{dataInfor.save_num.num}}</span>
-        </li>
-        <li>
-          <span>被点赞总数</span>
-          <span>{{dataInfor.good_num.num}}</span>
-        </li>
-      </ul>
-    </div>
-    <h3>成交率</h3>
-    <div class="funnel clearfix">
-      <div id="main">
-        <p>{{downChartInfor.num_1}}</p>
-        <p>{{downChartInfor.num_2}}</p>
-        <p>{{downChartInfor.num_3}}</p>
-        <p>{{downChartInfor.num_4}}</p>
+    <scroller
+            ref="my_scroller"
+            lock-x
+            height="-45">
+    <div>
+      <div class="tab-list">
+        <ul>
+          <li>
+            <span>客户总数</span>
+            <span>{{dataInfor.user_num.num}}</span>
+          </li>
+          <li>
+            <span>跟进总数</span>
+            <span>{{dataInfor.follow_num.num}}</span>
+          </li>
+          <li>
+            <span>浏览总数</span>
+            <span>{{dataInfor.look_num.num}}</span>
+          </li>
+          <li>
+            <span>被转发总数</span>
+            <span>{{dataInfor.transmit_num.num}}</span>
+          </li>
+          <li>
+            <span>被保存总数</span>
+            <span>{{dataInfor.save_num.num}}</span>
+          </li>
+          <li>
+            <span>被点赞总数</span>
+            <span>{{dataInfor.good_num.num}}</span>
+          </li>
+        </ul>
       </div>
-      <p>成交概率区间</p>
-      <ul>
-        <li>0~50%</li>
-        <li>50%~80%</li>
-        <li>80%~99%</li>
-        <li>100%</li>
-      </ul>
+      <h3>成交率</h3>
+      <div class="funnel clearfix">
+        <div id="main">
+          <p>{{downChartInfor.num_1}}</p>
+          <p>{{downChartInfor.num_2}}</p>
+          <p>{{downChartInfor.num_3}}</p>
+          <p>{{downChartInfor.num_4}}</p>
+        </div>
+        <p>成交概率区间</p>
+        <ul>
+          <li>0~50%</li>
+          <li>50%~80%</li>
+          <li>80%~99%</li>
+          <li>100%</li>
+        </ul>
+      </div>
+      <h3>客户兴趣占比</h3>
+      <div class="care clearfix">
+        <div id="care"></div>
+        <ul>
+          <li>对公司感兴趣</li>
+          <li>对产品感兴趣</li>
+          <li>对我感兴趣</li>
+        </ul>
+      </div>
+      <h3>客户与我互动</h3>
+      <div class="action">
+        <p v-for="(item, index) in downChartInfor.for_me" :key="index" class="graph" v-if="item.num.num>0">
+          <span>{{item.name}}</span>
+          <i :style="{width: item.num.num/forTotal*100 + '%'}"></i>
+          <b>{{item.num.num}}</b>
+        </p>
+      </div>
+      <h3>近30日客户活跃度</h3>
+      <div class="dynamic">
+        <div id="dynamic"></div>
+      </div>
     </div>
-    <h3>客户兴趣占比</h3>
-    <div class="care clearfix">
-      <div id="care"></div>
-      <ul>
-        <li>对公司感兴趣</li>
-        <li>对产品感兴趣</li>
-        <li>对我感兴趣</li>
-      </ul>
-    </div>
-    <h3>客户与我互动</h3>
-    <div class="action">
-      <p v-for="(item, index) in downChartInfor.for_me" :key="index" class="graph" v-if="item.num.num>0">
-        <span>{{item.name}}</span>
-        <i :style="{width: item.num.num/forTotal*100 + '%'}"></i>
-        <b>{{item.num.num}}</b>
-      </p>
-    </div>
-    <h3>近30日客户活跃度</h3>
-    <div class="dynamic">
-      <div id="dynamic"></div>
-    </div>
+    </scroller>
+
   </div>
 </template>
 
@@ -86,13 +94,14 @@
 const echarts = require('echarts/lib/echarts')
 require('echarts/lib/chart/pie');
 require('echarts/lib/chart/line');
-import { Tab, TabItem } from 'vux'
+import { Tab, TabItem,Scroller} from 'vux'
 import { getMyNums, getMyChart } from '@/api/chart'
 export default {
   name: 'reportChart',
   components: {
     Tab,
-    TabItem
+    TabItem,
+    Scroller
   },
   data () {
     return {
@@ -138,6 +147,11 @@ export default {
       }
     }
   },
+    watch:{
+        tabIndex(){
+            this.$refs.my_scroller.reset({top: 0})
+        }
+    },
   methods: {
     getMyTopChart () {
       const data = {
@@ -317,7 +331,6 @@ export default {
 
 <style lang='scss' rel='stylesheet/scss' scoped>
 .report-chart {
-  overflow: auto;
   height: 100%;
   h3 {
     height: 1.4rem;

@@ -11,33 +11,36 @@
       <!--<h5>服务消息</h5>-->
       <!--<p>暂无消息提醒</p>-->
     <!--</div>-->
-    <ul class="list-message">
-      <li class="card-shadow" v-for="(item, index) in $store.state.message.messageList" :key="index" @click="gotoIM(item)">
-        <badge :text="item.num" class="my-badge" v-if="item.num != 0"></badge>
-        <img :src="item.wx_image ? item.wx_image : '@/assets/img/moren.jpg'" alt="">
-        <div>
-          <p>
-            <span class="name">{{item.wx_name}}</span>
-            <span class="time">{{item.time}}</span>
-          </p>
-          <p v-if="item.last_content.type === 'text'">{{item.last_content.content}}</p>
-          <p v-if="item.last_content.type === 'img'">[一张图片，请点开查看详情！]</p>
-          <p v-if="item.last_content.type === 'shop'">[一个产品信息，请点开查看详情！]</p>
-        </div>
-      </li>
-    </ul>
+      <scroller height="100%" lock-x ref="scrollerBottom">
+        <ul class="list-message">
+          <li class="card-shadow new_list" v-for="(item, index) in $store.state.message.messageList" :key="index" @click="gotoIM(item)">
+            <badge :text="item.num" class="my-badge" v-if="item.num != 0"></badge>
+            <img :src="item.wx_image ? item.wx_image : '@/assets/img/moren.jpg'" alt="">
+            <div>
+              <p>
+                <span class="name">{{item.wx_name}}</span>
+                <span class="time">{{item.time}}</span>
+              </p>
+              <p v-if="item.last_content.type === 'text'">{{item.last_content.content}}</p>
+              <p v-if="item.last_content.type === 'img'">[一张图片，请点开查看详情！]</p>
+              <p v-if="item.last_content.type === 'shop'">[一个产品信息，请点开查看详情！]</p>
+            </div>
+          </li>
+        </ul>
+      </scroller>
   </div>
 </template>
 
 <script>
-import { Badge } from 'vux'
+import { Badge,Scroller } from 'vux'
 import axios from 'axios'
 import {get_list, look} from '@/api/message'
 import {dateFtt} from '@/utils/base'
 export default {
   name: 'message',
   components: {
-    Badge
+    Badge,
+      Scroller
   },
   data () {
     return {
@@ -167,6 +170,9 @@ export default {
             }
           })
           this.$store.commit('message/SET_messageList', list)
+            this.$nextTick(()=>{
+                this.$refs.scrollerBottom.reset()
+            })
         }
       }).catch((err) => {
         this.$vux.loading.hide()
@@ -258,7 +264,7 @@ export default {
 <style lang='scss' rel='stylesheet/scss' scoped>
 $color: #717171;
 .message{
-  padding: .5rem 0.3rem;
+  padding:0 0.4rem;
   height: 100%;
   overflow: auto;
   .box-message{
@@ -281,17 +287,16 @@ $color: #717171;
     .card-shadow{
       height: 1.6rem;
       padding: 0.3rem 0.2rem;
-      margin-bottom: 0.5rem;
       position: relative;
       .my-badge{
         position: absolute;
         top: 0.2rem;
-        left: 1rem;
+        left: 0.8rem;
         font-size: 0.24rem;
         min-width: 0.32rem;
         height: 0.32rem;
         line-height: 0.32rem;
-        border-radius: 0.32rem;
+        border-radius:100%;
           padding: 0;
       }
       img{
@@ -305,22 +310,27 @@ $color: #717171;
         width: calc(100% - 1rem);
         padding-left: 0.3rem;
         p{
-          font-size: 0.24rem;
+          font-size: 0.28rem;
+            color: #666666;
           &:last-child{
             margin-top: 0.2rem;
             overflow: hidden;
-            line-height: 0.3rem;
+            line-height: 0.38rem;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
           }
         }
         .name{
-          font-size: 0.3rem;
+          font-size: 0.34rem;
+            color: #353535;
+            font-family: '黑体';
         }
         .time{
           float: right;
           margin-top: 0.05rem;
+            color: #999999;
+            font-size: 0.24rem;
         }
       }
     }

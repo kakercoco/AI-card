@@ -1,95 +1,27 @@
 /*
- * @Author: zhangmengli
- * @Date: 2018-11-19 10:49:27
- * @Last Modified by: zhangmengli
- * @Last Modified time: 2018-11-19 10:49:27
- */
+* @Author: zhangmengli
+* @Date: 2018-12-12 10:58:27
+* @Last Modified by: zhangmengli
+* @Last Modified time: 2018-12-12 10:58:27
+*/
 <template>
-  <div class="task">
-    <div class="task_header">
-      <div class="task_tab">
-        <tab :line-width="2" v-model="tabIndex">
-          <tab-item @on-item-click="onItemClick">今天</tab-item>
-          <tab-item @on-item-click="onItemClick">全部</tab-item>
-        </tab>
+  <div class="form">
+    <div class="form-title">
+      <div class="form-title-left">
+        <img src="../../assets/img/u112.png">
       </div>
-      <img src="../../assets/task/calendar.png" class="task_img" @click="gotoCalendar">
+      <div class="form-title-right">
+        <p>Jane简</p>
+        <p>提交时间：2018年10月21日 18:30</p>
+      </div>
     </div>
-    <div class="task_list_swarp">
-      <div v-show="tabIndex === 0">
-        <ul class="task_list">
-          <li v-for="(item, index) in overdueTask" :key="index">
-            <img v-if="item.star === 0" src="../../assets/task/unmark.png" class="star_icon" @click="signStar(item)">
-            <img v-if="item.star === 1" src="../../assets/task/mark.png" class="star_icon" @click="signStar(item)">
-            <div class="task_left">
-              <h6> {{ item.title }}</h6>
-              <p> {{ item.his_time }}     <span v-if="item.expire === 1">已过期</span></p>
-            </div>
-            <div class="task_right">
-              <p @click="signFinishTask(item)">完成</p>
-              <x-icon type="ios-arrow-right" class="icon-right" @click="taskDetail(item)"></x-icon>
-            </div>
-          </li>
-        </ul>
-        <div class="completed_task_list">
-          <p class="completed_task_title" @click="isShow = !isShow">显示已完成任务</p>
-          <x-icon type="ios-arrow-down" class="icon-down"></x-icon>
-          <ul class="task_list" v-show="isShow">
-            <li v-for="(item, index) in completedTask" :key="index">
-              <img v-if="item.status === 0" src="../../assets/task/unselected.png" class="star_icon" @click="signFinishTask(item)">
-              <img v-if="item.status === 1" src="../../assets/task/selected.png" class="star_icon" @click="signFinishTask(item)">
-              <div class="task_left">
-                <h6> {{ item.title }}</h6>
-                <p> {{ item.his_time }}</p>
-              </div>
-              <div class="task_right">
-                <!--<p>完成</p>-->
-                <x-icon type="ios-arrow-right" class="icon-right" @click="taskDetail(item)"></x-icon>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="task_footer">
-          <x-button type="primary" class="task_button" @click.native="addTask">新建任务</x-button>
-        </div>
-      </div>
-      <div v-show="tabIndex === 1">
-        <ul class="task_list">
-          <li v-for="(item, index) in overdueTask" :key="index">
-            <img v-if="item.star === 0" src="../../assets/task/unmark.png" class="star_icon" @click="signStar(item)">
-            <img v-if="item.star === 1" src="../../assets/task/mark.png" class="star_icon" @click="signStar(item)">
-            <div class="task_left">
-              <h6> {{ item.title }}</h6>
-              <p> {{ item.his_time }}     <span v-if="item.expire === 1">已过期</span></p>
-            </div>
-            <div class="task_right">
-              <p @click="signFinishTask(item)">完成</p>
-              <x-icon type="ios-arrow-right" class="icon-right" @click="taskDetail(item)"></x-icon>
-            </div>
-          </li>
-        </ul>
-        <div class="completed_task_list">
-          <p class="completed_task_title" @click="isShow2 = !isShow2">显示已完成任务</p>
-          <x-icon type="ios-arrow-down" class="icon-down"></x-icon>
-          <ul class="task_list" v-show="isShow2">
-            <li v-for="(item, index) in completedTask" :key="index">
-              <img v-if="item.status === 0" src="../../assets/task/unselected.png" class="star_icon" @click="signFinishTask(item)">
-              <img v-if="item.status === 1" src="../../assets/task/selected.png" class="star_icon" @click="signFinishTask(item)">
-              <div class="task_left">
-                <h6> {{ item.title }}</h6>
-                <p> {{ item.his_time }}</p>
-              </div>
-              <div class="task_right">
-                <!--<p>完成</p>-->
-                <x-icon type="ios-arrow-right" class="icon-right" @click="taskDetail(item)"></x-icon>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="task_footer">
-          <x-button type="primary" class="task_button" @click.native="addTask">新建任务</x-button>
-        </div>
-      </div>
+    <div class="form-content">
+      <ul>
+        <li v-for="(item, index) in messageFormData" :index="index">
+          <p class="form-left"><span>{{ item.title }}</span> {{ item.content }}</p>
+        </li>
+      </ul>
+      <div class="nodata" v-if="no_data">暂无数据!</div>
     </div>
   </div>
 </template>
@@ -101,10 +33,9 @@ import {
   XButton,
   AlertModule
 } from 'vux'
-import { getTaskList, signCompletedTask, signStarTask } from '@/api/task'
-import { dateFtt } from '@/utils/base'
+import { getMessageFormDetail } from '@/api/form'
 export default {
-  name: 'formDetial',
+  name: 'formDetail',
   components: {
     XButton,
     Tab,
@@ -113,284 +44,125 @@ export default {
   },
   data () {
     return {
-      tabIndex: 1,
-      currentTime: dateFtt('yyyy-MM-dd', new Date()),
-      taskLists: [],
-      overdueTask: [],
-      completedTask: [],
-      listQuery: {
-        start_time: '',
-        end_time: '',
-        type: 5
-
-      },
-      isShow: false,
-      isShow2: false
+      messageFormData: [],
+      no_data: false
     }
   },
   methods: {
-    signFinishTask (item) {
-      let status = 0
-      let content = ''
-      if (item.status === 0) {
-        status = 1 // 完成
-        content = '此任务确定完成了吗？'
-      } else {
-        status = 0 // 取消
-        content = '此任务确定取消了吗？'
+    objToArray (obj) {
+      var arr = []
+      for (var i in obj) {
+        arr.push(obj[i])
       }
-      let this_ = this
-      this.$vux.confirm.show({
-        title: '提示',
-        content: content,
-        onCancel () { // 取消
-        },
-        onConfirm () { // 确定
-          signCompletedTask({
-            id: item.id,
-            status: status
-          }).then(res => {
-            if (res.code === 200) {
-              this_.getTaskLists()
-            } else {
-              AlertModule.show({
-                title: '提示',
-                content: res.msg
-              })
-            }
-          })
-        }
-      })
+      return arr
     },
-    signStar (item) {
-      let star = 0
-      if (item.star === 0) {
-        star = 1
-      } else {
-        star = 0
-      }
-      signStarTask({
-        id: item.id,
-        star: star
-      }).then(res => {
+    getMessageById () {
+      getMessageFormDetail(this.$route.query.id).then(res => {
         if (res.code === 200) {
-          this.getTaskLists()
-        } else {
-          AlertModule.show({
-            title: '提示',
-            content: res.msg
-          })
-        }
-      })
-    },
-    addTask () {
-      this.$router.push({
-        path: '/addTask'
-      })
-    },
-    getTaskLists () {
-      getTaskList(this.listQuery).then(res => {
-        if (res.code === 200) {
-          this.taskLists = res.data
-          let completedTask = []
-          let overdueTask = []
-          if (res.data.length > 0) {
-            this.taskLists.forEach(element => {
-              if (element.status === 1) { // 完成
-                completedTask.push(element)
-              } else {
-                overdueTask.push(element)
+          if (res.data && res.data.length > 0) {
+            this.no_data = false
+            const inputNameArr = this.objToArray(JSON.parse(this.$route.query.fields).inputName)
+            for (let i = 0; i < res.data.data.length; i++) {
+              const arr = []
+              const contentArr = this.objToArray(JSON.parse(res.data.data[i].content))
+              for (let j = 0; j < contentArr.length; j++) {
+                var obj = {
+                  title: '',
+                  content: ''
+                }
+                obj.title = inputNameArr[j] + ':'
+                var type = typeof contentArr[j]
+                if (type !== 'string') {
+                  obj.content = '无'
+                } else {
+                  obj.content = contentArr[j]
+                }
+                arr.push(obj)
               }
-            })
+              res.data.data[i].message = arr
+            }
+            this.messageFormData = res.data.data
+          } else {
+            this.no_data = true
           }
-          this.completedTask = completedTask
-          this.overdueTask = overdueTask
         } else {
-          AlertModule.show({
-            title: '提示',
-            content: res.msg
-          })
         }
-      })
-    },
-    onItemClick (index) {
-      this.tabIndex = index
-      if (index === 0) {
-        this.listQuery.start_time = this.currentTime
-        this.listQuery.end_time = this.currentTime
-      } else {
-        this.listQuery.start_time = ''
-        this.listQuery.end_time = ''
-      }
-      this.getTaskLists()
-    },
-    taskDetail (item) {
-      this.$router.push({
-        path: '/taskDetail',
-        query: {
-          id: item.id
-        }
-      })
-    },
-    gotoCalendar (item) {
-      this.$router.push({
-        path: '/taskCalendar'
-        /* query: {
-          uid: item.uid
-        } */
       })
     }
   },
-  // watch: {
-  //   value () {
-  //     this.getSearchType()
-  //     this.getCalendarList()
-  //   }
-  // },
   created () {
   },
   computed: {},
   mounted () {
-    this.getTaskLists()
+    this.getMessageById()
   }
 }
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-.task {
-  height: 100%;
-  & /deep/ .vux-tab-item{
-    font-size: 16px;
-  }
-  & /deep/ .vux-tab .vux-tab-item {
-    background: #fff;
-  }
-  .task_header{
-    height: 0.44rem;
-    padding: 0 10%;
-    .task_tab{
-      width: 80%;
-      margin: 0 auto;
-    }
-    .task_img{
-      height: 0.43rem;
-      width: 0.4rem;
-      position: absolute;
-      top: 0.22rem;
-      right: 0.3rem;
-    }
-  }
-  .task_list_swarp{
-    margin-top:0.44rem;
+  .form {
     height: 100%;
-    border-top: 1px solid #e5e5e5;
-    .task_list{
-      padding: 0 0.4rem;
-      li{
-        height: 1.4rem;
-        padding: 0.2rem 0;
-        border-bottom: 1px solid #eee;
-        .selected_icon{
-          float: left;
-          width: 0.42rem;
-          height: 0.48rem;
-          position: relative;
-          top: 0.16rem;
-        }
-        .star_icon{
-          float: left;
-          width: 0.4rem;
-          height: 0.4rem;
-          position: relative;
-          top: 0.16rem;
-        }
-        .task_left{
-          width: 78%;
-          float: left;
-          height: 100%;
-          line-height: 0.5rem;
-          margin-left: 0.2rem;
-          padding: 0.1rem 0;
-          overflow: hidden;
-          h6{
-            font-size: 16px;
-            overflow: hidden;
-            text-overflow:ellipsis;
-            white-space: nowrap;
-          }
-          i{
-            color: #f69600;
-          }
-          p{
-            color: #a9a9a9;
-            font-size: 0.24rem;
-            line-height: 0.36rem;
-            span{
-              color: #ff4d42;
-              padding-left:0.4rem;
-              font-weight: bolder;
-            }
-          }
-        }
-        .task_right{
-          width: 12%;
-          float: right;
-          p{
-            width: 100%;
-            color: #3b63c4;
-            font-size: 0.3rem;
-            font-weight: bolder;
-            position: relative;
-            top: 23px;
-            left: -12px;
-          }
-          .icon-right {
-            position: relative;
-            top: 0.05rem;
-            right: -22px;
-            width: 0.5rem;
-            fill: #a9a9a9;
-            display: inline-block;
-          }
-        }
-      }
-    }
-    .completed_task_list{
-      .completed_task_title{
-        height: 1.1rem;
-        background-color: #f4f4f4;
-        font-size: 0.24rem;
-        color: #4e70c7;
-        line-height: 1.1rem;
-        text-align: center;
-        font-weight: bolder;
-      }
-      .icon-down {
-        position: relative;
-        top: -0.78rem;
-        left: 229px;
-        width: 0.3rem;
-        fill: #4e70c7;
+    padding-left: 0.2rem;
+    .form-title{
+      height: 1.12rem;
+      margin: 0.2rem 0.4rem;
+      border-bottom: 1px solid #dfdfdf;
+      .form-title-left{
+        float: left;
         display: inline-block;
+        width: 14%;
+        img{
+          width: 0.72rem;
+          height: 0.72rem;
+          border: 1px solid #fbf9fe;
+        }
+      }
+      .form-title-right{
+        width: 85%;
+        float: right;
+        display: inline-block;
+        p{
+          font-size: 0.34rem;
+          line-height: 0.42rem;
+          font-family: '黑体',serif;
+          color: #353535;
+          overflow: hidden;
+          text-overflow:ellipsis;
+          white-space: nowrap;
+        }
+        p:nth-child(2) {
+          font-size: 0.24rem;
+          color: #999999;
+        }
       }
     }
-    .task_footer{
-      border-top: 5px solid #f4f4f4;
-      padding-top: 0.2rem;
-      padding-bottom: 0.3rem;
-      .weui-btn:after {
-        border-radius: 5px !important;
+    .form-content{
+      .nodata{
+        line-height: 1.5rem;
+        text-align: center;
+        font-family: '黑体',serif;
+        font-size: 0.3rem;
+        color: #999;
       }
-      .weui-btn_primary {
-        background-color: #3c7df0;
-        height: 0.88rem;
-        line-height: 0.88rem;
-        border-radius: 5px;
-      }
-      .task_button{
-        width: 90%;
+      ul{
+        li{
+          // height: 0.75rem;
+          padding-right: 0.4rem;
+          p{
+            color: #353535;
+            font-size: 0.33rem;
+            line-height: 0.72rem;
+            font-family: '黑体',serif;
+            span{
+              color: #999999;
+            }
+            /*display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;*/
+          }
+        }
       }
     }
   }
-}
 </style>

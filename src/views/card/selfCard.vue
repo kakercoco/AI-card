@@ -6,7 +6,7 @@
  */
 <template>
   <div class="self-card">
-    <div class="card-shadow clearfix">
+    <div class="card-shadow clearfix" style="height: 4.405rem">
       <img :src="cardInfor.card_image" alt="" class="logo fl" v-if="cardInfor.card_image !== ''">
     </div>
     <div class="self-infor">
@@ -18,19 +18,21 @@
       <p><span>地址： </span><i>{{cardInfor.address}}</i></p>
     </div>
     <p class="btn">
-      <x-button type="primary" @click.native="gotoEdit">编辑名片</x-button>
+      <x-button type="primary" class="card_button" @click.native="gotoEdit">编辑名片</x-button>
     </p>
+      <p style="height: 0.5rem;"></p>
   </div>
 </template>
 
 <script>
-import { XButton } from 'vux'
+import { XButton, AlertModule } from 'vux'
 import { cardRead } from '@/api/card'
 
 export default {
   name: 'selfCard',
   components: {
-    XButton
+    XButton,
+    AlertModule
   },
   data () {
     return {
@@ -57,9 +59,21 @@ export default {
       })
     },
     getCard () {
+      this.$vux.loading.show({
+        text: 'Loading'
+      })
       cardRead()
         .then(res => {
-          this.cardInfor = res.data
+          if (res.code === 200) {
+            this.$vux.loading.hide()// 隐藏
+            this.cardInfor = res.data
+          } else {
+            this.$vux.loading.hide()// 隐藏
+            AlertModule.show({
+              title: '提示',
+              content: res.msg
+            })
+          }
         })
     }
   },
@@ -73,43 +87,65 @@ export default {
 .self-card{
   overflow: auto;
   height: 100%;
-  padding: 0.5rem 0.3rem 0;
   -webkit-overflow-scrolling: touch;
   .logo{
     width: 100%;
   }
   .self-infor{
+    padding: 0.5rem 0.3rem 0;
     margin-top: 0.5rem;
+    height: 6.55rem;
     h5{
-      text-align: center;
-      font-size: 0.34rem;
-      color: #717171;
+      text-align: left;
+      font-size: 0.3rem;
+      color: #353535;
       font-weight: normal;
+      font-family: '微软雅黑',' Microsoft YaHei',serif;
     }
     p{
       width: 100%;
       font-size: 0.32rem;
       color: #717171;
       padding: 0.3rem 0;
-      border-bottom: 1px solid #eee;
       position: relative;
       padding-left: 1.1rem;
       span{
         width: 1.1rem;
         position: absolute;
-        top: 0.25rem;
+        top: 0.32rem;
         left: 0;
+        font-family: '微软雅黑',' Microsoft YaHei',serif;
+        font-size: 0.28rem;
+        line-height: 0.3rem;
+        color: #999999;
       }
       i{
         width: 100%;
         min-height: 0.4rem;
         display: block;
+        font-family: '黑体','SimHei',serif;
+        color: #353535;
       }
     }
   }
   .btn{
-    margin: 1rem 0 0.5rem;
-    padding: 0 1rem;
+    line-height: 1.5rem;
+    padding-top: 0.45rem;
+    background-color: #f8f8f8;
+    .weui-btn:after {
+      border-radius: 5px !important;
+    }
+    .weui-btn_primary {
+      background-color: #3c7df0;
+      height: 0.88rem;
+      line-height: 0.88rem;
+      border-radius: 5px;
+      font-family: '黑体',SimHei, Microsoft YaHei, 'Avenir', Helvetica, Arial, sans-serif;
+      font-weight: 500;
+    }
+    .card_button{
+      width: 90%;
+    }
   }
 }
 </style>
