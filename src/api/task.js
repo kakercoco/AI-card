@@ -9,16 +9,12 @@ export function addOrEditTask (data) {
   })
 }
 
-export function getTaskList (listQuery) {
+export function getTaskList (data) {
   // 任务列表
   return request({
     url: '/ai/calendar/getlist',
-    method: 'get',
-    params: {
-      start_time: listQuery.start_time,
-      end_time: listQuery.end_time,
-      type: listQuery.type
-    }
+    method: 'post',
+    data
   })
 }
 

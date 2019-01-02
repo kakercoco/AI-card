@@ -55,12 +55,16 @@ export default {
       })
     },
     save () {
+      this.$store.commit('app/open_global_dialog')
       const data = {
         customer_id: this.id,
         content: this.value
       }
       followSave(data).then(res => {
+        this.$store.commit('app/close_global_dialog')
         this.$router.back(-1)
+      }).catch((res) => {
+        this.$store.commit('app/close_global_dialog')
       })
     }
   },

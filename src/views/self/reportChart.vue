@@ -105,7 +105,7 @@ export default {
   },
   data () {
     return {
-      tabIndex: 0,
+      tabIndex: parseInt(this.$route.query.type),
       dataInfor: {
         follow_num: {
           num: ''
@@ -154,11 +154,15 @@ export default {
     },
   methods: {
     getMyTopChart () {
+      this.$store.commit('app/open_global_dialog');
       const data = {
         time_type: this.tabIndex
       }
       getMyNums(data).then(res => {
+        this.$store.commit('app/close_global_dialog');
         this.dataInfor = res.data
+      }).catch((err)=>{
+          this.$store.commit('app/close_global_dialog');
       })
     },
     tabItemClick () {
@@ -323,7 +327,8 @@ export default {
     }
   },
   mounted () {
-    this.getMyTopChart()
+      //this.tabIndex = parseInt(this.$route.query.type);
+      this.getMyTopChart()
     this.getMydownChart()
   }
 }

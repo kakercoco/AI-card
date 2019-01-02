@@ -1,0 +1,57 @@
+.index_global_dialog{
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+.index_global_dialog .global_icon{
+    position: absolute;
+    width: 100px;
+    height:180px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+}
+
+.index_global_dialog .global_icon p{
+    width:100px;
+    height: 40px;
+    line-height:40px;
+    text-align: center;
+    color: #333;
+    margin-top:10px;
+    font-size:14px
+}
+
+.index_global_dialog .global_icon .frame{
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+}
+
+.index_global_dialog .global_icon img{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.index_global_dialog .global_icon img.loading_1{
+    animation: spin 1s linear infinite;
+    -webkit-animation:spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}

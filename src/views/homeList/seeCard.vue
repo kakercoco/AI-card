@@ -133,13 +133,15 @@ export default {
     init (start_time, end_time, isTop) {
       this.scroller_config.isAjax = false
       let data = {
+        page: this.scroller_config.page,
+        pagesize: this.scroller_config.pagesize,
         type: 'typeGroup',
         type_id: this.$route.query.type
       }
-      if (start_time !== '7日' && start_time !== undefined) {
+      if ((start_time !== '7日' && start_time !== undefined && start_time !== '')) {
         data.start_time = start_time
       }
-      if (end_time !== '7日' && end_time !== undefined) {
+      if (end_time !== '7日' && end_time !== undefined && end_time !== '') {
         data.end_time = end_time
       }
       init_list(data).then(e => {
@@ -189,7 +191,7 @@ export default {
           this.scroller_config.page < this.scroller_config.max_page
       ) {
         this.scroller_config.page++
-        this.init(this.startTIme, this.endTime, true)
+        this.init(this.startTIme, this.endTime, false)
       } else if (this.scroller_config.page >= this.scroller_config.max_page) {
         this.$refs.scrollerBottom.disablePullup() // 禁用上拉
       }
@@ -203,7 +205,7 @@ export default {
     console.log(arr)
   },
   mounted () {
-    this.init(this.startTIme, this.endTime, true)
+    this.init(this.startTIme, this.endTime, false)
   }
 }
 </script>

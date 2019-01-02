@@ -8,7 +8,7 @@
   <div class="insert-tag tag_list">
     <div class="name">
       <span>标签名字</span>
-      <input type="text" v-model="tagName" placeholder="未填写" maxlength="10">
+      <input type="text" v-model="tagName" placeholder="4字以内" maxlength="4">
     </div>
     <p class="add_member">
       <a @click="clientList = true">
@@ -19,7 +19,7 @@
     <ul class="customer_list index_list">
       <li v-for="(item, index) in checkedCustomer " :key="index">
         <img :src="item.wx_image" alt="">
-        <span>{{item.wx_name}}</span>
+        <span>{{item.re_name ? item.re_name : item.wx_name}}</span>
       </li>
     </ul>
     <div class="btn new_btn">
@@ -42,7 +42,7 @@
             <ul>
               <li v-for="(item, index) in customer" :key="index">
                 <img :src="item.wx_image" alt="">
-                <span>{{item.wx_name}}</span>
+                <span>{{item.re_name ? item.re_name : item.wx_name}}</span>
                 <check-icon :value.sync="item.status" class="fr"></check-icon>
               </li>
             </ul>

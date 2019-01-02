@@ -56,9 +56,7 @@ export default {
   },
   methods: {
     get_message_list () {
-      this.$vux.loading.show({
-        text: '加载中...'
-      })
+
       get_list()
         .then(res => {
           this.$vux.loading.hide()

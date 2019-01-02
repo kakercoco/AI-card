@@ -85,7 +85,7 @@ export function followIndex (data) {
   return request({
     url: '/ai/Follow/index',
     method: 'post',
-    params: data
+    data
   })
 }
 

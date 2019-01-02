@@ -185,7 +185,7 @@ export default {
       },
       isPicture: false,
       c: {}, // canvas对象
-      img_max_width: 100,
+      img_max_width: 200,
       test: '',
       char_list_top: false, // 是否抬起
       Speech: {
@@ -395,6 +395,7 @@ export default {
           .substr(3, 10) + Date.now()
       ).toString(36)
       const that = this
+        const canvas = document.querySelector('#myCanvas')
       document.querySelector('.file_input').onchange = function (e) {
         var obj = e.target.files[0] // 获取图片对象
         imgType = obj.type
@@ -427,18 +428,22 @@ export default {
             img.width > that.img_max_width
               ? (that.img_max_width * img.height) / img.width
               : img.height
+            canvas.width = end_widht;
+            canvas.height = end_height;
           that.c.drawImage(this, 0, 0, end_widht, end_height)
 
-          var dta = that.c.getImageData(0, 0, end_widht, end_height).data
-          var end_url = ''
-          try {
-            var png = UPNG.encode([dta.buffer], end_widht, end_height, 100)
-            var base64 = that.arrayBufferToBase64(png)
-            end_url = `data:image/jpeg;base64,${base64}`
-              console.log(base64);
-          } catch (err) {
-            end_url = url
-          }
+            var end_url = canvas.toDataURL('image/jpeg');
+            console.log(end_url);
+            /*var dta = that.c.getImageData(0, 0, end_widht, end_height).data
+            var end_url = ''
+            try {
+              var png = UPNG.encode([dta.buffer], end_widht, end_height,100)
+              var base64 = that.arrayBufferToBase64(png)
+              end_url = `data:image/jpeg;base64,${base64}`
+                console.log(base64);
+            } catch (err) {
+              end_url = url
+            }*/
 
           // 先把缩略图，前端发出去
           var obj = {
@@ -795,6 +800,9 @@ export default {
             font-size: 0.32rem;
             line-height: 0.55rem;
             color: #333;
+            overflow:hidden;
+            white-space:nowrap;
+            text-overflow:ellipsis;
           }
           .introduce {
             overflow: hidden;

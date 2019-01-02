@@ -3,7 +3,8 @@ const app = {
   namespaced: true,
   state: {
     device: 'desktop',
-    Unread:0
+    Unread:0,
+    global_dialog:false
   },
   mutations: {
     //未读消息
@@ -13,7 +14,19 @@ const app = {
 
     Empty:(state) => {
         state.Unread = 0;
-    }
+    },
+
+    //打开蒙层
+    open_global_dialog:(state) => {
+        state.global_dialog = true;
+    },
+
+    //关闭蒙层
+    close_global_dialog:(state) => {
+        state.global_dialog = false;
+    },
+
+
   },
   actions: {
     ToggleSideBar: ({ commit }) => {

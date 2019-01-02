@@ -49,6 +49,7 @@
 <script>
 import { Group, XTextarea, XButton, XDialog, XInput, AlertModule, Popup,TransferDom,PopupHeader  } from 'vux'
 import { talkSave } from '@/api/talk'
+import { err_Tips } from '@/utils/base'
 
 export default {
   name: 'talkInsert',
@@ -82,22 +83,27 @@ export default {
         })
         return false
       }
-      // if (this.tagList.length <= 0) {
-      //   AlertModule.show({
-      //     title: '提示',
-      //     content: '标签不能为空'
-      //   })
-      //   return false
-      // }
+
       const data = {
         group_id: this.group_id,
         content: this.content,
         keyword: this.tagList.join(',')
       }
-      talkSave(data)
-        .then(res => {
-          this.$router.back(-1)
-        })
+
+      this.$store.commit('app/open_global_dialog');
+      talkSave(data).then(res => {
+          this.$store.commit('app/close_global_dialog');
+          if(res.code === 200 && res.msg === '添加成功'){
+              this.$router.back(-1)
+          }
+          else{
+              err_Tips('添加失败！',this);
+          }
+
+      }).catch((err)=>{
+          this.$store.commit('app/close_global_dialog');
+          err_Tips('添加失败！',this);
+      })
     },
     openDialog () {
       this.tagDialog = true

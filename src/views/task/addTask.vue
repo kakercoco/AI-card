@@ -25,13 +25,14 @@
         <x-icon type="ios-plus-empty"></x-icon>
       </span>
     </div>
-    <p class="insert-btn">
+    <div style="height: 1.5rem;"></div>
+    <p class="yyf_new_btn" style="border-top: 1px #e3e3e3 solid">
       <x-button type="primary" @click.native="save" :disabled="isDisabled" :class="isDisabled ? 'button_2' : 'button_1' ">保存</x-button>
-      <!--<x-button type="primary" @click.native="save" class="button_2">保存</x-button>-->
     </p>
-
-
-
+    <!--<p class="insert-btn">
+      <x-button type="primary" @click.native="save" :disabled="isDisabled" :class="isDisabled ? 'button_2' : 'button_1' ">保存</x-button>
+      &lt;!&ndash;<x-button type="primary" @click.native="save" class="button_2">保存</x-button>&ndash;&gt;
+    </p>-->
 
     <div v-transfer-dom>
       <popup v-model="isInsert">
@@ -51,24 +52,22 @@
               <p @click="chooseCustomer">完成</p>
             </div>-->
             <p class="client-search">
-              <search v-model="customerForm.keyword" ref="search" @on-change="getCustomerList"></search>
+              <search v-model="customerForm.keyword" ref="search" @on-change="getCustomerList" style="position: static;"></search>
             </p>
             <ul>
               <li v-for="(item, index) in customer" :key="index">
                 <check-icon :value.sync="item.status" class="fl"></check-icon>
                 <img :src="item.wx_image" alt="">
-                <span class="name">{{item.wx_name}}</span>
+                <span class="name">{{item.re_name ? item.re_name : item.wx_name}}</span>
                 <!--<span class="time">{{item.date}}</span>-->
               </li>
             </ul>
             <div class="nodata" v-if="no_data">暂无数据!</div>
           </div>
 
-
         </group>
       </popup>
     </div>
-
 
   </div>
 </template>
@@ -83,16 +82,17 @@ import {
   XButton,
   Search,
   CheckIcon,
-  AlertModule,PopupHeader, Popup,TransferDom
+  AlertModule, PopupHeader, Popup, TransferDom
 } from 'vux'
 import { customerList } from '@/api/contact'
 import { addOrEditTask, getTaskDetail } from '@/api/task'
+import { parseTime } from '@/utils/base'
 
 export default {
   name: 'addTask',
-    directives: {
-        TransferDom
-    },
+  directives: {
+    TransferDom
+  },
   components: {
     Group,
     PopupRadio,
@@ -103,8 +103,8 @@ export default {
     CheckIcon,
     Datetime,
     AlertModule,
-      PopupHeader,
-      Popup,
+    PopupHeader,
+    Popup
   },
   data () {
     return {
@@ -166,6 +166,7 @@ export default {
       getTaskDetail(this.id).then(res => {
         if (res.code === 200) {
           this.taskInfo = res.data
+          this.taskInfo.his_time = parseTime(res.data.his_time, '{y}-{m}-{d} {h}:{i}')
           this.customerCheckList = res.data.users
           this.customer.forEach(element => {
             if (this.customerCheckList !== undefined && this.customerCheckList.length > 0) {
@@ -193,9 +194,7 @@ export default {
       }) */
     },
     save () {
-      this.$vux.loading.show({
-          text: 'Loading'
-      })
+      this.$store.commit('app/open_global_dialog')
       let userIdList = []
       let userIds = ''
       this.customerCheckList.forEach(element => {
@@ -218,7 +217,7 @@ export default {
           title: '提示',
           content: '标题不能为空'
         })
-        this.$vux.loading.hide()
+        this.$store.commit('app/close_global_dialog')
         return
       }
       if (data.time === '' || data.time === 0) {
@@ -226,28 +225,15 @@ export default {
           title: '提示',
           content: '时间不能为空'
         })
-        this.$vux.loading.hide()
-        return
-      }
-      if (data.add_user === '') {
-        AlertModule.show({
-          title: '提示',
-          content: '关联客户不能为空'
-        })
-        this.$vux.loading.hide()
+        this.$store.commit('app/close_global_dialog')
         return
       }
       // 新增或编辑任务
       addOrEditTask(data).then(res => {
-        this.$vux.loading.hide()
+        this.$store.commit('app/close_global_dialog')
         if (res.code === 200) {
           this.isDisabled = false
           this.$router.back(-1)
-          /* AlertModule.show({
-            title: '提示',
-            content: res.msg
-          }) */
-          // this.$router.back(-1)
         } else {
           this.isDisabled = false
           AlertModule.show({
@@ -255,8 +241,8 @@ export default {
             content: res.msg
           })
         }
-      }).catch((err)=>{
-          this.$vux.loading.hide()
+      }).catch((err) => {
+        this.$store.commit('app/close_global_dialog')
       })
     },
     getCustomerList () { //  获取客户列表
@@ -347,7 +333,7 @@ export default {
 
 <style lang='scss' rel='stylesheet/scss' scoped>
   .insert-calendar {
-    background-color: #f8f8f8;
+    // background-color: #f8f8f8;
     padding: 0.3rem 0;
     padding-top: 0;
     height: 100%;
@@ -375,7 +361,7 @@ export default {
       }
     }
     .insert-client {
-      border-bottom: 1px solid #E2E2E2;
+      // border-bottom: 1px solid #E2E2E2;
       padding: 10px 15px;
       background-color: #fff;
       p {
@@ -500,12 +486,12 @@ export default {
     width: 100%;
     padding-bottom: 1.5rem;
     font-family: SimHei, Microsoft YaHei, 'Avenir', Helvetica, Arial, sans-serif;
-    .client-search{
+/*    .client-search{
       height: 1rem;
       .vux-search-fixed {
         position: fixed;
         left: 0;
-        top: 42px !important;
+        top: 3.4rem !important;
         z-index: 5;
         background: #ffffff;
         -webkit-backdrop-filter: blur(5px);
@@ -517,7 +503,7 @@ export default {
         vertical-align: middle;
         font-family: SimHei, Microsoft YaHei, 'Avenir', Helvetica, Arial, sans-serif !important;
       }
-    }
+    }*/
     & /deep/ .vux-search-mask {
       position: absolute;
       left: 0;

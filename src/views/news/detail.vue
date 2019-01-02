@@ -425,241 +425,6 @@ export default {
 </script>
 
 <style lang='scss' rel='stylesheet/scss' scoped>
-  /*.news{
-    height: 100%;
-    overflow: auto;
-    .scroller_frame{
-      padding-bottom:0.3rem;
-    }
-    .header{
-      height: 3rem;
-      background: url('~@/assets/img/tabbar.png') no-repeat  top;
-      background-size: contain;
-      position: relative;
-      img{
-        position: absolute;
-        top: 1rem;
-        left: 1rem;
-        width: 1.6rem;
-        height: 1.6rem;
-      }
-      p{
-        text-align: center;
-        font-size: 0.36rem;
-        color: #717171;
-        position: absolute;
-        bottom: 0.5rem;
-        width: 100%;
-      }
-      & > i{
-        position: absolute;
-        right: 0.3rem;
-        bottom: 0.5rem;
-        border-radius: 0.7rem;
-        height: 0.7rem;
-        width: 0.7rem;
-        border: 1px solid #5977fe;
-        text-align: center;
-        line-height: 0.95rem;
-        .vux-x-icon{
-          width: 0.5rem;
-          fill: #5977fe;
-          height: 0.5rem;
-        }
-      }
-    }
-    .news-list{
-      position: relative;
-      padding-left: 1.5rem;
-      padding-right: 0.3rem;
-      margin-top: 0.4rem;
-      &>.emotion{
-        position: absolute;
-        top: 0;
-        left: 0.3rem;
-        width: 1rem;
-        height: 1rem;
-        border-radius: 0.1rem;
-      }
-      .title{
-        .name{
-          font-size: 0.32rem;
-          font-weight: bold;
-        }
-        .tag{
-          border: 1px solid #5977fe;
-          color: #5977fe;
-          font-size: 0.22rem;
-          height: 0.35rem;
-          line-height: 0.36rem;
-          border-radius: 0.35rem;
-          padding: 0 0.2rem;
-          display: inline-block;
-          margin-left: 0.5rem;
-        }
-        .time{
-          font-size: 0.24rem;
-          color: #717171;
-          float: right;
-          text-decoration: underline;
-        }
-      }
-      .content{
-        & > p{
-          font-size: 0.28rem;
-          color: #717171;
-          margin: 0.2rem 0;
-        }
-        .img-wrap{
-          width: 33%;
-          float: left;
-          height: 1.5rem;
-          overflow: hidden;
-          text-align: center;
-          padding-right: 0.05rem;
-          padding-bottom: 0.05rem;
-          background-color: #fff;
-          img{
-            object-fit: cover;
-            width: 100%;
-            height: 100%;
-          }
-        }
-        .img-one{
-          width: 4rem;
-          display: inline-block;
-          img{
-            width: 100%;
-            margin-top: 0.2rem;
-          }
-        }
-      }
-      .comment{
-        .icon-time{
-          margin-top: 0.5rem;
-          height: 0.6rem;
-          line-height: 0.6rem;
-          .comment-icon{
-            width: 0.4rem;
-            margin-top: 0.1rem;
-          }
-        }
-        .comment-content{
-          background-color: #f5f5f5;
-          border-radius: 0.1rem;
-          margin-top: 0.2rem;
-
-        }
-        .comment-zan{
-          border-bottom: 1px solid #ddd;
-          padding-top:7px;
-          overflow: hidden;
-          .heart{
-            width: 0.4rem;
-            margin-left: 0.1rem;
-            margin-top: 0.1rem;
-            float: left;
-          }
-          .one_zan{
-            float: left;
-            height: 0.5rem;
-            margin-left: 0.1rem;
-            margin-bottom:7px;
-            img{
-              width: 0.5rem;
-              height: 0.5rem;
-              border-radius: 0.1rem;
-            }
-            i{
-              float: right;
-              margin-top: 0.15rem;
-              margin-left: 0.1rem;
-            }
-          }
-        }
-        li{
-          border-bottom: 1px solid #ddd;
-          padding: 0.25rem;
-          min-height: 1.1rem;
-          position: relative;
-          padding-left: 1rem;
-          &:last-child{
-            border: none;
-          }
-          img{
-            position: absolute;
-            top: 0.25rem;
-            left: 0.25rem;
-            width: 0.6rem;
-            height: 0.6rem;
-            border-radius: 0.1rem;
-          }
-          p{
-            span{
-              font-size: 0.24rem;
-              color: #717171;
-              margin-right: 0.2rem;
-            }
-            font-size: 0.22rem;
-            color: #717171;
-          }
-        }
-      }
-    }
-  }
-  .popover-content{
-    padding: 0.15rem 0;
-    height: 0.75rem;
-    span{
-      float: left;
-      width: 1.6rem;
-      padding-left: 0.3rem;
-      &:first-child{
-        border-right: 1px solid #fff;
-        margin-top: 1px;
-      }
-    }
-    img{
-      width: 0.4rem;
-      float: left;
-      margin-right: 0.1rem;
-    }
-  }
-  .dialog-comment{
-    padding: 0.2rem;
-    input{
-      outline: none;
-      border: none;
-      height: 0.6rem;
-      float: left;
-      width: calc(100% - 1.6rem);
-      border-bottom: 1px solid #ddd;
-    }
-    img{
-      width: 0.4rem;
-      height: 0.4rem;
-      float: right;
-      margin-top: 0.1rem;
-      margin-right: 0.2rem;
-    }
-    button{
-      float: right;
-      outline: none;
-      border: none;
-      height: 0.6rem;
-      background-color: #fff;
-      border: 1px solid #5977fe;
-      width: 0.8rem;
-      border-radius: 0.1rem;
-      color: #717171;
-    }
-  }
-  .dialog{
-    & /deep/ .weui-dialog{
-      width: 100%;
-      max-width: 100%;
-    }
-  }*/
   .news {
     height: 100%;
     overflow: auto;
@@ -728,14 +493,19 @@ export default {
         border-radius: 0.1rem;
       }
       .title {
+        p{
+          overflow: hidden;
+        }
         .name {
           font-size: 0.34rem;
           font-weight:bolder;
           font-family:'黑体';;
           color:#50659a;
+          float: left;
 
         }
         .tag {
+          float: left;
           width:0.8rem;
           height:0.36rem;
           line-height:0.36rem;

@@ -13,18 +13,20 @@
       :pullup-config="pullup_config"
       @on-pullup-loading="timeLoadMore"
       ref="scrollerBottom">
-    <ul>
-      <li v-for="(item, index) in formListData" :index="index" @click="clickForm(item)">
-        <p class="form-left" >
-          <span>{{ item.title }}</span>
-        </p>
-        <p class="form-right">
-          <span>{{ item.num }}</span>
-        </p>
-        <x-icon type="ios-arrow-right" class="icon-right" @click="clickForm(item)"></x-icon>
-      </li>
-    </ul>
+    <div>
+      <ul>
+        <li v-for="(item, index) in formListData" :index="index" @click="clickForm(item)">
+          <p class="form-left" >
+            <span>{{ item.title }}</span>
+          </p>
+          <p class="form-right">
+            <span>{{ item.num }}</span>
+          </p>
+          <x-icon type="ios-arrow-right" class="icon-right" @click="clickForm(item)"></x-icon>
+        </li>
+      </ul>
       <div class="nodata" v-if="no_data">暂无数据!</div>
+    </div>
     </scroller>
   </div>
 </template>
@@ -75,20 +77,24 @@ export default {
       getFormList({
         page: this.timeScroller.page,
         limit: this.timeScroller.pagesize,
-        searchKey: ''
+        searchKey: '',
+        uid: this.$route.query.uid !== undefined ? this.$route.query.uid : ''
       }).then(res => {
+        this.$store.commit('app/close_global_dialog')
         this.timeScroller.isAjax = true
         this.$vux.loading.hide()
         if (res.code === 200 && res.data && res.data.rows instanceof Array) {
           this.no_data = false
           let list = res.data.rows
-          this.formListData = this.formListData.concat(list)
-          this.timeScroller.total = res.data.total
-          this.timeScroller.max_page = Math.ceil(res.data.total / 10)
-          if (this.formListData.length === 0) {
+          if (res.data.total === 0) {
             this.no_data = true
+          } else {
+            this.formListData = this.formListData.concat(list)
+            this.timeScroller.total = res.data.total
+            this.timeScroller.max_page = Math.ceil(res.data.total / 10)
           }
         } else {
+          this.no_data = true
           this.$refs.scrollerBottom.disablePullup()
         }
         this.$nextTick(() => {
@@ -103,7 +109,12 @@ export default {
           } else {
             this.$refs.scrollerBottom.enablePullup()// 恢复上拉
           }
+          if (document.querySelector('.xs-plugin-pullup-container') && document.querySelector('.xs-plugin-pullup-container').innerText && document.querySelector('.xs-plugin-pullup-container').innerText === 'undefined') {
+            document.querySelector('.xs-plugin-pullup-container').innerText = ''
+          }
         })
+      }).catch((err) => {
+        this.$store.commit('app/close_global_dialog')
       })
     },
     clickForm (item) {
@@ -111,14 +122,15 @@ export default {
         path: '/formData',
         query: {
           id: item.id,
-          fields: item.fields
+          title: item.title,
+          uid: this.$route.query.uid !== undefined ? this.$route.query.uid : ''
         }
       })
     },
     timeLoadMore () {
       if (this.timeScroller.isAjax && this.timeScroller.page < this.timeScroller.max_page) {
         this.timeScroller.page++
-        this.formLists()
+        this.formLists(false)
       } else if (this.timeScroller.page >= this.timeScroller.max_page) {
         this.$refs.scrollerBottom.disablePullup() // 禁用上拉
       }
@@ -127,7 +139,8 @@ export default {
   created () {
   },
   mounted () {
-    this.formLists()
+    this.$store.commit('app/open_global_dialog')
+    this.formLists(false)
   }
 }
 </script>
@@ -135,6 +148,7 @@ export default {
 <style lang='scss' rel='stylesheet/scss' scoped>
 .form {
   height: 100%;
+  -webkit-overflow-scrolling: touch;
   .nodata{
     line-height: 1.5rem;
     text-align: center;
@@ -170,7 +184,7 @@ export default {
         padding-top: 0.25rem;
         display: inline-block;
         text-align: right;
-        padding-right: 0.2rem;
+        padding-right: 0.3rem;
       }
       .icon-right {
         position: relative;

@@ -25,7 +25,7 @@
             </div>
             <div class="task_left" @click="taskDetail(item)">
               <p class="task_title"> {{ item.title }}</p>
-              <p> {{ item.his_time }}     <span v-if="item.expire === 1">已过期</span></p>
+              <p> {{Global.parseTime(item.his_time, '{y}-{m}-{d} {h}:{i}')}}     <span v-if="item.expire === 1">已过期</span></p>
             </div>
             <div class="task_right">
               <p @click="signFinishTask(item)">完成</p>
@@ -47,7 +47,7 @@
               </div>
               <div class="task_left" @click="taskDetail(item)">
                 <p class="task_title"> {{ item.title }}</p>
-                <p> {{ item.his_time }}</p>
+                <p> {{Global.parseTime(item.his_time, '{y}-{m}-{d} {h}:{i}')}}</p>
               </div>
               <div class="task_right" @click="taskDetail(item)">
                 <!--<p>完成</p>-->
@@ -56,9 +56,13 @@
             </li>
           </ul>
         </div>
-        <div class="task_footer">
+        <div style="height: 1.5rem;"></div>
+        <div class="yyf_new_btn" style="border-top: 1px #e3e3e3 solid">
           <x-button type="primary" class="task_button" @click.native="addTask">新建任务</x-button>
         </div>
+        <!--<div class="task_footer">
+          <x-button type="primary" class="task_button" @click.native="addTask">新建任务</x-button>
+        </div>-->
       </div>
       <div v-show="tabIndex === 1">
         <ul class="task_list">
@@ -69,7 +73,7 @@
             </div>
             <div class="task_left" @click="taskDetail(item)">
               <p class="task_title"> {{ item.title }}</p>
-              <p> {{ item.his_time }}     <span v-if="item.expire === 1">已过期</span></p>
+              <p> {{Global.parseTime(item.his_time, '{y}-{m}-{d} {h}:{i}')}}     <span v-if="item.expire === 1">已过期</span></p>
             </div>
             <div class="task_right">
               <p @click="signFinishTask(item)">完成</p>
@@ -91,7 +95,7 @@
               </div>
               <div class="task_left" @click="taskDetail(item)">
                 <p class="task_title"> {{ item.title }}</p>
-                <p> {{ item.his_time }}</p>
+                <p> {{Global.parseTime(item.his_time, '{y}-{m}-{d} {h}:{i}')}}</p>
               </div>
               <div class="task_right" @click="taskDetail(item)">
                 <!--<p>完成</p>-->
@@ -136,8 +140,8 @@ export default {
       listQuery: {
         start_time: this.$route.query.time !== undefined ? this.$route.query.time : '',
         end_time: this.$route.query.time !== undefined ? this.$route.query.time : '',
-        type: 5
-
+        type: 5,
+        uid: this.$route.query.uid !== undefined ? this.$route.query.uid : ''
       },
       isShow: true,
       isShow2: true,
@@ -376,6 +380,7 @@ export default {
             }
           }
           .task_title{
+            height: 0.4rem;
             font-size: 16px;
             overflow: hidden;
             text-overflow:ellipsis;

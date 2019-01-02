@@ -19,7 +19,7 @@
                       </li>
                   </ul>
                   <div class="dea_btn">
-                      <router-link to="/reportChart">
+                      <router-link to="/reportChart?type=1">
                           <p>详细数据</p>
                           <x-icon type="ios-arrow-right" class="icon-red" size="20"></x-icon>
                       </router-link>
@@ -44,7 +44,7 @@
                           </router-link>
                       </li>
                       <li>
-                          <router-link to="/reportChart">
+                          <router-link to="/reportChart?type=0">
                               <img src="@/assets/icon/w2.jpg">
                               <p>AI报表</p>
                           </router-link>
@@ -56,20 +56,20 @@
                         </router-link>
                       </li>
 
-                      <!-- <li>
+                       <li>
+                         <router-link to="/salesRanking">
                           <img src="@/assets/icon/w5.jpg">
                           <p>销售排行</p>
+                         </router-link>
                       </li>
-                      <li>
+                      <!--<li>
                           <img src="@/assets/icon/w6.jpg">
                           <p>名片日报</p>
-                      </li> -->
+                      </li>-->
                   </ul>
 
               </div>
           </div>
-
-
 
       </scroller>
 
@@ -96,7 +96,6 @@
                       </div>
                   </div>
 
-
               </group>
           </popup>
       </div>
@@ -105,113 +104,107 @@
 </template>
 
 <script>
-import { XSwitch,PopupHeader, Popup,TransferDom ,Group,Scroller} from 'vux'
-import { get_list,save} from '@/api/work'
+import { XSwitch, PopupHeader, Popup, TransferDom, Group, Scroller} from 'vux'
+import { get_list, save} from '@/api/work'
 export default {
   name: 'work_index',
-    directives: {
-        TransferDom
-    },
+  directives: {
+    TransferDom
+  },
   components: {
-      Group,
-      PopupHeader,
-      Popup,
+    Group,
+    PopupHeader,
+    Popup,
     XSwitch,
-      Scroller
+    Scroller
   },
   data () {
     return {
-        set_isShow:false,
-        tpList:[],
-        list:[],
+      set_isShow: false,
+      tpList: [],
+      list: []
 
     }
   },
   methods: {
-      open_set(){
-          this.set_isShow = true
-      },
-      close_set(){
-          this.set_isShow = false
-      },
-      choose_save(){
-          let c_list = [];
-          if(this.tpList instanceof Array){
-              this.tpList.map((e)=>{
-                  if(e.select){
-                      c_list.push(e.val)
-                  }
-              })
+    open_set () {
+      this.set_isShow = true
+    },
+    close_set () {
+      this.set_isShow = false
+    },
+    choose_save () {
+      let c_list = []
+      if (this.tpList instanceof Array) {
+        this.tpList.map((e) => {
+          if (e.select) {
+            c_list.push(e.val)
           }
-          if(c_list.length == 0){
-              this.$vux.alert.show({
-                  title: '温馨提示',
-                  content: '数据类型设置不能为空！',
-              })
-              return
-          }
-
-          const end = c_list.join(',');
-
-          save({
-              type:end
-          }).then((e)=>{
-
-              if(e.code == 200 && e.msg === '保存成功!'){
-                  this.set_isShow = false;
-                  this.list_init()
-              }
-              else{
-                  this.$vux.alert.show({
-                      title: '温馨提示',
-                      content: '保存失败！',
-                  })
-
-              }
-          }).catch((err)=>{
-              this.$vux.alert.show({
-                  title: '温馨提示',
-                  content: '保存失败！',
-
-              })
-          })
-
-
-      },
-      choose_cancel(){
-          this.set_isShow = false;
-          this.list_init();
-      },
-      list_init(){
-          get_list().then((e)=>{
-              if(e.code == 200){
-                  if(e.data && e.data.tpList){
-                      this.tpList = e.data.tpList;
-                  }
-                  if(e.data && e.data.list){
-                      this.list = e.data.list;
-                  }
-              }
-              else{
-                  this.$vux.alert.show({
-                      title: '温馨提示',
-                      content: '数据返回错误！',
-                  })
-              }
-          }).catch((err)=>{
-              this.$vux.alert.show({
-                  title: '温馨提示',
-                  content: '数据返回错误！',
-              })
-          })
+        })
       }
+      if (c_list.length == 0) {
+        this.$vux.alert.show({
+          title: '温馨提示',
+          content: '数据类型设置不能为空！'
+        })
+        return
+      }
+
+      const end = c_list.join(',')
+
+      save({
+        type: end
+      }).then((e) => {
+        if (e.code == 200 && e.msg === '保存成功!') {
+          this.set_isShow = false
+          this.list_init()
+        } else {
+          this.$vux.alert.show({
+            title: '温馨提示',
+            content: '保存失败！'
+          })
+        }
+      }).catch((err) => {
+        this.$vux.alert.show({
+          title: '温馨提示',
+          content: '保存失败！'
+
+        })
+      })
+    },
+    choose_cancel () {
+      this.set_isShow = false
+      this.list_init()
+    },
+    list_init () {
+      get_list().then((e) => {
+        if (e.code == 200) {
+          if (e.data && e.data.tpList) {
+            this.tpList = e.data.tpList
+          }
+          if (e.data && e.data.list) {
+            this.list = e.data.list
+          }
+        } else {
+          this.$vux.alert.show({
+            title: '温馨提示',
+            content: '数据返回错误！'
+          })
+        }
+      }).catch((err) => {
+        this.$vux.alert.show({
+          title: '温馨提示',
+          content: '数据返回错误！'
+        })
+      })
+    }
   },
   watch: {
 
   },
 
   mounted () {
-    this.list_init();
+    this.list_init()
   }
 }
 </script>
@@ -366,7 +359,6 @@ export default {
 
     }
 
-
 }
 .work_index_Mongolia{
     .body{
@@ -401,12 +393,9 @@ export default {
                 color:#3b63c4;
             }
 
-
         }
 
-
     }
-
 
 }
 </style>

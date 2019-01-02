@@ -19,7 +19,7 @@
     <ul class="customer_list index_list">
       <li v-for="(item, index) in checkedCustomer " :key="index">
         <img :src="item.wx_image" alt="">
-        <span>{{item.wx_name}}</span>
+        <span>{{item.re_name ? item.re_name : item.wx_name}}</span>
       </li>
     </ul>
     <div class="btn new_btn">
@@ -42,7 +42,7 @@
             <ul class="customer_list">
               <li v-for="(item, index) in customer" :key="index">
                 <img :src="item.wx_image" alt="">
-                <span>{{item.wx_name}}</span>
+                <span>{{item.re_name ? item.re_name : item.wx_name}}</span>
                 <check-icon :value.sync="item.status" class="fr"></check-icon>
               </li>
             </ul>
@@ -116,6 +116,8 @@ export default {
         this.customer = customerAll
       })
     },
+
+      //打开选择客户的框
     insert () {
       this.clientList = true
       this.customer.forEach(element => {
@@ -126,12 +128,16 @@ export default {
         })
       })
     },
+
+    //选择客户确定
     chooseCustomer () {
       this.clientList = false
       this.checkedCustomer = []
+        this.checkedId = [];
       this.customer.forEach(element => {
         if (element.status) {
-          this.checkedCustomer.push(element)
+          this.checkedCustomer.push(element);
+            this.checkedId.push(element.id);//选中的客户变了，就要重新生成一遍选中数组
         }
       })
     },

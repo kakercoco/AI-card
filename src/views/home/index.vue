@@ -188,7 +188,7 @@
               <div v-for="(item, index) in interaction_list" :key="index" >
                 <li>
                   <img :src="item.wx_image ? item.wx_image : '@/assets/img/moren.jpg'" @click="toggleDetail(index)">
-                  <span class="list_title" @click="toggleDetail(index)"><i>{{item.wx_name}}</i>在{{interactionScroller.time_slot}}内和你互动了<i>{{item.num}}</i>次</span>
+                  <span class="list_title" @click="toggleDetail(index)"><i>{{item.re_name ? item.re_name : item.wx_name}}</i>在{{interactionScroller.time_slot}}内和你互动了<i>{{item.num}}</i>次</span>
                   <x-icon v-if="item.status" type="ios-arrow-down" size="20" class="icon" @click="toggleDetail(index)"></x-icon>
                   <p v-if="!item.status" class="tar"><x-icon type="ios-arrow-up" size="20" class="icon-up" @click="toggleDetail(index)"></x-icon></p>
                 </li>
@@ -333,7 +333,7 @@ export default {
     }
   },
   watch: {
-      '$store.state.tab.tabIndex' (val) {
+    '$store.state.tab.tabIndex' (val) {
       if (val == 1) {
         this.behavior_init()
       }
@@ -442,7 +442,7 @@ export default {
       })
     },
     onItemClick (index) {
-      this.$store.commit('tab/index_change_tab',index);
+      this.$store.commit('tab/index_change_tab', index)
     },
 
     toggleDetail (index) {
@@ -511,9 +511,7 @@ export default {
         }
       } else {
         this.behavior_config.time_slot = `${this.startTIme}到${this.endTime}`
-        this.$vux.loading.show({
-          text: '加载中...'
-        })
+
         if (this.behavior_config.isAjax) {
           // 重置
           this.behavior_init(this.startTIme, this.endTime)
@@ -575,7 +573,7 @@ export default {
         if (e.code === 200 && e.data && e.data.rows instanceof Array) {
           let list = e.data.rows
           list.map((val, i) => {
-            val.ele = config[val.type] ? val.wx_name + '第' + val.num + '次' + config[val.type] : ''
+            val.ele = config[val.type] ? (val.re_name ? val.re_name : val.wx_name) + '第' + val.num + '次' + config[val.type] : ''
             val.time = dateFtt('MM-dd hh:mm', new Date(val.create_time * 1000))
           })
           this.time_list = this.time_list.concat(list)
@@ -651,6 +649,7 @@ export default {
 
     // 获取互动列表
     Interaction_init (start_time, end_time, isTop) {
+      this.$store.commit('app/open_global_dialog')
       this.interactionScroller.isAjax = false
       init_list({
         type: 'interact',
@@ -659,7 +658,7 @@ export default {
         start_time,
         end_time
       }).then((e) => {
-        // debugger;
+        this.$store.commit('app/close_global_dialog')
         this.interactionScroller.isAjax = true
         this.$vux.loading.hide()
         if (e.code === 200 && e.data && e.data.rows instanceof Array) {
@@ -704,7 +703,7 @@ export default {
           this.$refs.scroller.disablePullup()
         }
       }).catch((err) => {
-        console.log(err)
+        this.$store.commit('app/close_global_dialog')
         this.$vux.loading.hide()
         this.interactionScroller.isAjax = true
       })
@@ -713,45 +712,54 @@ export default {
     // 获取行为列表
     behavior_init (start_time, end_time) {
       this.behavior_config.isAjax = false
-      this.$vux.loading.show({
-        text: '加载中...'
-      })
+      this.$store.commit('app/open_global_dialog')
       init_list({
         type: 'behavior',
         start_time,
         end_time
       }).then((e) => {
+        this.$store.commit('app/close_global_dialog')
         this.behavior_config.isAjax = true
-        this.$vux.loading.hide()
 
         if (e.code === 200 && e.data && e.data instanceof Array) {
           let list = e.data
-          let end_list = []
+          let endList = []
+          let typeList = [4, 14, 18, 19, 16, 5, 15, 7, 10, 8, 11, 6, 17, 15, 13, 9, 12]
           const reg = /<i>\W+<\/i>/g
-          list.map((val, i) => {
-            if (val.type === 0) {
-              this.behavior_config.card = val.nums
-            } else if (val.type === 1) {
-              this.behavior_config.web = val.nums
-            } else if (val.type === 2) {
-              this.behavior_config.case = val.nums
-            } else if (val.type === 3) {
-              this.behavior_config.product = val.nums
-            } else {
-              if (config[val.type]) {
-                val.title = config[val.type].match(reg) ? config[val.type].match(reg).join('').replace(/<i>/g, '').replace(/<\/i>/g, '') : ''
-              } else {
-                val.title = ''
-              }
-              end_list.push(val)
+          for (let j = 0; j < typeList.length; j++) {
+            let obj = {
+              type: '',
+              title: '',
+              nums: 0
             }
-          })
-
-          this.behavior_list = end_list
+            for (let i = 0; i < list.length; i++) {
+              if (list[i].type === 0) {
+                this.behavior_config.card = list[i].nums
+              } else if (list[i].type === 1) {
+                this.behavior_config.web = list[i].nums
+              } else if (list[i].type === 2) {
+                this.behavior_config.case = list[i].nums
+              } else if (list[i].type === 3) {
+                this.behavior_config.product = list[i].nums
+              } else {
+                if (typeList[j] === list[i].type) {
+                  obj.type = list[i].type !== undefined && list[i].type !== null ? list[i].type : 0
+                  obj.nums = list[i].nums
+                  if (config[list[i].type]) {
+                    obj.title = config[list[i].type].match(reg) ? config[list[i].type].match(reg).join('').replace(/<i>/g, '').replace(/<\/i>/g, '') : ''
+                  } else {
+                    obj.title = ''
+                  }
+                  endList.push(obj)
+                  break
+                }
+              }
+            }
+          }
+          this.behavior_list = endList
         }
-      }).catch((err) => {
-        console.log(err)
-        this.$vux.loading.hide()
+      }).catch((e) => {
+        this.$store.commit('app/close_global_dialog')
         this.behavior_config.isAjax = true
       })
     }
@@ -901,7 +909,6 @@ $color:#717171;
       .view-task{
         padding-left: 0.3rem;
         height: 0.8rem !important;
-
 
         border-top: 1px solid #efefef;
         span{
@@ -1299,10 +1306,10 @@ $color:#717171;
         color: #717171;
         i{
           display: inline-block;
-          height: 0.2rem;
-          border-radius: 0.1rem;
+          height: 10px;
+          border-radius: 5px;
           margin-right: 5px;
-          min-width: 1px !important;
+          min-width: 2px !important;
         }
       }
       &:nth-child(7n+1){

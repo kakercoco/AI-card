@@ -2,11 +2,36 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=yes"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>智能名片</title>
+    <% if(process.env.NODE_ENV === 'development'){%>
+    <link rel="stylesheet" href="/static/css/index_loading.css">
+    <% }else{ %>
+    <link rel="stylesheet" href="/ai/static/css/index_loading.css">
+    <% } %>
   </head>
+
   <body>
+
     <div id="app"></div>
-    <!-- built files will be auto injected -->
+
+    <div class="index_global_dialog">
+      <div class="global_icon">
+        <div class="frame">
+          <% if(process.env.NODE_ENV === 'development'){%>
+          <img src="/static/image/loading_2.png" class="loading_2">
+          <img src="/static/image/loading_1.png" class="loading_1">
+          <% }else{ %>
+          <img src="/ai/static/image/loading_2.png" class="loading_2">
+          <img src="/ai/static/image/loading_1.png" class="loading_1">
+          <% } %>
+        </div>
+        <p>首次加载稍慢</p>
+      </div>
+    </div>
+
+
+
   </body>
 </html>

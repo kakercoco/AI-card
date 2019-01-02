@@ -6,34 +6,36 @@
 */
 <template>
   <div class="form-data">
-    <div class="form-data-tilte">
-      <p><span>表单名称:</span>8月15号珍岛4S店开业啦!</p>
-      <p><span>客户数量:</span>53</p>
+    <scroller
+      height="100%"
+      lock-x
+      :use-pullup="true"
+      :pullup-config="pullup_config"
+      @on-pullup-loading="timeLoadMore"
+      ref="scrollerBottom">
+    <div>
+      <div class="form-data-tilte">
+        <p><span>表单名称:</span> {{ title }}</p>
+        <p><span>客户数量:</span>{{ userNum }}</p>
+      </div>
+      <div class="form-data-content">
+        <p class="title">已提交{{ timeScroller.total }}份表单</p>
+        <ul class="content" v-for="(item, index) in formDatas" :index="index">
+          <li @click="clickClienForm(item)">
+            <div class="content-left">
+              <img :src="item.wx_image!== '' && item.wx_image !==undefined ? item.wx_image: '../../assets/img/u112.png'">
+            </div>
+            <div class="content-right">
+              <p>{{item.re_name ? item.re_name : item.wx_name}}</p>
+              <p>{{item.create_time}}</p>
+            </div>
+            <x-icon type="ios-arrow-right" class="icon-right" @click="clickClienForm(item)"></x-icon>
+          </li>
+        </ul>
+        <div class="nodata" v-if="no_data">暂无数据!</div>
+      </div>
     </div>
-    <div class="form-data-content">
-      <p class="title">已提交{{ timeScroller.total }}份表单</p>
-      <scroller
-        height="100%"
-        lock-x
-        :use-pullup="true"
-        :pullup-config="pullup_config"
-        @on-pullup-loading="timeLoadMore"
-        ref="scrollerBottom">
-          <ul class="content" v-for="(item, index) in formDatas" :index="index">
-            <li @click="clickClienForm(item)">
-              <p class="content-left">
-                <img :src="item.wx_image!== '' && item.wx_image !==undefined ? item.wx_image: '../../assets/img/u112.png'">
-              </p>
-              <div class="content-right">
-                <p>{{item.wx_name}}</p>
-                <p>{{item.create_time}}</p>
-              </div>
-              <x-icon type="ios-arrow-right" class="icon-right" @click="clickClienForm(item)"></x-icon>
-            </li>
-          </ul>
-         <div class="nodata" v-if="no_data">暂无数据!</div>
-      </scroller>
-    </div>
+    </scroller>
   </div>
 </template>
 
@@ -51,6 +53,8 @@ export default {
   },
   data () {
     return {
+      title: this.$route.query.title,
+      userNum: 0,
       formDatas: [],
       pullup_config: {
         content: '加载中...',
@@ -78,7 +82,7 @@ export default {
         path: '/formDetail',
         query: {
           id: item.msgId,
-          fields: this.$route.query.fields
+          wx_name: item.re_name ? item.re_name : item.wx_name
         }
       })
     },
@@ -86,21 +90,28 @@ export default {
       getMessageFormList({
         id: this.$route.query.id,
         page: this.timeScroller.page,
-        limit: this.timeScroller.pagesize
+        limit: this.timeScroller.pagesize,
+        uid: this.$route.query.uid !== undefined ? this.$route.query.uid : ''
       }).then(res => {
-        /* this.timeScroller.isAjax = true
+        this.$store.commit('app/close_global_dialog')
+        this.timeScroller.isAjax = true
         this.$vux.loading.hide()
         if (res.code === 200 && res.data && res.data.list instanceof Array) {
           this.no_data = false
           let list = res.data.list
-          this.formDatas = this.formDatas.concat(list)
-          this.timeScroller.total = res.data.total
-          this.timeScroller.max_page = Math.ceil(res.data.total / 10)
+          this.userNum = res.data.userNum
+          if (res.data.total === 0) {
+            this.no_data = true
+          } else {
+            this.formDatas = this.formDatas.concat(list)
+            this.timeScroller.total = res.data.total
+            this.timeScroller.max_page = Math.ceil(res.data.total / 10)
+          }
         } else {
+          this.no_data = true
           this.$refs.scrollerBottom.disablePullup()
         }
         this.$nextTick(() => {
-          debugger
           this.$refs.scrollerBottom.donePullup()// 上拉完成
           if (isTop) {
             this.$refs.scrollerBottom.reset({top: 0})
@@ -108,18 +119,19 @@ export default {
             this.$refs.scrollerBottom.reset()
           }
           if (this.timeScroller.max_page <= 1 || this.formDatas.length === 0) {
-            this.no_data = true
             this.$refs.scrollerBottom.disablePullup()// 禁止上拉
           } else {
             this.$refs.scrollerBottom.enablePullup()// 恢复上拉
           }
-        }) */
+        })
+      }).catch((err) => {
+        this.$store.commit('app/close_global_dialog')
       })
     },
     timeLoadMore () {
       if (this.timeScroller.isAjax && this.timeScroller.page < this.timeScroller.max_page) {
         this.timeScroller.page++
-        this.messageFormList()
+        this.messageFormList(false)
       } else if (this.timeScroller.page >= this.timeScroller.max_page) {
         this.$refs.scrollerBottom.disablePullup() // 禁用上拉
       }
@@ -128,7 +140,8 @@ export default {
   watch: {
   },
   mounted () {
-    this.messageFormList()
+    this.$store.commit('app/open_global_dialog')
+    this.messageFormList(false)
   }
 }
 </script>

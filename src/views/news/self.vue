@@ -45,8 +45,10 @@
             <p class="content">{{e.title}}</p>
             <p class="num">共{{e.cover ? e.cover.length : 0 }}张</p>
             <p class="comment">
+              <span class="del" @click.stop="del_dynamic(e,index)"><img src="@/assets/icon/del_icon.png" alt=""></span>
               <span><img src="@/assets/icon/123_09.png" alt="">{{e.comment.total}}</span>
               <span><img src="@/assets/icon/123_07.png" alt="">{{e.praise.total}}</span>
+
             </p>
           </li>
         </ul>
@@ -59,8 +61,9 @@
 <script>
 import { Scroller } from 'vux'
 
-import { init_list } from '@/api/dynamic'
+import { init_list,del_dynamic } from '@/api/dynamic'
 import { cardRead } from '@/api/card'
+import { err_Tips } from '@/utils/base'
 export default {
   name: 'newsSelf',
   components: {
@@ -150,7 +153,32 @@ export default {
           id: item.id
         }
       })
-    }
+    },
+      del_dynamic(e,index){
+        const id = e.id;
+        const that = this;
+        if(id){
+            this.$vux.confirm.show({
+                title: '温馨提示',
+                content: '是否删除该条动态?',
+                onConfirm  () {
+                    del_dynamic({id}).then((res)=>{
+                        if(res.code === 200){
+                            that.dynamicList.splice(index,1);
+                        }
+                        else{
+                            err_Tips('删除失败！',that)
+                        }
+                    }).catch((err)=>{
+                        err_Tips('删除失败！',that)
+                    })
+                },
+            })
+        }else{
+            err_Tips('该条评论不能删除！',that)
+        }
+
+      }
   },
   mounted () {
     this.getDynamicList()
@@ -243,7 +271,7 @@ export default {
     }
     .comment{
       position: absolute;
-      width: 2rem;
+      width: 2.6rem;
       height: 0.3rem;
       clear: both;
       right: 0.08rem;
@@ -254,6 +282,17 @@ export default {
         font-size: 0.28rem;
         font-family: '黑体';
         color: #999999;
+      }
+      .del{
+        margin-left: 0.05rem;
+        margin-right: 0;
+        width: 0.4rem;
+        height: 0.4rem;
+        text-align: right;
+        img{
+          float: right !important;
+          margin-right: 0 !important;
+        }
       }
       img{
         width: 0.3rem;

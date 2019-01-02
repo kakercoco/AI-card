@@ -21,6 +21,7 @@
         <span @click="showSecondDialog">产品分类</span>
         <div class="tab-wrap" v-show="activeTabSecondStatus" @click="closeDialog">
           <ul>
+            <li @click.stop="selsectedSortId()">全部<x-icon type="ios-checkmark-empty" class="icon-checked" v-if=" pageForm && pageForm.type_id == null"></x-icon></li>
             <li v-for="(item, index) in tabSecondList" :key="index" @click.stop="selsectedSortId(item, 1)">
               {{item.name}}
               <x-icon type="ios-arrow-right" class="icon-down" v-if="item.child.length > 0 && !item.status"></x-icon>
@@ -44,7 +45,7 @@
           <li v-for="(item, index) in produceList" :key="index">
             <div class="left">
               <img :src="item.img" alt="">
-              <p><span v-show="item.status">已推荐</span> <span v-show="!item.status">未推荐</span></p>
+              <!--<p><span v-show="item.status">已推荐</span> <span v-show="!item.status">未推荐</span></p>-->
             </div>
 
             <div class="right">
@@ -78,12 +79,12 @@ export default {
   data () {
     return {
       config: {
-        content: '请上拉刷新数据...',
+        content: '加载中...',
         pullUpHeight: 60,
         height: 40,
         autoRefresh: false,
         downContent: '释放后加载',
-        upContent: '请上拉刷新数据...',
+        upContent: '加载中...',
         loadingContent: '加载中...',
         clsPrefix: 'xs-plugin-pullup-'
       },
@@ -122,23 +123,42 @@ export default {
     getProduceList () {
       employgoodsIndex(this.pageForm)
         .then(res => {
-          const list = res.data.rows
-          this.recommend = res.data.recommend.split(',')
-          list.forEach(e => {
-            if (this.recommend.includes(e.goods_id)) {
-              e.status = true
-            } else {
-              e.status = false
+            if(res.code == 200 && res.data && res.data.rows && res.data.rows instanceof Array){
+                this.recommend = res.data.recommend.split(',')
+
+                if(res.data.rows.length === 0){
+                    this.$refs.loadingMore.disablePullup() // 禁用上拉
+                    this.isFlag = true
+                }
+
+                else{
+                    const list = res.data.rows
+                    list.forEach(e => {
+                        if (this.recommend.includes(e.goods_id)) {
+                            e.status = true
+                        } else {
+                            e.status = false
+                        }
+                    })
+                    this.produceList = this.produceList.concat(list)
+                    this.$refs.loadingMore.donePullup()
+                    if(this.produceList.length == parseInt(res.data.total)){
+                        this.$refs.loadingMore.disablePullup() // 禁用上拉
+                        this.isFlag = true
+                    }
+                }
+
             }
-          })
-          this.produceList = list
-        })
+        }).catch((err)=>{
+
+      })
     },
     switchProduce (val, name) {
       this.pageForm.opt = val
       this.activeTabFirstStatus = false
       this.activeTabFirstName = name
       this.pageForm.page = 1
+        this.produceList = [];//重置列表
       this.getProduceList()
       this.$refs.loadingMore.reset({top: 0})
       if (this.isFlag) {
@@ -159,11 +179,12 @@ export default {
       this.activeTabFirstStatus = false
     },
     selsectedSortId (item, nav) {
-      if (item.child.length > 0 && nav === 1) {
+      if (item && item.child.length > 0 && nav === 1) {
         item.status = !item.status
       } else {
-        this.pageForm.type_id = item.id
+        this.pageForm.type_id = item ? item.id : null
         this.pageForm.page = 1
+        this.produceList = [];//重置列表
         this.getProduceList()
         this.$refs.loadingMore.reset({top: 0})
         if (this.isFlag) {
@@ -175,16 +196,7 @@ export default {
     },
     loadMore () {
       this.pageForm.page += 1
-      employgoodsIndex(this.pageForm)
-        .then(res => {
-          if (res.data.rows.length === 0) {
-            this.$refs.loadingMore.disablePullup() // 禁用上拉
-            this.isFlag = true
-          } else {
-            this.produceList = this.produceList.concat(res.data.rows)
-            this.$refs.loadingMore.donePullup()
-          }
-        })
+      this.getProduceList();
     },
     employgoodsSave (item) {
       const data = {

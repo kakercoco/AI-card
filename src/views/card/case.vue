@@ -39,7 +39,7 @@
           <li v-for="(item, index) in produceList" :key="index">
             <div class="left">
               <img :src="item.img" alt="">
-              <p><span v-show="item.status">已推荐</span> <span v-show="!item.status">未推荐</span></p>
+              <!--<p><span v-show="item.status">已推荐</span> <span v-show="!item.status">未推荐</span></p>-->
             </div>
             <div class="right">
               <h4>{{item.title}}</h4>
@@ -71,12 +71,12 @@ export default {
   data () {
     return {
       config: {
-        content: '请上拉刷新数据...',
+        content: '加载中...',
         pullUpHeight: 60,
         height: 40,
         autoRefresh: false,
         downContent: '释放后加载',
-        upContent: '请上拉刷新数据...',
+        upContent: '加载中...',
         loadingContent: '加载中...',
         clsPrefix: 'xs-plugin-pullup-'
       },
@@ -113,7 +113,33 @@ export default {
     },
     getProduceList () {
       employcaseIndex(this.pageForm).then(res => {
-        const list = res.data.rows
+          if(res.code == 200 && res.data && res.data.rows && res.data.rows instanceof Array){
+              this.recommend = res.data.recommend.split(',')
+
+              if(res.data.rows.length === 0){
+                  this.$refs.loadingMore.disablePullup() // 禁用上拉
+                  this.isFlag = true
+              }
+              else{
+                  const list = res.data.rows
+                  list.forEach(e => {
+                      if (this.recommend.includes(e.id)) {
+                          e.status = true
+                      } else {
+                          e.status = false
+                      }
+                  })
+                  this.produceList = this.produceList.concat(list)
+                  this.$refs.loadingMore.donePullup()
+                  if(this.produceList.length == parseInt(res.data.total)){
+                      this.$refs.loadingMore.disablePullup() // 禁用上拉
+                      this.isFlag = true
+                  }
+              }
+
+          }
+
+        /*const list = res.data.rows
         this.recommend = res.data.recommend.split(',')
         list.forEach(e => {
           if (this.recommend.includes(e.id)) {
@@ -122,7 +148,7 @@ export default {
             e.status = false
           }
         })
-        this.produceList = list
+        this.produceList = list*/
       })
     },
     switchProduce (val, name) {
@@ -130,6 +156,7 @@ export default {
       this.activeTabFirstStatus = false
       this.activeTabFirstName = name
       this.pageForm.page = 1
+        this.produceList = [];//重置列表
       this.getProduceList()
       this.$refs.loadingMore.reset({ top: 0 })
       if (this.isFlag) {
@@ -152,6 +179,7 @@ export default {
     selsectedSortId (item) {
       this.pageForm.type_id = item.id
       this.pageForm.page = 1
+        this.produceList = [];//重置列表
       this.getProduceList()
       this.$refs.loadingMore.reset({ top: 0 })
       if (this.isFlag) {
@@ -162,15 +190,7 @@ export default {
     },
     loadMore () {
       this.pageForm.page += 1
-      employcaseIndex(this.pageForm).then(res => {
-        if (res.data.length === 0) {
-          this.$refs.loadingMore.disablePullup() // 禁用上拉
-          this.isFlag = true
-        } else {
-          this.produceList = this.produceList.concat(res.data.rows)
-          this.$refs.loadingMore.donePullup()
-        }
-      })
+      this.getProduceList()
     },
     employcaseSave (item) {
       const data = {

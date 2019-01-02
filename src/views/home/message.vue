@@ -18,7 +18,7 @@
             <img :src="item.wx_image ? item.wx_image : '@/assets/img/moren.jpg'" alt="">
             <div>
               <p>
-                <span class="name">{{item.wx_name}}</span>
+                <span class="name">{{item.re_name ? item.re_name : item.wx_name}}</span>
                 <span class="time">{{item.time}}</span>
               </p>
               <p v-if="item.last_content.type === 'text'">{{item.last_content.content}}</p>
@@ -154,11 +154,9 @@ export default {
     // },
 
     get_message_list () {
-      this.$vux.loading.show({
-        text: '加载中...'
-      })
+        this.$store.commit('app/open_global_dialog');
       get_list().then((res) => {
-        this.$vux.loading.hide()
+      this.$store.commit('app/close_global_dialog');
         if (res.code === 200 && res.data && res.data instanceof Array) {
           let list = res.data
           list.map((val, i) => {
@@ -175,7 +173,7 @@ export default {
             })
         }
       }).catch((err) => {
-        this.$vux.loading.hide()
+          this.$store.commit('app/close_global_dialog');
       })
     },
 
@@ -198,60 +196,6 @@ export default {
       return end_obj
     }
 
-    // chat_watch(){
-    //     this.$store.state.user.websocketConnection.onmessage = (res)=>{
-    //         const data = JSON.parse(res.data);
-    //         if(data.cmd === 'SpeakFromDialog' && data.content){
-    //             const chat_obj = JSON.parse(data.content);
-    //             console.log(chat_obj);
-    //             //存在内容
-    //             if(chat_obj.content){
-    //                 chat_obj.content_obj = JSON.parse(chat_obj.content);
-    //                 var end_obj = this.create_message(chat_obj);
-    //
-    //
-    //                 //判断这个用户是否在列表中，如果再列表中，直接插入消息
-    //                 let isHave = false;
-    //                 for(let i = 0;i<this.messageList.length;i++){
-    //                     if(this.messageList[i].message_id ==  chat_obj.speakerId){
-    //                         isHave = true;
-    //                         //直接插入
-    //                         Object.assign(this.messageList[i],end_obj);
-    //                         this.messageList[i].num++;
-    //                         console.log(this.messageList);
-    //                         break;
-    //                     }
-    //                 }
-    //
-    //                 //不存在，做请求
-    //                 if(!isHave){
-    //                     //做请求要信息
-    //                     get_users({
-    //                         message_id:chat_obj.speakerId
-    //                     }).then((ev)=>{
-    //                         if(ev.code === 200 && ev.data && ev.data instanceof Array){
-    //                             const user = ev.data[0];
-    //                             const message = {
-    //                                 is_read:0,
-    //                                 num:1,
-    //                                 message_id:chat_obj.speakerId ? chat_obj.speakerId : user.message_id,
-    //                                 uid:user.id,
-    //                                 wx_image:user.wx_image,
-    //                                 wx_name:user.wx_name
-    //                             };
-    //                             Object.assign(message,end_obj);
-    //                             this.messageList.push(message);
-    //                         }
-    //                     })
-    //
-    //                 }
-    //
-    //             }
-    //
-    //         }
-    //
-    //     }
-    // }
 
   },
   mounted () {

@@ -42,10 +42,10 @@ export default new Router({
       }]
     },
     {
-        path: '/news',
-        name: 'news',
-        meta: { title: '动态圈' },
-        component: () => import('@/views/home/news')
+      path: '/news',
+      name: 'news',
+      meta: { title: '动态圈' },
+      component: () => import('@/views/home/news')
     },
     {
       path: '/seeCard',
@@ -210,6 +210,12 @@ export default new Router({
       component: () => import('@/views/client/follow')
     },
     {
+      path: '/followRecord',
+      name: 'followRecord',
+      meta: { title: '客户跟进' },
+      component: () => import('@/views/client/followRecord')
+    },
+    {
       path: '/clientInfor',
       name: 'clientInfor',
       meta: { title: '资料详情' },
@@ -224,14 +230,38 @@ export default new Router({
     {
       path: '/selfCard',
       name: 'selfCard',
-      meta: { title: '名片海报' },
+      meta: { title: '名片预览' },
       component: () => import('@/views/card/selfCard')
+    },
+    {
+      path: '/editList',
+      name: 'editList',
+      meta: { title: '编辑名片' },
+      component: () => import('@/views/self/edit_list')
+    },
+    {
+      path: '/personal_label',
+      name: 'personal_label',
+      meta: { title: '标签编辑' },
+      component: () => import('@/views/self/personal_label')
     },
     {
       path: '/editCard',
       name: 'editCard',
-      meta: { title: '编辑名片' },
+      meta: { title: '编辑信息' },
       component: () => import('@/views/card/editCard')
+    },
+    {
+      path: '/recommended_product',
+      name: 'recommended_product',
+      meta: { title: '推荐产品' },
+      component: () => import('@/views/self/recommended_product')
+    },
+    {
+      path: '/recommended_case',
+      name: 'recommended_case',
+      meta: { title: '推荐案例' },
+      component: () => import('@/views/self/recommended_case')
     },
     {
       path: '/produce',
@@ -316,6 +346,21 @@ export default new Router({
       name: 'formDetail',
       meta: { title: '表单详情' },
       component: () => import('@/views/form/formDetail')
+    }, {
+      path: '/salesRanking',
+      name: 'salesRanking',
+      meta: { title: '销售排行' },
+      component: () => import('@/views/rank/index')
+    }, {
+      path: '/historyRank',
+      name: 'historyRank',
+      meta: { title: '历史排行榜' },
+      component: () => import('@/views/rank/historyRank')
+    }, {
+      path: '/diagram',
+      name: 'diagram',
+      meta: { title: '获客曲线图' },
+      component: () => import('@/views/rank/diagram')
     }
   ]
 })

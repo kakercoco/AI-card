@@ -83,11 +83,15 @@ export default {
   },
   methods: {
     getCard () {
+      this.$store.commit('app/open_global_dialog');
       cardRead().then(res => {
+        this.$store.commit('app/close_global_dialog');
         this.cardInfor = res.data
         if (this.cardInfor.image === '') {
           this.cardInfor.image = require('@/assets/card/comm.jpg')
         }
+      }).catch((err)=>{
+          this.$store.commit('app/close_global_dialog');
       })
     },
     gotoCard () {

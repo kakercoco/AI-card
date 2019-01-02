@@ -2566,10 +2566,10 @@
     padding-left: 0.2rem;
   }
 }
-.card-template-27{ // 名片模板 4
+.card-template-29{ // 名片模板 18
   padding: 0.3rem !important;
   position: relative;
-  color: #c9a063;
+  color: #fff;
   .mark{
     position: absolute;
     top: 0.2rem;
@@ -2594,14 +2594,23 @@
     }
   }
   .trueland{
-    float:right;
+    float: right;
     img{
       width: 2rem;
       float: left;
       display: none;
     }
     span{
+      color: #666666;
       font-size: 0.3rem;
+      position: relative;
+      top: 0.2rem;
+      display: inline-block;
+      text-align: right;
+      max-width: 5rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
   .company{
@@ -2610,64 +2619,86 @@
   }
   .bio{
     position: absolute;
-    top: 1.1rem;
-    right: 1.5rem;
+    top: 0.92rem;
+    left: 0.18rem;
     height: 1.5rem;
-    width: 2.6rem;
+    width: 100%;
     .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 1.27rem;
+      height: 1.3rem;
       border-radius: 1.5rem;
-      float: right;
-      margin-left: 0.3rem;
-      display: none;
+      top: 0.2rem;
+      left: 0.2rem;
+      position: relative;
+      float: left;
     }
     .name{
       font-size: 0.4rem;
-      margin-top: 12.4rem;
+      line-height: 2.3;
       max-width: 1.8rem;
       overflow: hidden;
-      width: calc(100% - 1.8rem);
-      text-align: center;
+      margin: 0 0.4rem;
+      display: inline-block;
+      color: #353535;
+      padding-top: 0.2rem;
     }
     .job{
-      font-size: 0.26rem;
-      display: block;
-      float: right;
+      font-size: 0.22rem;
       text-align: initial;
-      line-height: 2.8;
+      display: block;
+      margin-left: 1.66rem;
+      position: relative;
+      top: -0.28rem;
+      color: #999999;
     }
   }
   .phone{
-    margin-top: 2rem;
-    padding-left: 1.5rem;
-    padding-bottom: 0.5rem;
+    font-size: 0.25rem;
+    position: relative;
+    margin-top: 2.3rem;
+    top: -0.1rem;
+    color: #353535;
+    font-family: 'Arial Regular', serif;
+    text-align: right;
+    margin-left: 1.75rem;
+    width: 4rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
+      display: none;
     }
   }
   .email{
-    margin-top: 0.15rem;
-    padding-left: 0.2rem;
-    display: none;
+    margin-bottom: 0.08rem;
+    color: #fff;
+    font-size: 0.25rem;
+    position: relative;
+    top: 0.58rem;
+    margin-left: 2rem;
+    text-align: right;
+    max-width: 3.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
+      display: none;
     }
   }
   .address{
+    display: inline-block;
+    font-size: 0.25rem;
     position: relative;
-    padding-left: 2rem;
-    max-width: 6.2rem;
+    color: #353535;
+    top: -0.48rem;
+    text-align: right;
+    margin-left: 1.75rem;
+    width: 4rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     img{
-      position: absolute;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-      top: 0;
-      left: 1.5rem;
+      display: none;
     }
   }
   .tip{
@@ -2679,7 +2710,140 @@
   }
 }
 
-.card-template-29{ // 名片模板 6
+.card-template-31{ // 名片模板 20
+  padding: 0.3rem !important;
+  position: relative;
+  color: #555555;
+  font-family: '微软雅黑 Regular', serif;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    float: left;
+    padding-top: 0.2rem;
+    img{
+      width: 2rem;
+      float: left;
+      display: none;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #666666;
+      padding-left: 0.2rem;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.1rem;
+    left: 1.9rem;
+    height: 1.5rem;
+    width: 100%;
+    .avatar{
+      width: 1.66rem;
+      height: 1.7rem;
+      border-radius: 1.5rem;
+      margin-right: 3.03rem;
+      float: right;
+    }
+    .name{
+      font-size: 0.4rem;
+      line-height: 2.3;
+      max-width: 1.8rem;
+      overflow: hidden;
+      display: inline-block;
+      color: #353535;
+      font-family: '\5FAE\8F6F\96C5\9ED1 Regular', serif;
+      margin-left: 2.45rem;
+      position: relative;
+      top: -0.1rem;
+    }
+    .job{
+      display: none;
+    }
+  }
+  .phone{
+    margin-top: 1.8rem;
+    padding-bottom: 0.35rem;
+    padding-left: 0.55rem;
+    color: #353535;
+    font-size: 0.25rem;
+    line-height: 0.285rem;
+    font-family: 'Arial Regular', serif;
+    max-width: 4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    img{
+      display: none;
+    }
+  }
+  .email{
+    margin-bottom: 0.08rem;
+    color: #353535;
+    font-size: 0.25rem;
+    line-height: 0.285rem;
+    font-family: 'Arial Regular', serif;
+    position: relative;
+    top: 0.15rem;
+    left: 0.6rem;
+    max-width: 3.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    img{
+      display: none;
+    }
+  }
+  .address{
+    font-size: 0.25rem;
+    line-height: 0.36rem;
+    position: relative;
+    color: #353535;
+    max-width: 2.8rem;
+    top: 0.22rem;
+    left: 0.6rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    img{
+      display: none;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+    display: none;
+  }
+}
+
+.card-template-32{ // 名片模板 21
   padding: 0.3rem !important;
   position: relative;
   color: #fff;
@@ -2715,6 +2879,15 @@
     }
     span{
       font-size: 0.3rem;
+      position: relative;
+      top: 0.1rem;
+      left: -0.3rem;
+      color: #666666;
+      max-width: 2.8rem;
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
   .company{
@@ -2723,174 +2896,73 @@
   }
   .bio{
     position: absolute;
-    top: 0.8rem;
+    top: 2.3rem;
+    left: 0.2rem;
     height: 1.5rem;
     width: 100%;
-    line-height: 2rem;
     .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      margin-left: 0.3rem;
-      float: left;
-    }
-    .name{
-      font-size: 0.4rem;
-      margin-top: 12.4rem;
-      max-width: 1.8rem;
-      overflow: hidden;
-      margin: 0 0.4rem;
-    }
-    .job{
-      font-size: 0.26rem;
-      text-align: initial;
-      line-height: 2.8;
-    }
-  }
-  .phone{
-    margin-top: 2.3rem;
-    padding-bottom: 0.7rem;
-    padding-left: 0.9rem;
-    img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-    }
-  }
-  .email{
-    margin-top: 0.15rem;
-    display: none;
-    img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-    }
-  }
-  .address{
-    position: relative;
-    overflow: hidden;
-    padding-left: 1.45rem;
-    img{
-      position: absolute;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-      top: 0;
-      left: 0.9rem;
-    }
-  }
-  .tip{
-    font-size: 0.26rem;
-    margin-top: 0.2rem;
-    font-weight: normal;
-    padding-left: 0.2rem;
-    display: none;
-  }
-}
-
-.card-template-30{ // 名片模板7
-  padding: 0.3rem !important;
-  position: relative;
-  color: #555555;
-  .mark{
-    position: absolute;
-    top: 0.2rem;
-    right: 0;
-    background-color: #bc2400;
-    font-size: 0.26rem;
-    color: #fff;
-    height: 0.4rem;
-    padding: 0 0.3rem;
-    line-height: 0.42rem;
-    font-weight: normal;
-    &::after{
-      content: '';
-      display: block;
-      background-color: #fff;
-      transform: rotateZ(45deg);
-      width: 0.3rem;
-      height: 0.3rem;
-      position: absolute;
-      left: -0.2rem;
-      top: 0.06rem;
-    }
-  }
-  .trueland{
-    float:left;
-    img{
-      width: 2rem;
-      float: left;
       display: none;
     }
-    span{
-      font-size: 0.3rem;
-    }
-  }
-  .company{
-    text-align: left;
-    font-size: 0.24rem;
-  }
-  .bio{
-    position: absolute;
-    top: 1rem;
-    right: 0.5rem;
-    height: 1.5rem;
-    width: 100%;
-    .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 1.5rem;
-      float: right;
-      margin-left: 0.3rem;
-    }
     .name{
       font-size: 0.4rem;
-      margin-top: 0.4rem;
-      float: left;
-      margin-left: 0.8rem;
+      line-height: 2.3;
       max-width: 1.8rem;
       overflow: hidden;
-      width: calc(100% - 1.8rem);
-      text-align: right;
+      margin: 0 0.25rem;
+      display: inline-block;
+      color: #353535;
     }
     .job{
-      font-size: 0.26rem;
+      font-size: 0.22rem;
+      text-align: initial;
       display: block;
-      padding-top: 0.4rem;
-      padding-left: 0.5rem;
-      float: left;
-      text-align: left;
-      line-height: 2.8;
+      position: relative;
+      top: -0.25rem;
+      color: #999999;
+      left: 0.25rem;
     }
   }
   .phone{
-    margin-top: 2.4rem;
-    padding-left: 0.1rem;
-    padding-bottom: 0.5rem;
+    font-size: 0.25rem;
+    margin-top: 0.1rem;
+    padding-bottom: 0.35rem;
+    padding-left: 0.6rem;
+    color: #353535;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 3rem;
     img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
+      display: none;
     }
   }
   .email{
-    margin-top: 0.15rem;
-    padding-left: 0.2rem;
-    display: none;
+    margin-bottom: 0.08rem;
+    color: #353535;
+    font-size: 0.25rem;
+    padding-left: 0.6rem;
+    padding-top: 0.05rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 4rem;
     img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
+      display: none;
     }
   }
   .address{
+    font-size: 0.25rem;
     position: relative;
-    padding-left: 0.65rem;
+    color: #353535;
+    padding-left: 0.6rem;
+    padding-top: 0.11rem;
+    max-width: 2.8rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
     img{
-      position: absolute;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-      top: 0;
-      left: 0.1rem;
+      display: none;
     }
   }
   .tip{
@@ -3012,10 +3084,10 @@
     display: none;
   }
 }*/
-.card-template-28{ // 名片模板5
+.card-template-30{ // 名片模板20
   padding: 0.3rem !important;
   position: relative;
-  color: #a78a6a;
+  color: #fff;
   .mark{
     position: absolute;
     top: 0.2rem;
@@ -3041,16 +3113,23 @@
   }
   .trueland{
     float: right;
-    height: 0.5rem;
-    width: 100%;
-    text-align: right;
     img{
       width: 2rem;
       float: left;
       display: none;
     }
     span{
+      color: #666666;
       font-size: 0.3rem;
+      position: relative;
+      top: 0.2rem;
+      display: inline-block;
+      text-align: right;
+      width: 4rem;
+      margin-right: 0.58rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
   .company{
@@ -3059,88 +3138,81 @@
   }
   .bio{
     position: absolute;
-    left: 0;
-    top: 1.4rem;
+    top: 0.92rem;
+    left: 0.18rem;
     height: 1.5rem;
     width: 100%;
-    text-align: right;
     .avatar{
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 1.27rem;
+      height: 1.3rem;
       border-radius: 1.5rem;
+      top: 1.55rem;
+      left: 0.18rem;
+      position: relative;
       float: left;
-      margin-left: 0.6rem;
     }
     .name{
       font-size: 0.4rem;
-      text-align: center;
-      background-color: #a78a6a;
-      color: #fff;
-      height: .75rem;
-      line-height: 0.75rem;
-      width: 2.5rem;
-      position: absolute;
-      right: 2rem;
-      top: 0;
-      border-radius: 0.1rem 0 0 0.1rem;
+      line-height: 2.3;
+      max-width: 1.8rem;
+      margin: 1.55rem 0.4rem;
+      display: inline-block;
+      color: #353535;
+      padding-top: 0.2rem;
+      overflow: hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
     .job{
-      font-size: 0.26rem;
-      text-align: initial;
-      line-height: 2.8;
-      background-color: #a78a6a;
-      color: #fff;
-      height: .75rem;
-      line-height: 0.75rem;
-      width: 2rem;
-      position: absolute;
-      right: 0rem;
-      top: 0;
-    }
-    &::after{
-      content: '';
-      display: block;
-      width: 0.06rem;
-      height: 4.9rem;
-      position: absolute;
-      top: -1.6rem;
-      left: 2.6rem;
-      background-color: #a78a6a;
+      display: none;
     }
   }
   .phone{
-    margin-top: 1.8rem;
-    padding-left: 0.1rem;
-    padding-bottom: 0.5rem;
-    width: 3.8rem;
-    float: right;
+    font-size: 0.25rem;
+    position: relative;
+    margin-top: 0.84rem;
+    top: -0.1rem;
+    color: #353535;
+    font-family: 'Arial Regular', serif;
+    text-align: right;
+    margin-left: 2.7rem;
+    max-width: 3rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
+      display: none;
     }
   }
   .email{
-    margin-top: 0.15rem;
-    padding-left: 0.2rem;
-    display: none;
+    margin-bottom: 0.08rem;
+    color: #353535;
+    font-size: 0.25rem;
+    position: relative;
+    top: -0.13rem;
+    margin-left: 1.95rem;
+    text-align: right;
+    max-width: 3.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
     img{
-      float: left;
-      width: 0.32rem;
-      margin-right: 0.2rem;
+      display: none;
     }
   }
   .address{
+    display: inline-block;
+    font-size: 0.25rem;
     position: relative;
-    padding-left: 0.6rem;
-    width: 3.8rem;
-    float: right;
+    color: #353535;
+    top: -0.18rem;
+    text-align: right;
+    margin-left: 2.2rem;
+    width: 3.5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     img{
-      position: absolute;
-      width: 0.32rem;
-      margin-right: 0.2rem;
-      top: 0;
-      left: 0.1rem;
+      display: none;
     }
   }
   .tip{
@@ -3205,15 +3277,15 @@
     height: 1.5rem;
     width: 100%;
     .avatar{
-      width: 1.37rem;
-      height: 1.37rem;
+      width: 1.27rem;
+      height: 1.3rem;
       border-radius: 1.5rem;
-      margin-left: 0.3rem;
+      margin-left: 0.34rem;
+      margin-top: 0.07rem;
       float: left;
     }
     .name{
       font-size: 0.4rem;
-      margin-top: 12.4rem;
       line-height: 2.3;
       max-width: 1.8rem;
       overflow: hidden;
@@ -3314,7 +3386,7 @@
       display: none;
     }
     span{
-      font-size: 0.24rem;
+      font-size: 0.3rem;
       position: relative;
       left: -0.2rem;
       color: #666666;
@@ -3332,10 +3404,10 @@
     width: 100%;
     line-height: 2rem;
     .avatar{
-      width: 1.37rem;
-      height: 1.37rem;
+      width: 1.27rem;
+      height: 1.3rem;
       border-radius: 1.37rem;
-      margin-left: 0.3rem;
+      margin-left: 0.4rem;
       float: left;
     }
     .name{
@@ -3410,3 +3482,392 @@
     display: none;
   }
 }
+.card-template-27{ // 名片模板17
+  padding: 0.3rem !important;
+  position: relative;
+  color: #555555;
+  font-family: '微软雅黑 Regular', serif;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    float: left;
+    padding-top: 0.2rem;
+    img{
+      width: 2rem;
+      float: left;
+      display: none;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #666666;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.1rem;
+    left: 1.9rem;
+    height: 1.5rem;
+    width: 100%;
+    .avatar{
+      width: 1.27rem;
+      height: 1.3rem;
+      border-radius: 1.5rem;
+      margin-right: 2.4rem;
+      float: right;
+    }
+    .name{
+      font-size: 0.4rem;
+      line-height: 2.3;
+      max-width: 1.8rem;
+      overflow: hidden;
+      display: inline-block;
+      color: #353535;
+      margin-left: 1.8rem;
+    }
+    .job{
+      font-size: 0.22rem;
+      text-align: initial;
+      display: block;
+      margin-left: 2rem;
+      position: relative;
+      top: -0.28rem;
+      color: #999999;
+    }
+  }
+  .phone{
+    margin-top: 2.3rem;
+    padding-bottom: 0.35rem;
+    padding-left: 0.32rem;
+    color: #353535;
+    font-size: 0.25rem;
+    line-height: 0.285rem;
+    font-family: 'Arial Regular', serif;
+    img{
+      float: left;
+      width: 0.28rem;
+      margin-right: 0.15rem;
+    }
+  }
+  .email{
+    margin-bottom: 0.08rem;
+    color: #353535;
+    font-size: 0.25rem;
+    line-height: 0.285rem;
+    font-family: 'Arial Regular', serif;
+    img{
+      float: left;
+      width: 0.28rem;
+      margin-right: 0.5rem;
+      position: relative;
+      left: 0.32rem;
+      top: 0.08rem;
+    }
+  }
+  .address{
+    font-size: 0.25rem;
+    line-height: 0.36rem;
+    position: relative;
+    color: #353535;
+    overflow: hidden;
+    padding-left: 0.77rem;
+    img{
+      position: absolute;
+      width: 0.28rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.32rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+    display: none;
+  }
+}
+
+.card-template-28{ // 名片模板1
+  padding: 0.3rem !important;
+  position: relative;
+  color: #555555;
+  font-family: '微软雅黑 Regular', serif;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    float: left;
+    padding-top: 0.2rem;
+    img{
+      width: 2rem;
+      float: left;
+      display: none;
+    }
+    span{
+      font-size: 0.3rem;
+      color: #666666;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.1rem;
+    left: 1.9rem;
+    height: 1.5rem;
+    width: 100%;
+    .avatar{
+      width: 1.27rem;
+      height: 1.3rem;
+      border-radius: 1.5rem;
+      margin-right: 2.4rem;
+      float: right;
+    }
+    .name{
+      font-size: 0.4rem;
+      line-height: 2.3;
+      max-width: 1.8rem;
+      overflow: hidden;
+      display: inline-block;
+      color: #353535;
+      margin-left: 1.8rem;
+    }
+    .job{
+      font-size: 0.22rem;
+      text-align: initial;
+      display: block;
+      margin-left: 2rem;
+      position: relative;
+      top: -0.28rem;
+      color: #999999;
+    }
+  }
+  .phone{
+    margin-top: 2.3rem;
+    padding-bottom: 0.35rem;
+    padding-left: 0.32rem;
+    color: #353535;
+    font-size: 0.25rem;
+    line-height: 0.285rem;
+    font-family: 'Arial Regular', serif;
+    img{
+      float: left;
+      width: 0.28rem;
+      margin-right: 0.15rem;
+    }
+  }
+  .email{
+    margin-bottom: 0.08rem;
+    color: #353535;
+    font-size: 0.25rem;
+    line-height: 0.285rem;
+    font-family: 'Arial Regular', serif;
+    img{
+      float: left;
+      width: 0.28rem;
+      margin-right: 0.5rem;
+      position: relative;
+      left: 0.32rem;
+      top: 0.08rem;
+    }
+  }
+  .address{
+    font-size: 0.25rem;
+    line-height: 0.36rem;
+    position: relative;
+    color: #353535;
+    overflow: hidden;
+    padding-left: 0.77rem;
+    img{
+      position: absolute;
+      width: 0.28rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.32rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+    display: none;
+  }
+}
+/*.card-template-28{ // 名片模板18
+  padding: 0.3rem !important;
+  position: relative;
+  color: #555555;
+  font-family: '微软雅黑 Regular', serif;
+  .mark{
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    background-color: #bc2400;
+    font-size: 0.26rem;
+    color: #fff;
+    height: 0.4rem;
+    padding: 0 0.3rem;
+    line-height: 0.42rem;
+    font-weight: normal;
+    &::after{
+      content: '';
+      display: block;
+      background-color: #fff;
+      transform: rotateZ(45deg);
+      width: 0.3rem;
+      height: 0.3rem;
+      position: absolute;
+      left: -0.2rem;
+      top: 0.06rem;
+    }
+  }
+  .trueland{
+    float: left;
+    padding-top: 0.2rem;
+    padding-left: 0.2rem;
+    img{
+      width: 2rem;
+      float: left;
+      display: none;
+    }
+    span{
+      font-size: 0.24rem;
+      color: #666666;
+    }
+  }
+  .company{
+    text-align: left;
+    font-size: 0.24rem;
+  }
+  .bio{
+    position: absolute;
+    top: 1.1rem;
+    left: 1.9rem;
+    height: 1.5rem;
+    width: 100%;
+    .avatar{
+      width: 1.27rem;
+      height: 1.3rem;
+      border-radius: 1.5rem;
+      margin-right: 2.4rem;
+      float: right;
+    }
+    .name{
+      font-size: 0.4rem;
+      line-height: 2.3;
+      max-width: 1.8rem;
+      overflow: hidden;
+      display: inline-block;
+      color: #353535;
+      margin-left: -1.3rem;
+    }
+    .job{
+      font-size: 0.22rem;
+      text-align: initial;
+      display: block;
+      left: -1.3rem;
+      position: relative;
+      top: -0.28rem;
+      color: #999999;
+    }
+  }
+  .phone{
+    margin-top: 2.3rem;
+    padding-bottom: 0.35rem;
+    padding-left: 0.32rem;
+    color: #353535;
+    font-size: 0.28rem;
+    line-height: 0.285rem;
+    font-family: 'Arial Regular', serif;
+    img{
+      float: left;
+      width: 0.28rem;
+      margin-right: 0.15rem;
+    }
+  }
+  .email{
+    margin-bottom: 0.08rem;
+    color: #353535;
+    font-size: 0.28rem;
+    line-height: 0.285rem;
+    font-family: 'Arial Regular', serif;
+    img{
+      float: left;
+      width: 0.28rem;
+      margin-right: 0.5rem;
+      position: relative;
+      left: 0.32rem;
+      top: 0.08rem;
+    }
+  }
+  .address{
+    font-size: 0.28rem;
+    line-height: 0.36rem;
+    position: relative;
+    color: #353535;
+    overflow: hidden;
+    padding-left: 0.77rem;
+    img{
+      position: absolute;
+      width: 0.28rem;
+      margin-right: 0.2rem;
+      top: 0;
+      left: 0.32rem;
+    }
+  }
+  .tip{
+    font-size: 0.26rem;
+    margin-top: 0.2rem;
+    font-weight: normal;
+    padding-left: 0.2rem;
+    display: none;
+  }
+}*/

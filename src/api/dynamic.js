@@ -52,3 +52,21 @@ export function dynamic_details (data) {
         params: data
     })
 }
+
+//删除评论
+export function del_comment (data) {
+    return request({
+        url: '/ai/Comment/delete',
+        method: 'post',
+        data: data
+    })
+}
+
+//删除动态
+export function del_dynamic (data) {
+    return request({
+        url: '/ai/dynamic/delete',
+        method: 'post',
+        data: data
+    })
+}

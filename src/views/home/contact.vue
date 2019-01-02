@@ -18,7 +18,7 @@
       <p>客户人数共{{customerTotal}}人
         <span class="fr">
           <!-- <x-icon type="ios-arrow-down" size="20" class="fr ml-20"></x-icon> -->
-          <popup-radio :options="options" v-model="option" class="fr"></popup-radio>
+          <popup-radio :options="options" v-model="$store.state.tab.option" class="fr"></popup-radio>
         </span>
       </p>
       <scroller lock-x use-pullup @on-pullup-loading="loadMore" ref="scrollerBottom" :pullup-config="config" v-model="scrollerStatus" :bounce="true" height="-190">
@@ -27,7 +27,7 @@
             <li class="card-shadow" v-for="(item, index) in customerAll " :key="index" @click="gotoClient(item.uid)">
               <img :src="item.wx_image" alt="">
               <div>
-                <p>{{item.wx_name}}</p>
+                <p :class="customerForm.type == 0 ? 'one_line' : ''">{{item.re_name ? item.re_name : item.wx_name}}</p>
                 <p v-if="customerForm.type == 2">{{item.describe}}</p>
                 <p v-if="customerForm.type == 1">成交率：{{item.turnover ? item.turnover : 0}}%</p>
                 <p v-if="customerForm.type == 5">客户来源：转发</p>
@@ -61,7 +61,7 @@
             <ul>
 
 
-            <li class="class_one" v-for="(item, index) in tagList" :key="index" :class="'class'+item.type" v-if="item.rows && item.rows.length > 0">
+            <li class="class_one" v-for="(item, index) in tagList" :key="index" :class="'class'+item.type" v-if="item.num  > 0">
               <p class="title">{{item.title}}</p>
               <div class="one" v-for="(child,i) in item.rows" :key="i" v-if="child.count > 0" @click="gotoUpdateTag(child.id)">{{child.tag_name}} {{child.count}}</div>
 
@@ -104,12 +104,12 @@ export default {
         type: 1
       },
       config: {
-        content: '请上拉刷新数据',
+        content: '加载中...',
         pullUpHeight: 60,
         height: 40,
         autoRefresh: false,
-        downContent: '请上拉刷新数据',
-        upContent: '请上拉刷新数据',
+        downContent: '加载中...',
+        upContent: '加载中...',
         loadingContent: '加载中...'
       },
       scrollerStatus: {
@@ -118,22 +118,25 @@ export default {
       customerAll: [],
       customerTotal: 0,
       option: '成交率',
-      options: ['成交率', '最后跟进时间', '转发', '扫码', '工作交接'],
+      options: ['全部','成交率', '最后跟进时间', '转发', '扫码', '工作交接'],
       tagList: []
     }
   },
   methods: {
     getSearchType () {
-      if (this.option === '成交率') {
+      if (this.$store.state.tab.option === '成交率') {
         this.customerForm.type = 1
-      } else if (this.option === '最后跟进时间') {
+      } else if (this.$store.state.tab.option  === '最后跟进时间') {
         this.customerForm.type = 2
-      } else if (this.option === '工作交接') {
+      } else if (this.$store.state.tab.option  === '工作交接') {
         this.customerForm.type = 3
-      } else if (this.option === '扫码') {
+      } else if (this.$store.state.tab.option  === '扫码') {
         this.customerForm.type = 4
-      } else if (this.option === '转发') {
+      } else if (this.$store.state.tab.option  === '转发') {
         this.customerForm.type = 5
+      }
+      else if (this.$store.state.tab.option  === '全部') {
+          this.customerForm.type = 0
       }
     },
     getCustomerList () {
@@ -141,6 +144,15 @@ export default {
           if(res.code === 200 && res.data && res.data.rows && res.data.rows instanceof Array){
               this.customerAll = res.data.rows
               this.customerTotal = res.data.total
+              if(res.data.rows.length == 0 || res.data.rows.length == res.data.total){
+                  this.$refs.scrollerBottom.disablePullup();//禁用上啦
+              }else{
+                  this.$refs.scrollerBottom.enablePullup();//开启上啦
+              }
+              this.$nextTick(() => {
+                  this.$refs.scrollerBottom.donePullup();//设置上啦完成
+                  this.$refs.scrollerBottom.reset({top:0})
+              })
           }
           else{
               err_Tips('非常抱歉，数据错误！',this)
@@ -154,6 +166,20 @@ export default {
       customerTagList().then(res => {
         if(res && res.code == 200 && res.data && res.data instanceof Array){
             this.tagList = res.data;
+
+            //计算大类下面的个数
+            this.tagList.map((val)=>{
+                val.num = 0;//用于标签大类是否显示
+                if(val.rows && val.rows instanceof Array){
+                    val.rows.map((child)=>{
+                        if(child.customer && child.customer instanceof Array){
+                            val.num = val.num +  child.customer.length
+                        }
+                    })
+                }
+
+            });
+
             this.$nextTick(()=>{
                 this.$refs.scrollerBottom_two.reset()
             })
@@ -236,7 +262,7 @@ export default {
     }
   },
   watch: {
-    option (val) {
+    '$store.state.tab.option' (val) {
       this.searchCustomerList()
     }
   },
@@ -247,6 +273,7 @@ export default {
     }
   },
   mounted () {
+      this.getSearchType();
     this.getCustomerList()
     this.getCustomerTagList()
   }

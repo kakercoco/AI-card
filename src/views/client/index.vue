@@ -12,13 +12,13 @@
         <div class="top">
           <img :src="clientInfor.wx_image" alt="" class="avatar">
           <div>
-            <p><span class="name">{{clientInfor.wx_name}}</span></p>
+            <p><span class="name">{{clientInfor.re_name ? clientInfor.re_name : clientInfor.wx_name}}</span></p>
             <p class="tag-list" v-if="clientInfor && clientInfor.tag.length > 0">
+              <span class="tag-item1" v-for="(item, index) in clientInfor.tag" :key="index" v-if="index<2" @click="gotoTag">{{item}}</span>
               <span v-if="clientInfor.tag.length === 1" class="tag-item2" @click="gotoTag">添加标签</span>
               <span v-if="clientInfor.tag.length === 1" class="tag-item2" @click="gotoTag">添加标签</span>
               <span v-if="clientInfor.tag.length === 2" class="tag-item2" @click="gotoTag">添加标签</span>
-              <span class="tag-item1" v-for="(item, index) in clientInfor.tag" :key="index" v-if="index<3" @click="gotoTag">{{item}}</span>
-              <span v-if="clientInfor.tag.length > 3" class="tag-item1" @click="gotoTag">...</span>
+              <span v-if="clientInfor.tag.length > 2" class="tag-item1" @click="gotoTag">…</span>
             </p>
             <p v-if="!clientInfor.tag|| clientInfor.tag.length <= 0" class="tag-list">
               <span class="tag-item2" @click="gotoTag">添加标签</span>
@@ -45,28 +45,46 @@
     <div class="tab">
       <tab :line-width="2" v-model="$store.state.tab.active">
         <tab-item>互动</tab-item>
-        <!--<tab-item>资料</tab-item>-->
+        <tab-item>资料</tab-item>
         <tab-item>相关</tab-item>
         <tab-item>AI分析</tab-item>
-        <tab-item>跟进记录</tab-item>
       </tab>
     </div>
     <div class="time-line" v-show="$store.state.tab.active ===0">
-      <p v-if="visitList.length <= 0" style="text-align: center;">没有更多数据</p>
+      <p v-if="visitList.length <= 0" class="no_data">没有更多数据</p>
       <scroller lock-x height="-270" use-pullup :pullup-config="config" :bounce="true" ref="loadingMore" @on-pullup-loading="loadMore">
         <div>
           <timeline>
             <timeline-item v-for="(item, index) in visitList" :key="index">
               <p class="time">{{Global.parseTime(item.create_time, '{y}-{m}-{d}')}}</p>
               <div class="timeline-wrap">
-                <p><i>{{item.wx_name}}</i>在7日内和你互动了<i>{{item.num}}</i>次</p>
+                <p><i>{{item.wx_name}}</i>和你互动了<i>{{item.num}}</i>次</p>
               </div>
             </timeline-item>
           </timeline>
         </div>
       </scroller>
     </div>
-    <div class="relevant" v-show="$store.state.tab.active === 1">
+    <div class="client-infor" v-show="$store.state.tab.active ===1">
+      <h5><span>个人信息</span></h5>
+        <p class="client-content">客户来源<span>{{ inforForm.source }}</span></p>
+        <p class="client-content">姓名备注<span>{{ inforForm.name }}</span></p>
+        <p class="client-content">性别<span style="padding-left: 1.38rem;">{{ formateSex(inforForm.sex) }}</span></p>
+        <p class="client-content">邮箱<span style="padding-left: 1.38rem;">{{ inforForm.email }}</span></p>
+      <div class="call-phone-content">
+        <p class="client-content">备注手机<span>{{ inforForm.phone }}</span></p>
+        <p class="call-phone" v-if="inforForm.phone !== '' && inforForm.phone !== null"><a :href="'tel:'+inforForm.phone">拨打</a></p>
+      </div>
+      <div class="call-phone-content">
+        <p class="client-content">授权手机<span>{{ inforForm.xcxphone }}</span></p>
+        <p class="call-phone" v-if="inforForm.xcxphone !== '' && inforForm.xcxphone !== null"><a :href="'tel:'+inforForm.xcxphone">拨打</a></p>
+      </div>
+      <p class="client-content">公司名称<span>{{ inforForm.company }}</span></p>
+      <p class="client-content">详细地址<span>{{ inforForm.address }}</span></p>
+      <p class="client-content">生日时间<span>{{ inforForm.birthday }}</span></p>
+      <p class="client-content" style="height: 1.5rem;">备注<span style="padding-left: 1.38rem;">{{ inforForm.desc }}</span></p>
+    </div>
+    <div class="relevant" v-show="$store.state.tab.active === 2">
       <div class="task" @click="viewTaskList(1, '')">
         <div class="item-left">
           <img src="../../assets/img/task.png">
@@ -76,18 +94,18 @@
           <p><span>{{taskTotal}}</span>个</p>
         </div>
       </div>
-      <div class="task" @click="clickForm">
+      <div class="task" @click="viewFormList">
         <div class="item-left">
           <img src="../../assets/img/form.png">
         </div>
         <div class="item-right">
           <p>表单</p>
-          <p><span>0</span>个</p>
+          <p><span>{{formTotal}}</span>个</p>
         </div>
       </div>
 
     </div>
-    <div class="client-chart" v-show="$store.state.tab.active ===2">
+    <div class="client-chart" v-show="$store.state.tab.active ===3">
       <scroller lock-x height="-230" :bounce="true" ref="client-chart">
         <div>
           <div class="care clearfix">
@@ -108,53 +126,35 @@
             <p v-for="(item, index) in forMeList" :key="index" class="graph" v-if="item.nums > 0">
               <span>{{item.name}}</span>
               <strong>
-                <i :style="{width: item.nums/forMeTotal*80 + '%'}"></i>
+                <div class="Progress_frame">
+                  <i :style="{width: item.nums/forMeTotal*100 + '%'}"></i>
+                </div>
+
                 <b>{{item.nums}}</b>
               </strong>
             </p>
-            <!--<p v-for="(item, index) in forMeList" :key="index" class="graph" v-if="item.nums > 0">
-              <span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{item.name}}</span>
-              <i :style="{width: item.nums/forMeTotal*80 + '%'}"></i>
-              <b>{{item.nums}}</b>
-            </p>-->
             <p class="tar"></p>
           </div>
         </div>
       </scroller>
-
-    </div>
-    <div class="time-line" v-show="$store.state.tab.active ===3">
-      <scroller lock-x height="-270" use-pullup :pullup-config="config" :bounce="true" ref="loadingMoreFollow" @on-pullup-loading="loadMoreFollow">
-        <div>
-          <timeline>
-            <timeline-item v-for="(item, index) in followList" :key="index">
-              <p class="time">{{Global.parseTime(item.create_time, '{y}-{m}-{d}')}}</p>
-              <div class="timeline-wrap">
-                <p>{{item.content}}</p>
-              </div>
-            </timeline-item>
-          </timeline>
-        </div>
-      </scroller>
-
     </div>
     <div class="client-tab" >
       <ul class="footer">
         <li @click="gotoInfor">
-          <img src="../../assets/img/edit-icon.png" @click="gotoInfor">
-          <p @click="gotoInfor">编辑资料</p>
+          <img src="../../assets/img/edit-icon.png">
+          <p>编辑资料</p>
         </li>
         <li @click="addTask">
-          <img src="../../assets/img/task-icon.png" @click="addTask">
-          <p @click="addTask">创建任务</p>
+          <img src="../../assets/img/task-icon.png">
+          <p>创建任务</p>
         </li>
         <li @click="gotoFollow">
-          <img src="../../assets/img/follow-icon.png" @click="gotoFollow">
-          <p @click="gotoFollow">添加跟进</p>
+          <img src="../../assets/img/follow-icon.png">
+          <p>跟进记录</p>
         </li>
         <li @click="gotoIM">
-          <img src="../../assets/img/message-icon.png" @click="gotoIM">
-          <p @click="gotoIM">发送消息</p>
+          <img src="../../assets/img/message-icon.png">
+          <p>发送消息</p>
         </li>
       </ul>
     </div>
@@ -171,22 +171,30 @@ import {
   TimelineItem,
   Tab,
   TabItem,
-  Scroller
+  Scroller,
+  XInput,
+  XSwitch,
+  XTextarea,
+  XButton
 } from 'vux'
 import {
   customerRead,
   customerSetTurnover,
   customerSetTurnoverDate,
   visitIndex,
-  followIndex,
-  AlertModule
+  AlertModule,
+  customerEdit,
+  customerUpdate,
+  setBirthdayAdd,
+  birthdayDell
 } from '@/api/customer'
 import { config } from '@/utils/base'
 import { getTaskList } from '@/api/task'
-import echarts from 'echarts'
-/* const echarts = require('echarts/lib/echarts')
-require('echarts/lib/chart/pie') */
-
+//import echarts from 'echarts'
+import { getFormList } from '@/api/form'
+const echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/pie')
+require('echarts/lib/chart/line');
 export default {
   name: 'client',
   components: {
@@ -199,15 +207,15 @@ export default {
     TabItem,
     Scroller,
     Datetime,
-    AlertModule
+    AlertModule,
+    XInput,
+    XSwitch,
+    XTextarea,
+    XButton
   },
   data () {
     return {
-      listQuery: {
-        start_time: '',
-        end_time: '',
-        type: 5
-      },
+      formTotal: 0,
       taskTotal: 0,
       tabIndex: 0,
       currentTime: `${new Date().getFullYear()}-${
@@ -227,31 +235,57 @@ export default {
       lookData: [], // 圆饼图数据
       activeXData: [], // 折线图数据
       activeYData: [], // 折线图数据
-      option1: ['0%'],
+      option1: ['1%'],
       active: 0,
       visitList: [], // 互动列表
-      followList: [], // 跟进列表
       page: 1,
       pagesize: 10,
-      followPage: 1,
-      followPagesize: 10,
       id: 0,
       uid: this.$route.query.uid,
       config: {
-        content: '请上拉刷新数据...',
+        content: '加载中...',
         pullUpHeight: 60,
         height: 40,
         autoRefresh: false,
         downContent: '释放后加载',
-        upContent: '请上拉刷新数据...',
+        upContent: '加载中...',
         loadingContent: '加载中...',
         clsPrefix: 'xs-plugin-pullup-'
       },
       isFlag: false, // 互动列表上拉是否禁止
-      isFlagFollow: false // 跟进记录上拉是否禁止
+      isFlagFollow: false, // 跟进记录上拉是否禁止
+      value: 'asdfasdf',
+      is_calendar: true,
+      options: ['未知', '男', '女'],
+      sex: '',
+      inforForm: {
+        name: '',
+        sex: '',
+        email: '',
+        phone: '',
+        company: '',
+        address: '',
+        birthday: '',
+        is_calendar: '',
+        is_shield_employ: '',
+        desc: '',
+        source: '',
+        day: 0
+      }
     }
   },
   methods: {
+    formateSex (type) {
+      let sex = ''
+      if (type === 0) {
+        sex = '未知'
+      } else if (type === 1) {
+        sex = '男'
+      } else if (type === 2) {
+        sex = '女'
+      }
+      return sex
+    },
     clickForm () {
       this.$vux.alert.show({
         title: '温馨提示',
@@ -267,12 +301,44 @@ export default {
         path: '/taskList',
         query: {
           tabIndex: tabIndex,
-          time: time
+          time: time,
+          uid: this.clientInfor.id
         }
       })
     },
+    viewFormList () {
+      this.$router.push({
+        path: '/formList',
+        query: {
+          uid: this.uid
+        }
+      })
+    },
+    formLists () {
+      this.$store.commit('app/open_global_dialog')
+      getFormList({
+        page: 1,
+        limit: 1000,
+        searchKey: '',
+        uid: this.uid
+      }).then(res => {
+        this.$store.commit('app/close_global_dialog')
+        if (res.code === 200 && res.data && res.data.rows instanceof Array) {
+          this.formTotal = res.data.rows.length
+        }
+      }).catch((e) => {
+        this.$store.commit('app/close_global_dialog')
+      })
+    },
     getTaskLists () {
-      getTaskList(this.listQuery).then(res => {
+      this.$store.commit('app/open_global_dialog')
+      getTaskList({
+        start_time: '',
+        end_time: '',
+        type: 5,
+        uid: this.clientInfor.id
+      }).then(res => {
+        this.$store.commit('app/close_global_dialog')
         if (res.code === 200) {
           this.taskTotal = res.data.length
         } else {
@@ -281,6 +347,8 @@ export default {
             content: res.msg
           })
         }
+      }).catch((e) => {
+        this.$store.commit('app/close_global_dialog')
       })
     },
     addTask () {
@@ -409,6 +477,18 @@ export default {
         this.getActiveData(this.chartInfor.active)
         this.id = this.clientInfor.id
         this.option1 = [`${this.clientInfor.turnover}%`]
+        // 如果进入页面，tab选择的是ai分析，则需要加载图表
+        if (this.$store.state.tab.active === 3) {
+          this.$nextTick(() => {
+            this.drawDynamic()
+            this.drawCare()
+          })
+        } else if (this.$store.state.tab.active === 1) {
+          this.getCustomerInfor()
+        } else if (this.$store.state.tab.active === 2) {
+          this.getTaskLists()
+          this.formLists()
+        }
       })
     },
     pickerShow () {
@@ -423,13 +503,10 @@ export default {
         id: this.id,
         turnover: num
       }
+      if (num === 0) {
+        data.turnover = 1
+      }
       customerSetTurnover(data).then(res => {
-        this.followPage = 1
-        this.getFollowIndex()
-        this.$refs.loadingMoreFollow.reset({top: 0})
-        if (this.isFlagFollow) {
-          this.$refs.loadingMoreFollow.enablePullup() // 启用上拉
-        }
       })
     },
     customerSetTurnoverDate (val) {
@@ -438,12 +515,6 @@ export default {
         date: val
       }
       customerSetTurnoverDate(data).then(res => {
-        this.followPage = 1
-        this.getFollowIndex()
-        this.$refs.loadingMoreFollow.reset({top: 0})
-        if (this.isFlagFollow) {
-          this.$refs.loadingMoreFollow.enablePullup() // 启用上拉
-        }
       })
     },
     getVisitIndex () {
@@ -454,10 +525,17 @@ export default {
         pagesize: this.pagesize
       }
       visitIndex(data).then(res => {
-        this.visitList = res.data.rows
-        /* this.$nextTick(()=>{
-            this.$refs.loadingMore.reset()
-        }) */
+        if (res.data.rows.length === 0) {
+          this.$refs.loadingMore.disablePullup() // 禁用上拉
+          this.isFlagFollow = true
+          return false
+        } else if (res.data.rows.length === res.data.total) {
+          this.visitList = this.visitList.concat(res.data.rows)
+          this.$refs.loadingMore.disablePullup() // 禁用上拉
+        } else {
+          this.visitList = this.visitList.concat(res.data.rows)
+          this.$refs.loadingMore.donePullup()
+        }
       })
     },
     loadMore () {
@@ -476,37 +554,6 @@ export default {
         } else {
           this.visitList = this.visitList.concat(res.data.rows)
           this.$refs.loadingMore.donePullup()
-            /*this.$nextTick(()=>{
-                this.$refs.loadingMore.reset()
-            })*/
-        }
-      })
-    },
-    getFollowIndex () {
-      const data = {
-        uid: this.uid,
-        page: this.followPage,
-        pagesize: this.followPagesize
-      }
-      followIndex(data).then(res => {
-        this.followList = res.data.rows
-      })
-    },
-    loadMoreFollow () {
-      this.followPage += 1
-      const data = {
-        uid: this.uid,
-        page: this.followPage,
-        pagesize: this.followPagesize
-      }
-      followIndex(data).then(res => {
-        if (res.data.rows.length === 0) {
-          this.$refs.loadingMoreFollow.disablePullup() // 禁用上拉
-          this.isFlagFollow = true
-          return false
-        } else {
-          this.followList = this.followList.concat(res.data.rows)
-          this.$refs.loadingMoreFollow.donePullup()
         }
       })
     },
@@ -551,7 +598,7 @@ export default {
     },
     gotoFollow () {
       this.$router.push({
-        path: '/clientFollow',
+        path: '/followRecord',
         query: {
           id: this.id
         }
@@ -583,6 +630,11 @@ export default {
           id: this.clientInfor.message_id,
           vm: this
         })
+      } else {
+        this.$vux.alert.show({
+          title: '提示',
+          content: '缺少message_id！'
+        })
       }
     },
     gotoTag () {
@@ -592,6 +644,85 @@ export default {
           uid: this.clientInfor.uid
         }
       })
+    },
+    getCustomerInfor () {
+      const data = {
+        id: this.clientInfor.id !== undefined && this.clientInfor.id !== '' ? this.clientInfor.id : ''
+      }
+      if (data.id !== '') {
+        customerEdit(data)
+          .then(res => {
+            this.inforForm = res.data
+            if (this.inforForm.is_calendar === 1) {
+              this.is_calendar = true
+            } else {
+              this.is_calendar = false
+            }
+            if (this.inforForm.sex === 0) {
+              this.sex = '未知'
+            } else if (this.inforForm.sex === 1) {
+              this.sex = '男'
+            } else if (this.inforForm.sex === 2) {
+              this.sex = '女'
+            }
+
+            if (!isNaN(this.inforForm.birthday)) {
+              this.inforForm.birthday = ''
+            }
+          })
+      }
+    },
+    updateCalendar () {
+      if (this.inforForm.birthday === '') {
+        this.$vux.toast.text('生日不能为空', 'top')
+        return false
+      }
+      const data = {
+        id: this.id,
+        time: this.inforForm.birthday
+      }
+      if (this.is_calendar) {
+        setBirthdayAdd(data)
+      } else {
+        birthdayDell(data)
+      }
+    },
+    choseBirth (newVal) {
+      console.log(newVal)
+      this.is_calendar = false
+      this.inforForm.is_calendar = 0
+      this.updateCalendar()
+    },
+    save () {
+      this.$store.commit('app/open_global_dialog')
+      if (this.is_calendar) {
+        this.inforForm.is_calendar = 1
+      } else {
+        this.inforForm.is_calendar = 0
+      }
+      if (this.sex === '未知') {
+        this.inforForm.sex = 0
+      } else if (this.sex === '男') {
+        this.inforForm.sex = 1
+      } else if (this.sex === '女') {
+        this.inforForm.sex = 2
+      }
+      customerUpdate(this.inforForm)
+        .then(res => {
+          this.$store.commit('app/close_global_dialog')
+          this.$router.back(-1)
+        }).catch((err) => {
+          this.$store.commit('app/close_global_dialog')
+        })
+    },
+    onFocus () {
+      var timer = setTimeout(() => {
+        document.body.scrollTop = document.body.scrollHeight
+        clearTimeout(timer)
+      }, 500)
+    },
+    onBlur () {
+      window.scrollTo(0, 0)
     }
   },
   computed: {
@@ -607,19 +738,25 @@ export default {
   },
   watch: {
     '$store.state.tab.active' (val) {
-      if (val === 2) {
+      if (val === 3) {
         this.$nextTick(() => {
           this.drawDynamic()
           this.drawCare()
         })
+      } else if (val === 1) {
+        this.getCustomerInfor()
+      } else if (val === 2) {
+        this.getTaskLists()
+        this.formLists()
       }
     }
   },
   mounted () {
     this.getCustomer()
     this.getVisitIndex()
-    this.getFollowIndex()
-    this.getTaskLists()
+    // this.getFollowIndex()
+    // this.getTaskLists()
+    // this.formLists()
   }
 }
 </script>
@@ -663,6 +800,7 @@ export default {
             color: #353535;
             font-family: '黑体',serif;
             font-weight: bold;
+
           }
           .edit {
             width: 0.4rem;
@@ -817,6 +955,11 @@ export default {
             color: #353535;
             font-family: '黑体',serif;
             font-weight: bold;
+            width: 100%;
+            display: block;
+            overflow:hidden;
+            white-space:nowrap;
+            text-overflow:ellipsis;
           }
           .edit {
             width: 0.4rem;
@@ -888,7 +1031,7 @@ export default {
           font-size: 0.24rem;
           line-height: 0.5rem;
           font-family: '\9ED1\4F53',serif;
-          padding-left: 0.1rem;
+          padding-left: 0.4rem;
           position: relative;
           top: -0.1rem;
         }
@@ -990,6 +1133,97 @@ export default {
       }
     }
   }
+  .client-infor{
+    height: 6.5rem;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    h5{
+      text-align: left;
+      font-size: 0.26rem;
+      color: #9494AE;
+      font-weight: normal;
+      margin-top: 0.4rem;
+      padding-left: 0.3rem;
+      padding-bottom: 0.2rem;
+      border-bottom: 1px dashed #D7D7D7;
+      span{
+        display: inline-block;
+        border-left: 0.05rem solid #A1A1A1;
+        padding-left: 0.15rem;
+      }
+    }
+    .client-content{
+      height: 0.88rem;
+      display: block;
+      color: #999;
+      font-family: '\9ED1\4F53',serif;
+      font-size: 0.28rem;
+      line-height: 0.88rem;
+      padding-left: 0.3rem;
+      span{
+        display: inline-block;
+        height: 0.44rem;
+        font-size: 0.28rem;
+        color: #353535;
+        font-family: '\9ED1\4F53',serif;
+        font-weight: normal;
+        padding-left: 0.8rem;
+      }
+    }
+    .call-phone-content{
+      display: flex;
+      justify-content: space-between;
+      padding-right: 0.3rem;
+      height: 0.88rem;
+      .client-content{
+        height: 0.88rem;
+        display: block;
+        color: #999;
+        font-family: '\9ED1\4F53',serif;
+        font-size: 0.28rem;
+        line-height: 0.88rem;
+        padding-left: 0.3rem;
+        span{
+          display: inline-block;
+          height: 0.44rem;
+          font-size: 0.28rem;
+          color: #353535;
+          font-family: '\9ED1\4F53',serif;
+          font-weight: normal;
+          padding-left: 0.8rem;
+        }
+      }
+/*      .form-left{
+        color: #999;
+        float: left;
+        font-family: '\9ED1\4F53',serif;
+        font-size: 0.28rem;
+        height: 0.88rem;
+        line-height: 0.88rem;
+        span{
+          display: inline-block;
+          height: 0.88rem;
+          line-height: 0.88rem;
+          font-size: 0.28rem;
+          color: #353535;
+          font-family: '\9ED1\4F53',serif;
+          font-weight: normal;
+          padding-left: 0.8rem;
+        }
+      }*/
+      .call-phone{
+        width: 0.8rem;
+        text-align: center;
+        height: 0.44rem;
+        line-height: 0.44rem;
+        border: 1px solid #5977fe;
+        color: #5977fe;
+        font-size: 0.25rem;
+        margin-top: 0.2rem;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+      }
+    }
+  }
   .relevant{
     display: flex;
     justify-content: space-between;
@@ -1046,24 +1280,24 @@ export default {
     .footer{
       background-color: #f8f8f8;
       height: 1.08rem;
-      padding: 0.2rem;
       li{
         width: 25%;
         float: left;
         display: inline-block;
-        padding: 0 0.3rem;
+        padding: 0.2rem 0;
         p {
           height: 0.22rem;
           line-height: 0.5rem;
           font-size: 0.22rem;
           color: #666666;
           font-family: '\9ED1\4F53',serif;
+          text-align: center;
         }
         img{
+          display: block;
           width: 0.36rem;
           height: 0.35rem;
-          position: relative;
-          left: 0.3rem;
+          margin: 0 auto;
         }
       }
     }
@@ -1139,10 +1373,10 @@ export default {
           color: #717171;
           i{
             display: inline-block;
-            height: 0.2rem;
-            border-radius: 0.1rem;
+            height: 10px;
+            border-radius: 5px;
             margin-right: 5px;
-            min-width: 1px !important;
+            min-width: 2px !important;
 
           }
         }
@@ -1258,6 +1492,11 @@ export default {
         height: 4rem;
       }
     }
+  }
+  .no_data{
+    height: 0.8rem;
+    line-height: 0.8rem;
+    text-align: center;
   }
 }
 </style>

@@ -52,3 +52,12 @@ export function deleteCustomerTag (data) {
     data: data
   })
 }
+
+export function del_label (data) {
+    // 标签删除客户
+    return request({
+        url: '/ai/Customertag/delTag',
+        method: 'POST',
+        data: data
+    })
+}

@@ -4,6 +4,7 @@ const tab = {
     state: {
         tabIndex:0,//天眼页面选择-时间-行为-个人
         active:0,//客户详情页面tab
+        option:'成交率',//通讯录的
 
 
     },

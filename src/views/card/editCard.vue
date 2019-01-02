@@ -9,16 +9,9 @@
     <card-viewer ref="cardViewer"></card-viewer>
     <div class="new_card_frame">
       <img src="@/assets/img/l.gif" class="my_loading">
-      <div class="my-card" id="card" v-show="templateId !== null">
+      <div class="my-card" id="card" v-show="select_template.templateId !== '' ">
         <img v-if="select_template.type === 'zhendao'" src="@/assets/card/1.png" alt="" class="card-bg">
         <img v-else :src="select_template.background_img" class="card-bg">
-        <!--<img v-if="templateId === 24" src="@/assets/card/15.png" alt="" class="card-bg">
-        <img v-if="templateId === 25" src="@/assets/card/16.png" alt="" class="card-bg">
-        <img v-if="templateId === 26" src="@/assets/card/4.png" alt="" class="card-bg">
-        <img v-if="templateId === 27" src="@/assets/card/5.png" alt="" class="card-bg">
-        &lt;!&ndash;<img v-if="templateId === 28" src="@/assets/card/8.png" alt="" class="card-bg">&ndash;&gt;
-        <img v-if="templateId === 28" src="@/assets/card/6.png" alt="" class="card-bg">
-        <img v-if="templateId === 29" src="@/assets/card/7.png" alt="" class="card-bg">-->
 
         <!--名片展示区域-->
         <div class="card-infor " :class="'card-template-' + (select_template.templateId+1)">
@@ -51,30 +44,16 @@
     </div>
 
     <h5>名片样式</h5>
-    <!--<scroller ref="scrollerEvent" lock-y :scrollbar-x='false' class="card_small_img" style="margin-top: 0.2rem;">
-      <div class="template-list">
-        <img src="@/assets/card/1.png" alt="" :class="{active: index === templateId}" v-for="(item, index) in 24" :key="index" @click="changeTemplate(item, index)" v-if="haDate&&other_card_style==1">
-        <img :src="item" alt="" :class="{active: index + 24 === templateId}" v-for="(item, index) in companyBgCard" :key="index + 24" @click="changeTemplate(item, index + 24)"  v-if="haDate&&other_card_style==0">
-        <span></span>
-      </div>
-    </scroller>-->
-      <!--<div class="card_style_Choice">
-          <div class="card_small_img">
-              <div class="template-list">
-                  <img src="@/assets/card/1.png" alt="" :class="{active: index === templateId}" v-for="(item, index) in 24" :key="index" @click="changeTemplate(item, index)" v-if="haDate&&other_card_style==1">
-                  <img :src="item" alt="" :class="{active: index + 24 === templateId}" v-for="(item, index) in companyBgCard" :key="index + 24" @click="changeTemplate(item, index + 24)"  v-if="haDate&&other_card_style==0">
-              </div>
-          </div>
-      </div>-->
 
     <div class="card_style_Choice">
       <div class="card_small_img">
         <div class="template-list">
+
           <!--珍岛的模板按钮-->
           <div class="one"
-               v-for="(item, index) in template_list"
+               v-for="(item, index) in templateList"
                :key="index" @click="changeTemplate(item, index)"
-               :class="{active: select_template.templateId == item.templateId}"
+               :class="{active: select_template.templateId === item.templateId}"
                v-if="other_card_style === '1' && item.type === 'zhendao'">
             <img src="@/assets/card/1.png">
             <span>{{item.local + item.subheading}}</span>
@@ -82,20 +61,16 @@
 
           <!--其他的模板按钮-->
           <div class="one"
-               v-for="(item, index) in template_list"
+               v-for="(item, index) in templateList"
                :key="index" @click="changeTemplate(item, index)"
-               :class="{active: select_template.templateId == item.templateId}"
+               :class="{active: select_template.templateId === item.templateId}"
                v-if="other_card_style === '0' && item.type === 'other'">
-            <img :src="item.background_img">
+            <img :src="item.thumbnail">
           </div>
-
 
         </div>
       </div>
     </div>
-
-
-
 
     <h5>名片头像</h5>
     <div class="card-avatar">
@@ -149,7 +124,7 @@
         <x-textarea placeholder="请输入文字" v-model="cardInfor.content" autosize ref='selfBio'></x-textarea>
       </group>
     </div>
-    <h5 class="pro_title">
+    <!--<h5 class="pro_title">
         推荐产品
         <span class="fr" @click="gotoProduce">
             产品管理
@@ -164,9 +139,9 @@
           <span>{{item.product_name}}</span>
         </li>
       </ul>
-    </div>
+    </div>-->
 
-    <h5 class="pro_title">
+    <!--<h5 class="pro_title">
         推荐案例
         <span class="fr" @click="gotoCase">
             案例管理
@@ -182,7 +157,7 @@
           <p><span>{{item.case_name}}</span></p>
         </li>
       </ul>
-    </div>
+    </div>-->
 
     <h5 class="have_line">录制语音</h5>
 
@@ -198,7 +173,7 @@
 
     <div class="self-img clearfix">
       <p v-for="(item, index) in albumList" :key="index" class="fl" v-if="item != ''">
-        <x-icon type="ios-close" class="icon-close" @click="removeAlbum(index)" size="100"></x-icon>
+        <x-icon type="ios-close-empty" class="icon-close" @click="removeAlbum(index)" size="100"></x-icon>
         <img :src="item" alt="">
       </p>
       <span>
@@ -210,7 +185,7 @@
       </span>
     </div>
 
-    <h5 class="have_line">添加标签</h5>
+    <!--<h5 class="have_line">添加标签</h5>
 
     <div class="self-tag clearfix">
       <ul>
@@ -220,11 +195,11 @@
           <x-icon type="ios-plus-empty" class="icon-insert" @click.native="openTagDialog"></x-icon>
         </li>
       </ul>
-    </div>
-
-    <p class="self-btn">
+    </div>-->
+    <div style="height: 1.5rem;"></div>
+    <div class="yyf_new_btn" style="border-top: 1px #e3e3e3 solid">
       <x-button type="primary" @click.native="save(true)">保存</x-button>
-    </p>
+    </div>
       <div v-transfer-dom>
           <popup v-model="insertTagDialog">
 
@@ -257,7 +232,6 @@
         </p>
       </div>
     </x-dialog>-->
-
 
     <x-dialog v-model="audioDialog" :hide-on-blur="true">
       <div class="audio-dialog">
@@ -301,10 +275,10 @@ import {
   XDialog,
   XCircle,
   AlertModule,
-    Popup,TransferDom,PopupHeader
+  Popup, TransferDom, PopupHeader
 } from 'vux'
 import html2canvas from 'html2canvas'
-import template_list from '@/utils/card_template'
+import templateList from '@/utils/card_template'
 import {
   updateCard,
   cardRead,
@@ -320,9 +294,9 @@ import cardViewer from '@/components/cardViewer/index'
 
 export default {
   name: 'editCard',
-    directives: {
-        TransferDom
-    },
+  directives: {
+    TransferDom
+  },
   components: {
     Scroller,
     XInput,
@@ -335,12 +309,12 @@ export default {
     AlertModule,
     VueCropper,
     cardViewer,
-      PopupHeader,
-      Popup,
+    PopupHeader,
+    Popup
   },
   data () {
     return {
-        template_list,
+      templateList,
       imgSrc: '', // 选择的头像图片路径
       cropImg: '', // 裁剪过后的图片路径base64
       crop: false, // 裁剪头像弹框
@@ -402,15 +376,15 @@ export default {
       showTime: 0,
       // startTime: 0, // 录音开始时间
       // endTime: 0 // 录音结束时间
-      select_template:{
-          type:'',
-          templateId:0,
-          subheading:'',//副标题
-          company:'',//公司
-          background_img:'',//背景图片
-          phone_icon:'',//电话图片
-          email_icon:'',//邮件图片
-          address_icon:'',//地址图片
+      select_template: {
+        type: '',
+        templateId: '',
+        subheading: '', // 副标题
+        company: '', // 公司
+        background_img: '', // 背景图片
+        phone_icon: '', // 电话图片
+        email_icon: '', // 邮件图片
+        address_icon: ''// 地址图片
       }
     }
   },
@@ -509,55 +483,42 @@ export default {
       })
     },
     getCard () {
-      if (this.$store.state.user.cardInfor.close) {
-        cardRead().then(res => {
-          const cardImg = res.data.card_image
-          this.other_card_style = res.data.is_zhendao
-          //this.other_card_style = '1'
-          this.haDate = true
-          this.$store.state.user.cardInfor = res.data
-          this.$store.state.user.cardInfor.close = false
-          // this.cardInfor = res.data
-          // this.seletedTemplate = require(`@/assets/card/${this.cardInfor.style_id + 1}.png`)
-          if (this.cardInfor.album != null) {
-            this.albumList = this.cardInfor.album.split(',')
-          }
-          if (this.cardInfor.image === '') {
-            this.cardInfor.image = require('@/assets/card/comm.jpg')
-          }
-          if (cardImg === undefined || cardImg === '') {
-            setTimeout(() => {
-              this.save(false)
-            }, 2000)
-          }
-          this.$nextTick(function () {
-            this.$refs.selfBio.updateAutosize()
-          })
-          var el = document.querySelector('.template-list')
-          console.log(this)
-          if (res.data.is_zhendao === '1') {
-            //el.setAttribute('style', 'width: 43.2rem')
-            this.selectedClass = `card-template-${this.cardInfor.style_id + 1}`
-            this.select_template.templateId = this.cardInfor.style_id;//获取当前选中的模板号
-          } else {
-            console.log('其他公司')
-            //el.setAttribute('style', 'width: 9rem')
-            if (this.cardInfor.style_id === 0) {
-              this.templateId = 24
-              this.selectedClass = `card-template-${this.templateId + 1}`
-            } else {
-              this.selectedClass = `card-template-${this.cardInfor.style_id + 1}`
-              this.templateId = this.cardInfor.style_id
-            }
-          }
-          
-          //用style_id 搜索template_list，把那个对象赋值给select_template
-
-			var json ='{"w":500,"h":250,"item":[{"id":"bg","type":"img","round":false,"lock":true,"x":0,"y":0,"w":500,"h":250,"url":"http://img4.imgtn.bdimg.com/it/u=2735571713,1090379801&fm=26&gp=0.jpg","img":{"loadover":true},"visible":true},{"id":"face","type":"img","round":false,"lock":false,"x":10,"y":30,"w":150,"h":150,"url":"/static/img/p1.e765f44.png","img":{"loadover":true},"visible":true},{"id":"name","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":30,"w":200,"h":20,"fs":16,"color":"#00F","txt":"Name","align":"left","space":0},{"id":"career","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":50,"w":200,"h":20,"fs":16,"color":"#00F","txt":"Career","align":"left","space":0},{"id":"companyName","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":10,"y":10,"w":200,"h":20,"fs":16,"color":"#00F","txt":"companyName","align":"left","space":0},{"id":"address","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":10,"y":200,"w":200,"h":20,"fs":16,"color":"#00F","txt":"address","align":"left","space":0},{"id":"mail","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":70,"w":200,"h":20,"fs":16,"color":"#00F","txt":"mail","align":"left","space":0},{"id":"phone","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":90,"w":200,"h":20,"fs":16,"color":"#00F","txt":"phone","align":"left","space":0},{"id":"mobile","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":110,"w":200,"h":20,"fs":16,"color":"#00F","txt":"mobile","align":"left","space":0},{"id":"weixin","font":"微软雅黑","visible":true,"type":"txt","lock":false,"x":200,"y":130,"w":200,"h":20,"fs":16,"color":"#00F","txt":"weixin","align":"left","space":0},{"id":1,"type":"img","round":false,"lock":false,"add":true,"txt":"新增图片1","x":341,"y":33,"w":50,"h":50,"url":"https://p2.music.126.net/Te-J_mQiEY6pB-U1jfvJrA==/109951163523347959.jpg?param=50y50","img":{"loadover":true},"visible":true},{"id":2,"font":"微软雅黑","visible":true,"type":"txt","lock":false,"add":true,"x":317,"y":94,"w":200,"h":20,"fs":16,"color":"#00F","txt":"新增文本2","align":"left","space":0}],"itemId":2}';
-			this.$refs.cardViewer.loadData(json, this.cardInfor);
-
+      this.$store.commit('app/open_global_dialog')
+      cardRead().then(res => {
+        this.$store.commit('app/close_global_dialog')
+        const cardImg = res.data.card_image
+        this.other_card_style = res.data.is_zhendao
+        // this.other_card_style = '1'
+        this.haDate = true
+        this.$store.state.user.cardInfor = res.data
+        this.$store.state.user.cardInfor.close = false
+        // this.cardInfor = res.data
+        // this.seletedTemplate = require(`@/assets/card/${this.cardInfor.style_id + 1}.png`)
+        if (this.cardInfor.album != null) {
+          this.albumList = this.cardInfor.album.split(',')
+        }
+        if (this.cardInfor.image === '') {
+          this.cardInfor.image = require('@/assets/card/comm.jpg')
+        }
+        if (cardImg === undefined || cardImg === '') {
+          setTimeout(() => {
+            this.save(false)
+          }, 2000)
+        }
+        this.$nextTick(function () {
+          this.$refs.selfBio.updateAutosize()
         })
-      }
+
+        // 用style_id 搜索templateList，把那个对象赋值给select_template
+        const id = this.cardInfor.style_id
+        for (let i = 0; i < templateList.length; i++) {
+          if (templateList[i].templateId == id) {
+            this.select_template = templateList[i]
+          }
+        }
+      }).catch((err) => {
+        this.$store.commit('app/close_global_dialog')
+      })
     },
     changeFile (e, type) {
       var files = e.target.files // 获取图片对象
@@ -581,43 +542,45 @@ export default {
       })
     },
     uploadFileAlbum (obj) {
-      this.$vux.loading.show({
-        text: 'Loading'
-      })
-      const ele = document.querySelector('#album')
-      const fd = new FormData(ele)
+      if (obj.length > 0) {
+        this.$vux.loading.show({
+          text: 'Loading'
+        })
+        const ele = document.querySelector('#album')
+        const fd = new FormData(ele)
 
-      for (var i = 0; i < obj.length; i++) {
-        fd.append('avatar' + i, obj[i])
-        if (!obj[i]) {
-          return
-        }
-        if (obj[i].type !== 'image/jpeg' && obj[i].type !== 'image/png') {
-          AlertModule.show({
-            title: '提示',
-            content: '只支持jpg、png!'
-          })
-          this.$vux.loading.hide()
-          return
-        }
-        if (obj[i].size > 2000000) {
-          AlertModule.show({
-            title: '提示',
-            content: '照片大小不能超过2MB'
-          })
-          this.$vux.loading.hide()
-          return
-        }
-      }
-      upload_img(fd).then(res => {
-        if (res.data && res.data.url) {
-          this.$vux.loading.hide()
-          const imgList = res.data.url.split(',')
-          for (var i = 0; i < imgList.length; i++) {
-            this.albumList.push(imgList[i])
+        for (var i = 0; i < obj.length; i++) {
+          fd.append('avatar' + i, obj[i])
+          if (!obj[i]) {
+            return
+          }
+          if (obj[i].type !== 'image/jpeg' && obj[i].type !== 'image/png') {
+            AlertModule.show({
+              title: '提示',
+              content: '只支持jpg、png!'
+            })
+            this.$vux.loading.hide()
+            return
+          }
+          if (obj[i].size > 2000000) {
+            AlertModule.show({
+              title: '提示',
+              content: '照片大小不能超过2MB'
+            })
+            this.$vux.loading.hide()
+            return
           }
         }
-      })
+        upload_img(fd).then(res => {
+          if (res.data && res.data.url) {
+            this.$vux.loading.hide()
+            const imgList = res.data.url.split(',')
+            for (var i = 0; i < imgList.length; i++) {
+              this.albumList.push(imgList[i])
+            }
+          }
+        })
+      }
     },
     removeAlbum (index) {
       this.albumList.splice(index, 1)
@@ -789,13 +752,12 @@ export default {
       })
     },
     changeTemplate (val, index) {
-      //this.seletedTemplate = val
-      //this.templateId = index
-      //this.cardInfor.style_id = index
-      //this.selectedClass = `card-template-${index + 1}`
-        this.select_template = val;
-        this.cardInfor.style_id = val.templateId;//模板id保存到提交的对象中
-
+      // this.seletedTemplate = val
+      // this.templateId = index
+      // this.cardInfor.style_id = index
+      // this.selectedClass = `card-template-${index + 1}`
+      this.select_template = val
+      this.cardInfor.style_id = val.templateId// 模板id保存到提交的对象中
     },
     gotoProduce () {
       this.$store.state.user.cardInfor.close = true
@@ -837,18 +799,22 @@ export default {
         let fd = new FormData()
         let filename = 'card.png'
         fd.append('avatar', blob, filename)
+		fd.append('d',1)
         upload_img(fd).then(res => {
           if (res.data && res.data.url) {
             this.cardInfor.card_image = res.data.url
             delete this.cardInfor.tag
             this.cardInfor.album = this.albumList.join(',')
             updateCard(this.cardInfor).then(res => {
+              this.$store.commit('app/close_global_dialog')
               if (isJump) {
                 this.$router.back(-1)
               }
               this.$vux.loading.hide()
             })
           }
+        }).catch((err) => {
+          this.$store.commit('app/close_global_dialog')
         })
       })
     },
@@ -893,9 +859,10 @@ export default {
             return false
           }
         }
-        this.$vux.loading.show({
+        /* this.$vux.loading.show({
           text: 'Loading'
-        })
+        }) */
+        this.$store.commit('app/open_global_dialog')
         this.switchImg(isJump)
       } else {
         this.switchImg(isJump)
@@ -911,7 +878,7 @@ export default {
     }
   },
   mounted () {
-      this.getCard()
+    this.getCard()
     var that = this
     this.$wechat.ready(() => {
       console.log('ready')
@@ -928,7 +895,6 @@ export default {
         that.percent = parseInt(that.recordTime / 600)
       }
     }, 100)
-
   }
 }
 </script>
@@ -1020,8 +986,9 @@ export default {
       border: 1px solid #e3e3e3;
       position: relative;
       img{
-        width:100%;
+        width: 100%;
         height: 100%;
+        border-radius: 1.5px;
       }
       span{
         position: absolute;
@@ -1233,7 +1200,6 @@ export default {
       margin-bottom: 0.2rem;
       float: left;
 
-
     }
     .icon-close {
       position: absolute;
@@ -1241,16 +1207,16 @@ export default {
       right: -0.15rem;
       width: 0.4rem;
       height: 0.4rem;
-      fill:#333333;
-      background: #fff;
+      fill:#fff;
+      background: #333;
       border-radius: 100px;
-      border:1px #333333 solid;
     }
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border-radius:5px;
+      border: 1px solid #CACACA;
     }
     & > span {
       position: relative;

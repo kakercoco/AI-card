@@ -16,13 +16,19 @@
       <x-input placeholder="未填写" title="公司名称" v-model="inforForm.company"></x-input>
       <x-input placeholder="未填写" title="详细地址" v-model="inforForm.address"></x-input>
       <div class="my-birthday">
-        <datetime v-model="inforForm.birthday" @on-confirm='choseBirth'>
+        <datetime v-model="inforForm.birthday" @on-confirm='choseBirth' :min-year="1920">
           <p slot="title" class="my-label">生日时间</p>
         </datetime>
         <!--<p class="update"><check-icon :value.sync="is_calendar" @click.native="updateCalendar"></check-icon>同步到销售日历 </p>-->
       </div>
       <x-switch title="屏蔽消息推送" v-model="inforForm.is_shield_employ" :value-map="[0,1]" class="Masking_message"></x-switch>
-      <x-textarea title="备注" v-model="inforForm.desc" autosize style='font-size:0.3rem'></x-textarea>
+      <x-textarea
+              title="备注"
+              v-model="inforForm.desc"
+              autosize
+              @on-focus="onFocus"
+              @on-blur="onBlur"
+              style='font-size:0.3rem'></x-textarea>
     </group>
     <p class="my_btn">
       <x-button type="primary" @click.native="save">保存</x-button>
@@ -73,24 +79,30 @@ export default {
   methods: {
     getCustomerInfor () {
       const data = {
-        id: this.id
+        id: this.id !== undefined && this.id !== '' ? this.id : ''
       }
-      customerEdit(data)
-        .then(res => {
-          this.inforForm = res.data
-          if (this.inforForm.is_calendar === 1) {
-            this.is_calendar = true
-          } else {
-            this.is_calendar = false
-          }
-          if (this.inforForm.sex === 0) {
-            this.sex = '未知'
-          } else if (this.inforForm.sex === 1) {
-            this.sex = '男'
-          } else if (this.inforForm.sex === 2) {
-            this.sex = '女'
-          }
-        })
+      if (data.id !== '') {
+        customerEdit(data)
+          .then(res => {
+            this.inforForm = res.data
+            if (this.inforForm.is_calendar === 1) {
+              this.is_calendar = true
+            } else {
+              this.is_calendar = false
+            }
+            if (this.inforForm.sex === 0) {
+              this.sex = '未知'
+            } else if (this.inforForm.sex === 1) {
+              this.sex = '男'
+            } else if (this.inforForm.sex === 2) {
+              this.sex = '女'
+            }
+
+            if (!isNaN(this.inforForm.birthday)) {
+              this.inforForm.birthday = ''
+            }
+          })
+      }
     },
     updateCalendar () {
       if (this.inforForm.birthday === '') {
@@ -114,7 +126,7 @@ export default {
       this.updateCalendar()
     },
     save () {
-      console.log(this.is_calendar)
+      this.$store.commit('app/open_global_dialog')
       if (this.is_calendar) {
         this.inforForm.is_calendar = 1
       } else {
@@ -129,8 +141,20 @@ export default {
       }
       customerUpdate(this.inforForm)
         .then(res => {
+          this.$store.commit('app/close_global_dialog')
           this.$router.back(-1)
+        }).catch((err) => {
+          this.$store.commit('app/close_global_dialog')
         })
+    },
+    onFocus () {
+      var timer = setTimeout(() => {
+        document.body.scrollTop = document.body.scrollHeight
+        clearTimeout(timer)
+      }, 500)
+    },
+    onBlur () {
+      window.scrollTo(0, 0)
     }
   },
   mounted () {
@@ -141,9 +165,9 @@ export default {
 
 <style lang='scss' rel='stylesheet/scss' scoped>
 .client-infor{
-  overflow: auto;
+  /*overflow: auto;
   height: 100%;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.5rem;*/
   -webkit-overflow-scrolling: touch;
   h5{
     text-align: center;
@@ -231,7 +255,6 @@ export default {
     margin-top: 1rem;
     padding: 0 1rem;
   }
-
 
 }
 </style>

@@ -9,13 +9,20 @@
     <div class="clearfix yyf_new_client-tag" v-for="(item, index) in tagList" :key="index"  :class="item.rows && item.rows.length > 0 ? 'class' + item.rows[0].type : ''">
       <h4 class="title">{{item.title}}</h4>
       <ul>
-        <li v-for="(e, i) in item.rows" :key="i" :class="{active:e.checked}" @click="swithTag(e.id, e.checked)" class="one">{{e.tag_name}}</li>
+        <li v-for="(e, i) in item.rows" :key="i" :class="{active:e.checked}" @click="swithTag(e,item.rows,'sys')" class="one">{{e.tag_name}}</li>
       </ul>
     </div>
     <div class="clearfix Other yyf_new_client-tag class1">
-      <h4>其他</h4>
+      <h4>
+        其他
+        <span class="other_edit" @click="isEdit = !isEdit">编辑</span>
+      </h4>
       <ul>
-        <li v-for="(item, index) in otherTagList" :key="index" :class="{active:item.checked}" @click="swithTag(item.id, item.checked)" class="one">{{item.tag_name}}</li>
+        <li v-for="(item, index) in otherTagList" :key="index" :class="{active:item.checked}" @click="swithTag(item,otherTagList)" class="one custom_one">
+          {{item.tag_name}}
+          <i class="yyf_new_jian" @click.stop="delete_Label(item,index)" v-if="isEdit">-</i>
+          <!--<x-icon type="ios-minus" size="30" @click.stop="delete_Label(item,index)"></x-icon>-->
+        </li>
         <li class="add_btn"><x-icon type="ios-plus-empty" class="icon-insert" @click.native="openDialog"></x-icon></li>
       </ul>
     </div>
@@ -62,7 +69,9 @@
 <script>
 import { XDialog, XInput, Group,Popup,TransferDom,PopupHeader} from 'vux'
 import { customerTag } from '@/api/customer'
-import { updateCustomerTag, deleteCustomerTag, insertCustomerTag } from '@/api/contact'
+import { err_Tips } from '@/utils/base'
+import { updateCustomerTag, deleteCustomerTag, insertCustomerTag ,del_label } from '@/api/contact'
+
 
 export default {
   name: 'clientTag',
@@ -82,7 +91,9 @@ export default {
       tagList: [],
       otherTagList: [],
       uid: this.$route.query.uid,
-      insertTagDialog: false
+      insertTagDialog: false,
+      isEdit:false,
+      tag_isChange:true
     }
   },
   methods: {
@@ -93,29 +104,67 @@ export default {
       }
     },
     getCustomerTag () {
+      this.$store.commit('app/open_global_dialog');
       const data = {
         uid: this.uid
       }
       customerTag(data)
         .then(res => {
-          this.tagList = res.data.sys
+          this.$store.commit('app/close_global_dialog');
+            this.tagList = res.data.sys
           this.otherTagList = res.data.other[0]
-          console.log(this.otherTagList)
-        })
+        }).catch((err)=>{
+          this.$store.commit('app/close_global_dialog');
+      })
     },
-    swithTag (id, status) {
+    swithTag (item,arr,type) {
+      if(!this.tag_isChange) return;
+      this.tag_isChange = false;//关闭开关
+      const id = item.id;
+      const status = item.checked;
+      let list = arr
+
       const data = {
         uid: this.uid,
         tag_id: id
       }
+
       if (status) {
-        deleteCustomerTag(data)
-          .then(res => {
-            this.getCustomerTag()
+        item.checked = false;//前端先改变效果
+        deleteCustomerTag(data).then(res => {
+            this.tag_isChange = true;//请求结束，打开开关
+            //如果请求失败，则重新加载列表
+            if(res.msg != '删除成功'){
+                err_Tips('取消失败！',this);
+                this.getCustomerTag()
+            }
+
+          }).catch((err)=>{
+            this.tag_isChange = true;//请求结束，打开开关
+                err_Tips('取消失败！',this);
+                this.getCustomerTag()
           })
       } else {
+          //系统标签，先清除所有选中
+          if(type === 'sys'){
+              list.map((val)=>{
+                  if(val.checked){
+                      val.checked = false
+                  }
+              })
+          }
+
+        item.checked = true;
         updateCustomerTag(data)
           .then(res => {
+              this.tag_isChange = true;//请求结束，打开开关
+              if(res.msg != '修改成功!'){
+                  err_Tips('选择失败！',this);
+                  this.getCustomerTag()
+              }
+          }).catch((err)=>{
+            this.tag_isChange = true;//请求结束，打开开关
+            err_Tips('选择失败！',this);
             this.getCustomerTag()
           })
       }
@@ -144,6 +193,37 @@ export default {
     },
     closeDialog () {
       this.insertTagDialog = false
+    },
+    delete_Label(item,index){
+        const id = item.id;
+        const that = this;
+        if(id){
+            this.$vux.confirm.show({
+                title: '温馨提示',
+                content: '是否删除该标签?',
+                onConfirm  () {
+                    that.$store.commit('app/open_global_dialog');
+                    del_label({id}).then((res)=>{
+                        that.$store.commit('app/close_global_dialog');
+                        if(res.code === 200 && res.msg === '删除成功'){
+                            that.otherTagList.splice(index,1)
+                        }
+                        else{
+                            err_Tips('删除失败',that)
+                        }
+                    }).catch((err)=>{
+                        that.$store.commit('app/close_global_dialog');
+                        err_Tips('删除失败',that)
+                    })
+                },
+            })
+
+        }
+        else{
+            err_Tips('缺少id，不允许删除！',that)
+        }
+
+
     }
   },
   mounted () {

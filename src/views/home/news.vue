@@ -2,7 +2,7 @@
  * @Author: kaker.xutianxing
  * @Date: 2018-08-28 17:27:30
  * @Last Modified by: kaker.xutianxing
- * @Last Modified time: 2018-10-29 22:57:52
+ * @Last Modified time: 2018-10-29 22:04:31
  * 动态
  */
 <template>
@@ -11,7 +11,7 @@
       <div class="scroller_frame">
         <div class="header">
           <p>{{$store.state.user.info.username}}</p>
-          <img :src="$store.state.user.info.image ? $store.state.user.info.image : Head_portrait" @click="my_test">
+          <img :src="$store.state.user.info.image ? $store.state.user.info.image : Head_portrait">
           <i @click="to_publish">
             <x-icon type="ios-camera"></x-icon>
           </i>
@@ -27,6 +27,7 @@
               <span class="tag">{{item.type == 0 ? '公司' : '个人'}}</span>
               <span class="time"></span>
             </p>
+            <i class="del_btn" @click="delete_dynamic(item,i)" v-if="$store.state.user.info.employ_id && item.create_user == $store.state.user.info.employ_id">删除</i>
           </div>
           <div class="content clearfix">
 
@@ -69,16 +70,18 @@
                 <div v-for="(p_item,i) in item.praise.rows" :key="i" class="one_zan">
                   <i>{{p_item.user_name}}{{i == item.praise.rows.length -1 ? '' : ','}}</i>
                 </div>
+
               </div>
+
               <ul v-if="item.comment.rows && item.comment.rows.length > 0">
                 <li class="clearfix new_one_comment" v-for="(comment,comment_i) in item.comment.rows" :key="comment_i">
-                  <p class="yyf_new_one_comment_p">
-                    <span class="name">{{comment.user_name}}:</span>
+                  <p class="yyf_new_one_comment_p" @click="delete_comment(comment,item)">
+                    <span class="name">{{comment.re_name ? comment.re_name : comment.user_name}}:</span>
                     {{comment.content}}
                   </p>
                 </li>
-
               </ul>
+
             </div>
           </div>
         </div>
@@ -118,8 +121,8 @@ import { get_user_info } from '@/api/user_info'
 import { Previewer, TransferDom, Popover, XDialog, Confirm } from 'vux'
 import { Scroller } from 'vux'
 
-import { init_list, click_good, to_comment } from '@/api/dynamic'
-import { dateFtt } from '@/utils/base'
+import { init_list, click_good, to_comment,del_comment,del_dynamic} from '@/api/dynamic'
+import { dateFtt,err_Tips } from '@/utils/base'
 
 const Head_portrait = require('@/assets/card/comm.jpg')
 export default {
@@ -387,11 +390,14 @@ export default {
         content
       }).then(e => {
           this.is_send = false;
-        if (e.code === 200) {
+        if (e.code === 200 && e.data) {
           const obj = {
             user_image: this.$store.state.user.info.image,
             user_name: this.$store.state.user.info.username,
-            content
+            content,
+            id:e.data,
+            uid:this.$store.state.user.info.employ_id,
+            type:1
           }
           this.data_list[this.comment_index].comment.rows.push(obj)
           this.commentDialog = false
@@ -433,6 +439,73 @@ export default {
 
     comment_onCancel () {
       this.dialog_hide()
+    },
+
+    delete_comment(item,dynamic){
+
+      const type = item.type;
+      const employ_id = item.uid;
+      const id = item.id;
+      const that = this;
+
+      //判断是否能删除
+      if(this.$store.state.user.info && this.$store.state.user.info.employ_id == employ_id && type == 1){
+          this.$vux.confirm.show({
+              title: '温馨提示',
+              content: '是否删除该条评论?',
+              onConfirm  () {
+                  del_comment({id}).then((res)=>{
+
+                      if(res.code === 200 && dynamic.comment && dynamic.comment.rows && dynamic.comment.rows instanceof Array){
+                          for(let i = 0;i<dynamic.comment.rows.length;i++){
+                              if(id == dynamic.comment.rows[i].id){
+                                  dynamic.comment.rows.splice(i,1)
+                              }
+                          }
+                      }
+                      else{
+                          err_Tips('删除失败！',that)
+                      }
+                  }).catch((err)=>{
+                      err_Tips('删除失败！',that)
+                  })
+              },
+          })
+      }
+      else{
+          err_Tips('该条评论不能删除！',that)
+      }
+
+  },
+    delete_dynamic(item,index){
+        const create_user = item.create_user;
+        const id = item.id;
+        const type = 1;
+        const that = this;
+        if(this.$store.state.user.info && this.$store.state.user.info.employ_id == create_user && type == 1){
+            this.$vux.confirm.show({
+                title: '温馨提示',
+                content: '是否删除该条动态?',
+                onConfirm  () {
+                    del_dynamic({id}).then((res)=>{
+                        if(res.code === 200){
+                            that.data_list.splice(index,1);
+                        }
+                        else{
+                            err_Tips('删除失败！',that)
+                        }
+                    }).catch((err)=>{
+                        err_Tips('删除失败！',that)
+                    })
+                },
+            })
+
+
+        }
+        else{
+            err_Tips('该条动态不能删除！',that)
+        }
+
     }
   },
   mounted () {

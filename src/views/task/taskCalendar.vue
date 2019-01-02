@@ -20,7 +20,7 @@
          </div>
           <div class="task_left" @click="taskDetail(item)">
             <p class="task_title">{{ item.title }}</p>
-            <p>{{ item.his_time }}   <span v-if="item.expire === 1">已过期</span></p>
+            <p>{{Global.parseTime(item.his_time, '{y}-{m}-{d} {h}:{i}')}}  <span v-if="item.expire === 1">已过期</span></p>
           </div>
           <div class="task_right">
             <p @click="signFinishTask(item)">完成</p>
@@ -42,7 +42,7 @@
             </div>
             <div class="task_left" @click="taskDetail(item)">
               <p class="task_title">{{ item.title }}</p>
-              <p>{{ item.his_time }}</p>
+              <p>{{Global.parseTime(item.his_time, '{y}-{m}-{d} {h}:{i}')}}</p>
             </div>
             <div class="task_right" @click="taskDetail(item)">
               <!--<p>完成</p>-->
@@ -57,7 +57,8 @@
         <img src="../../assets/task/empty_task.png">
         <p>新建一条任务，开始一天的工作吧</p>
       </div>
-      <div class="calendar_footer" v-if="isShowButton">
+        <div style="height: 1.5rem;"></div>
+        <div class="yyf_new_btn" style="border-top: 1px #e3e3e3 solid" v-if="isShowButton">
         <x-button type="primary" class="task_button" @click.native="addTask">新建任务</x-button>
       </div>
     </div>
@@ -292,9 +293,11 @@ export default {
     }
     .vux-prev-icon {
       border-color: #5977fe;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
     }
     .vux-next-icon {
       border-color: #5977fe;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
     }
     td.is-today {
       color: #5977fe;
@@ -396,6 +399,7 @@ export default {
           }
         }
         .task_title{
+          height: 0.4rem;
           font-size: 16px;
           overflow: hidden;
           text-overflow:ellipsis;

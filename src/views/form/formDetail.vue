@@ -8,17 +8,21 @@
   <div class="form">
     <div class="form-title">
       <div class="form-title-left">
-        <img src="../../assets/img/u112.png">
+        <img :src="messageFormData.image !== undefined && messageFormData.image !== ''  ? messageFormData.image: '../../assets/img/u112.png'">
       </div>
       <div class="form-title-right">
-        <p>Jane简</p>
-        <p>提交时间：2018年10月21日 18:30</p>
+        <p>{{wx_name}}</p>
+        <p>{{Global.parseTime(messageFormData.create_time, '{y}-{m}-{d} {h}:{i}:{s}')}}</p>
       </div>
     </div>
     <div class="form-content">
       <ul>
-        <li v-for="(item, index) in messageFormData" :index="index">
-          <p class="form-left"><span>{{ item.title }}</span> {{ item.content }}</p>
+        <li v-for="(item, index) in messageFormData.message" :index="index">
+          <p class="form-left" v-if="item.field.indexOf('phone') === -1 || (item.field.indexOf('phone') !== -1 && item.content ==='无')"><span>{{ item.title }}</span> {{ item.content }}</p>
+          <div v-if="item.field.indexOf('phone') !== -1 && item.content !=='无'" class="call-phone-content">
+            <p class="form-left"><span>{{ item.title }}</span>{{ item.content }}</p>
+            <p class="call-phone"><a :href="'tel:'+item.content">拨打</a></p>
+          </div>
         </li>
       </ul>
       <div class="nodata" v-if="no_data">暂无数据!</div>
@@ -44,49 +48,75 @@ export default {
   },
   data () {
     return {
+      wx_name: this.$route.query.wx_name !== undefined ? this.$route.query.wx_name : '',
       messageFormData: [],
       no_data: false
     }
   },
   methods: {
-    objToArray (obj) {
-      var arr = []
-      for (var i in obj) {
-        arr.push(obj[i])
+    formateMessageDate (data) { // 把留言信息格式化
+      let arr = []
+      if (data.content !== undefined && Object.keys(data.content).length > 0) {
+        Object.keys(data.content).forEach(function (key) {
+          let title = ''
+          let str = ''
+          let obj = {
+            title: '',
+            content: '',
+            field: ''
+          }
+          Object.keys(data.fields).forEach(function (i) {
+            if (key === i) {
+              title = data.fields[i].replace(/(^\s*)|(\s*$)/g, '')
+              return null
+            }
+          })
+          if (title !== '') {
+            let flag1 = title.lastIndexOf('：') === -1
+            let flag2 = title.lastIndexOf(':') === -1
+            if (flag1 && flag2) {
+              str = title + '：'
+            } else {
+              str = title.substr(0, title.length - 1) + '：'
+            }
+          } else {
+            str = '无标题：'
+          }
+          obj.title = str
+          obj.field = key
+          var type = typeof data.content[key]
+          if (type !== 'string') {
+            if (data.content[key][0] !== undefined && data.content[key][0] !== '') {
+              obj.content = data.content[key][0]
+            } else {
+              obj.content = '无'
+            }
+          } else if (type === 'string' && data.content[key] === '') {
+            obj.content = '无'
+          } else {
+            obj.content = data.content[key]
+          }
+          if (obj.content !== '') {
+            arr.push(obj)
+          }
+        })
       }
       return arr
     },
     getMessageById () {
+      this.$store.commit('app/open_global_dialog')
       getMessageFormDetail(this.$route.query.id).then(res => {
-        if (res.code === 200) {
-          if (res.data && res.data.length > 0) {
-            this.no_data = false
-            const inputNameArr = this.objToArray(JSON.parse(this.$route.query.fields).inputName)
-            for (let i = 0; i < res.data.data.length; i++) {
-              const arr = []
-              const contentArr = this.objToArray(JSON.parse(res.data.data[i].content))
-              for (let j = 0; j < contentArr.length; j++) {
-                var obj = {
-                  title: '',
-                  content: ''
-                }
-                obj.title = inputNameArr[j] + ':'
-                var type = typeof contentArr[j]
-                if (type !== 'string') {
-                  obj.content = '无'
-                } else {
-                  obj.content = contentArr[j]
-                }
-                arr.push(obj)
-              }
-              res.data.data[i].message = arr
-            }
-            this.messageFormData = res.data.data
-          } else {
-            this.no_data = true
-          }
+        this.$store.commit('app/close_global_dialog')
+        if (res.code === 200 && res.data) {
+          this.no_data = false
+          let message = this.formateMessageDate(res.data)
+          res.data.message = message
+          this.messageFormData = res.data
         } else {
+          this.no_data = true
         }
+      }).catch((e) => {
+        this.$store.commit('app/close_global_dialog')
       })
     }
   },
@@ -101,8 +131,8 @@ export default {
 
 <style lang='scss' rel='stylesheet/scss' scoped>
   .form {
-    height: 100%;
-    padding-left: 0.2rem;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
     .form-title{
       height: 1.12rem;
       margin: 0.2rem 0.4rem;
@@ -137,6 +167,7 @@ export default {
       }
     }
     .form-content{
+      margin: 0 0.4rem;
       .nodata{
         line-height: 1.5rem;
         text-align: center;
@@ -145,6 +176,7 @@ export default {
         color: #999;
       }
       ul{
+        height: calc(100% - 1.12rem);
         li{
           // height: 0.75rem;
           padding-right: 0.4rem;
@@ -156,10 +188,21 @@ export default {
             span{
               color: #999999;
             }
-            /*display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 2;
-            overflow: hidden;*/
+          }
+          .call-phone-content{
+            display: flex;
+            justify-content: space-between;
+            .call-phone{
+              width: 0.8rem;
+              text-align: center;
+              height: 0.5rem;
+              line-height: 0.5rem;
+              border: 1px solid #5977fe;
+              color: #5977fe;
+              font-size: 0.28rem;
+              margin-top: 0.1rem;
+              -webkit-tap-highlight-color: rgba(0,0,0,0);
+            }
           }
         }
       }

@@ -9,6 +9,15 @@
       </div>
     </div>
     <router-view />
+    <div class="global_dialog" v-if="$store.state.app.global_dialog">
+      <div class="global_icon">
+        <div class="frame">
+          <img src="@/assets/icon/loading_2.png" class="loading_2">
+          <img src="@/assets/icon/loading_1.png" class="loading_1">
+        </div>
+        <p>加载中</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -38,7 +47,7 @@ export default {
       heartbeat: null,
       v_console_num: 0,
       parentNode: null,
-      is_loadMore: true
+      is_loadMore: true,
     }
   },
   created () {
@@ -211,7 +220,7 @@ export default {
         // 在其它地方登陆
         else if (data.cmd === 'OtherLogin') {
           this.clear_socket()
-          console.log('被挤掉，关闭连接123')
+          console.log('被挤掉，关闭连接')
           this.$vux.confirm.show({
             title: '提示',
             content: '您在其它地方登录，是否重新连接',
@@ -319,7 +328,7 @@ export default {
         p_image: data.p_image,
         p_name: data.p_name,
         p_price_sell: data.p_price_sell,
-        p_title: '测试',
+        p_title: data.p_title,
         content: ''
       }
       return obj
@@ -525,6 +534,12 @@ export default {
     this.get_user_info()
     this.Mouse_scrolling()
 
+      this.$nextTick(()=>{
+          const loading = document.querySelector('.index_global_dialog');
+          loading.parentNode.removeChild(loading);
+      })
+
+
     document.addEventListener('WeixinJSBridgeReady', function onBridgeReady () {
       WeixinJSBridge.call('hideOptionMenu')
     })
@@ -580,6 +595,57 @@ export default {
   }
   .all_dialog_show {
     top: 0;
+  }
+  .global_dialog{
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    .global_icon{
+      position: absolute;
+      width: 1.2rem;
+      height:2.4rem;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      margin: auto;
+      p{
+        width: 100%;
+        height: 0.4rem;
+        line-height: 0.4rem;
+        text-align: center;
+        color: #333;
+        margin-top: 0.1rem;
+        font-size: 0.26rem;
+      }
+      .frame{
+        position: relative;
+        width: 1rem;
+        height: 1rem;
+        margin: 0 auto;
+      }
+      img{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        &.loading_1{
+          animation: spin 0.8s linear infinite;
+          -webkit-animation:spin 0.8s linear infinite;
+        }
+      }
+    }
+    @keyframes spin {
+      0%{
+        transform: rotate(0deg);
+      }
+      100%{
+        transform: rotate(360deg);
+      }
+    }
   }
 }
 </style>

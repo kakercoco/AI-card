@@ -9,12 +9,12 @@
     <h3>选择话术</h3>
     <div>
       <div class="talk-group">
-        <a :class="{select_class: item.id === groupId}" v-for="(item, index) in talkGroupList" :key="index" @click="getTalkList(item.id)">{{item.label}}</a>
+        <a :class="{select_class: item.id === groupId}" v-for="(item, index) in talkGroupList" :key="index" @click="list_change(item)">{{item.pid != 0 ? '我的话术' : item.label}}</a>
         <!-- <a :class="{active: -1 == groupId}" @click="getMyTalk()">自定义话术</a> -->
       </div>
       <div class="talk-list">
         <!-- v-if="groupId==-1" -->
-        <p class="tac" @click="gotoInsert">
+        <p class="tac" @click="gotoInsert" v-if="add_isShow">
             <x-icon type="ios-plus-empty" size="30"></x-icon>
            <span>新增话术</span>
         </p>
@@ -32,13 +32,15 @@
 
 <script>
 import { talkGroup, talkList } from '@/api/talk'
+import { err_Tips } from '@/utils/base'
 export default {
   name: 'talkManage',
   data () {
     return {
       talkGroupList: [],
       talk: [],
-      groupId: 0
+      groupId: 0,
+        add_isShow:true
     }
   },
   methods: {
@@ -60,16 +62,27 @@ export default {
       })
     },
     getTalkGroup () {
+    this.$store.commit('app/open_global_dialog');
       const data = {
         type: 'verbal'
       }
       talkGroup(data).then(res => {
-        this.talkGroupList = res.data
-        this.groupId = this.talkGroupList[0].id
-        this.getTalkList(this.groupId)
+        if(res.code === 200 && res.data && res.data instanceof Array){
+            this.talkGroupList = res.data
+            this.groupId = this.talkGroupList[0].id
+            this.getTalkList(this.groupId)
+        }
+        else{
+            err_Tips('话术分类加载错误！',this)
+        }
+
+      }).catch((err)=>{
+          err_Tips('话术分类加载错误！',this)
       })
     },
     getTalkList (id) {
+        this.$store.commit('app/open_global_dialog');
+        this.talk = [];
       this.groupId = id
       const data = {
         pid: id,
@@ -78,11 +91,31 @@ export default {
         keyword: ''
       }
       talkList(data).then(res => {
-        this.talk = res.data.rows
+        this.$store.commit('app/close_global_dialog');
+        if(res.code === 200 && res.data && res.data.rows && res.data.rows instanceof Array){
+            this.talk = res.data.rows;
+        }
+        else{
+            err_Tips('详细加载错误！',this)
+        }
+
+      }).catch((err)=>{
+          this.$store.commit('app/close_global_dialog');
+          err_Tips('详细加载错误！',this)
       })
     },
     getMyTalk () {
       this.groupId = -1
+    },
+    list_change(item){
+        const id = item.id;
+        if(item.pid == 0){
+            this.add_isShow = false;
+        }
+        else{
+            this.add_isShow = true;
+        }
+        this.getTalkList(id);
     }
   },
   mounted () {

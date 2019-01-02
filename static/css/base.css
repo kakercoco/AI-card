@@ -192,6 +192,7 @@
     color: #353535;
     background: #fff;
     border: none;
+    width: 100%;
 }
 .tag_list .name  input:focus {
     outline: none !important;
@@ -608,6 +609,7 @@
 .edit-card .one_pro ul li img{
     width:100%;
     height:3.14rem;
+    min-height: 3.14rem;
 
 }
 .edit-card .one_pro ul li span{
@@ -667,12 +669,12 @@
  }
 .yyf_new_case_pro_one li .right h5{
     font-family: '黑体';
-    font-size: 0.28rem;
+    font-size: 14px;
     color: #999999;
     float: left;
     width: 3.75rem;
-    height: 0.68rem;
-    line-height: 0.35rem;
+    height:34px;
+    line-height:17px;
     margin-top:0.1rem;
     font-weight: normal;
     overflow : hidden;
@@ -938,4 +940,61 @@
 }
 .say-setting .set_top li:nth-of-type(4) img{
     width:0.4rem ;
+}
+.one_line{
+    height: 100%;
+    line-height: 0.96rem;
+}
+
+#news .title{
+    position: relative;
+}
+#news .title .del_btn{
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 0.26rem;
+    font-family: '\9ED1\4F53';
+    color: #50659a;
+    width: 0.8rem;
+    height: 0.5rem;
+    text-align: right;
+    line-height: 0.4rem;
+}
+.client-tag .Other .custom_one{
+    position: relative;
+}
+.yyf_new_jian{
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    right: -0.1rem;
+    top: -0.1rem;
+    background: #333;
+    border-radius:100%;
+    text-align: center;
+    line-height: 18px;
+    color: #fff;
+    z-index: 10;
+
+}
+
+.client-tag .other_edit{
+    float: right;
+    font-size: 0.26rem;
+    margin-right: 0.4rem;
+    font-weight: normal;
+    color: #666;
+    height: 0.4rem;
+    line-height: 0.4rem;
+    width: 0.8rem;
+    text-align: right;
+}
+.client .Progress_frame{
+    float: left;
+    width: 3.6rem;
+    margin-right: 0.1rem;
+}
+.new_textarea textarea{
+    background: #fff !important;
 }

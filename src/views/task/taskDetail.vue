@@ -17,7 +17,7 @@
         <p>任务时间</p>
       </li>
       <li>
-        <p>{{ taskInfo.his_time }}</p>
+        <p>{{Global.parseTime(taskInfo.his_time, '{y}-{m}-{d} {h}:{i}')}}</p>
       </li>
       <li>
         <p>备注</p>
@@ -37,13 +37,14 @@
             <p class="send_message" @click="gotoIM(item)">发消息</p>
           </div>
           <div>
-            <p>{{ item.wx_name }}</p>
+            <p>{{ item.re_name ? item.re_name : item.wx_name }}</p>
             <p><span style="padding-right: 0.1rem">最近活跃</span>{{ item.visit_time }} </p>
           </div>
         </li>
       </ul>
     </div>
-    <div class="task_detail_btn">
+    <div style="height: 1.5rem;"></div>
+    <div class="yyf_new_btn task_detail_btn" style="border-top: 1px #e3e3e3 solid">
       <p @click="deleteTask">删除</p>
       <p @click="editTask">编辑</p>
     </div>
